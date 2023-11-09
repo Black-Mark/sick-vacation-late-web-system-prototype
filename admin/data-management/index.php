@@ -4,6 +4,12 @@ include("../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
+$tablelist = isset($_GET['tablelist']) ? filter_var($_GET['tablelist'], FILTER_SANITIZE_STRING) : null;
+
+if ($tablelist === 'index.php' || $tablelist === 'index.html') {
+    $tablelist = null;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -17,21 +23,22 @@ include($constants_file_session_admin);
     <?php
     include($constants_file_html_credits);
     ?>
-    <link rel="icon" type="image/x-icon" href="../../assets/images/indang-logo.ico">
+    <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
-    <link rel="stylesheet" href="../../assets/bootstrap/dist/css/bootstrap.min.css">
-    <script src="../../assets/bootstrap/assets/js/vendor/jquery-slim.min.js"></script>
-    <script src="../../assets/bootstrap/assets/js/vendor/popper.min.js"></script>
-    <script src="../../assets/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_vcss; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_css; ?>">
+    <script src="<?php echo $assets_jquery; ?>"></script>
+    <script src="<?php echo $assets_popper; ?>"></script>
+    <script src='<?php echo $assets_bootstrap_js; ?>'></script>
 
-    <link rel='stylesheet' href='../../assets/font-awesome/css/font-awesome.min.css'>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel='stylesheet' href="<?php echo $assets_fontawesome; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <!-- <script src="../assets/js/tailwind.js"></script> -->
+
+    <link rel="stylesheet" href="../../assets/datatables/datatables.min.css">
+    <link rel="stylesheet" href="../../assets/datatables/DataTables-1.13.6/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/datatables/Buttons-2.4.2/css/buttons.bootstrap.min.css">
 </head>
 
 <body class="webpage-background-cover-admin">
@@ -42,11 +49,14 @@ include($constants_file_session_admin);
     <div class="page-container">
         <div class="page-content">
             <div class='data-manage-nav-container custom-scrollbar'>
-                <a href="#"><button class="data-manage-nav-button">Manage Data</button></a>
+                <a href="<?php echo $location_admin_datamanagement; ?>/gender/"><button
+                        class="data-manage-nav-button">Gender</button></a>
             </div>
 
             <div class="box-container">
-                <h3 class="title-text">List of Teachers</h3>
+                <h3 class="title-text">List of
+                    <?php echo $tablelist; ?> Options
+                </h3>
 
                 <!-- Button trigger modal -->
                 <div>
@@ -87,6 +97,74 @@ include($constants_file_session_admin);
                         </div>
                     </div>
                 </div>
+
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $sql = "SELECT * FROM tbl_useraccounts";
+                        $result = $database->query($sql);
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php echo $row['employee_id']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $row['lastName']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $row['firstName']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $row['middleName']; ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+
+                <script>
+                    $(document).ready(function () {
+                        $('#example').DataTable({
+                            "pagingType": "full_numbers",  // Show First, Previous, Page numbers, Next, Last
+                            "pageLength": 10,             // Number of rows per page
+                            "ordering": true,             // Allow column sorting
+                            "searching": true,            // Enable search
+                            "lengthChange": true,        // Show entries per page
+                            "dom": 'lBfrtip',            // Show Buttons for Print, Copy, Excel, CSV, PDF
+                            "buttons": [
+                                'copy', 'excel', 'csv', 'pdf', 'print'
+                            ]
+                        });
+                    });
+                </script>
+
+
+
+                <script src="../../assets/datatables/Buttons-2.4.2/js/dataTables.buttons.min.js"></script>
+                <script src="../../assets/datatables/Buttons-2.4.2/js/buttons.html5.min.js"></script>
+                <script src="../../assets/datatables/Buttons-2.4.2/js/buttons.print.min.js"></script>
+
+                <script src="../../assets/datatables/JSZip-3.10.1/jszip.min.js"></script>
+                <script src="../../assets/datatables/pdfmake-0.2.7/pdfmake.js"></script>
+                <script src="../../assets/datatables/pdfmake-0.2.7/pdfmake.min.js"></script>
+                <script src="../../assets/datatables/pdfmake-0.2.7/vfs_fonts.js"></script>
+                <script src="../../assets/datatables/datatables.min.js"></script>
+
+                
+
             </div>
         </div>
     </div>

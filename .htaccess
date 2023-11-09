@@ -1,6 +1,14 @@
 # Custom ErrorDocument to display 404.html for 404 errors
 ErrorDocument 404 /www.indang-municipal-hr.com.ph/404.html
 
+# Custom ErrorDocument to display 404.html for blocked access
+ErrorDocument 403 /www.indang-municipal-hr.com.ph/404.html
+
+# Custom Pathing
+RewriteEngine On
+RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
+RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
+
 # Disable directory listing and deny direct access
 Options -Indexes
 
@@ -10,13 +18,11 @@ RewriteRule ^Assets/ - [F,L]
 RewriteRule ^Components/ - [F,L]
 RewriteRule ^Constants/ - [F,L]
 
-# Custom ErrorDocument to display 404.html for blocked access
-ErrorDocument 403 /www.indang-municipal-hr.com.ph/404.html
-
+# Rewrite HTTP to HTTPS (optional, if needed)
 # RewriteEngine On
 # RewriteCond %{HTTPS} off
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-#RewriteEngine On
-#RewriteRule ^department/([A-Za-z]+)/group/([0-9]+)/uid/([0-9]+)$ department.php?departmentname=$1&group=$2&uid=$3 [L]
+# Example rule for department URL (commented out)
+# RewriteRule ^department/([A-Za-z]+)/group/([0-9]+)/uid/([0-9]+)$ department.php?departmentname=$1&group=$2&uid=$3 [L]
 #<a href="/department.php?departmentname=IT/group.php?group=1/&uid=4544">Click me</a>

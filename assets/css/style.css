@@ -617,4 +617,26 @@ body::-webkit-scrollbar-thumb {
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.data-manage-nav-button:hover {
+    background-color: var(--favcolorheavy);
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.data-manage-nav-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--favcolorheavy);
+}
+
+.data-manage-nav-button:disabled {
+    background-color: var(--favcolor);
+    box-shadow: none;
+    outline: none;
+    opacity: 0.6;
+    cursor: default;
 }

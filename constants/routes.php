@@ -18,6 +18,14 @@ $constants_file_html_credits = $webhostpath.'/constants/htmlHead.php';
 // Web Host Page - Assets
 $assets_script_topnav = $webhostpage.'/assets/js/topnav.js';
 $assets_logo_png = $webhostpage.'/assets/images/indang-logo.png';
+$assets_logo_icon = $webhostpage.'/assets/images/indang-logo.ico';
+$assets_bootstrap_vcss = $webhostpage.'/assets/bootstrap-5.0.2-dist/css/bootstrap.min.css';
+$assets_bootstrap_css = $webhostpage.'/assets/bootstrap/dist/css/bootstrap.min.css';
+$assets_bootstrap_js = $webhostpage.'/assets/bootstrap/dist/js/bootstrap.min.js';
+$assets_jquery = $webhostpage.'/assets/bootstrap/assets/js/vendor/jquery-slim.min.js';
+$assets_popper = $webhostpage.'/assets/bootstrap/assets/js/vendor/popper.min.js';
+$assets_fontawesome = $webhostpage.'/assets/font-awesome/css/font-awesome.min.css';
+$assets_css_styles = $webhostpage.'/assets/css/style.css';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
