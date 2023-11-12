@@ -26,6 +26,8 @@ $assets_jquery = $webhostpage.'/assets/bootstrap/assets/js/vendor/jquery-slim.mi
 $assets_popper = $webhostpage.'/assets/bootstrap/assets/js/vendor/popper.min.js';
 $assets_fontawesome = $webhostpage.'/assets/font-awesome/css/font-awesome.min.css';
 $assets_css_styles = $webhostpage.'/assets/css/style.css';
+$assets_datatable_css = $webhostpage.'/assets/datatables/datatables.min.css';
+$assets_datatable_js = $webhostpage.'/assets/datatables/datatables.min.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
