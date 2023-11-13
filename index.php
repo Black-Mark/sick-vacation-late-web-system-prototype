@@ -28,9 +28,9 @@ if (isset($_REQUEST['login'])) {
                 $_SESSION['username'] = $user_data['firstName'] . " " . $user_data['lastName'];
 
                 if ($_SESSION['role'] == 'Admin') {
-                    header("Location: ".$location_admin);
+                    header("Location: " . $location_admin);
                 } elseif ($_SESSION['role'] == 'Employee') {
-                    header("Location: ".$location_employee);
+                    header("Location: " . $location_employee);
                 } else {
                     session_destroy();
                 }
@@ -39,6 +39,10 @@ if (isset($_REQUEST['login'])) {
             }
         } catch (Exception $e) {
             echo '<script>alert("An error occurred: ' . $e->getMessage() . '");</script>';
+        } finally {
+            // Redirect to the same page to clear the form fields
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
         }
     } else {
         echo '<script>alert("Please fill in both Employee ID and Password fields.");</script>';
@@ -58,16 +62,20 @@ if (isset($_REQUEST['login'])) {
     <?php
     include($constants_file_html_credits);
     ?>
-    <link rel="icon" type="image/x-icon" href="./assets/images/indang-logo.ico">
+    <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
-    <link rel="stylesheet" href="./assets/bootstrap/dist/css/bootstrap.min.css">
-    <script src="./assets/bootstrap/assets/js/vendor/jquery-slim.min.js"></script>
-    <script src="./assets/bootstrap/assets/js/vendor/popper.min.js"></script>
-    <script src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_vcss; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_css; ?>">
+    <script src="<?php echo $assets_jquery; ?>"></script>
+    <script src="<?php echo $assets_popper; ?>"></script>
+    <script src='<?php echo $assets_bootstrap_js; ?>'></script>
 
-    <link rel='stylesheet' href='./assets/font-awesome/css/font-awesome.min.css'>
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <!-- <script src="./assets/js/tailwind.js"></script> -->
+    <link rel='stylesheet' href="<?php echo $assets_fontawesome; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+
+    <!-- <script src="<?php
+    // echo $assets_tailwind; 
+    ?>"></script> -->
 </head>
 
 <body class="login-body">

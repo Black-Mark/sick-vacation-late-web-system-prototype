@@ -14,9 +14,18 @@ Options -Indexes
 
 # Block direct access to the specified directories
 RewriteEngine On
+
+# Block access to the entire folder and its files
+RewriteRule ^Actions/ - [F,L]
 RewriteRule ^Assets/ - [F,L]
 RewriteRule ^Components/ - [F,L]
 RewriteRule ^Constants/ - [F,L]
+
+# Block access to specific file types within the folders
+RewriteRule ^Actions/.*\.(php|html|txt)$ - [F,L]
+RewriteRule ^Assets/.*\.(php|html|txt)$ - [F,L]
+RewriteRule ^Components/.*\.(php|html|txt)$ - [F,L]
+RewriteRule ^Constants/.*\.(php|html|txt)$ - [F,L]
 
 # Rewrite HTTP to HTTPS (optional, if needed)
 # RewriteEngine On

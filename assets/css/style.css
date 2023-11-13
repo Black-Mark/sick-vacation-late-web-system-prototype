@@ -645,3 +645,7 @@ body::-webkit-scrollbar-thumb {
 .dataTables_length label select{
     width: 3rem;
 }
+
+.required-color {
+    color: red;
+}
