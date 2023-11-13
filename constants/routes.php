@@ -9,6 +9,7 @@ $action_delete_employee = $webhostpage.'/actions/deleteEmployee.php';
 $components_file_toastify = $webhostpath.'/components/toastifyAlert.php';
 $assets_toastify_css = $webhostpage.'/assets/toastify/toastify.css';
 $assets_toastify_js = $webhostpage.'/assets/toastify/toastify.js';
+$constants_variables = $webhostpath.'/constants/globalVariable.php';
 
 $components_file_error_handler = $webhostpath.'/components/error_handler.php';
 $components_file_topnav = $webhostpath.'/components/topnavigation.php';

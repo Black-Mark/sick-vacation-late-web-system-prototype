@@ -3,6 +3,7 @@ include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
 
 if (isset($_POST['addEmployee'])) {
     $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
@@ -26,26 +27,19 @@ if (isset($_POST['addEmployee'])) {
 
         // Execute the query
         $result = mysqli_query($database, $query);
-        if ($result === false) {
-            $_SESSION['alert_message'] = "An error occurred: " . mysqli_error($database);
+        if ($result) {
+            $_SESSION['alert_message'] = "New Employee Successfully Created";
+            $_SESSION['alert_type'] = $success_color;
             header("Location: " . $_SERVER['PHP_SELF']);
             header("Location: " . $location_admin_employeelist);
             exit();
-
-            // throw new Exception("Database query failed: " . mysqli_error($database));
-        }else{
-            $_SESSION['alert_message'] = "New Employee Successfully Created";
         }
     } catch (Exception $e) {
         $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
-
-        // echo '<script type="text/javascript">window.history.back();</script>';
-        // exit();
-
+        $_SESSION['alert_type'] = $error_color;
         header("Location: " . $_SERVER['PHP_SELF']);
         header("Location: " . $location_admin_employeelist);
         exit();
-
         // throw new Exception("Database query failed: " . mysqli_error($database));
     }
 } else {

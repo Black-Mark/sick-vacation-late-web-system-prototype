@@ -5,7 +5,6 @@ function showToast($message, $type = 'success')
             Toastify({
                 text: '$message',
                 duration: 3000,
-                destination: 'https://github.com/apvarun/toastify-js',
                 newWindow: true,
                 close: true,
                 gravity: 'top',
@@ -17,10 +16,12 @@ function showToast($message, $type = 'success')
 }
 
 if (isset($_SESSION['alert_message'])) {
-    $message = $_SESSION['alert_message'];
-    $cleaned_message = str_replace(["'", '"'], '', $message);
-    showToast($cleaned_message, 'info');
+    $alert_message = $_SESSION['alert_message'];
+    $alert_type = isset($_SESSION['alert_type']) ? $_SESSION['alert_type'] : 'info';
+    $cleaned_alert_message = str_replace(["'", '"'], '', $alert_message);
+    showToast($cleaned_alert_message, $alert_type);
     unset($_SESSION['alert_message']);
+    unset($_SESSION['alert_type']);
 }
 
 ?>
