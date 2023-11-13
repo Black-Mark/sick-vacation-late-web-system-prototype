@@ -61,9 +61,9 @@ include($constants_file_session_admin);
                 </div>
 
                 <!-- Modal -->
-                <form class="modal fade" id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
+                <form action="addEmployee.php" method="post" class="modal fade custom-scrollbar" id="addEmployee"
+                    tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addEmployeeModalLongTitle">Create New Employee</h5>
@@ -72,14 +72,36 @@ include($constants_file_session_admin);
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floatingEmployeeID"
-                                        placeholder="TEMP0001" required>
-                                    <label for="floatingEmployeeID">Employee ID</label>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingEmployeeId"
+                                                placeholder="TEMP0001">
+                                            <label for="floatingEmployeeId">Employee ID</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelectRole"
+                                                aria-label="Floating Role Selection">
+                                                <option value="Employee" selected>Employee</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="floatingSelectRole">Account Role</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-floating">
+                                <div class="form-floating mb-2">
+                                    <input type="email" class="form-control" id="floatingEmail"
+                                        placeholder="name@example.com" required>
+                                    <label for="floatingEmail">Email address</label>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
                                     <input type="password" class="form-control" id="floatingPassword"
-                                        placeholder="Password" required>
+                                        placeholder="Password">
                                     <label for="floatingPassword">Password</label>
                                 </div>
                             </div>
