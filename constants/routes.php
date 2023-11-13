@@ -28,6 +28,10 @@ $assets_fontawesome = $webhostpage.'/assets/font-awesome/css/font-awesome.min.cs
 $assets_css_styles = $webhostpage.'/assets/css/style.css';
 $assets_datatable_css = $webhostpage.'/assets/datatables/datatables.min.css';
 $assets_datatable_js = $webhostpage.'/assets/datatables/datatables.min.js';
+$assets_datatable_bootstrap = $webhostpage.'/assets/datatables/DataTables-1.13.7/css/dataTables.bootstrap.css';
+$assets_datatable_css_select = $webhostpage.'/assets/datatables/jquery-datatables-checkboxes-1.2.12/css/dataTables.checkboxes.css';
+$assets_datatable_js_select = $webhostpage.'/assets/datatables/jquery-datatables-checkboxes-1.2.12/js/dataTables.checkboxes.min.js';
+$assets_tailwind = $webhostpage.'/assets/js/tailwind.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
