@@ -6,7 +6,6 @@ include($constants_file_session_admin);
 include($constants_variables);
 
 if (isset($_POST['editEmployee'])) {
-    // Retrieve data from the form
     $oldEmployeeID = strip_tags(mysqli_real_escape_string($database, $_POST['oldEmployeeId']));
     $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
     $role = strip_tags(mysqli_real_escape_string($database, $_POST['role']));
@@ -22,7 +21,6 @@ if (isset($_POST['editEmployee'])) {
     $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST['jobPosition']));
     $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST['dateStarted']));
 
-    // Use prepared statement to prevent SQL injection
     $query = "UPDATE tbl_useraccounts SET
               employee_id = ?,
               role = ?,
@@ -45,27 +43,97 @@ if (isset($_POST['editEmployee'])) {
         mysqli_stmt_bind_param($stmt, "sssssssissssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted, $oldEmployeeID);
 
         if (mysqli_stmt_execute($stmt)) {
-            // Update successful
             $_SESSION['alert_message'] = "Employee with ID $employeeId successfully updated";
             $_SESSION['alert_type'] = $success_color;
         } else {
-            // Capture error message for later display
             $_SESSION['alert_message'] = "Error updating employee with ID $employeeId: " . mysqli_stmt_error($stmt);
             $_SESSION['alert_type'] = $error_color;
         }
 
         mysqli_stmt_close($stmt);
     } else {
-        // Capture error message for later display
         $_SESSION['alert_message'] = "Error preparing update statement: " . mysqli_error($database);
         $_SESSION['alert_type'] = $error_color;
     }
 
-    // Redirect to the employee list page after update
     header("Location: " . $location_admin_employeelist);
     exit();
+} else if (isset($_POST['editMultipleEmployee']) && isset($_POST['selectedEmpID'])) {
+    try {
+        $selectedEmpID = $_POST['selectedEmpID'];
+        // $role = mysqli_real_escape_string($database, strip_tags($_POST['role']));
+        // $dateStarted = mysqli_real_escape_string($database, strip_tags($_POST['dateStarted']));
+        // $age = mysqli_real_escape_string($database, strip_tags($_POST['age']));
+        // $sex = mysqli_real_escape_string($database, strip_tags($_POST['sex']));
+        // $civilStatus = mysqli_real_escape_string($database, strip_tags($_POST['civilStatus']));
+        // $password = mysqli_real_escape_string($database, strip_tags($_POST['password']));
+        // $department = mysqli_real_escape_string($database, strip_tags($_POST['department']));
+        // $jobPosition = mysqli_real_escape_string($database, strip_tags($_POST['jobPosition']));
+
+        // Decode the JSON string into an array
+        $decodedArray = json_decode($selectedEmpID[0], true);
+
+        $fieldsToUpdate = array('role', 'dateStarted', 'age', 'sex', 'civilStatus', 'password', 'department', 'jobPosition');
+
+        if ($decodedArray !== null) {
+            $allUpdated = true; // Flag to track if all employees are updated successfully
+
+            foreach ($decodedArray as $value) {
+                $empId = mysqli_real_escape_string($database, strip_tags($value));
+
+                // Check if the corresponding POST field is empty, if not, update the value
+                foreach ($fieldsToUpdate as $field) {
+                    if (!empty($_POST[$field])) {
+                        $sanitizedField = mysqli_real_escape_string($database, strip_tags($_POST[$field]));
+                        $query = "UPDATE tbl_useraccounts SET $field = ? WHERE employee_id = ?";
+                        $stmt = mysqli_prepare($database, $query);
+                        $stmt->bind_param("ss", $sanitizedField, $empId);
+                        $result = $stmt->execute();
+                        if (!$result) {
+                            $allUpdated = false;
+                        }
+                        $stmt->close();
+                    }
+                }
+
+                // if (!empty($_POST['role'])) {
+                //     $query = "UPDATE tbl_useraccounts SET role = ? WHERE employee_id = ?";
+                //     $stmt = mysqli_prepare($database, $query);
+                //     $stmt->bind_param("si", $role, $value);
+                //     $result = $stmt->execute();
+                //     if (!$result) {
+                //         $allUpdated = false;
+                //     }
+                //     $stmt->close();
+                // }
+
+                if ($allUpdated) {
+                    $_SESSION['alert_message'] = "All Employee Data Updated Successfully";
+                    $_SESSION['alert_type'] = $success_color;
+                } else {
+                    $_SESSION['alert_message'] = "Error updating some employee data";
+                    $_SESSION['alert_type'] = $error_color;
+                }
+            }
+
+            header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: " . $location_admin_employeelist);
+            exit();
+        } else {
+            $_SESSION['alert_message'] = "Error decoding JSON String";
+            $_SESSION['alert_type'] = $error_message;
+            header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: " . $location_admin_employeelist);
+            exit();
+        }
+    } catch (Exception $e) {
+        $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
+        $_SESSION['alert_type'] = $error_color;
+        header("Location: " . $_SERVER['PHP_SELF']);
+        header("Location: " . $location_admin_employeelist);
+        exit();
+    }
 } else {
-    // Redirect to the employee list page if no update request
     header("Location: " . $location_admin_employeelist);
     exit();
 }

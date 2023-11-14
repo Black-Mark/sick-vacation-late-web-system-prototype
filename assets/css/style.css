@@ -9,6 +9,7 @@
     --containercolor: rgba(255, 255, 255, 0.85);
 }
 
+
 /* Experiments */
 .text-experiment {
     font-size: 2vw;
@@ -23,7 +24,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
-    overflow: hidden;
 
     /* min-height: 100vh; */
 
@@ -50,7 +50,7 @@ body.webpage-background-cover-admin {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-    /* overflow: auto; */
+    overflow: auto;
 }
 
 body.webpage-background-cover {
@@ -59,7 +59,7 @@ body.webpage-background-cover {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-    /* overflow: auto; */
+    overflow: auto;
 }
 
 /* Image Logos */
@@ -659,8 +659,4 @@ body::-webkit-scrollbar-thumb {
 
 .required-color {
     color: red;
-}
-
-.column-fit {
-    width: fit-content;
 }

@@ -60,8 +60,8 @@ $employees = $database->query($sql);
                 <h3 class="title-text">List of Employees</h3>
 
                 <!-- Add Modal -->
-                <form action="<?php echo $action_add_employee; ?>" method="post" class="modal fade"
-                    id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true">
+                <form action="<?php echo $action_add_employee; ?>" method="post" class="modal fade" id="addEmployee"
+                    tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -182,16 +182,15 @@ $employees = $database->query($sql);
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary" id="clearAddEmployeeInputs">Clear</button>
-                                <input type="submit" name="addEmployee" value="Save Changes" class="btn btn-primary" />
+                                <input type="submit" name="addEmployee" value="Add Employee" class="btn btn-primary" />
                             </div>
                         </div>
                     </div>
                 </form>
 
                 <!-- Edit Modal -->
-                <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade"
-                    id="editEmployee" tabindex="-1" role="dialog" aria-labelledby="editEmployeeTitle"
-                    aria-hidden="true">
+                <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade" id="editEmployee"
+                    tabindex="-1" role="dialog" aria-labelledby="editEmployeeTitle" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -324,6 +323,109 @@ $employees = $database->query($sql);
                     </div>
                 </form>
 
+                <!-- Multiple Edit Modal -->
+                <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade"
+                    id="editMultipleEmployee" tabindex="-1" role="dialog" aria-labelledby="editMultipleEmployeeTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editMultipleEmployeeModalLongTitle">Multiple Data
+                                    Modification</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="selectedEmpID[]" id="selectedEmpID" />
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="role" class="form-select" id="floatingEditMultipleSelectRole"
+                                                aria-label="Floating Role Selection">
+                                                <option value="" selected></option>
+                                                <option value="Employee">Employee</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="floatingEditMultipleSelectRole">Account Role</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="dateStarted" class="form-control"
+                                                id="floatingEditMultipleDateStarted" placeholder="12-31-2001">
+                                            <label for="floatingEditMultipleDateStarted">Date Started</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" name="age" class="form-control"
+                                                id="floatingEditMultipleAge" min="0" max="125" placeholder="32">
+                                            <label for="floatingEditMultipleAge">Age</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="sex" class="form-select" id="floatingEditMultipleSex"
+                                                aria-label="Floating Sex Selection">
+                                                <option value="" selected></option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Prefer Not To Say">Prefer Not To Say</option>
+                                            </select>
+                                            <label for="floatingEditMultipleSex">Sex</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="civilStatus" class="form-select"
+                                                id="floatingEditMultipleCivilStatus"
+                                                aria-label="Floating Civil Status Selection">
+                                                <option value="" selected></option>
+                                                <option value="Single">Single</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Widowed">Widowed</option>
+                                                <option value="Divorced">Divorced</option>
+                                            </select>
+                                            <label for="floatingEditMultipleCivilStatus">Civil Status</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="password" class="form-control"
+                                        id="floatingEditMultiplePassword" placeholder="Password">
+                                    <label for="floatingEditMultiplePassword">Password</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <select name="department" class="form-select"
+                                        id="floatingEditMultipleDepartmentSelect"
+                                        aria-label="Floating Department Selection">
+                                        <option value="" selected></option>
+                                        <option value="1">Department of Math</option>
+                                        <option value="2">Department of Humanity</option>
+                                        <option value="3">Department of Science</option>
+                                        <option value="Pending">Pending</option>
+                                    </select>
+                                    <label for="floatingEditMultipleDepartmentSelect">Department</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="jobPosition" class="form-control"
+                                        id="floatingEditMultipleJobPosition" placeholder="IT Personnel">
+                                    <label for="floatingEditMultipleJobPosition">Job Position</label>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="editMultipleEmployee" value="Save Changes"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <form method="POST" action="<?php echo $action_delete_employee; ?>">
                     <div class="button-container mb-2">
                         <!-- Add Button Modal -->
@@ -417,6 +519,7 @@ $employees = $database->query($sql);
 
                 </form>
 
+                <!-- Data Table Configuration -->
                 <script>
                     let table = new DataTable('#employees', {
                         pagingType: 'full_numbers',
@@ -544,6 +647,7 @@ $employees = $database->query($sql);
                         var checkboxes = document.getElementsByName('selectedEmployee[]');
                         var deleteEmployeesButton = document.getElementById('deleteMultipleEmployeeBTN');
                         var editEmployeesButton = document.getElementById('editMultipleEmployeeBTN');
+                        var selectedEmpIDInput = document.getElementById('selectedEmpID');
 
                         // Add event listener to checkboxes
                         checkboxes.forEach(function (checkbox) {
@@ -557,6 +661,9 @@ $employees = $database->query($sql);
                             var selectedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
                             deleteEmployeesButton.disabled = selectedValues.length === 0;
                             editEmployeesButton.disabled = selectedValues.length === 0;
+
+                            // Convert the array to JSON and update the value of the hidden input
+                            selectedEmpIDInput.value = JSON.stringify(selectedValues);
                         }
 
                         // Initial update of the delete button state
@@ -564,6 +671,7 @@ $employees = $database->query($sql);
                     });
                 </script>
 
+                <!-- Edit Modal Fetch and Reset -->
                 <script>
                     // Variable to store the state
                     var editEmployeeState = null;
