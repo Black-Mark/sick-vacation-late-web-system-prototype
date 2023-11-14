@@ -1,6 +1,21 @@
 <?php
+
 @ob_start();
 session_start();
+
+// Set session timeout to 30 minutes
+$session_timeout = 30 * 60;
+
+// Check if the session variable last activity is set
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {
+    // Session has expired
+    session_unset(); // Unset all session variables
+    session_destroy(); // Destroy the session
+    header("Location: " . $location_login);
+}
+
+// Update last activity time stamp
+$_SESSION['last_activity'] = time();
 
 if ($_SESSION) {
     if (isset($_SESSION["employeeId"])) {

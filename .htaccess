@@ -9,6 +9,9 @@ RewriteEngine On
 RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 
+RewriteRule ^admin/employee-list/user/([^/]+)/$ admin/employee-list/user/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/employee-list/user/([^/]+)$ admin/employee-list/user/index.php?empid=$1 [L,QSA]
+
 # Disable directory listing and deny direct access
 Options -Indexes
 

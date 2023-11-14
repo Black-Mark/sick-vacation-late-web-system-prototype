@@ -21,18 +21,25 @@ if (isset($_POST['addEmployee'])) {
     $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST["dateStarted"]));
 
     try {
-        // Insert data into the database (Assuming you have a table named 'your_table_name')
-        $query = "INSERT INTO tbl_useraccounts (employee_id, role, email, password, firstName, middleName, lastName, age, sex, civilStatus, department, jobPosition, dateStarted, dateCreated) 
-    VALUES ('$employeeId', '$role', '$email', '$password', '$firstName', '$middleName', '$lastName', '$age', '$sex', '$civilStatus', '$department', '$jobPosition', '$dateStarted', NOW())";
+        $query = "INSERT INTO tbl_useraccounts 
+                  (employee_id, role, email, password, firstName, middleName, lastName, age, sex, civilStatus, department, jobPosition, dateStarted, dateCreated) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
-        // Execute the query
-        $result = mysqli_query($database, $query);
-        if ($result) {
+        // Prepare the statement
+        $stmt = mysqli_prepare($database, $query);
+
+        // Bind parameters to the prepared statement
+        mysqli_stmt_bind_param($stmt, "sssssssisssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted);
+
+        if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "New Employee Successfully Created";
             $_SESSION['alert_type'] = $success_color;
             header("Location: " . $_SERVER['PHP_SELF']);
             header("Location: " . $location_admin_employeelist);
             exit();
+        } else {
+            $_SESSION['alert_message'] = "Error updating employee with ID $employeeId: " . mysqli_stmt_error($stmt);
+            $_SESSION['alert_type'] = $error_color;
         }
     } catch (Exception $e) {
         $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
@@ -45,5 +52,6 @@ if (isset($_POST['addEmployee'])) {
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     header("Location: " . $location_admin_employeelist);
+    exit();
 }
 ?>

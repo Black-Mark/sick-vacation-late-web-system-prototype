@@ -4,6 +4,9 @@ include("../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
+$sql = "SELECT * FROM tbl_useraccounts";
+$employees = $database->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -56,346 +59,363 @@ include($constants_file_session_admin);
             <div class="box-container">
                 <h3 class="title-text">List of Employees</h3>
 
-                <div class="button-container mb-1">
-                    <!-- Add Button Modal -->
-                    <button type="button" class="custom-regular-button" data-toggle="modal" data-target="#addEmployee">
-                        Add Employee
-                    </button>
-
-                    <!-- Add Modal -->
-                    <form action="<?php echo $action_add_employee; ?>" method="post" class="modal fade custom-scrollbar"
-                        id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addEmployeeModalLongTitle">Create New Employee</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <input type="text" name="employeeId" class="form-control"
-                                                    id="floatingEmployeeId" placeholder="TEMP0001" required>
-                                                <label for="floatingEmployeeId">Employee ID <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="role" class="form-select" id="floatingSelectRole"
-                                                    aria-label="Floating Role Selection" required>
-                                                    <option value="Employee" selected>Employee</option>
-                                                    <option value="Admin">Admin</option>
-                                                </select>
-                                                <label for="floatingSelectRole">Account Role <span
-                                                        class="required-color">*</span></label>
-                                            </div>
+                <!-- Add Modal -->
+                <form action="<?php echo $action_add_employee; ?>" method="post" class="modal fade"
+                    id="addEmployee" tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmployeeModalLongTitle">Create New Employee</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="text" name="employeeId" class="form-control"
+                                                id="floatingEmployeeId" placeholder="TEMP0001" required>
+                                            <label for="floatingEmployeeId">Employee ID <span
+                                                    class="required-color">*</span></label>
                                         </div>
                                     </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="email" name="email" class="form-control" id="floatingEmail"
-                                            placeholder="name@example.com" autocomplete="off" required>
-                                        <label for="floatingEmail">Email address <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="password" name="password" class="form-control"
-                                            id="floatingPassword" placeholder="Password" required>
-                                        <label for="floatingPassword">Password <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="firstName" class="form-control" id="floatingFirstName"
-                                            placeholder="Peter" required>
-                                        <label for="floatingFirstName">First Name <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="middleName" class="form-control"
-                                            id="floatingMiddleName" placeholder="Benjamin">
-                                        <label for="floatingMiddleName">Middle Name</label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="lastName" class="form-control" id="floatingLastName"
-                                            placeholder="Parker" required>
-                                        <label for="floatingLastName">Last Name <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <input type="number" name="age" class="form-control" id="floatingAge"
-                                                    min="0" max="125" placeholder="32" required>
-                                                <label for="floatingAge">Age <span
-                                                        class="required-color">*</span></label>
-                                            </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="role" class="form-select" id="floatingSelectRole"
+                                                aria-label="Floating Role Selection" required>
+                                                <option value="Employee" selected>Employee</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="floatingSelectRole">Account Role <span
+                                                    class="required-color">*</span></label>
                                         </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="sex" class="form-select" id="floatingSex"
-                                                    aria-label="Floating Sex Selection" required>
-                                                    <option value="" selected>Prefer Not To Say</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                </select>
-                                                <label for="floatingSex">Sex <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="civilStatus" class="form-select" id="floatingCivilStatus"
-                                                    aria-label="Floating Civil Status Selection" required>
-                                                    <option value="Single" selected>Single</option>
-                                                    <option value="Married">Married</option>
-                                                    <option value="Widowed">Widowed</option>
-                                                    <option value="Divorced">Divorced</option>
-                                                </select>
-                                                <label for="floatingCivilStatus">Civil Status <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <select name="department" class="form-select" id="floatingDepartmentSelect"
-                                            aria-label="Floating Department Selection" required>
-                                            <option value="" selected>Pending</option>
-                                            <option value="1">Department of Math</option>
-                                            <option value="2">Department of Humanity</option>
-                                            <option value="3">Department of Science</option>
-                                        </select>
-                                        <label for="floatingDepartmentSelect">Department <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="jobPosition" class="form-control"
-                                            id="floatingJobPosition" placeholder="IT Personnel" required>
-                                        <label for="floatingJobPosition">Job Position <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="date" name="dateStarted" class="form-control"
-                                            id="floatingDateStarted" placeholder="12-31-2001"
-                                            value="<?php echo date('Y-m-d'); ?>" required>
-                                        <label for="floatingDateStarted">Date Started <span
-                                                class="required-color">*</span></label>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary"
-                                        id="clearAddEmployeeInputs">Clear</button>
-                                    <input type="submit" name="addEmployee" value="Save Changes"
-                                        class="btn btn-primary" />
+                                <div class="form-floating mb-2">
+                                    <input type="email" name="email" class="form-control" id="floatingEmail"
+                                        placeholder="name@example.com" autocomplete="off" required>
+                                    <label for="floatingEmail">Email address <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="password" class="form-control" id="floatingPassword"
+                                        placeholder="Password" required>
+                                    <label for="floatingPassword">Password <span class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="firstName" class="form-control" id="floatingFirstName"
+                                        placeholder="Peter" required>
+                                    <label for="floatingFirstName">First Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="middleName" class="form-control" id="floatingMiddleName"
+                                        placeholder="Benjamin">
+                                    <label for="floatingMiddleName">Middle Name</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="lastName" class="form-control" id="floatingLastName"
+                                        placeholder="Parker" required>
+                                    <label for="floatingLastName">Last Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" name="age" class="form-control" id="floatingAge"
+                                                min="0" max="125" placeholder="32" required>
+                                            <label for="floatingAge">Age <span class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="sex" class="form-select" id="floatingSex"
+                                                aria-label="Floating Sex Selection" required>
+                                                <option value="" selected></option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Prefer Not To Say">Prefer Not To Say</option>
+                                            </select>
+                                            <label for="floatingSex">Sex <span class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="civilStatus" class="form-select" id="floatingCivilStatus"
+                                                aria-label="Floating Civil Status Selection" required>
+                                                <option value="Single" selected>Single</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Widowed">Widowed</option>
+                                                <option value="Divorced">Divorced</option>
+                                            </select>
+                                            <label for="floatingCivilStatus">Civil Status <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <select name="department" class="form-select" id="floatingDepartmentSelect"
+                                        aria-label="Floating Department Selection" required>
+                                        <option value="" selected></option>
+                                        <option value="1">Department of Math</option>
+                                        <option value="2">Department of Humanity</option>
+                                        <option value="3">Department of Science</option>
+                                        <option value="4">Pending</option>
+                                    </select>
+                                    <label for="floatingDepartmentSelect">Department <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="jobPosition" class="form-control" id="floatingJobPosition"
+                                        placeholder="IT Personnel" required>
+                                    <label for="floatingJobPosition">Job Position <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
+                                        placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
+                                    <label for="floatingDateStarted">Date Started <span
+                                            class="required-color">*</span></label>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-
-                    <!-- Edit Button Modal -->
-                    <button type="button" class="custom-regular-button" data-toggle="modal" data-target="#editEmployee">
-                        Edit
-                    </button>
-
-                    <!-- Edit Modal -->
-                    <form action="<?php echo $action_edit_employee; ?>" method="post"
-                        class="modal fade custom-scrollbar" id="editEmployee" tabindex="-1" role="dialog"
-                        aria-labelledby="editEmployeeTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editEmployeeModalLongTitle">Create New Employee</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <input type="text" name="employeeId" class="form-control"
-                                                    id="floatingEditEmployeeId" placeholder="TEMP0001" required>
-                                                <label for="floatingEditEmployeeId">Employee ID <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="role" class="form-select" id="floatingEditSelectRole"
-                                                    aria-label="Floating Role Selection" required>
-                                                    <option value="Employee" selected>Employee</option>
-                                                    <option value="Admin">Admin</option>
-                                                </select>
-                                                <label for="floatingEditSelectRole">Account Role <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="email" name="email" class="form-control" id="floatingEditEmail"
-                                            placeholder="name@example.com" autocomplete="off" required>
-                                        <label for="floatingEditEmail">Email address <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="password" name="password" class="form-control"
-                                            id="floatingEditPassword" placeholder="Password" required>
-                                        <label for="floatingEditPassword">Password <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="firstName" class="form-control"
-                                            id="floatingEditFirstName" placeholder="Peter" required>
-                                        <label for="floatingEditFirstName">First Name <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="middleName" class="form-control"
-                                            id="floatingEditMiddleName" placeholder="Benjamin">
-                                        <label for="floatingEditMiddleName">Middle Name</label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="lastName" class="form-control"
-                                            id="floatingEditLastName" placeholder="Parker" required>
-                                        <label for="floatingEditLastName">Last Name <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <input type="number" name="age" class="form-control"
-                                                    id="floatingEditAge" min="0" max="125" placeholder="32" required>
-                                                <label for="floatingEditAge">Age <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="sex" class="form-select" id="floatingEditSex"
-                                                    aria-label="Floating Sex Selection" required>
-                                                    <option value="" selected>Prefer Not To Say</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                </select>
-                                                <label for="floatingEditSex">Sex <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md">
-                                            <div class="form-floating">
-                                                <select name="civilStatus" class="form-select"
-                                                    id="floatingEditCivilStatus"
-                                                    aria-label="Floating Civil Status Selection" required>
-                                                    <option value="Single" selected>Single</option>
-                                                    <option value="Married">Married</option>
-                                                    <option value="Widowed">Widowed</option>
-                                                    <option value="Divorced">Divorced</option>
-                                                </select>
-                                                <label for="floatingEditCivilStatus">Civil Status <span
-                                                        class="required-color">*</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <select name="department" class="form-select" id="floatingEditDepartmentSelect"
-                                            aria-label="Floating Department Selection" required>
-                                            <option value="" selected>Pending</option>
-                                            <option value="1">Department of Math</option>
-                                            <option value="2">Department of Humanity</option>
-                                            <option value="3">Department of Science</option>
-                                        </select>
-                                        <label for="floatingEditDepartmentSelect">Department <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="text" name="jobPosition" class="form-control"
-                                            id="floatingEditJobPosition" placeholder="IT Personnel" required>
-                                        <label for="floatingEditJobPosition">Job Position <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                    <div class="form-floating mb-2">
-                                        <input type="date" name="dateStarted" class="form-control"
-                                            id="floatingEditDateStarted" placeholder="12-31-2001"
-                                            value="<?php echo date('Y-m-d'); ?>" required>
-                                        <label for="floatingEditDateStarted">Date Started <span
-                                                class="required-color">*</span></label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary"
-                                        id="cleareditEmployeeInputs">Clear</button>
-                                    <input type="submit" name="editEmployee" value="Save Changes"
-                                        class="btn btn-primary" />
-                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="clearAddEmployeeInputs">Clear</button>
+                                <input type="submit" name="addEmployee" value="Save Changes" class="btn btn-primary" />
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
 
-                    <button type="button" id="deleteEmployees" class="custom-regular-button" data-toggle="modal"
-                        data-target="#deleteEmployee">
-                        Delete
-                    </button>
+                <!-- Edit Modal -->
+                <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade"
+                    id="editEmployee" tabindex="-1" role="dialog" aria-labelledby="editEmployeeTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editEmployeeModalLongTitle">Edit Employee Data</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="oldEmployeeId" id="floatingEditOldEmployeeId" />
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="text" name="employeeId" class="form-control"
+                                                id="floatingEditEmployeeId" placeholder="TEMP0001" required>
+                                            <label for="floatingEditEmployeeId">Employee ID <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="role" class="form-select" id="floatingEditSelectRole"
+                                                aria-label="Floating Role Selection" required>
+                                                <option value="Employee" selected>Employee</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="floatingEditSelectRole">Account Role <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="email" name="email" class="form-control" id="floatingEditEmail"
+                                        placeholder="name@example.com" autocomplete="off" required>
+                                    <label for="floatingEditEmail">Email address <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="password" class="form-control"
+                                        id="floatingEditPassword" placeholder="Password" required>
+                                    <label for="floatingEditPassword">Password <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="firstName" class="form-control" id="floatingEditFirstName"
+                                        placeholder="Peter" required>
+                                    <label for="floatingEditFirstName">First Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="middleName" class="form-control"
+                                        id="floatingEditMiddleName" placeholder="Benjamin">
+                                    <label for="floatingEditMiddleName">Middle Name</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="lastName" class="form-control" id="floatingEditLastName"
+                                        placeholder="Parker" required>
+                                    <label for="floatingEditLastName">Last Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" name="age" class="form-control" id="floatingEditAge"
+                                                min="0" max="125" placeholder="32" required>
+                                            <label for="floatingEditAge">Age <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="sex" class="form-select" id="floatingEditSex"
+                                                aria-label="Floating Sex Selection" required>
+                                                <option value="" selected></option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Prefer Not To Say">Prefer Not To Say</option>
+                                            </select>
+                                            <label for="floatingEditSex">Sex <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="civilStatus" class="form-select" id="floatingEditCivilStatus"
+                                                aria-label="Floating Civil Status Selection" required>
+                                                <option value="Single" selected>Single</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Widowed">Widowed</option>
+                                                <option value="Divorced">Divorced</option>
+                                            </select>
+                                            <label for="floatingEditCivilStatus">Civil Status <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <select name="department" class="form-select" id="floatingEditDepartmentSelect"
+                                        aria-label="Floating Department Selection" required>
+                                        <option value="" selected></option>
+                                        <option value="1">Department of Math</option>
+                                        <option value="2">Department of Humanity</option>
+                                        <option value="3">Department of Science</option>
+                                        <option value="4">Pending</option>
+                                    </select>
+                                    <label for="floatingEditDepartmentSelect">Department <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="jobPosition" class="form-control"
+                                        id="floatingEditJobPosition" placeholder="IT Personnel" required>
+                                    <label for="floatingEditJobPosition">Job Position <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateStarted" class="form-control"
+                                        id="floatingEditDateStarted" placeholder="12-31-2001"
+                                        value="<?php echo date('Y-m-d'); ?>" required>
+                                    <label for="floatingEditDateStarted">Date Started <span
+                                            class="required-color">*</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="resetEditEmployeeInputs">Reset</button>
+                                <input type="submit" name="editEmployee" value="Save Changes" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
-                </div>
+                <form method="POST" action="<?php echo $action_delete_employee; ?>">
+                    <div class="button-container mb-2">
+                        <!-- Add Button Modal -->
+                        <button type="button" class="custom-regular-button" data-toggle="modal"
+                            data-target="#addEmployee">
+                            Add Employee
+                        </button>
+                        <!-- Multiple Edit Button Modal -->
+                        <button type="button" class="custom-regular-button" id="editMultipleEmployeeBTN"
+                            data-toggle="modal" data-target="#editMultipleEmployee">
+                            Multiple Edit
+                        </button>
+                        <!-- Multiple Delete -->
+                        <input type="submit" name="deleteMultipleEmployee" id="deleteMultipleEmployeeBTN"
+                            value="Multiple Delete" class="custom-regular-button" />
+                    </div>
 
-                <table id="employees" class="text-center hover table-striped cell-border order-column"
-                    style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Last Name</th>
-                            <th>First Name</th>
-                            <th>Middle Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $sql = "SELECT * FROM tbl_useraccounts";
-                        $result = $database->query($sql);
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                ?>
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="selectedEmployee[]"
-                                            value="<?php echo $row['employee_id']; ?>" />
-                                    </td>
-                                    <td>
-                                        <?php echo $row['lastName']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['firstName']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['middleName']; ?>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="custom-regular-button" data-toggle="modal"
-                                            data-target="#addEmployee">
-                                            View
-                                        </button>
-                                        <button type="button" class="custom-regular-button" data-toggle="modal"
-                                            data-target="#addEmployee">
-                                            Edit
-                                        </button>
-                                        <button type="button" class="custom-regular-button" data-toggle="modal"
-                                            data-target="#addEmployee">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php
+                    <table id="employees" class="text-center hover table-striped cell-border order-column"
+                        style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Sex</th>
+                                <th>Civil Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if ($employees->num_rows > 0) {
+                                while ($row = $employees->fetch_assoc()) {
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selectedEmployee[]"
+                                                value="<?php echo $row['employee_id']; ?>" />
+                                        </td>
+                                        <td>
+                                            <?php echo $row['lastName'] . ' ' . $row['firstName']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['department']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['sex']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['civilStatus']; ?>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="<?php echo $action_delete_employee; ?>">
+                                                <a
+                                                    href="<?php echo $location_admin_employeelist_user . '/' . $row['employee_id'] . '/'; ?>">
+                                                    <button type="button" class="custom-regular-button">
+                                                        View
+                                                    </button>
+                                                </a>
+                                                <!-- data-photo-url="<?php //echo $row['photoURL']; ?>" -->
+                                                <button type="button" class="custom-regular-button editEmployeeButton"
+                                                    data-toggle="modal" data-target="#editEmployee"
+                                                    data-employee-id="<?php echo $row['employee_id']; ?>"
+                                                    data-role="<?php echo $row['role']; ?>"
+                                                    data-email="<?php echo $row['email']; ?>"
+                                                    data-password="<?php echo $row['password']; ?>"
+                                                    data-first-name="<?php echo $row['firstName']; ?>"
+                                                    data-middle-name="<?php echo $row['middleName']; ?>"
+                                                    data-last-name="<?php echo $row['lastName']; ?>"
+                                                    data-age="<?php echo $row['age']; ?>" data-sex="<?php echo $row['sex']; ?>"
+                                                    data-civil-status="<?php echo $row['civilStatus']; ?>"
+                                                    data-department="<?php echo $row['department']; ?>"
+                                                    data-job-position="<?php echo $row['jobPosition']; ?>"
+                                                    data-date-started="<?php echo $row['dateStarted']; ?>">
+                                                    Edit
+                                                </button>
+
+                                                <input type="hidden" name="employeeNum"
+                                                    value="<?php echo $row['employee_id']; ?>" />
+                                                <input type="submit" name="deleteEmployee" value="Delete"
+                                                    class="custom-regular-button" />
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
                             }
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                            ?>
+                        </tbody>
+                    </table>
+
+                </form>
 
                 <script>
                     let table = new DataTable('#employees', {
@@ -443,14 +463,17 @@ include($constants_file_session_admin);
                             {
                                 extend: 'excel',
                                 title: 'CustomExcelFileName',
-                                filename: 'custom_excel_file'
+                                filename: 'custom_excel_file',
+                                exportOptions: {
+                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                }
                             },
                             {
                                 extend: 'csv',
                                 title: 'CustomCSVFileName',
                                 filename: 'custom_csv_file',
                                 exportOptions: {
-                                    columns: ':visible'
+                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
                                 }
                             },
                             {
@@ -458,7 +481,7 @@ include($constants_file_session_admin);
                                 title: 'CustomPDFFileName',
                                 filename: 'custom_PDF_file',
                                 exportOptions: {
-                                    columns: ':visible'
+                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
                                 }
                             },
                             {
@@ -467,7 +490,7 @@ include($constants_file_session_admin);
                                 filename: 'custom_print_file',
                                 message: 'This print was produced by Computer',
                                 exportOptions: {
-                                    columns: ':visible'
+                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
                                 }
                             },
                             {
@@ -478,9 +501,7 @@ include($constants_file_session_admin);
                         ],
                         // responsive: true,
                     });
-                </script>
 
-                <script>
                     $(document).ready(function () {
                         $("#clearAddEmployeeInputs").click(function () {
                             $("#addEmployee input").val('');
@@ -489,7 +510,6 @@ include($constants_file_session_admin);
                             var currentDate = new Date().toISOString().split('T')[0];
                             $("#floatingDateStarted").val(currentDate);
                         });
-
 
 
                         // Get all selected rows
@@ -501,11 +521,7 @@ include($constants_file_session_admin);
                         //     console.log(selectedData);
                         // });
                     });
-                </script>
 
-                <button onclick="printSelectedValues()">Print Selected Values</button>
-
-                <script>
                     function printSelectedValues() {
                         var checkboxes = document.getElementsByName('selectedEmployee[]');
                         var selectedValues = [];
@@ -521,6 +537,118 @@ include($constants_file_session_admin);
                         // console.log("Selected values: " + selectedValues.join(', '));
                     }
                 </script>
+
+                <!-- Disable Multiple Select Button -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var checkboxes = document.getElementsByName('selectedEmployee[]');
+                        var deleteEmployeesButton = document.getElementById('deleteMultipleEmployeeBTN');
+                        var editEmployeesButton = document.getElementById('editMultipleEmployeeBTN');
+
+                        // Add event listener to checkboxes
+                        checkboxes.forEach(function (checkbox) {
+                            checkbox.addEventListener('change', function () {
+                                updateDeleteEmployeesButtonState();
+                            });
+                        });
+
+                        // Function to update the state of the delete button
+                        function updateDeleteEmployeesButtonState() {
+                            var selectedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+                            deleteEmployeesButton.disabled = selectedValues.length === 0;
+                            editEmployeesButton.disabled = selectedValues.length === 0;
+                        }
+
+                        // Initial update of the delete button state
+                        updateDeleteEmployeesButtonState();
+                    });
+                </script>
+
+                <script>
+                    // Variable to store the state
+                    var editEmployeeState = null;
+
+                    $(document).ready(function () {
+                        $('.editEmployeeButton').click(function () {
+                            // Get data from the button
+                            var employeeId = $(this).data('employee-id');
+                            var role = $(this).data('role');
+                            var email = $(this).data('email');
+                            var password = $(this).data('password');
+                            var firstName = $(this).data('first-name');
+                            var middleName = $(this).data('middle-name');
+                            var lastName = $(this).data('last-name');
+                            var age = $(this).data('age');
+                            var sex = $(this).data('sex');
+                            var civilStatus = $(this).data('civil-status');
+                            var department = $(this).data('department');
+                            var jobPosition = $(this).data('job-position');
+                            var dateStarted = $(this).data('date-started');
+
+                            // Set form field values
+                            $('#floatingEditOldEmployeeId').val(employeeId);
+                            $('#floatingEditEmployeeId').val(employeeId);
+                            $('#floatingEditSelectRole').val(role);
+                            $('#floatingEditEmail').val(email);
+                            $('#floatingEditPassword').val(password);
+                            $('#floatingEditFirstName').val(firstName);
+                            $('#floatingEditMiddleName').val(middleName);
+                            $('#floatingEditLastName').val(lastName);
+                            $('#floatingEditAge').val(age);
+                            $('#floatingEditSex').val(sex);
+                            $('#floatingEditCivilStatus').val(civilStatus);
+                            $('#floatingEditDepartmentSelect').val(department);
+                            $('#floatingEditJobPosition').val(jobPosition);
+                            $('#floatingEditDateStarted').val(dateStarted);
+
+                            // Save the state
+                            editEmployeeState = {
+                                employeeId: employeeId,
+                                role: role,
+                                email: email,
+                                password: password,
+                                firstName: firstName,
+                                middleName: middleName,
+                                lastName: lastName,
+                                age: age,
+                                sex: sex,
+                                civilStatus: civilStatus,
+                                department: department,
+                                jobPosition: jobPosition,
+                                dateStarted: dateStarted
+                            };
+                        });
+
+                        // Function to set data based on the saved state
+                        function setDataFromState() {
+                            if (editEmployeeState) {
+                                // Set form field values based on the saved state
+                                $('#floatingEditOldEmployeeId').val(editEmployeeState.employeeId);
+                                $('#floatingEditEmployeeId').val(editEmployeeState.employeeId);
+                                $('#floatingEditSelectRole').val(editEmployeeState.role);
+                                $('#floatingEditEmail').val(editEmployeeState.email);
+                                $('#floatingEditPassword').val(editEmployeeState.password);
+                                $('#floatingEditFirstName').val(editEmployeeState.firstName);
+                                $('#floatingEditMiddleName').val(editEmployeeState.middleName);
+                                $('#floatingEditLastName').val(editEmployeeState.lastName);
+                                $('#floatingEditAge').val(editEmployeeState.age);
+                                $('#floatingEditSex').val(editEmployeeState.sex);
+                                $('#floatingEditCivilStatus').val(editEmployeeState.civilStatus);
+                                $('#floatingEditDepartmentSelect').val(editEmployeeState.department);
+                                $('#floatingEditJobPosition').val(editEmployeeState.jobPosition);
+                                $('#floatingEditDateStarted').val(editEmployeeState.dateStarted);
+                            }
+                        }
+
+                        // Add click event handler for the Reset button
+                        $('#resetEditEmployeeInputs').click(function () {
+                            // Reset form fields to their initial values
+                            setDataFromState();
+                        });
+                    });
+                </script>
+
+                <!-- <button onclick="printSelectedValues()">Print Selected Values</button> -->
             </div>
         </div>
     </div>
