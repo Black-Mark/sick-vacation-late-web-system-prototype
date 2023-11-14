@@ -3,6 +3,7 @@ include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_employee);
+include($constants_variables);
 
 ?>
 
@@ -17,16 +18,24 @@ include($constants_file_session_employee);
     <?php
     include($constants_file_html_credits);
     ?>
-    <link rel="icon" type="image/x-icon" href="../assets/images/indang-logo.ico">
+    <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
-    <link rel="stylesheet" href="../assets/bootstrap/dist/css/bootstrap.min.css">
-    <script src="../assets/bootstrap/assets/js/vendor/jquery-slim.min.js"></script>
-    <script src="../assets/bootstrap/assets/js/vendor/popper.min.js"></script>
-    <script src="../assets/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_vcss; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_bootstrap_css; ?>">
+    <script src="<?php echo $assets_jquery; ?>"></script>
+    <script src="<?php echo $assets_popper; ?>"></script>
+    <script src='<?php echo $assets_bootstrap_js; ?>'></script>
 
-    <link rel='stylesheet' href='../assets/font-awesome/css/font-awesome.min.css'>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <!-- <script src="../assets/js/tailwind.js"></script> -->
+    <link rel='stylesheet' href="<?php echo $assets_fontawesome; ?>">
+
+    <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
+    <script src="<?php echo $assets_toastify_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+
+    <!-- <script src="<?php
+    // echo $assets_tailwind; 
+    ?>"></script> -->
 </head>
 
 <body class="webpage-background-cover">
@@ -40,11 +49,14 @@ include($constants_file_session_employee);
         </div>
     </div>
 
-    <!-- <div>
-    <?php
-    // include($components_file_footer)
-    ?>
-    </div> -->
+    <div>
+        <?php
+        include($components_file_footer)
+            ?>
+    </div>
+
+    <?php include($components_file_toastify); ?>
+
 </body>
 
 </html>

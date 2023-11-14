@@ -23,7 +23,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
-    min-height: 100vh;
+
+    /* min-height: 100vh; */
+
     margin: 0;
     padding: 0;
 }
@@ -108,8 +110,10 @@ body.webpage-background-cover {
     width: 100%;
     padding: 0px;
     margin: 0px;
-    /* min-height: 100vh; */
-    /* overflow: auto; */
+
+    min-height: 100vh;
+    overflow: auto;
+
 }
 
 .page-content {
@@ -144,7 +148,11 @@ body.webpage-background-cover {
     gap: 0.5rem;
 }
 
-
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
 
 /* Cards */
 
@@ -198,6 +206,7 @@ body.webpage-background-cover {
     color: var(--webtextcolor);
     text-decoration: none;
     transition: 0.2s;
+    min-width: 5rem;
 }
 
 .custom-regular-button:hover {
@@ -534,6 +543,7 @@ body.webpage-background-cover {
 
 .footer-container {
     width: 100%;
+    padding: 0.5rem 0.5rem;
     background-color: var(--webcolor);
     color: var(--webtextcolor);
 }
@@ -648,4 +658,8 @@ body::-webkit-scrollbar-thumb {
 
 .required-color {
     color: red;
+}
+
+.column-fit {
+    width: fit-content;
 }

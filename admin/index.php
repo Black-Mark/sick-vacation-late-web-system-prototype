@@ -25,6 +25,10 @@ include($constants_file_session_admin);
     <script src="../assets/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <link rel='stylesheet' href='../assets/font-awesome/css/font-awesome.min.css'>
+
+    <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
+    <script src="<?php echo $assets_toastify_js; ?>"></script>
+
     <link rel="stylesheet" href="../assets/css/style.css">
     <!-- <script src="../assets/js/tailwind.js"></script> -->
 </head>
@@ -40,11 +44,14 @@ include($constants_file_session_admin);
         </div>
     </div>
 
-    <!-- <div>
+    <div>
         <?php
-        // include($components_file_footer)
+        include($components_file_footer);
         ?>
-    </div> -->
+    </div>
+
+    <?php include($components_file_toastify); ?>
+
 </body>
 
 </html>

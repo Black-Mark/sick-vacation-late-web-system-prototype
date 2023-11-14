@@ -3,6 +3,7 @@ include("./constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_login);
+include($constants_variables);
 
 if (isset($_REQUEST['login'])) {
     $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
@@ -28,24 +29,35 @@ if (isset($_REQUEST['login'])) {
                 $_SESSION['username'] = $user_data['firstName'] . " " . $user_data['lastName'];
 
                 if ($_SESSION['role'] == 'Admin') {
+                    $_SESSION['alert_message'] = "Logged In Successful!";
+                    $_SESSION['alert_type'] = $success_color;
+                    $_SESSION['alert_pass'] = 'Logged In';
                     header("Location: " . $location_admin);
                 } elseif ($_SESSION['role'] == 'Employee') {
+                    $_SESSION['alert_message'] = "Logged In Successful!";
+                    $_SESSION['alert_type'] = $success_color;
+                    $_SESSION['alert_pass'] = 'Logged In';
                     header("Location: " . $location_employee);
                 } else {
                     session_destroy();
+                    $_SESSION['alert_message'] = "Logged In Failed!";
+                    $_SESSION['alert_type'] = $error_color;
                 }
             } else {
-                echo '<script>alert("Incorrect username or password. Please try again.");</script>';
+                $_SESSION['alert_message'] = "Incorrect username or password. Please try again!";
+                $_SESSION['alert_type'] = $warning_color;
             }
         } catch (Exception $e) {
-            echo '<script>alert("An error occurred: ' . $e->getMessage() . '");</script>';
+            $error_message = "An error occurred: " . $e->getMessage();
+            $_SESSION['alert_message'] = $error_message;
+            $_SESSION['alert_type'] = $error_color;
         } finally {
-            // Redirect to the same page to clear the form fields
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
     } else {
-        echo '<script>alert("Please fill in both Employee ID and Password fields.");</script>';
+        $_SESSION['alert_message'] = "Please fill in both Employee ID and Password fields.";
+        $_SESSION['alert_type'] = $warning_color;
     }
 }
 
@@ -71,6 +83,10 @@ if (isset($_REQUEST['login'])) {
     <script src='<?php echo $assets_bootstrap_js; ?>'></script>
 
     <link rel='stylesheet' href="<?php echo $assets_fontawesome; ?>">
+
+    <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
+    <script src="<?php echo $assets_toastify_js; ?>"></script>
+
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
     <!-- <script src="<?php
@@ -112,6 +128,8 @@ if (isset($_REQUEST['login'])) {
             }
         });
     </script>
+
+    <?php include($components_file_toastify); ?>
 
 </body>
 
