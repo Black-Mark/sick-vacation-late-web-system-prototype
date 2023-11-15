@@ -4,9 +4,19 @@ include("../../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-$departmentLabel = null;
-if(isset($_GET["departmentlabel"])){
-    $departmentLabel = $_GET["departmentlabel"];
+$departmentLabel = isset($_GET['departmentlabel']) ? filter_var($_GET['departmentlabel'], FILTER_SANITIZE_STRING) : null;
+
+if ($departmentLabel === 'index.php' || $departmentLabel === 'index.html' || $departmentLabel === null) {
+    $departmentLabel = null;
+} else {
+    $sql = "SELECT * FROM tbl_departments WHERE department_id = ?";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("s", $departmentLabel);
+    $stmt->execute();
+
+    $departmentData = $stmt->get_result();
+
+    $stmt->close();
 }
 
 ?>
@@ -57,8 +67,32 @@ if(isset($_GET["departmentlabel"])){
 
     <div class="page-container">
         <div class="page-content">
-            This is office
-            <?php echo $departmentLabel; ?>
+            <?php
+
+            if ($departmentLabel) {
+                if ($departmentData->num_rows > 0) {
+                    while ($deptData = $departmentData->fetch_assoc()) {
+                        ?>
+                        <div>Department ID:
+                            <?php echo $deptData["department_id"]; ?>
+                        </div>
+                        <div>Department Name:
+                            <?php echo $deptData["departmentName"]; ?>
+                        </div>
+                        <div>Department Head:
+                            <?php echo $deptData["departmentHead"]; ?>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    echo "No records found for departmentlabel: " . $departmentLabel;
+                }
+            } else {
+                ?>
+                Welcome to the Office!
+                <?php
+            }
+            ?>
         </div>
     </div>
     </div>

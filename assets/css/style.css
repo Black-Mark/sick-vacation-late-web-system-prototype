@@ -10,6 +10,32 @@
     --containersuitcolor: rgba(0, 0, 80, 1);
 }
 
+/* Link */
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:visited {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:focus {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 
 /* Experiments */
 .text-experiment {
@@ -599,89 +625,8 @@ body::-webkit-scrollbar-thumb {
     /* creates padding around scroll thumb */
 }
 
-/* Nice */
 
-/* Data Management Navigation */
-
-.data-manage-nav-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-items: center;
-
-    margin: 1rem;
-    /* padding: 1rem; */
-
-    background-color: var(--containercolor);
-    box-shadow: 0 1px 8px 5px rgba(23, 37, 84, 0.3);
-    border: 2px solid var(--webcolor);
-    /* border-radius: 10px; */
-    /* border-top-left-radius: 10px; */
-    /* border-top-right-radius: 10px; */
-    /* gap: 1rem; */
-    text-align: center;
-    overflow: auto;
-}
-
-.data-manage-nav-button {
-    /* background-color: var(--favcolor); */
-    width: 100%;
-    /* color: var(--webtextcolor); */
-    /* padding: 0.5rem 0.25rem; */
-    /* border: 1px solid black; */
-    /* border-radius: 10px; */
-    
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    text-decoration: none;
-    transition: 0.2s;
-}
-
-.data-manage-nav-button-active {
-    background-color: var(--favcolor);
-    width: 100%;
-    color: var(--webtextcolor);
-    /* padding: 0.5rem 0.25rem; */
-    /* border: 1px solid black; */
-    /* border-radius: 10px; */
-    
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    text-decoration: none;
-    transition: 0.2s;
-}
-
-.data-manage-nav-button:hover {
-    background-color: var(--favcolorheavy);
-    color: black;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.data-manage-nav-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--favcolorheavy);
-}
-
-.data-manage-nav-button:disabled {
-    background-color: var(--favcolor);
-    box-shadow: none;
-    outline: none;
-    opacity: 0.6;
-    cursor: default;
-}
-
-.dataTables_length label select {
-    width: 3rem;
-}
-
-.required-color {
-    color: red;
-}
+/* Department Listing */
 
 .item-detail-container {
     width: 100%;
@@ -691,7 +636,6 @@ body::-webkit-scrollbar-thumb {
     border-radius: 0.5rem;
     color: var(--webtextcolor);
 }
-
 
 .item-detail-container summary {
     display: flex;
@@ -709,4 +653,93 @@ body::-webkit-scrollbar-thumb {
 
 .item-detail-content {
     padding: 0.25rem 0.25rem;
+}
+
+/* Data Management Navigation */
+
+.tab-nav-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+
+    margin: 1rem;
+    /* padding: 1rem; */
+
+    background-color: var(--containercolor);
+    box-shadow: 0 1px 8px 5px rgba(23, 37, 84, 0.3);
+    border: 1px solid black;
+    /* border-radius: 10px; */
+    /* border-top-left-radius: 10px; */
+    /* border-top-right-radius: 10px; */
+    /* gap: 1rem; */
+    text-align: center;
+    overflow: auto;
+}
+
+.tab-nav-button {
+    /* background-color: var(--favcolor); */
+    width: 100%;
+    /* color: var(--webtextcolor); */
+    /* padding: 0.5rem 0.25rem; */
+    border: 1px solid black;
+    /* border-radius: 10px; */
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.active-tab-nav {
+    /* background-color: var(--favcolor); */
+    width: 100%;
+    /* color: var(--webtextcolor); */
+    /* padding: 0.5rem 0.25rem; */
+    border: 1px solid black;
+    /* border-radius: 10px; */
+
+    background-color: var(--webcolor);
+    color: var(--webtextcolor);
+    font-weight: 600;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.tab-nav-button:hover {
+    background-color: var(--favcolorheavy);
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* .tab-nav-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--favcolorheavy);
+} */
+
+/* .tab-nav-button:disabled {
+    background-color: var(--favcolor);
+    box-shadow: none;
+    outline: none;
+    opacity: 0.6;
+    cursor: default;
+} */
+
+
+/* Asset Custom */
+
+.dataTables_length label select {
+    width: 3rem;
+}
+
+.required-color {
+    color: red;
 }

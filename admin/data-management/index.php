@@ -47,9 +47,9 @@ if ($tablelist === 'index.php' || $tablelist === 'index.html' || $tablelist === 
 
     <div class="page-container">
         <div class="page-content">
-            <div class='data-manage-nav-container custom-scrollbar'>
-                <a href="<?php echo $location_admin_datamanagement; ?>/gender/"><button
-                        class="data-manage-nav-button">Gender</button></a>
+            <div class='tab-nav-container custom-scrollbar'>
+                <a href="<?php echo $location_admin_datamanagement; ?>/gender/"
+                        class="tab-nav-button">Gender</a>
             </div>
 
             <div class="box-container">
@@ -60,37 +60,32 @@ if ($tablelist === 'index.php' || $tablelist === 'index.html' || $tablelist === 
                 <!-- Button trigger modal -->
                 <div>
                     <button type="button" class="custom-regular-button" data-toggle="modal" data-target="#addDataManage">
-                        Add <?php echo $formattedTableList; ?>
+                        Add <?php echo $formattedTableList ? $formattedTableList : 'Option'; ?>
                     </button>
                 </div>
 
                 <!-- Modal -->
-                <form class="modal fade" id="addDataManage" tabindex="-1" role="dialog" aria-labelledby="addDataManageTitle"
+                <form action="" method="post" class="modal fade" id="addDataManage" tabindex="-1" role="dialog" aria-labelledby="addDataManageTitle"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addDataManageModalLongTitle">Add <?php echo $formattedTableList; ?>
+                                <h5 class="modal-title" id="addDataManageModalLongTitle">Add <?php echo $formattedTableList; ?> Option
                                 </h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="floatingInput"
-                                        placeholder="name@example.com" required>
-                                    <label for="floatingInput">Email address</label>
-                                </div>
                                 <div class="form-floating">
-                                    <input type="password" class="form-control" id="floatingPassword"
-                                        placeholder="Password" required>
-                                    <label for="floatingPassword">Password</label>
+                                    <input type="text" class="form-control" id="floatingInput"
+                                        placeholder="Data..." required>
+                                    <label for="floatingInput">Name</label>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <button type="submit" class="btn btn-primary">Add <?php echo $formattedTableList ? $formattedTableList : 'Option'; ?></button>
                             </div>
                         </div>
                     </div>

@@ -4,9 +4,12 @@ include("../../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-$empId = null;
-if (isset($_GET["empid"])) {
-    $empId = $_GET["empid"];
+$empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
+
+if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
+    $empId = null;
+} else {
+    // $formattedempId = ucwords(str_replace('-', ' ', $empId));
 }
 
 ?>
