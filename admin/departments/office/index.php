@@ -1,8 +1,13 @@
 <?php
-include("../constants/routes.php");
+include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+
+$departmentLabel = null;
+if(isset($_GET["departmentlabel"])){
+    $departmentLabel = $_GET["departmentlabel"];
+}
 
 ?>
 
@@ -52,8 +57,10 @@ include($constants_file_session_admin);
 
     <div class="page-container">
         <div class="page-content">
-            <div class="text-experiment">This is Admin Page</div>
+            This is office
+            <?php echo $departmentLabel; ?>
         </div>
+    </div>
     </div>
 
     <div>

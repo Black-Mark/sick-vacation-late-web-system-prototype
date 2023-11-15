@@ -9,8 +9,14 @@ RewriteEngine On
 RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 
-RewriteRule ^admin/employee-list/user/([^/]+)/$ admin/employee-list/user/index.php?empid=$1 [L,QSA]
-RewriteRule ^admin/employee-list/user/([^/]+)$ admin/employee-list/user/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/employee-list/user-info/([^/]+)/$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/employee-list/user-info/([^/]+)$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
+
+RewriteRule ^admin/employee-list/leave-data-form/([^/]+)/$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/employee-list/leave-data-form/([^/]+)$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+
+RewriteRule ^admin/departments/office/([^/]+)/$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
+RewriteRule ^admin/departments/office/([^/]+)$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
 
 # Disable directory listing and deny direct access
 Options -Indexes

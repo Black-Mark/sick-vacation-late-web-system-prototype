@@ -6,10 +6,15 @@ $action_add_employee = $webhostpage.'/actions/addEmployee.php';
 $action_edit_employee = $webhostpage.'/actions/editEmployee.php';
 $action_delete_employee = $webhostpage.'/actions/deleteEmployee.php';
 
+$action_add_department = $webhostpage.'/actions/addDepartment.php';
+$action_edit_department = $webhostpage.'/actions/editDepartment.php';
+$action_delete_department = $webhostpage.'/actions/deleteDepartment.php';
+
 $components_file_error_handler = $webhostpath.'/components/error_handler.php';
 $components_file_topnav = $webhostpath.'/components/topnavigation.php';
 $components_file_footer = $webhostpath.'/components/footer.php';
 $components_file_toastify = $webhostpath.'/components/toastifyAlert.php';
+$components_file_navpanel = $webhostpath.'/components/navPanel.php';
 
 $constants_file_dbconnect = $webhostpath.'/constants/dbconnect.php';
 $constants_file_session_login = $webhostpath.'/constants/loginSession.php';
@@ -45,8 +50,10 @@ $location_login = $webhostpage;
 $location_admin = $webhostpage.'/admin';
 $location_admin_profile = $webhostpage.'/admin/profile';
 $location_admin_employeelist = $webhostpage.'/admin/employee-list';
-$location_admin_employeelist_user = $webhostpage.'/admin/employee-list/user';
+$location_admin_employeelist_user = $webhostpage.'/admin/employee-list/user-info';
+$location_admin_employeelist_leavedataform = $webhostpage.'/admin/employee-list/leave-data-form';
 $location_admin_departments = $webhostpage.'/admin/departments';
+$location_admin_departments_office = $webhostpage.'/admin/departments/office';
 $location_admin_datamanagement = $webhostpage.'/admin/data-management';
 
 $location_employee = $webhostpage.'/employee';

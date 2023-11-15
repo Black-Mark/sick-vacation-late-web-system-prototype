@@ -1,8 +1,13 @@
 <?php
-include("../constants/routes.php");
+include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+
+$empId = null;
+if (isset($_GET["empid"])) {
+    $empId = $_GET["empid"];
+}
 
 ?>
 
@@ -52,8 +57,18 @@ include($constants_file_session_admin);
 
     <div class="page-container">
         <div class="page-content">
-            <div class="text-experiment">This is Admin Page</div>
+
+            <div>
+                <?php include($components_file_navpanel); ?>
+            </div>
+
+            <div class="box-container">
+                <div>This is Leave Data Form</div>
+                <?php echo $empId; ?>
+            </div>
+
         </div>
+    </div>
     </div>
 
     <div>

@@ -6,7 +6,8 @@
     --webtextcolor: white;
     --favcolor: #ffc107;
     --favcolorheavy: darkgoldenrod;
-    --containercolor: rgba(255, 255, 255, 0.85);
+    --containercolor: rgba(255, 255, 255, 0.8);
+    --containersuitcolor: rgba(0, 0, 80, 1);
 }
 
 
@@ -598,7 +599,7 @@ body::-webkit-scrollbar-thumb {
     /* creates padding around scroll thumb */
 }
 
-
+/* Nice */
 
 /* Data Management Navigation */
 
@@ -606,25 +607,46 @@ body::-webkit-scrollbar-thumb {
     display: flex;
     flex-direction: row;
     align-items: center;
-    /* justify-items: center; */
+    justify-items: center;
+
     margin: 1rem;
-    padding: 1rem;
-    background-color: var(--webcolor);
+    /* padding: 1rem; */
+
+    background-color: var(--containercolor);
     box-shadow: 0 1px 8px 5px rgba(23, 37, 84, 0.3);
-    border: 2px solid black;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    gap: 1rem;
+    border: 2px solid var(--webcolor);
+    /* border-radius: 10px; */
+    /* border-top-left-radius: 10px; */
+    /* border-top-right-radius: 10px; */
+    /* gap: 1rem; */
+    text-align: center;
     overflow: auto;
 }
 
 .data-manage-nav-button {
+    /* background-color: var(--favcolor); */
+    width: 100%;
+    /* color: var(--webtextcolor); */
+    /* padding: 0.5rem 0.25rem; */
+    /* border: 1px solid black; */
+    /* border-radius: 10px; */
+    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.data-manage-nav-button-active {
     background-color: var(--favcolor);
-    min-width: 10rem;
+    width: 100%;
     color: var(--webtextcolor);
-    padding: 0.5rem 0.25rem;
-    border: 1px solid black;
-    border-radius: 5px;
+    /* padding: 0.5rem 0.25rem; */
+    /* border: 1px solid black; */
+    /* border-radius: 10px; */
+    
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -653,10 +675,38 @@ body::-webkit-scrollbar-thumb {
     cursor: default;
 }
 
-.dataTables_length label select{
+.dataTables_length label select {
     width: 3rem;
 }
 
 .required-color {
     color: red;
+}
+
+.item-detail-container {
+    width: 100%;
+    padding: 0.5rem 0.5rem;
+    background-color: var(--containersuitcolor);
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    color: var(--webtextcolor);
+}
+
+
+.item-detail-container summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    font-weight: 700;
+    list-style: none;
+
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    border-bottom: 1px solid white;
+}
+
+.item-detail-content {
+    padding: 0.25rem 0.25rem;
 }

@@ -659,8 +659,8 @@ $employees = $database->query($sql);
                         // Function to update the state of the delete button
                         function updateDeleteEmployeesButtonState() {
                             var selectedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
-                            deleteEmployeesButton.disabled = selectedValues.length === 0;
-                            editEmployeesButton.disabled = selectedValues.length === 0;
+                            deleteEmployeesButton.disabled = selectedValues.length <= 1;
+                            editEmployeesButton.disabled = selectedValues.length <= 1;
 
                             // Convert the array to JSON and update the value of the hidden input
                             selectedEmpIDInput.value = JSON.stringify(selectedValues);

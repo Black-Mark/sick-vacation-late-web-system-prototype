@@ -5,7 +5,7 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
 $empId = null;
-if(isset($_GET["empid"])){
+if (isset($_GET["empid"])) {
     $empId = $_GET["empid"];
 }
 
@@ -52,12 +52,21 @@ if(isset($_GET["empid"])){
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
-            This is good.
+
+            <div>
+                <?php include($components_file_navpanel); ?>
+            </div>
+
+            <div class="box-container">
+                <div>This is Employee Information</div>
+                <?php echo $empId; ?>
+            </div>
+
         </div>
     </div>
     </div>
