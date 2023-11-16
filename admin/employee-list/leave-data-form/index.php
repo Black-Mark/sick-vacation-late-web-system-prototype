@@ -3,6 +3,7 @@ include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 
@@ -67,8 +68,25 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
             <div class='box-container'>
 
-            <div class="button-container mb-2">
-                <button class="custom-regular-button component-container" onclick="window.print()">Print</button>
+                <div class="button-container component-container mb-2">
+                    <form action="" method="post" >
+                    <label for="year">Select a Year:</label>
+                    <select name="year" id="year" class="custom-regular-button" aria-label="Year Selection">
+                        <?php
+                        $currentYear = date("Y");
+                        if(!$start_year || $start_year <= 1924 ) { $start_year = $currentYear; }
+                        for ($year = $currentYear; $year >= $start_year; $year--) {
+                            ?>
+                            <option value="<?php echo $year; ?>">
+                                <?php echo $year; ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                    <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
+                    </form>
+                    <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
 
                 <div class="print-form-container">

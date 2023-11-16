@@ -70,7 +70,7 @@ if (isset($_REQUEST['login'])) {
     <meta charset="UTF-8">
     <title>Human Resources of Municipality of Indang - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Login Page">
+    <meta name="description" content="<?php echo $web_description; ?>">
     <?php
     include($constants_file_html_credits);
     ?>
