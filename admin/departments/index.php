@@ -4,7 +4,9 @@ include("../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-$sql_department = "SELECT * FROM tbl_departments";
+$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
+                   FROM tbl_departments d
+                   INNER JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id";
 $departments = $database->query($sql_department);
 
 $sql_employee = "SELECT * FROM tbl_useraccounts";
@@ -216,7 +218,7 @@ $employeesecond = $database->query($sql_employee);
                                     </a>
                                     <!-- Edit Department Modal -->
                                     <button type="button" class="custom-regular-button editDepartmentButton" data-toggle="modal"
-                                        data-target="#editDepartment" 
+                                        data-target="#editDepartment"
                                         data-department-id="<?php echo $department['department_id']; ?>"
                                         data-department-name="<?php echo $department['departmentName']; ?>"
                                         data-department-head="<?php echo $department['departmentHead']; ?>">
@@ -232,7 +234,7 @@ $employeesecond = $database->query($sql_employee);
                             </summary>
                             <div class="item-detail-content">
                                 <span>Department Head Name: </span>
-                                <?php echo $department['departmentHead']; ?>
+                                <?php echo $department['headFirstName'].' '.$department['headLastName']; ?>
                             </div>
                         </details>
                         <?php

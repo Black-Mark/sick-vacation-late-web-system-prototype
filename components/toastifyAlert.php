@@ -26,7 +26,7 @@ if (isset($_SESSION['alert_message'])) {
 
     $cleaned_alert_message = str_replace(["'", '"'], '', $alert_message);
 
-    if ($alert_pass && ($_SERVER['PHP_SELF'] == $location_admin . '/index.php' || $_SERVER['PHP_SELF'] == $location_employee . '/index.php')) {
+    if ($alert_pass && ($_SERVER['SCRIPT_NAME'] == $location_admin . '/index.php' || $_SERVER['SCRIPT_NAME'] == $location_employee . '/index.php')) {
         showToast($cleaned_alert_message, $alert_type);
         unset($_SESSION['alert_message']);
         unset($_SESSION['alert_type']);

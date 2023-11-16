@@ -9,7 +9,10 @@ $departmentLabel = isset($_GET['departmentlabel']) ? filter_var($_GET['departmen
 if ($departmentLabel === 'index.php' || $departmentLabel === 'index.html' || $departmentLabel === null) {
     $departmentLabel = null;
 } else {
-    $sql = "SELECT * FROM tbl_departments WHERE department_id = ?";
+    $sql = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
+            FROM tbl_departments d
+            LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id
+            WHERE d.department_id = ?";
     $stmt = $database->prepare($sql);
     $stmt->bind_param("s", $departmentLabel);
     $stmt->execute();
@@ -80,7 +83,7 @@ if ($departmentLabel === 'index.php' || $departmentLabel === 'index.html' || $de
                             <?php echo $deptData["departmentName"]; ?>
                         </div>
                         <div>Department Head:
-                            <?php echo $deptData["departmentHead"]; ?>
+                            <?php echo $deptData['headFirstName'].' '.$deptData['headLastName'].' ('.$deptData["departmentHead"].')'; ?>
                         </div>
                         <?php
                     }

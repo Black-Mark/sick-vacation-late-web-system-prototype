@@ -743,3 +743,51 @@ body::-webkit-scrollbar-thumb {
 .required-color {
     color: red;
 }
+
+.data-form-detail-container {
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+.data-form-detail-table {
+    width: 100%;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.table-head-base {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 0.875rem;
+    /* 14px */
+    line-height: 1.25rem;
+    /* 20px */
+    font-weight: 600;
+    border: 1px solid black;
+}
+
+.table-item-base {
+    text-align: center;
+    font-size: 0.75rem;
+    /* 12px */
+    line-height: 1rem;
+    /* 16px */
+    border: 1px solid black;
+}
+
+.width-7 {
+    width: 7%;
+}
+
+.width-8 {
+    width: 8%;
+}
+
+.width-14 {
+    width: 14%;
+}
+
+.width-29 {
+    width: 29%;
+}
