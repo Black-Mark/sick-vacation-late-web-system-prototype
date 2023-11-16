@@ -54,96 +54,103 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 </head>
 
 <body class="webpage-background-cover-admin">
-    <div>
+    <div class="component-container">
         <?php include($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
 
-            <div>
+            <div class="component-container">
                 <?php include($components_file_navpanel); ?>
             </div>
 
             <div class='box-container'>
-                <div class='data-form-detail-container'>
-                    <div>Republic of the Philippines</div>
-                    <div>Province of Cavite</div>
-                    <div>Municipality of Indang</div>
+
+            <div class="button-container mb-2">
+                <button class="custom-regular-button component-container" onclick="window.print()">Print</button>
                 </div>
 
-                <div>
-                    <table class="data-form-detail-table" >
-                        <thead>
-                            <tr>
-                                <th colSpan='8' class="table-head-base">
-                                    <div>Name</div>
-                                </th>
-                                <th colSpan='6' class="table-head-base">
-                                    <div>Division/Office</div>
-                                </th>
-                                <th colSpan='6' class="table-head-base">
-                                    <div>1st. Day of Service</div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th rowSpan='2' colSpan='4' class="table-head-base">Period</th>
-                                <th rowSpan='2' colSpan='4' class="table-head-base">Particulars</th>
-                                <th colSpan='4' class="table-head-base">Vacation Leave</th>
-                                <th colSpan='4' class="table-head-base">Sick Leave</th>
-                                <th rowSpan='2' colSpan='4' class="table-head-base">
-                                    <div>Date & Action Taken on Application For Leave </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th class="table-head-base">Earned</th>
-                                <th class="table-head-base">Abs. Und. W/P</th>
-                                <th class="table-head-base">Bal.</th>
-                                <th class="table-head-base">Abs. Und. W/O P</th>
-                                <th class="table-head-base">Earned</th>
-                                <th class="table-head-base">Abs. Und. W/P</th>
-                                <th class="table-head-base">Bal.</th>
-                                <th class="table-head-base">Abs. Und. W/O P</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr key="">
-                                <td colSpan="4" class="table-item-base">
-                                    {itemData.period}
-                                </td>
-                                <td colSpan="4" class="table-item-base">
-                                    {itemData.particulars}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.vacationEarned}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.vacationWithPay}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.vacationBalance}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.vacationWithoutPay}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.sickEarned}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.sickWithPay}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.sickBalance}
-                                </td>
-                                <td class="table-item-base">
-                                    {itemData.sickWithoutPay}
-                                </td>
-                                <td colSpan="4" class="table-item-base">
-                                    {itemData.dateAndAction}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="print-form-container">
+                    <div class='data-form-detail-container mb-3'>
+                        <div>Republic of the Philippines</div>
+                        <div>Province of Cavite</div>
+                        <div>Municipality of Indang</div>
+                    </div>
+
+                    <div class="overflow-auto custom-scrollbar">
+                        <table class="data-form-detail-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" style="width: 30%;" class="table-head-base-front">
+                                        <div>Name</div>
+                                    </th>
+                                    <th colspan="5" style="width: 40%;" class="table-head-base-front">
+                                        <div>Division/Office</div>
+                                    </th>
+                                    <th colspan="3" style="width: 30%;" class="table-head-base-front">
+                                        <div>1st. Day of Service</div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="width: 10%;" class="table-head-base">Period</th>
+                                    <th rowspan="2" style="width: 10%;" class="table-head-base">Particulars</th>
+                                    <th colspan="4" style="width: 30%;" class="table-head-base">Vacation Leave</th>
+                                    <th colspan="4" style="width: 30%;" class="table-head-base">Sick Leave</th>
+                                    <th rowspan="2" style="width: 10%;" class="table-head-base">Date & Action Taken on
+                                        Application For Leave</th>
+                                </tr>
+                                <tr>
+                                    <th style="width: 7.5%;" class="table-head-base">Earned</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Abs. und. w/p</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Bal.</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Abs. und. w/o p</th>
+
+                                    <th style="width: 7.5%;" class="table-head-base">Earned</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Abs. und. w/p</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Bal.</th>
+                                    <th style="width: 7.5%;" class="table-head-base">Abs. und. w/o p</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr key="">
+                                    <td class="table-item-base">
+                                        January 01, 2023
+                                    </td>
+                                    <td class="table-item-base">
+                                        Vacation Leave (Late)
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        50.25
+                                    </td>
+                                    <td class="table-item-base">
+                                        February 01, 2023
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
@@ -152,7 +159,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     </div>
     </div>
 
-    <div>
+    <div class="component-container">
         <?php
         include($components_file_footer);
         ?>
