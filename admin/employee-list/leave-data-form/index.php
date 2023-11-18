@@ -6,11 +6,78 @@ include($constants_file_session_admin);
 include($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
+$employeeData = [];
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
 } else {
-    // $formattedempId = ucwords(str_replace('-', ' ', $empId));
+    $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $stmt = $database->prepare($sql);
+
+    if ($stmt) {
+        $stmt->bind_param("s", $empId);
+        $stmt->execute();
+        $empResult = $stmt->get_result();
+
+        // if ($empResult->num_rows > 0) {
+        //     while ($employee = $empResult->fetch_assoc()) {
+        //         $employeeData[] = $employee;
+        //     }
+        //     echo $employeeData[0]['employee_id'];
+        // }
+
+        if ($empResult->num_rows > 0) {
+            $employeeData = $empResult->fetch_assoc();
+            // echo $employeeData['employee_id'];
+        }
+
+        $stmt->close();
+    } else {
+        // Something
+    }
+}
+
+$leaveData = [];
+$selectedYear = date("Y");
+
+if (isset($_POST['leaveFormYear']) && $empId) {
+    $selectedYear = $_POST['year'];
+
+    $sqlLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND YEAR(period) = ?";
+    $stmtLeaveData = $database->prepare($sqlLeaveData);
+
+    if ($stmtLeaveData) {
+        $stmtLeaveData->bind_param("si", $empId, $selectedYear);
+        $stmtLeaveData->execute();
+        $resultLeaveData = $stmtLeaveData->get_result();
+
+        while ($rowLeaveData = $resultLeaveData->fetch_assoc()) {
+            $leaveData[] = $rowLeaveData;
+        }
+
+        $stmtLeaveData->close();
+    } else {
+        // Something Error
+    }
+} else {
+    $currentYear = date("Y");
+
+    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND YEAR(period) = ?";
+    $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
+
+    if ($stmtCurrentYearData) {
+        $stmtCurrentYearData->bind_param("si", $empId, $currentYear);
+        $stmtCurrentYearData->execute();
+        $resultCurrentYearData = $stmtCurrentYearData->get_result();
+
+        while ($rowCurrentYearData = $resultCurrentYearData->fetch_assoc()) {
+            $leaveData[] = $rowCurrentYearData;
+        }
+
+        $stmtCurrentYearData->close();
+    } else {
+        //Something Error
+    }
 }
 
 ?>
@@ -68,23 +135,88 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
             <div class='box-container'>
 
+                <!-- Add Modal -->
+                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade" id="addLeaveDataRecord"
+                    tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addLeaveDataRecordModalLongTitle">Add New Leave Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>" class="form-control"
+                                        id="floatingPeriod" placeholder="2020-12-31"
+                                        required>
+                                    <label for="floatingPeriod">Period <span
+                                            class="required-color">*</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade" id="editLeaveDataRecord"
+                    tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit New Leave Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>" class="form-control"
+                                        id="floatingPeriod" placeholder="2020-12-31"
+                                        required>
+                                    <label for="floatingPeriod">Period <span
+                                            class="required-color">*</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="editLeaveDataRecord" value="Edit Leave Record"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="button-container component-container mb-2">
-                    <form action="" method="post" >
-                    <label for="year">Select a Year:</label>
-                    <select name="year" id="year" class="custom-regular-button" aria-label="Year Selection">
-                        <?php
-                        $currentYear = date("Y");
-                        if(!$start_year || $start_year <= 1924 ) { $start_year = $currentYear; }
-                        for ($year = $currentYear; $year >= $start_year; $year--) {
-                            ?>
-                            <option value="<?php echo $year; ?>">
-                                <?php echo $year; ?>
-                            </option>
+                    <form action="" method="post">
+                        <label for="year">Select a Year:</label>
+                        <select name="year" id="year" class="custom-regular-button" aria-label="Year Selection">
                             <?php
-                        }
-                        ?>
-                    </select>
-                    <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
+                            $currentYear = date("Y");
+                            $start_date = $employeeData['dateStarted'];
+
+                            // Extract the year from the start date
+                            $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
+
+                            if (!$start_year || $start_year <= 1924) {
+                                $start_year = $currentYear;
+                            }
+
+                            for ($year = $currentYear; $year >= $start_year; $year--) {
+                                ?>
+                                <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
+                                    <?php echo $year; ?>
+                                </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
                     </form>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
@@ -131,41 +263,75 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr key="">
-                                    <td class="table-item-base">
-                                        January 01, 2023
-                                    </td>
-                                    <td class="table-item-base">
-                                        Vacation Leave (Late)
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        50.25
-                                    </td>
-                                    <td class="table-item-base">
-                                        February 01, 2023
-                                    </td>
-                                </tr>
+                                <?php
+                                if (!empty($leaveData)) {
+                                    foreach ($leaveData as $ldata) {
+                                        ?>
+                                        <tr key="">
+                                            <td class="table-item-base">
+                                                January 01, 2023
+                                            </td>
+                                            <td class="table-item-base">
+                                                Vacation Leave (Late)
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                50.25
+                                            </td>
+                                            <td class="table-item-base">
+                                                February 01, 2023
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="11">
+                                            <div class="py-2 font-weight-light">
+                                                There is no Data Found
+                                            </div>
+                                            <div class="button-container justify-content-center py-2">
+                                                <button type="button" class="custom-regular-button" data-toggle="modal"
+                                                    data-target="#addLeaveDataRecord">
+                                                    Add New Leave Record
+                                                </button>
+                                                <button type="button" class="custom-regular-button" data-toggle="modal"
+                                                    data-target="#editLeaveDataRecord">
+                                                    Edit Leave Record
+                                                </button>
+                                                <form action="" method="post">
+                                                    <input type="hidden" name="empid" value="<?php echo $empId; ?>" />
+                                                    <input type="submit" name="deleteLeaveData" value="Delete Leave Record"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
+
                             </tbody>
                         </table>
                     </div>

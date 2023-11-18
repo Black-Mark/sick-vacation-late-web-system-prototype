@@ -4,8 +4,44 @@ include("../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-$sql = "SELECT * FROM tbl_useraccounts";
-$employees = $database->query($sql);
+$empsql = "SELECT
+    ua.account_id,
+    ua.employee_id,
+    ua.role,
+    ua.email,
+    ua.password,
+    ua.photoURL,
+    ua.firstName,
+    ua.middleName,
+    ua.lastName,
+    ua.age,
+    ua.sex,
+    ua.civilStatus,
+    ua.department,
+    d.departmentName,
+    ua.jobPosition,
+    ua.dateStarted,
+    ua.dateCreated
+FROM
+    tbl_useraccounts ua
+LEFT JOIN
+    tbl_departments d ON ua.department = d.department_id;";
+
+
+$employees = $database->query($empsql);
+
+
+
+
+$deptsql = "SELECT * FROM tbl_departments";
+$department_result = $database->query($deptsql);
+$departments = [];
+
+if ($department_result->num_rows > 0) {
+    while ($departmentData = $department_result->fetch_assoc()) {
+        $departments[] = $departmentData;
+    }
+}
 
 ?>
 
@@ -158,10 +194,18 @@ $employees = $database->query($sql);
                                     <select name="department" class="form-select" id="floatingDepartmentSelect"
                                         aria-label="Floating Department Selection" required>
                                         <option value="" selected></option>
-                                        <option value="1">Department of Math</option>
-                                        <option value="2">Department of Humanity</option>
-                                        <option value="3">Department of Science</option>
-                                        <option value="4">Pending</option>
+                                        <?php
+                                        if (!empty($departments)) {
+                                            foreach ($departments as $department) {
+                                                ?>
+                                                <option value="<?php echo $department['department_id']; ?>">
+                                                    <?php echo $department['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                        <option value="Pending">Pending</option>
                                     </select>
                                     <label for="floatingDepartmentSelect">Department <span
                                             class="required-color">*</span></label>
@@ -291,9 +335,17 @@ $employees = $database->query($sql);
                                     <select name="department" class="form-select" id="floatingEditDepartmentSelect"
                                         aria-label="Floating Department Selection" required>
                                         <option value="" selected></option>
-                                        <option value="1">Department of Math</option>
-                                        <option value="2">Department of Humanity</option>
-                                        <option value="3">Department of Science</option>
+                                        <?php
+                                        if (!empty($departments)) {
+                                            foreach ($departments as $department) {
+                                                ?>
+                                                <option value="<?php echo $department['department_id']; ?>">
+                                                    <?php echo $department['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         <option value="4">Pending</option>
                                     </select>
                                     <label for="floatingEditDepartmentSelect">Department <span
@@ -403,9 +455,17 @@ $employees = $database->query($sql);
                                         id="floatingEditMultipleDepartmentSelect"
                                         aria-label="Floating Department Selection">
                                         <option value="" selected></option>
-                                        <option value="1">Department of Math</option>
-                                        <option value="2">Department of Humanity</option>
-                                        <option value="3">Department of Science</option>
+                                        <?php
+                                        if (!empty($departments)) {
+                                            foreach ($departments as $department) {
+                                                ?>
+                                                <option value="<?php echo $department['department_id']; ?>">
+                                                    <?php echo $department['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         <option value="Pending">Pending</option>
                                     </select>
                                     <label for="floatingEditMultipleDepartmentSelect">Department</label>
@@ -469,7 +529,13 @@ $employees = $database->query($sql);
                                             <?php echo $row['lastName'] . ' ' . $row['firstName']; ?>
                                         </td>
                                         <td>
-                                            <?php echo $row['department']; ?>
+                                            <?php
+                                            if ($row['departmentName']) {
+                                                echo $row['departmentName'];
+                                            } else {
+                                                echo $row['department'];
+                                            }
+                                            ?>
                                         </td>
                                         <td>
                                             <?php echo $row['sex']; ?>

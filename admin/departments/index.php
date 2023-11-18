@@ -6,12 +6,18 @@ include($constants_file_session_admin);
 
 $sql_department = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
                    FROM tbl_departments d
-                   INNER JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id";
+                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id";
 $departments = $database->query($sql_department);
 
 $sql_employee = "SELECT * FROM tbl_useraccounts";
-$employees = $database->query($sql_employee);
-$employeesecond = $database->query($sql_employee);
+$employees_result = $database->query($sql_employee);
+$employees = [];
+
+if ($employees_result->num_rows > 0) {
+    while ($employee = $employees_result->fetch_assoc()) {
+        $employees[] = $employee;
+    }
+}
 
 ?>
 
@@ -86,8 +92,8 @@ $employeesecond = $database->query($sql_employee);
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if ($employees->num_rows > 0) {
-                                            while ($employee = $employees->fetch_assoc()) {
+                                        if (!empty($employees)) {
+                                            foreach ($employees as $employee) {
                                                 ?>
                                                 <option value="<?php echo $employee['employee_id']; ?>">
                                                     <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
@@ -154,11 +160,11 @@ $employeesecond = $database->query($sql_employee);
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if ($employeesecond->num_rows > 0) {
-                                            while ($employeeset = $employeesecond->fetch_assoc()) {
+                                        if (!empty($employees)) {
+                                            foreach ($employees as $employee) {
                                                 ?>
-                                                <option value="<?php echo $employeeset['employee_id']; ?>">
-                                                    <?php echo $employeeset['lastName'] . ' ' . $employeeset['firstName']; ?>
+                                                <option value="<?php echo $employee['employee_id']; ?>">
+                                                    <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
                                                 </option>
                                                 <?php
                                             }
@@ -234,7 +240,7 @@ $employeesecond = $database->query($sql_employee);
                             </summary>
                             <div class="item-detail-content">
                                 <span>Department Head Name: </span>
-                                <?php echo $department['headFirstName'].' '.$department['headLastName']; ?>
+                                <?php echo $department['headFirstName'] . ' ' . $department['headLastName']; ?>
                             </div>
                         </details>
                         <?php
