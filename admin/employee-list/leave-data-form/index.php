@@ -136,8 +136,9 @@ if (isset($_POST['leaveFormYear']) && $empId) {
             <div class='box-container'>
 
                 <!-- Add Modal -->
-                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade" id="addLeaveDataRecord"
-                    tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle" aria-hidden="true">
+                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
+                    id="addLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -148,11 +149,9 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mb-2">
-                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>" class="form-control"
-                                        id="floatingPeriod" placeholder="2020-12-31"
-                                        required>
-                                    <label for="floatingPeriod">Period <span
-                                            class="required-color">*</span></label>
+                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>"
+                                        class="form-control" id="floatingPeriod" placeholder="2020-12-31" required>
+                                    <label for="floatingPeriod">Period <span class="required-color">*</span></label>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -164,23 +163,23 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                     </div>
                 </form>
 
-                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade" id="editLeaveDataRecord"
-                    tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle" aria-hidden="true">
+                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade"
+                    id="editLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit New Leave Record</h5>
+                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit New Leave Record
+                                </h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating mb-2">
-                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>" class="form-control"
-                                        id="floatingPeriod" placeholder="2020-12-31"
-                                        required>
-                                    <label for="floatingPeriod">Period <span
-                                            class="required-color">*</span></label>
+                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>"
+                                        class="form-control" id="floatingPeriod" placeholder="2020-12-31" required>
+                                    <label for="floatingPeriod">Period <span class="required-color">*</span></label>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -267,39 +266,43 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                 if (!empty($leaveData)) {
                                     foreach ($leaveData as $ldata) {
                                         ?>
-                                        <tr key="">
+                                        <!-- <tr key=""> -->
+                                        <tr>
                                             <td class="table-item-base">
-                                                January 01, 2023
+                                                <?php echo $ldata['period']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                Vacation Leave (Late)
+                                                <?php echo $ldata['particular']; ?>
+                                            </td>
+
+                                            <td class="table-item-base">
+                                                <?php echo $ldata['VacationLeaveEarned']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['vacationLeaveAbsUndWP']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['vacationLeaveBalance']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['vacationLeaveAbsUndWOP']; ?>
+                                            </td>
+
+                                            <td class="table-item-base">
+                                                <?php echo $ldata['sickLeaveEarned']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['sickLeaveAbsUndWP']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['sickLeaveBalance']; ?>
                                             </td>
                                             <td class="table-item-base">
-                                                50.25
+                                                <?php echo $ldata['sickLeaveAbsUndWOP']; ?>
                                             </td>
+
                                             <td class="table-item-base">
-                                                50.25
-                                            </td>
-                                            <td class="table-item-base">
-                                                50.25
-                                            </td>
-                                            <td class="table-item-base">
-                                                February 01, 2023
+                                                <?php echo $ldata['dateOfAction']; ?>
                                             </td>
                                         </tr>
                                         <?php
