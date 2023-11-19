@@ -814,6 +814,7 @@ body::-webkit-scrollbar-thumb {
 @media print {
     .component-container {
         display: none;
+        visibility: hidden;
     }
 
     body * {

@@ -148,11 +148,81 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
                                 <div class="form-floating mb-2">
-                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>"
-                                        class="form-control" id="floatingPeriod" placeholder="2020-12-31" required>
+                                    <input type="date" name="period" class="form-control" id="floatingPeriod"
+                                        placeholder="2020-12-31" required>
                                     <label for="floatingPeriod">Period <span class="required-color">*</span></label>
                                 </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingParticularType" name="particularType"
+                                        aria-label="Floating Particular Type" required>
+                                        <option value="" selected></option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Vacation Leave">Vacation Leave</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                    <label for="floatingParticularType">Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="particularLabel" class="form-control"
+                                        id="floatingparticularLabel" placeholder="">
+                                    <label for="floatingparticularLabel">Label
+                                        <!-- <span class="required-color">*</span> -->
+                                    </label>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
+                                                id="floatingDayInput" placeholder="3" required>
+                                            <label for="floatingDayInput">Day(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
+                                                id="floatingHourInput" placeholder="24" required>
+                                            <label for="floatingHourInput">Hour(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="60" name="minuteInput" class="form-control"
+                                                id="floatingMinuteInput" placeholder="60" required>
+                                            <label for="floatingMinuteInput">Minute(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingInputType" name="inputType" aria-label="Floating Input Type"
+                                        required>
+                                        <option value="Deduction" selected>Deduction</option>
+                                        <option value="Earned">Earned</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                    <label for="floatingInputType">Input Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateOfAction" class="form-control" id="floatingDateOfAction"
+                                        placeholder="2020-12-31" required>
+                                    <label for="floatingDateOfAction">Date of Action <span class="required-color">*</span></label>
+                                </div>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -276,7 +346,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                             </td>
 
                                             <td class="table-item-base">
-                                                <?php echo $ldata['VacationLeaveEarned']; ?>
+                                                <?php echo $ldata['vacationLeaveEarned']; ?>
                                             </td>
                                             <td class="table-item-base">
                                                 <?php echo $ldata['vacationLeaveAbsUndWP']; ?>
@@ -314,7 +384,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                             <div class="py-2 font-weight-light">
                                                 There is no Data Found
                                             </div>
-                                            <div class="button-container justify-content-center py-2">
+                                            <div class="button-container component-container justify-content-center py-2">
                                                 <button type="button" class="custom-regular-button" data-toggle="modal"
                                                     data-target="#addLeaveDataRecord">
                                                     Add New Leave Record
