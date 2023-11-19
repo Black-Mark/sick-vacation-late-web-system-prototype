@@ -5,7 +5,17 @@ include($constants_file_session_admin);
 include($constants_variables);
 
 if (isset($_POST['addLeaveDataRecord'])) {
-    $newLeaveData = [];
+    // Empty Variables
+    $initialValue = 1.25;
+    $newVacationLeaveEarned = 0.00;
+    $newVacationLeaveAbsUndWP = 0.00;
+    $newVacationLeaveBalance = 0.00;
+    $newVacationLeaveAbsUndWOP = 0.00;
+    $newSickLeaveEarned = 0.00;
+    $newSickLeaveAbsUndWP = 0.00;
+    $newSickLeaveBalance = 0.00;
+    $newSickLeaveAbsUndWOP = 0.00;
+
     // Function to apply strip_tags and mysqli_real_escape_string
     function sanitizeInput($input)
     {
@@ -22,7 +32,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $minutes = isset($_POST['minuteInput']) ? sanitizeInput($_POST['minuteInput']) : null;
     $inputType = isset($_POST['inputType']) ? sanitizeInput($_POST['inputType']) : null;
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
-    
+
     $totalMinutes = (($days * 24) * 60) + ($hours * 60) + $minutes;
 
     $totalComputedValue = 0.002 * $totalMinutes * 1.0416667;
@@ -37,13 +47,78 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $resultFetchLatestLeaveData = $stmtFetchLatestLeaveData->get_result();
 
         if ($resultFetchLatestLeaveData->num_rows > 0) {
-            $LatestLeaveDataData = $resultFetchLatestLeaveData->fetch_assoc();
-            echo $LatestLeaveDataData['vacationLeaveEarned'];
-            
-        } else {
-            // No previous earned data found for the particular type
-        }
+            $LatestLeaveData = $resultFetchLatestLeaveData->fetch_assoc();
 
+            $newVacationLeaveEarned = $LatestLeaveData['vacationLeaveEarned'];
+            $newVacationLeaveAbsUndWP = $LatestLeaveData['vacationLeaveAbsUndWP'];
+            $newVacationLeaveBalance = $LatestLeaveData['vacationLeaveBalance'];
+            $newVacationLeaveAbsUndWOP = $LatestLeaveData['vacationLeaveAbsUndWOP'];
+
+            $newSickLeaveEarned = $LatestLeaveData['sickLeaveEarned'];
+            $newSickLeaveAbsUndWP = $LatestLeaveData['sickLeaveAbsUndWP'];
+            $newSickLeaveBalance = $LatestLeaveData['sickLeaveBalance'];
+            $newSickLeaveAbsUndWOP = $LatestLeaveData['sickLeaveAbsUndWOP'];
+
+            if ($particularType == "Vacation Leave") {
+                $newVacationLeaveEarned = $LatestLeaveData['vacationLeaveBalance'];
+                if ($LatestLeaveData['vacationLeaveBalance'] <= $totalComputedValue) {
+                    $newVacationLeaveAbsUndWP = $LatestLeaveData['vacationLeaveBalance'];
+                    $newVacationLeaveBalance = 0;
+                    $newVacationLeaveAbsUndWOP = $LatestLeaveData['vacationLeaveAbsUndWOP'] + ($totalComputedValue - $LatestLeaveData['vacationLeaveBalance']);
+                } else {
+                    $newVacationLeaveAbsUndWP = $totalComputedValue;
+                    $newVacationLeaveBalance = $LatestLeaveData['vacationLeaveBalance'] - $totalComputedValue;
+                    $newVacationLeaveAbsUndWOP = $LatestLeaveData['vacationLeaveAbsUndWOP'];
+                }
+            }
+
+            if ($particularType == "Sick Leave") {
+                $newSickLeaveEarned = $LatestLeaveData['sickLeaveBalance'];
+                if ($LatestLeaveData['sickLeaveBalance'] <= $totalComputedValue) {
+                    $newSickLeaveAbsUndWP = $LatestLeaveData['sickLeaveBalance'];
+                    $newSickLeaveBalance = 0;
+                    $newSickLeaveAbsUndWOP = $LatestLeaveData['sickLeaveAbsUndWOP'] + ($totalComputedValue - $LatestLeaveData['sickLeaveBalance']);
+                } else {
+                    $newSickLeaveAbsUndWP = $totalComputedValue;
+                    $newSickLeaveBalance = $LatestLeaveData['sickLeaveBalance'] - $totalComputedValue;
+                    $newSickLeaveAbsUndWOP = $LatestLeaveData['sickLeaveAbsUndWOP'];
+                }
+            }
+
+        } else {
+            $newVacationLeaveEarned = $initialValue;
+            $newVacationLeaveBalance = $initialValue;
+
+            $newSickLeaveEarned = $initialValue;
+            $newSickLeaveBalance = $initialValue;
+
+            if ($particularType == "Vacation Leave") {
+                $newVacationLeaveEarned = $initialValue;
+                if ($initialValue <= $totalComputedValue) {
+                    $newVacationLeaveAbsUndWP = $initialValue;
+                    $newVacationLeaveBalance = 0;
+                    $newVacationLeaveAbsUndWOP = 0 + ($totalComputedValue - $initialValue);
+                } else {
+                    $newVacationLeaveAbsUndWP = $totalComputedValue;
+                    $newVacationLeaveBalance = $initialValue - $totalComputedValue;
+                    $newVacationLeaveAbsUndWOP = 0;
+                }
+            }
+
+            if ($particularType == "Sick Leave") {
+                $newSickLeaveEarned = $initialValue;
+                if ($initialValue <= $totalComputedValue) {
+                    $newSickLeaveAbsUndWP = $initialValue;
+                    $newSickLeaveBalance = 0;
+                    $newSickLeaveAbsUndWOP = 0 + ($totalComputedValue - $initialValue);
+                } else {
+                    $newSickLeaveAbsUndWP = $totalComputedValue;
+                    $newSickLeaveBalance = $initialValue - $totalComputedValue;
+                    $newSickLeaveAbsUndWOP = 0;
+                }
+            }
+
+        }
         $stmtFetchLatestLeaveData->close();
     } else {
         // Something went wrong with the statement preparation
