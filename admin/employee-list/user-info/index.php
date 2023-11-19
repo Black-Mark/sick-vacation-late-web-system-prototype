@@ -72,7 +72,6 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
         </div>
     </div>
-    </div>
 
     <div>
         <?php

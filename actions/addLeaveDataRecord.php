@@ -24,7 +24,9 @@ if (isset($_POST['addLeaveDataRecord'])) {
     }
 
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
+    $selectedYear = isset($_POST['selectedYear']) ? sanitizeInput($_POST['selectedYear']) : null;
     $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : null;
+    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : null;
     $particularType = isset($_POST['particularType']) ? sanitizeInput($_POST['particularType']) : null;
     $particularLabel = isset($_POST['particularLabel']) ? sanitizeInput($_POST['particularLabel']) : null;
     $days = isset($_POST['dayInput']) ? sanitizeInput($_POST['dayInput']) : null;
@@ -33,7 +35,11 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $inputType = isset($_POST['inputType']) ? sanitizeInput($_POST['inputType']) : null;
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
-    $totalMinutes = (($days * 24) * 60) + ($hours * 60) + $minutes;
+    if ($selectedYear) {
+        $_SESSION['post_dataformyear'] = $selectedYear;
+    }
+
+    $totalMinutes = (($days * 8) * 60) + ($hours * 60) + $minutes;
 
     $totalComputedValue = 0.002 * $totalMinutes * 1.0416667;
 
@@ -85,6 +91,40 @@ if (isset($_POST['addLeaveDataRecord'])) {
                 }
             }
 
+            $insertLeaveDataQuery = "INSERT INTO tbl_leavedataform 
+    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
+    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
+    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
+    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
+
+            $stmtInsertLeaveData = $database->prepare($insertLeaveDataQuery);
+
+            if ($stmtInsertLeaveData) {
+                $stmtInsertLeaveData->bind_param(
+                    "sssssiiidddddddds",
+                    $empId,
+                    $period,
+                    $periodEnd,
+                    $particularType,
+                    $particularLabel,
+                    $days,
+                    $hours,
+                    $minutes,
+                    $newVacationLeaveEarned,
+                    $newVacationLeaveAbsUndWP,
+                    $newVacationLeaveBalance,
+                    $newVacationLeaveAbsUndWOP,
+                    $newSickLeaveEarned,
+                    $newSickLeaveAbsUndWP,
+                    $newSickLeaveBalance,
+                    $newSickLeaveAbsUndWOP,
+                    $dateOfAction
+                );
+
+                $stmtInsertLeaveData->execute();
+                $stmtInsertLeaveData->close();
+            }
+
         } else {
             $newVacationLeaveEarned = $initialValue;
             $newVacationLeaveBalance = $initialValue;
@@ -118,10 +158,48 @@ if (isset($_POST['addLeaveDataRecord'])) {
                 }
             }
 
+            $insertLeaveDataQuery = "INSERT INTO tbl_leavedataform 
+    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
+    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
+    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
+    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
+
+            $stmtInsertLeaveData = $database->prepare($insertLeaveDataQuery);
+
+            if ($stmtInsertLeaveData) {
+                $stmtInsertLeaveData->bind_param(
+                    "sssssiiidddddddds",
+                    $empId,
+                    $period,
+                    $periodEnd,
+                    $particularType,
+                    $particularLabel,
+                    $days,
+                    $hours,
+                    $minutes,
+                    $newVacationLeaveEarned,
+                    $newVacationLeaveAbsUndWP,
+                    $newVacationLeaveBalance,
+                    $newVacationLeaveAbsUndWOP,
+                    $newSickLeaveEarned,
+                    $newSickLeaveAbsUndWP,
+                    $newSickLeaveBalance,
+                    $newSickLeaveAbsUndWOP,
+                    $dateOfAction
+                );
+
+                $stmtInsertLeaveData->execute();
+                $stmtInsertLeaveData->close();
+            }
+
         }
         $stmtFetchLatestLeaveData->close();
     } else {
         // Something went wrong with the statement preparation
     }
+
+    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+}else{
+    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 }
 ?>

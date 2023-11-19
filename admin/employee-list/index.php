@@ -628,7 +628,12 @@ if ($department_result->num_rows > 0) {
                         ],
                         // "colReorder": true,
                         "buttons": [
-                            'copy',
+                            {
+                                extend: 'copy',
+                                exportOptions: {
+                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                }
+                            },
                             {
                                 extend: 'excel',
                                 title: 'CustomExcelFileName',

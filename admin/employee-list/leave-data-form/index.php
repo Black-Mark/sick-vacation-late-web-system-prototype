@@ -38,35 +38,25 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 }
 
 $leaveData = [];
-$selectedYear = date("Y");
 
+$selectedYear = date("Y");
 if (isset($_POST['leaveFormYear']) && $empId) {
     $selectedYear = $_POST['year'];
-
-    $sqlLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND YEAR(period) = ?";
-    $stmtLeaveData = $database->prepare($sqlLeaveData);
-
-    if ($stmtLeaveData) {
-        $stmtLeaveData->bind_param("si", $empId, $selectedYear);
-        $stmtLeaveData->execute();
-        $resultLeaveData = $stmtLeaveData->get_result();
-
-        while ($rowLeaveData = $resultLeaveData->fetch_assoc()) {
-            $leaveData[] = $rowLeaveData;
-        }
-
-        $stmtLeaveData->close();
-    } else {
-        // Something Error
+    if (isset($_SESSION['post_dataformyear'])) {
+        unset($_SESSION['post_dataformyear']);
     }
+} else if (isset($_SESSION['post_dataformyear'])) {
+    $selectedYear = $_SESSION['post_dataformyear'];
 } else {
-    $currentYear = date("Y");
+    $selectedYear = date("Y");
+}
 
+if ($selectedYear) {
     $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND YEAR(period) = ?";
     $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
 
     if ($stmtCurrentYearData) {
-        $stmtCurrentYearData->bind_param("si", $empId, $currentYear);
+        $stmtCurrentYearData->bind_param("si", $empId, $selectedYear);
         $stmtCurrentYearData->execute();
         $resultCurrentYearData = $stmtCurrentYearData->get_result();
 
@@ -149,10 +139,28 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="period" class="form-control" id="floatingPeriod"
-                                        placeholder="2020-12-31" required>
-                                    <label for="floatingPeriod">Period <span class="required-color">*</span></label>
+                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="period" class="form-control" id="floatingPeriod"
+                                                placeholder="2020-12-31" required>
+                                            <label for="floatingPeriod">Start Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="periodEnd" class="form-control"
+                                                id="floatingPeriodEnd" placeholder="2020-12-31" required>
+                                            <label for="floatingPeriodEnd">End Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="form-floating mb-2">
@@ -181,7 +189,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                         <div class="form-floating">
                                             <input type="number" min="0" max="3652" name="dayInput" class="form-control"
                                                 id="floatingDayInput" placeholder="3" required>
-                                            <label for="floatingDayInput">Day(s) <span
+                                            <label for="floatingDayInput">Work Day(s) <span
                                                     class="required-color">*</span></label>
                                         </div>
                                     </div>
@@ -197,18 +205,18 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 
                                     <div class="col-md">
                                         <div class="form-floating">
-                                            <input type="number" min="0" max="60" name="minuteInput" class="form-control"
-                                                id="floatingMinuteInput" placeholder="60" required>
+                                            <input type="number" min="0" max="60" name="minuteInput"
+                                                class="form-control" id="floatingMinuteInput" placeholder="60" required>
                                             <label for="floatingMinuteInput">Minute(s) <span
                                                     class="required-color">*</span></label>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="form-floating mb-2">
-                                    <select class="form-select" id="floatingInputType" name="inputType" aria-label="Floating Input Type"
-                                        required>
+                                    <select class="form-select" id="floatingInputType" name="inputType"
+                                        aria-label="Floating Input Type" required>
                                         <option value="Deduction" selected>Deduction</option>
                                         <option value="Earned">Earned</option>
                                         <option value="None">None</option>
@@ -218,14 +226,17 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                 </div>
 
                                 <div class="form-floating mb-2">
-                                    <input type="date" name="dateOfAction" class="form-control" id="floatingDateOfAction"
-                                        placeholder="2020-12-31" required>
-                                    <label for="floatingDateOfAction">Date of Action <span class="required-color">*</span></label>
+                                    <input type="date" name="dateOfAction" class="form-control"
+                                        id="floatingDateOfAction" placeholder="2020-12-31" required>
+                                    <label for="floatingDateOfAction">Date of Action <span
+                                            class="required-color">*</span></label>
                                 </div>
 
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="clearAddLeaveDataInputs">Clear</button>
                                 <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
                                     class="btn btn-primary" />
                             </div>
@@ -341,8 +352,31 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                             <td class="table-item-base">
                                                 <?php echo $ldata['period']; ?>
                                             </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['particular']; ?>
+                                            <td title="<?php
+                                            if ($ldata['days'] > 0) {
+                                                echo ' ' . $ldata['days'] . ' days ';
+                                            }
+                                            if ($ldata['hours'] > 0) {
+                                                echo ' ' . $ldata['hours'] . ' hours ';
+                                            }
+                                            if ($ldata['minutes'] > 0) {
+                                                echo ' ' . $ldata['minutes'] . ' minutes ';
+                                            }
+                                            ?>" class="table-item-base">
+                                                <?php
+                                                if ($ldata['particular'] == "Others") {
+                                                    if ($ldata['particularLabel']) {
+                                                        echo $ldata['particularLabel'];
+                                                    } else {
+                                                        echo $ldata['particular'];
+                                                    }
+                                                } else {
+                                                    echo $ldata['particular'];
+                                                    if ($ldata['particularLabel']) {
+                                                        echo ' (' . $ldata['particularLabel'] . ')';
+                                                    }
+                                                }
+                                                ?>
                                             </td>
 
                                             <td class="table-item-base">
@@ -380,24 +414,24 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                                 } else {
                                     ?>
                                     <tr>
-                                        <td colspan="11">
-                                            <div class="py-2 font-weight-light">
+                                        <td colspan="11" class="py-2">
+                                            <div class="py-1 font-weight-light">
                                                 There is no Data Found
                                             </div>
-                                            <div class="button-container component-container justify-content-center py-2">
-                                                <button type="button" class="custom-regular-button" data-toggle="modal"
-                                                    data-target="#addLeaveDataRecord">
+                                            <div class="button-container component-container justify-content-center py-1">
+                                                <button type="button" id="createInitialRecord" class="custom-regular-button"
+                                                    data-toggle="modal" data-target="#addLeaveDataRecord">
                                                     Add New Leave Record
                                                 </button>
-                                                <button type="button" class="custom-regular-button" data-toggle="modal"
+                                                <!-- <button type="button" class="custom-regular-button" data-toggle="modal"
                                                     data-target="#editLeaveDataRecord">
                                                     Edit Leave Record
                                                 </button>
                                                 <form action="" method="post">
-                                                    <input type="hidden" name="empid" value="<?php echo $empId; ?>" />
+                                                    <input type="hidden" name="empid" value="<?php // echo $empId; ?>" />
                                                     <input type="submit" name="deleteLeaveData" value="Delete Leave Record"
                                                         class="custom-regular-button" />
-                                                </form>
+                                                </form> -->
                                             </div>
                                         </td>
                                     </tr>
@@ -410,10 +444,91 @@ if (isset($_POST['leaveFormYear']) && $empId) {
                     </div>
                 </div>
 
+                <!-- Add Modal Fetch and Reset -->
+                <script>
+                    // Variable to store the state
+                    var selectedYear = <?php echo $selectedYear; ?>;
+                    var addLeaveDataRecordState = null;
+                    var currentYear = new Date().getFullYear();
+                    var addPeriod = null;
+                    var addPeriodEnd = null;
+                    var addDateOfAction = null;
+
+                    $(document).ready(function () {
+                        function formatDate(date) {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            return `${year}-${month}-${day}`;
+                        }
+
+                        $('#floatingPeriod, #floatingPeriodEnd, #floatingDateOfAction').on('change', function () {
+                            validateDateInput(this);
+                        });
+
+                        function validateDateInput(inputField) {
+                            var selectedDate = new Date($(inputField).val());
+
+                            if (selectedDate.getFullYear() !== selectedYear) {
+                                $(inputField).val(formatDate(new Date(selectedYear, 0, 1)));
+                                Toastify({
+                                    text: 'Enter Date Based on the Selected Year!',
+                                    duration: 3000,
+                                    newWindow: true,
+                                    close: true,
+                                    gravity: 'top',
+                                    position: 'center',
+                                    backgroundColor: 'warning',
+                                    stopOnFocus: true,
+                                }).showToast();
+                            }
+                        }
+
+                        $('#createInitialRecord').click(function () {
+                            if (selectedYear == currentYear) {
+                                addPeriod = formatDate(new Date());
+                                addPeriodEnd = formatDate(new Date());
+                                addDateOfAction = formatDate(new Date());
+                            } else {
+                                // If not the current year, set values to January 01, selectedYear
+                                addPeriod = addPeriodEnd = formatDate(new Date(selectedYear, 0, 1));
+                                addDateOfAction = formatDate(new Date(selectedYear, 0, 1));
+                            }
+
+                            // Set form field values
+                            $('#floatingPeriod').val(addPeriod);
+                            $('#floatingPeriodEnd').val(addPeriodEnd);
+                            $('#floatingDateOfAction').val(addDateOfAction);
+
+                            // Save the state
+                            addLeaveDataRecordState = {
+                                period: addPeriod,
+                                periodEnd: addPeriodEnd,
+                                dateOfAction: addDateOfAction,
+                            };
+                        });
+
+                        // Function to set data based on the saved state
+                        function setAddDataFromState() {
+                            if (addLeaveDataRecordState) {
+                                // Set form field values based on the saved state
+                                $('#floatingPeriod').val(addLeaveDataRecordState.period);
+                                $('#floatingPeriodEnd').val(addLeaveDataRecordState.periodEnd);
+                                $('#floatingDateOfAction').val(addLeaveDataRecordState.dateOfAction);
+                            }
+                        }
+
+                        // Add click event handler for the Reset button
+                        $('#clearAddLeaveDataInputs').click(function () {
+                            // Reset form fields to their initial values
+                            setAddDataFromState();
+                        });
+                    });
+                </script>
+
             </div>
 
         </div>
-    </div>
     </div>
 
     <div class="component-container">
