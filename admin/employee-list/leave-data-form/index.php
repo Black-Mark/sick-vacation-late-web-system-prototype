@@ -11,7 +11,15 @@ $employeeData = [];
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
 } else {
-    $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $sql = "SELECT
+    ua.*,
+    d.departmentName
+FROM
+    tbl_useraccounts ua
+LEFT JOIN
+    tbl_departments d ON ua.department = d.department_id
+WHERE
+    ua.employee_id = ?";
     $stmt = $database->prepare($sql);
 
     if ($stmt) {
@@ -316,12 +324,39 @@ if ($selectedYear) {
                                 <tr>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
                                         <div>Name</div>
+                                        <div class="table-item-base-none">
+                                            <?php
+                                            if (isset($employeeData['firstName']) && isset($employeeData['lastName'])) {
+                                                echo $employeeData['firstName'] . ' ' . $employeeData['lastName'];
+                                            }else {
+                                                echo 'N/A';
+                                            }
+                                            ?>
+                                        </div>
                                     </th>
                                     <th colspan="5" style="width: 40%;" class="table-head-base-front">
                                         <div>Division/Office</div>
+                                        <div class="table-item-base-none">
+                                            <?php
+                                            if (isset($employeeData['departmentName'])) {
+                                                echo $employeeData['departmentName'];
+                                            }else {
+                                                echo 'N/A';
+                                            }
+                                            ?>
+                                        </div>
                                     </th>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
                                         <div>1st. Day of Service</div>
+                                        <div class="table-item-base-none">
+                                            <?php
+                                            if (isset($employeeData['dateStarted'])) {
+                                                echo $employeeData['dateStarted'];
+                                            }else {
+                                                echo 'N/A';
+                                            }
+                                            ?>
+                                        </div>
                                     </th>
                                 </tr>
                                 <tr>
@@ -350,82 +385,100 @@ if ($selectedYear) {
                                     foreach ($leaveData as $ldata) {
                                         ?>
                                         <!-- <tr key=""> -->
-                                        <tr>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['period'];
-                                                if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
-                                                    echo ' to ' . $ldata['periodEnd'];
+                                        <div id="accordionPanelsStayOpenExample">
+                                            <tr class="clickable-element" data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
+                                                aria-expanded="true"
+                                                aria-controls="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>">
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['period'];
+                                                    if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
+                                                        echo ' to ' . $ldata['periodEnd'];
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td title="<?php
+                                                if ($ldata['days'] > 0) {
+                                                    echo ' ' . $ldata['days'] . ' days ';
                                                 }
-                                                ?>
-                                                <div class="dropdown">
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-    Dropdown link
-  </a>
-
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-  </ul>
-</div>
-                                            </td>
-                                            <td title="<?php
-                                            if ($ldata['days'] > 0) {
-                                                echo ' ' . $ldata['days'] . ' days ';
-                                            }
-                                            if ($ldata['hours'] > 0) {
-                                                echo ' ' . $ldata['hours'] . ' hours ';
-                                            }
-                                            if ($ldata['minutes'] > 0) {
-                                                echo ' ' . $ldata['minutes'] . ' minutes ';
-                                            }
-                                            ?>" class="table-item-base">
-                                                <?php
-                                                if ($ldata['particular'] == "Others") {
-                                                    if ($ldata['particularLabel']) {
-                                                        echo $ldata['particularLabel'];
+                                                if ($ldata['hours'] > 0) {
+                                                    echo ' ' . $ldata['hours'] . ' hours ';
+                                                }
+                                                if ($ldata['minutes'] > 0) {
+                                                    echo ' ' . $ldata['minutes'] . ' minutes ';
+                                                }
+                                                ?>" class="table-item-base">
+                                                    <?php
+                                                    if ($ldata['particular'] == "Others") {
+                                                        if ($ldata['particularLabel']) {
+                                                            echo $ldata['particularLabel'];
+                                                        } else {
+                                                            echo $ldata['particular'];
+                                                        }
                                                     } else {
                                                         echo $ldata['particular'];
+                                                        if ($ldata['particularLabel']) {
+                                                            echo ' (' . $ldata['particularLabel'] . ')';
+                                                        }
                                                     }
-                                                } else {
-                                                    echo $ldata['particular'];
-                                                    if ($ldata['particularLabel']) {
-                                                        echo ' (' . $ldata['particularLabel'] . ')';
-                                                    }
-                                                }
-                                                ?>
-                                            </td>
+                                                    ?>
+                                                </td>
 
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['vacationLeaveEarned']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['vacationLeaveAbsUndWP']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['vacationLeaveBalance']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['vacationLeaveAbsUndWOP']; ?>
-                                            </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['vacationLeaveEarned']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['vacationLeaveAbsUndWP']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['vacationLeaveBalance']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['vacationLeaveAbsUndWOP']; ?>
+                                                </td>
 
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['sickLeaveEarned']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['sickLeaveAbsUndWP']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['sickLeaveBalance']; ?>
-                                            </td>
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['sickLeaveAbsUndWOP']; ?>
-                                            </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['sickLeaveEarned']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['sickLeaveAbsUndWP']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['sickLeaveBalance']; ?>
+                                                </td>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['sickLeaveAbsUndWOP']; ?>
+                                                </td>
 
-                                            <td class="table-item-base">
-                                                <?php echo $ldata['dateOfAction']; ?>
-                                            </td>
-                                        </tr>
+                                                <td class="table-item-base">
+                                                    <?php echo $ldata['dateOfAction']; ?>
+                                                </td>
+                                            </tr>
+                                            <tr id="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
+                                                class="accordion-collapse collapse"
+                                                aria-labelledby="panelsStayOpen-heading<?php echo $ldata['leavedataform_id']; ?>">
+                                                <td colspan="11" class="table-item-base">
+                                                    <div
+                                                        class="button-container component-container justify-content-center py-1">
+                                                        <button type="button" id="createInitialRecord"
+                                                            class="custom-regular-button" data-toggle="modal"
+                                                            data-target="#addLeaveDataRecord">
+                                                            Add New Leave Record
+                                                        </button>
+                                                        <button type="button" class="custom-regular-button" data-toggle="modal"
+                                                            data-target="#editLeaveDataRecord">
+                                                            Edit Leave Record
+                                                        </button>
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="empid"
+                                                                value="<?php // echo $empId; ?>" />
+                                                            <input type="submit" name="deleteLeaveData"
+                                                                value="Delete Leave Record" class="custom-regular-button" />
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </div>
                                         <?php
                                     }
                                 } else {

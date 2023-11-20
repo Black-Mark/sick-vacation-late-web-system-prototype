@@ -792,6 +792,16 @@ body::-webkit-scrollbar-thumb {
     text-overflow: ellipsis;
 }
 
+.table-item-base-none {
+    text-align: center;
+    font-size: 0.75rem;
+    /* 12px */
+    line-height: 1rem;
+    /* 16px */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: normal;
+}
 
 
 /* Asset Custom */
@@ -835,6 +845,9 @@ body::-webkit-scrollbar-thumb {
     }
 }
 
+.clickable-element {
+    cursor: pointer;
+}
 
 /* Alternative */
 
