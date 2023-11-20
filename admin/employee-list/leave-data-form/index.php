@@ -60,7 +60,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 }
 
 if ($selectedYear) {
-    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?)";
+    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?) ORDER BY period DESC";
     $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
 
     if ($stmtCurrentYearData) {
