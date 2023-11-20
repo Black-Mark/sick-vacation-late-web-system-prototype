@@ -44,11 +44,22 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $totalComputedValue = 0.002 * $totalMinutes * 1.0416667;
 
     // Fetch the latest result of earned Vacation or Sick Leave based on ParticularType
-    $sqlFetchLatestLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND particular = ? ORDER BY period DESC LIMIT 1";
+    // Fetch the latest result of earned Vacation or Sick Leave based on ParticularType
+    if ($particularType == 'Late' || $particularType == 'Vacation Leave') {
+        $sqlFetchLatestLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (particular = 'Sick Leave' OR particular = 'Late') ORDER BY period DESC LIMIT 1";
+    } else {
+        $sqlFetchLatestLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND particular = ? ORDER BY period DESC LIMIT 1";
+    }
+
     $stmtFetchLatestLeaveData = $database->prepare($sqlFetchLatestLeaveData);
 
     if ($stmtFetchLatestLeaveData) {
-        $stmtFetchLatestLeaveData->bind_param("ss", $empId, $particularType);
+        if ($particularType != 'Late' && $particularType != 'Vacation Leave') {
+            $stmtFetchLatestLeaveData->bind_param("ss", $empId, $particularType);
+        } else {
+            $stmtFetchLatestLeaveData->bind_param("s", $empId);
+        }
+
         $stmtFetchLatestLeaveData->execute();
         $resultFetchLatestLeaveData = $stmtFetchLatestLeaveData->get_result();
 

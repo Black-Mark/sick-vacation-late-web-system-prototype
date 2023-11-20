@@ -245,8 +245,7 @@ if ($selectedYear) {
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary"
-                                    id="clearAddLeaveDataInputs">Clear</button>
+                                <button type="button" class="btn btn-primary clearAddLeaveDataInputs">Clear</button>
                                 <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
                                     class="btn btn-primary" />
                             </div>
@@ -254,33 +253,129 @@ if ($selectedYear) {
                     </div>
                 </form>
 
-                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade"
-                    id="editLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle"
+                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
+                    id="addNewLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="addNewLeaveDataRecordTitle"
                     aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit New Leave Record
+                                <h5 class="modal-title" id="addNewLeaveDataRecordModalLongTitle">Add New Leave Record
                                 </h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="period" value="<?php echo date('Y-m-d'); ?>"
-                                        class="form-control" id="floatingPeriod" placeholder="2020-12-31" required>
-                                    <label for="floatingPeriod">Period <span class="required-color">*</span></label>
+                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="period" class="form-control" id="floatingNewPeriod"
+                                                placeholder="2020-12-31" required>
+                                            <label for="floatingNewPeriod">Start Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="periodEnd" class="form-control"
+                                                id="floatingNewPeriodEnd" placeholder="2020-12-31" required>
+                                            <label for="floatingNewPeriodEnd">End Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingParticularType" name="particularType"
+                                        aria-label="Floating Particular Type" required>
+                                        <option value="" selected></option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Vacation Leave">Vacation Leave</option>
+                                        <option value="Late">Late</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                    <label for="floatingParticularType">Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="particularLabel" class="form-control"
+                                        id="floatingparticularLabel" placeholder="">
+                                    <label for="floatingparticularLabel">Label
+                                        <!-- <span class="required-color">*</span> -->
+                                    </label>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
+                                                id="floatingDayInput" placeholder="3" required>
+                                            <label for="floatingDayInput">Work Day(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
+                                                id="floatingHourInput" placeholder="24" required>
+                                            <label for="floatingHourInput">Hour(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="60" name="minuteInput"
+                                                class="form-control" id="floatingMinuteInput" placeholder="60" required>
+                                            <label for="floatingMinuteInput">Minute(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingInputType" name="inputType"
+                                        aria-label="Floating Input Type" required>
+                                        <option value="Deduction" selected>Deduction</option>
+                                        <option value="Earned">Earned</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                    <label for="floatingInputType">Input Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateOfAction" class="form-control"
+                                        id="floatingNewDateOfAction" placeholder="2020-12-31" required>
+                                    <label for="floatingNewDateOfAction">Date of Action <span
+                                            class="required-color">*</span></label>
+                                </div>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <input type="submit" name="editLeaveDataRecord" value="Edit Leave Record"
+                                <button type="button" class="btn btn-primary clearAddLeaveDataInputs">Clear</button>
+                                <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
                                     class="btn btn-primary" />
                             </div>
                         </div>
                     </div>
                 </form>
+
+                <div class="text-center font-weight-bold text-uppercase title-text component-container">
+                    Year
+                    <?php echo $selectedYear; ?>
+                </div>
 
                 <div class="button-container component-container mb-2">
                     <form action="" method="post">
@@ -308,6 +403,16 @@ if ($selectedYear) {
                         </select>
                         <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
                     </form>
+                    <?php
+                    if (!empty($leaveData)) {
+                        ?>
+                        <button type="button" id="createInitialRecord" class="custom-regular-button" data-toggle="modal"
+                            data-target="#addLeaveDataRecord">
+                            Add Leave Record
+                        </button>
+                        <?php
+                    }
+                    ?>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
 
@@ -461,8 +566,11 @@ if ($selectedYear) {
                                                     <div
                                                         class="button-container component-container justify-content-center py-1">
                                                         <button type="button" id="addNewLeaveDataRecord"
-                                                            class="custom-regular-button" data-toggle="modal"
-                                                            data-target="#addNewLeaveDataRecord">
+                                                            class="addNewLeaveDataRecord custom-regular-button"
+                                                            data-toggle="modal" data-target="#addNewLeaveDataRecord"
+                                                            data-period-date="<?php echo $ldata['period']; ?>"
+                                                            data-period-end-date="<?php echo $ldata['periodEnd']; ?>"
+                                                            data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                             Add New Leave Record
                                                         </button>
                                                         <button type="button" class="custom-regular-button" data-toggle="modal"
@@ -497,15 +605,6 @@ if ($selectedYear) {
                                                     data-toggle="modal" data-target="#addLeaveDataRecord">
                                                     Add New Leave Record
                                                 </button>
-                                                <!-- <button type="button" class="custom-regular-button" data-toggle="modal"
-                                                    data-target="#editLeaveDataRecord">
-                                                    Edit Leave Record
-                                                </button>
-                                                <form action="" method="post">
-                                                    <input type="hidden" name="empid" value="<?php // echo $empId; ?>" />
-                                                    <input type="submit" name="deleteLeaveData" value="Delete Leave Record"
-                                                        class="custom-regular-button" />
-                                                </form> -->
                                             </div>
                                         </td>
                                     </tr>
@@ -593,7 +692,7 @@ if ($selectedYear) {
                         var containerPeriod = null;
                         var containerPeriodEnd = null;
 
-                        $('#floatingPeriod, #floatingPeriodEnd').on('change', function () {
+                        $('#floatingPeriod').on('change', function () {
                             // validateDateInput(this);
 
                             // Get the values of the two input fields
@@ -601,21 +700,10 @@ if ($selectedYear) {
                             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
                             // Compare the values
-                            if (floatingPeriodValue >= floatingPeriodEndValue + 1) {
-                                if (containerPeriod) {
-                                    $('#floatingPeriod').val(containerPeriod);
-                                } else {
-                                    $('#floatingPeriod').val(formatDate(new Date()));
-                                }
-
-                                if (containerPeriodEnd) {
-                                    $('#floatingPeriodEnd').val(containerPeriodEnd);
-                                } else {
-                                    $('#floatingPeriodEnd').val(formatDate(new Date()));
-                                }
-
+                            if (floatingPeriodValue >= floatingPeriodEndValue) {
+                                $('#floatingPeriodEnd').val(floatingPeriodValue);
                                 Toastify({
-                                    text: 'Enter Date Based on the Selected Year!',
+                                    text: 'Period should not be Greater Than the Period End!',
                                     duration: 3000,
                                     newWindow: true,
                                     close: true,
@@ -626,7 +714,35 @@ if ($selectedYear) {
                                     },
                                     stopOnFocus: true,
                                 }).showToast();
+                            } else {
+                                updateDays();
+                                containerPeriod = $('#floatingPeriod').val();
+                                containerPeriodEnd = $('#floatingPeriodEnd').val();
+                            }
+                        });
 
+                        $('#floatingPeriodEnd').on('change', function () {
+                            // validateDateInput(this);
+
+                            // Get the values of the two input fields
+                            var floatingPeriodValue = $('#floatingPeriod').val();
+                            var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
+
+                            // Compare the values
+                            if (floatingPeriodValue >= floatingPeriodEndValue) {
+                                $('#floatingPeriodEnd').val(floatingPeriodValue);
+                                Toastify({
+                                    text: 'Period should not be Greater Than the Period End!',
+                                    duration: 3000,
+                                    newWindow: true,
+                                    close: true,
+                                    gravity: 'top',
+                                    position: 'center',
+                                    style: {
+                                        background: '#fca100',
+                                    },
+                                    stopOnFocus: true,
+                                }).showToast();
                             } else {
                                 updateDays();
                                 containerPeriod = $('#floatingPeriod').val();
@@ -658,6 +774,27 @@ if ($selectedYear) {
                             };
                         });
 
+                        $('.addNewLeaveDataRecord').click(function () {
+                            // addPeriod = addPeriodEnd = formatDate(new Date(selectedYear, 0, 1));
+                            // addDateOfAction = formatDate(new Date(selectedYear, 0, 1));
+
+                            addPeriod = $(this).data('period-date');
+                            addPeriodEnd = $(this).data('period-end-date');
+                            addDateOfAction = $(this).data('date-of-action');
+
+                            // Set form field values
+                            $('#floatingNewPeriod').val(addPeriod);
+                            $('#floatingNewPeriodEnd').val(addPeriodEnd);
+                            $('#floatingNewDateOfAction').val(addDateOfAction);
+
+                            // Save the state
+                            addLeaveDataRecordState = {
+                                period: addPeriod,
+                                periodEnd: addPeriodEnd,
+                                dateOfAction: addDateOfAction,
+                            };
+                        });
+
                         // Function to set data based on the saved state
                         function setAddDataFromState() {
                             if (addLeaveDataRecordState) {
@@ -665,12 +802,17 @@ if ($selectedYear) {
                                 $('#floatingPeriod').val(addLeaveDataRecordState.period);
                                 $('#floatingPeriodEnd').val(addLeaveDataRecordState.periodEnd);
                                 $('#floatingDateOfAction').val(addLeaveDataRecordState.dateOfAction);
+                                $('#floatingNewPeriod').val(addLeaveDataRecordState.period);
+                                $('#floatingNewPeriodEnd').val(addLeaveDataRecordState.periodEnd);
+                                $('#floatingNewDateOfAction').val(addLeaveDataRecordState.dateOfAction);
                             }
                         }
 
                         // Add click event handler for the Reset button
-                        $('#clearAddLeaveDataInputs').click(function () {
+                        $('.clearAddLeaveDataInputs').click(function () {
                             // Reset form fields to their initial values
+                            $(":input:not(:submit, :hidden)").val('');
+                            $("select").prop('selectedIndex', 0);
                             setAddDataFromState();
                         });
                     });

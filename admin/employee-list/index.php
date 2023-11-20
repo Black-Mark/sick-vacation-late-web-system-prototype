@@ -678,7 +678,7 @@ if ($department_result->num_rows > 0) {
 
                     $(document).ready(function () {
                         $("#clearAddEmployeeInputs").click(function () {
-                            $("#addEmployee input").val('');
+                            $("#addEmployee :input:not(:submit)").val('');
                             $("#addEmployee select").prop('selectedIndex', 0);
 
                             var currentDate = new Date().toISOString().split('T')[0];
