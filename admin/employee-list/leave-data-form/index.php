@@ -86,6 +86,7 @@ if ($selectedYear) {
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_bootstrap_vcss; ?>">
+    <script src="<?php echo $assets_bootstrap_vjs; ?>"></script>
     <link rel="stylesheet" href="<?php echo $assets_bootstrap_css; ?>">
     <script src="<?php echo $assets_jquery; ?>"></script>
     <script src="<?php echo $assets_popper; ?>"></script>
@@ -352,10 +353,21 @@ if ($selectedYear) {
                                         <tr>
                                             <td class="table-item-base">
                                                 <?php echo $ldata['period'];
-                                                if($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']){
-                                                    echo ' to '.$ldata['periodEnd'];
+                                                if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
+                                                    echo ' to ' . $ldata['periodEnd'];
                                                 }
                                                 ?>
+                                                <div class="dropdown">
+  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+    Dropdown link
+  </a>
+
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <li><a class="dropdown-item" href="#">Action</a></li>
+    <li><a class="dropdown-item" href="#">Another action</a></li>
+    <li><a class="dropdown-item" href="#">Something else here</a></li>
+  </ul>
+</div>
                                             </td>
                                             <td title="<?php
                                             if ($ldata['days'] > 0) {
@@ -532,7 +544,7 @@ if ($selectedYear) {
                             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
                             // Compare the values
-                            if (floatingPeriodValue >= floatingPeriodEndValue+1) {
+                            if (floatingPeriodValue >= floatingPeriodEndValue + 1) {
                                 if (containerPeriod) {
                                     $('#floatingPeriod').val(containerPeriod);
                                 } else {

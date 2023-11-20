@@ -33,6 +33,7 @@ $assets_script_topnav = $webhostpage.'/assets/js/topnav.js';
 $assets_logo_png = $webhostpage.'/assets/images/indang-logo.png';
 $assets_logo_icon = $webhostpage.'/assets/images/indang-logo.ico';
 $assets_bootstrap_vcss = $webhostpage.'/assets/bootstrap-5.0.2-dist/css/bootstrap.min.css';
+$assets_bootstrap_vjs = $webhostpage.'/assets/bootstrap-5.0.2-dist/js/bootstrap.min.js';
 $assets_bootstrap_css = $webhostpage.'/assets/bootstrap/dist/css/bootstrap.min.css';
 $assets_bootstrap_js = $webhostpage.'/assets/bootstrap/dist/js/bootstrap.min.js';
 $assets_jquery = $webhostpage.'/assets/bootstrap/assets/js/vendor/jquery-slim.min.js';
