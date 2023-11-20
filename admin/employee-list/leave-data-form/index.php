@@ -60,7 +60,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 }
 
 if ($selectedYear) {
-    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?) ORDER BY period DESC";
+    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?) ORDER BY period ASC";
     $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
 
     if ($stmtCurrentYearData) {
@@ -372,6 +372,125 @@ if ($selectedYear) {
                     </div>
                 </form>
 
+                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade"
+                    id="editLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit Leave Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="period" class="form-control"
+                                                id="floatingEditPeriod" placeholder="2020-12-31" required>
+                                            <label for="floatingEditPeriod">Start Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="periodEnd" class="form-control"
+                                                id="floatingEditPeriodEnd" placeholder="2020-12-31" required>
+                                            <label for="floatingEditPeriodEnd">End Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingEditParticularType" name="particularType"
+                                        aria-label="floatingEdit Particular Type" required>
+                                        <option value="" selected></option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Vacation Leave">Vacation Leave</option>
+                                        <option value="Late">Late</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                    <label for="floatingEditParticularType">Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="particularLabel" class="form-control"
+                                        id="floatingEditParticularLabel" placeholder="">
+                                    <label for="floatingEditParticularLabel">Label
+                                        <!-- <span class="required-color">*</span> -->
+                                    </label>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
+                                                id="floatingEditDayInput" placeholder="3" required>
+                                            <label for="floatingEditDayInput">Work Day(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
+                                                id="floatingEditHourInput" placeholder="24" required>
+                                            <label for="floatingEditHourInput">Hour(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" min="0" max="60" name="minuteInput"
+                                                class="form-control" id="floatingEditMinuteInput" placeholder="60"
+                                                required>
+                                            <label for="floatingEditMinuteInput">Minute(s) <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select class="form-select" id="floatingEditInputType" name="inputType"
+                                        aria-label="floatingEdit Input Type" required>
+                                        <option value="Deduction" selected>Deduction</option>
+                                        <option value="Earned">Earned</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                    <label for="floatingEditInputType">Input Type <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateOfAction" class="form-control"
+                                        id="floatingEditDateOfAction" placeholder="2020-12-31" required>
+                                    <label for="floatingEditDateOfAction">Date of Action <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary clearEditLeaveDataInputs">Clear</button>
+                                <input type="submit" name="editLeaveDataRecord" value="Save Changes"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="text-center font-weight-bold text-uppercase title-text component-container">
                     Year
                     <?php echo $selectedYear; ?>
@@ -530,29 +649,29 @@ if ($selectedYear) {
                                                 </td>
 
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['vacationLeaveEarned']; ?>
+                                                    <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['vacationLeaveAbsUndWP']; ?>
+                                                    <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['vacationLeaveBalance']; ?>
+                                                    <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['vacationLeaveAbsUndWOP']; ?>
+                                                    <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['sickLeaveEarned']; ?>
+                                                    <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['sickLeaveAbsUndWP']; ?>
+                                                    <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['sickLeaveBalance']; ?>
+                                                    <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['sickLeaveAbsUndWOP']; ?>
+                                                    <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 
                                                 <td class="table-item-base">
@@ -573,8 +692,16 @@ if ($selectedYear) {
                                                             data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                             Add New Leave Record
                                                         </button>
-                                                        <button type="button" class="custom-regular-button" data-toggle="modal"
-                                                            data-target="#editLeaveDataRecord">
+                                                        <button type="button" class="editLeaveDataRecord custom-regular-button"
+                                                            data-toggle="modal" data-target="#editLeaveDataRecord"
+                                                            data-period-start="<?php echo $ldata['period']; ?>"
+                                                            data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                            data-particular-type="<?php echo $ldata['particular']; ?>"
+                                                            data-particular-label="<?php echo $ldata['particularLabel']; ?>"
+                                                            data-input-day="<?php echo $ldata['days']; ?>"
+                                                            data-input-hour="<?php echo $ldata['hours']; ?>"
+                                                            data-input-minute="<?php echo $ldata['minutes']; ?>"
+                                                            data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                             Edit Leave Record
                                                         </button>
                                                         <form action="<?php echo $action_delete_leaverecorddata; ?>"
@@ -793,6 +920,59 @@ if ($selectedYear) {
                                 periodEnd: addPeriodEnd,
                                 dateOfAction: addDateOfAction,
                             };
+                        });
+
+                        $('.editLeaveDataRecord').click(function () {
+                            // Set form field values
+                            var editPeriodStart = $(this).data('period-start');
+                            var editPeriodEnd = $(this).data('period-end');
+                            var editParticularType = $(this).data('particular-type');
+                            var editParticularLabel = $(this).data('particular-label');
+                            var editInputDay = $(this).data('input-day');
+                            var editInputHour = $(this).data('input-hour');
+                            var editInputMinute = $(this).data('input-minute');
+                            var editDateOfAction = $(this).data('date-of-action');
+
+                            // Set form field values
+                            $('#floatingEditPeriod').val(editPeriodStart);
+                            $('#floatingEditPeriodEnd').val(editPeriodEnd);
+                            $('#floatingEditParticularType').val(editParticularType);
+                            $('#floatingEditParticularLabel').val(editParticularLabel);
+                            $('#floatingEditDayInput').val(editInputDay);
+                            $('#floatingEditHourInput').val(editInputHour);
+                            $('#floatingEditMinuteInput').val(editInputMinute);
+                            $('#floatingEditDateOfAction').val(editDateOfAction);
+
+                            // Save the state
+                            editLeaveDataRecordState = {
+                                periodStart: editPeriodStart,
+                                periodEnd: editPeriodEnd,
+                                particularType: editParticularType,
+                                particularLabel: editParticularLabel,
+                                inputDay: editInputDay,
+                                inputHour: editInputHour,
+                                inputMinute: editInputMinute,
+                                dateOfAction: editDateOfAction,
+                            };
+                        });
+
+                        function setEditDataFromState() {
+                            // Set form field values from the editLeaveDataRecordState object
+                            $('#floatingEditPeriod').val(editLeaveDataRecordState.periodStart);
+                            $('#floatingEditPeriodEnd').val(editLeaveDataRecordState.periodEnd);
+                            $('#floatingEditParticularType').val(editLeaveDataRecordState.particularType);
+                            $('#floatingEditParticularLabel').val(editLeaveDataRecordState.particularLabel);
+                            $('#floatingEditDayInput').val(editLeaveDataRecordState.inputDay);
+                            $('#floatingEditHourInput').val(editLeaveDataRecordState.inputHour);
+                            $('#floatingEditMinuteInput').val(editLeaveDataRecordState.inputMinute);
+                            $('#floatingEditDateOfAction').val(editLeaveDataRecordState.dateOfAction);
+                        }
+
+                        $('.clearEditLeaveDataInputs').click(function () {
+                            // Reset form fields to their initial values
+                            $(":input:not(:submit, :hidden)").val('');
+                            $("select").prop('selectedIndex', 0);
+                            setEditDataFromState();
                         });
 
                         // Function to set data based on the saved state

@@ -123,7 +123,14 @@ if (isset($_POST['addLeaveDataRecord'])) {
                     $dateOfAction
                 );
 
-                $stmtInsertLeaveData->execute();
+                if (mysqli_stmt_execute($stmtInsertLeaveData)) {
+                    $_SESSION['alert_message'] = "Leave Data Record Successfully Added!";
+                    $_SESSION['alert_type'] = $success_color;
+                } else {
+                    $_SESSION['alert_message'] = "Error updating employee with ID $employeeId: " . mysqli_stmt_error($stmtInsertLeaveData);
+                    $_SESSION['alert_type'] = $error_color;
+                }
+
                 $stmtInsertLeaveData->close();
             }
 
@@ -190,7 +197,14 @@ if (isset($_POST['addLeaveDataRecord'])) {
                     $dateOfAction
                 );
 
-                $stmtInsertLeaveData->execute();
+                if (mysqli_stmt_execute($stmtInsertLeaveData)) {
+                    $_SESSION['alert_message'] = "Leave Data Record Successfully Added!";
+                    $_SESSION['alert_type'] = $success_color;
+                } else {
+                    $_SESSION['alert_message'] = "Error updating employee with ID $employeeId: " . mysqli_stmt_error($stmtInsertLeaveData);
+                    $_SESSION['alert_type'] = $error_color;
+                }
+
                 $stmtInsertLeaveData->close();
             }
 
