@@ -65,7 +65,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
             $newSickLeaveBalance = $LatestLeaveData['sickLeaveBalance'];
             $newSickLeaveAbsUndWOP = $LatestLeaveData['sickLeaveAbsUndWOP'];
 
-            if ($particularType == "Vacation Leave") {
+            if ($particularType == "Vacation Leave" || $particularType == "Late") {
                 $newVacationLeaveEarned = $LatestLeaveData['vacationLeaveBalance'];
                 if ($LatestLeaveData['vacationLeaveBalance'] <= $totalComputedValue) {
                     $newVacationLeaveAbsUndWP = $LatestLeaveData['vacationLeaveBalance'];
@@ -132,7 +132,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
             $newSickLeaveEarned = $initialValue;
             $newSickLeaveBalance = $initialValue;
 
-            if ($particularType == "Vacation Leave") {
+            if ($particularType == "Vacation Leave" || $particularType == "Late") {
                 $newVacationLeaveEarned = $initialValue;
                 if ($initialValue <= $totalComputedValue) {
                     $newVacationLeaveAbsUndWP = $initialValue;
@@ -199,7 +199,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
     }
 
     header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
-}else{
+} else {
     header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 }
 ?>

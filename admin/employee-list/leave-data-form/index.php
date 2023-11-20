@@ -169,6 +169,7 @@ if ($selectedYear) {
                                         <option value="" selected></option>
                                         <option value="Sick Leave">Sick Leave</option>
                                         <option value="Vacation Leave">Vacation Leave</option>
+                                        <option value="Late">Late</option>
                                         <option value="Others">Others</option>
                                     </select>
                                     <label for="floatingParticularType">Type <span
@@ -350,7 +351,27 @@ if ($selectedYear) {
                                         <!-- <tr key=""> -->
                                         <tr>
                                             <td class="table-item-base">
-                                                <?php echo $ldata['period']; ?>
+                                                <button type="button" id="createInitialRecord" class="custom-regular-button"
+                                                    data-toggle="modal" data-target="#addLeaveDataRecord">
+                                                    Add New Leave Record
+                                                </button>
+                                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseExample" aria-expanded="false"
+                                                    aria-controls="collapseExample">
+                                                    Button with data-bs-target
+                                                </button>
+                                                <div class="collapse" id="collapseExample">
+                                                    <div class="card card-body">
+                                                        Some placeholder content for the collapse component. This panel is
+                                                        hidden by default but revealed when the user activates the relevant
+                                                        trigger.
+                                                    </div>
+                                                </div>
+                                                <?php echo $ldata['period'];
+                                                if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
+                                                    echo ' to ' . $ldata['periodEnd'];
+                                                }
+                                                ?>
                                             </td>
                                             <td title="<?php
                                             if ($ldata['days'] > 0) {
@@ -462,15 +483,84 @@ if ($selectedYear) {
                             return `${year}-${month}-${day}`;
                         }
 
-                        $('#floatingPeriod, #floatingPeriodEnd, #floatingDateOfAction').on('change', function () {
-                            validateDateInput(this);
-                        });
+                        // function validateDateInput(inputField) {
+                        //     var selectedDate = new Date($(inputField).val());
 
-                        function validateDateInput(inputField) {
-                            var selectedDate = new Date($(inputField).val());
+                        //     // Format the selected date for comparison
+                        //     var formattedSelectedDate = formatDate(selectedDate);
 
-                            if (selectedDate.getFullYear() !== selectedYear) {
-                                $(inputField).val(formatDate(new Date(selectedYear, 0, 1)));
+                        //     // Format January 1st of the selected year for comparison
+                        //     var formattedJanuary1 = formatDate(new Date(selectedYear, 0, 1));
+
+                        //     // Format December 31st of the selected year for comparison
+                        //     var formattedDecember31 = formatDate(new Date(selectedYear, 12, 31));
+
+                        //     // Check if selectedDate is within the range January 1st to December 31st of the selected year
+                        //     if (!(formattedJanuary1 <= formattedSelectedDate && formattedSelectedDate <= formattedDecember31)) {
+                        //         $(inputField).val(formattedJanuary1);
+                        //         Toastify({
+                        //             text: 'Enter Date Based on the Selected Year!',
+                        //             duration: 3000,
+                        //             newWindow: true,
+                        //             close: true,
+                        //             gravity: 'top',
+                        //             position: 'center',
+                        //             style: {
+                        //                 background: '#fca100',
+                        //             },
+                        //             stopOnFocus: true,
+                        //         }).showToast();
+                        //     }
+                        // }
+
+                        function computeDays(startDate, endDate) {
+                            const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+                            const start = new Date(startDate);
+                            const end = new Date(endDate);
+
+                            const diffDays = Math.round(Math.abs((start - end) / oneDay)) + 1;
+                            return diffDays;
+                        }
+
+                        function updateDays() {
+                            const period = $('#floatingPeriod').val();
+                            const periodEnd = $('#floatingPeriodEnd').val();
+
+                            // Check if both period and periodEnd have valid values
+                            if (period && periodEnd) {
+                                const days = computeDays(period, periodEnd);
+                                $('#floatingDayInput').val(days);
+                            }
+                        }
+
+                        // $('#floatingDateOfAction').on('change', function () {
+                        //     validateDateInput(this);
+                        // });
+
+                        var containerPeriod = null;
+                        var containerPeriodEnd = null;
+
+                        $('#floatingPeriod, #floatingPeriodEnd').on('change', function () {
+                            // validateDateInput(this);
+
+                            // Get the values of the two input fields
+                            var floatingPeriodValue = $('#floatingPeriod').val();
+                            var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
+
+                            // Compare the values
+                            if (floatingPeriodValue >= floatingPeriodEndValue + 1) {
+                                if (containerPeriod) {
+                                    $('#floatingPeriod').val(containerPeriod);
+                                } else {
+                                    $('#floatingPeriod').val(formatDate(new Date()));
+                                }
+
+                                if (containerPeriodEnd) {
+                                    $('#floatingPeriodEnd').val(containerPeriodEnd);
+                                } else {
+                                    $('#floatingPeriodEnd').val(formatDate(new Date()));
+                                }
+
                                 Toastify({
                                     text: 'Enter Date Based on the Selected Year!',
                                     duration: 3000,
@@ -478,11 +568,18 @@ if ($selectedYear) {
                                     close: true,
                                     gravity: 'top',
                                     position: 'center',
-                                    backgroundColor: 'warning',
+                                    style: {
+                                        background: '#fca100',
+                                    },
                                     stopOnFocus: true,
                                 }).showToast();
+
+                            } else {
+                                updateDays();
+                                containerPeriod = $('#floatingPeriod').val();
+                                containerPeriodEnd = $('#floatingPeriodEnd').val();
                             }
-                        }
+                        });
 
                         $('#createInitialRecord').click(function () {
                             if (selectedYear == currentYear) {
