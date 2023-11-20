@@ -60,11 +60,11 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 }
 
 if ($selectedYear) {
-    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND YEAR(period) = ?";
+    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?)";
     $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
 
     if ($stmtCurrentYearData) {
-        $stmtCurrentYearData->bind_param("si", $empId, $selectedYear);
+        $stmtCurrentYearData->bind_param("sii", $empId, $selectedYear, $selectedYear);
         $stmtCurrentYearData->execute();
         $resultCurrentYearData = $stmtCurrentYearData->get_result();
 
@@ -74,7 +74,7 @@ if ($selectedYear) {
 
         $stmtCurrentYearData->close();
     } else {
-        //Something Error
+        // Something Error
     }
 }
 
@@ -328,7 +328,7 @@ if ($selectedYear) {
                                             <?php
                                             if (isset($employeeData['firstName']) && isset($employeeData['lastName'])) {
                                                 echo $employeeData['firstName'] . ' ' . $employeeData['lastName'];
-                                            }else {
+                                            } else {
                                                 echo 'N/A';
                                             }
                                             ?>
@@ -340,7 +340,7 @@ if ($selectedYear) {
                                             <?php
                                             if (isset($employeeData['departmentName'])) {
                                                 echo $employeeData['departmentName'];
-                                            }else {
+                                            } else {
                                                 echo 'N/A';
                                             }
                                             ?>
@@ -352,7 +352,7 @@ if ($selectedYear) {
                                             <?php
                                             if (isset($employeeData['dateStarted'])) {
                                                 echo $employeeData['dateStarted'];
-                                            }else {
+                                            } else {
                                                 echo 'N/A';
                                             }
                                             ?>
@@ -455,23 +455,27 @@ if ($selectedYear) {
                                                 </td>
                                             </tr>
                                             <tr id="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
-                                                class="accordion-collapse collapse"
+                                                class="component-container accordion-collapse collapse"
                                                 aria-labelledby="panelsStayOpen-heading<?php echo $ldata['leavedataform_id']; ?>">
-                                                <td colspan="11" class="table-item-base">
+                                                <td colspan="11" class="component-container table-item-base">
                                                     <div
                                                         class="button-container component-container justify-content-center py-1">
-                                                        <button type="button" id="createInitialRecord"
+                                                        <button type="button" id="addNewLeaveDataRecord"
                                                             class="custom-regular-button" data-toggle="modal"
-                                                            data-target="#addLeaveDataRecord">
+                                                            data-target="#addNewLeaveDataRecord">
                                                             Add New Leave Record
                                                         </button>
                                                         <button type="button" class="custom-regular-button" data-toggle="modal"
                                                             data-target="#editLeaveDataRecord">
                                                             Edit Leave Record
                                                         </button>
-                                                        <form action="" method="post">
-                                                            <input type="hidden" name="empid"
-                                                                value="<?php // echo $empId; ?>" />
+                                                        <form action="<?php echo $action_delete_leaverecorddata; ?>"
+                                                            method="post">
+                                                            <input type="hidden" name="leavedataformId"
+                                                                value="<?php echo $ldata['leavedataform_id']; ?>" />
+                                                            <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                                            <input type="hidden" name="selectedYear"
+                                                                value="<?php echo $selectedYear; ?>" />
                                                             <input type="submit" name="deleteLeaveData"
                                                                 value="Delete Leave Record" class="custom-regular-button" />
                                                         </form>
