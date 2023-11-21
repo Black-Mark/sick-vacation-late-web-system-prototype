@@ -51,7 +51,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
     }
 
-    $sqlFetchLatestLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND period <= ? ORDER BY dateCreated DESC LIMIT 1";
+    $sqlFetchLatestLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND period <= ? ORDER BY period DESC, dateCreated DESC LIMIT 1";
 
     $stmtFetchLatestLeaveData = $database->prepare($sqlFetchLatestLeaveData);
 
@@ -68,6 +68,8 @@ if (isset($_POST['addLeaveDataRecord'])) {
             $newSickLeaveEarned = $LatestLeaveData['sickLeaveBalance'];
             $newVacationLeaveBalance = $LatestLeaveData['vacationLeaveBalance'];
             $newSickLeaveBalance = $LatestLeaveData['sickLeaveBalance'];
+            $newVacationLeaveAbsUndWOP = $LatestLeaveData['vacationLeaveAbsUndWOP'];
+            $newSickLeaveAbsUndWOP = $LatestLeaveData['sickLeaveAbsUndWOP'];
 
             if ($particularType == "Vacation Leave" || $particularType == "Late") {
                 if ($LatestLeaveData['vacationLeaveBalance'] <= $totalVacationComputedValue) {
@@ -94,10 +96,10 @@ if (isset($_POST['addLeaveDataRecord'])) {
             }
 
             $insertLeaveDataQuery = "INSERT INTO tbl_leavedataform 
-    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
-    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
-    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
-    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
+                                    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
+                                    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
+                                    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
+                                    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
 
             $stmtInsertLeaveData = $database->prepare($insertLeaveDataQuery);
 
@@ -131,7 +133,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
                     $_SESSION['alert_type'] = $error_color;
                 }
 
-                $stmtInsertLeaveData->close();
+                // $stmtInsertLeaveData->close();
             }
 
         } else {
@@ -143,35 +145,35 @@ if (isset($_POST['addLeaveDataRecord'])) {
 
             if ($particularType == "Vacation Leave" || $particularType == "Late") {
                 $newVacationLeaveEarned = $initialValue;
-                if ($initialValue <= $totalComputedValue) {
+                if ($initialValue <= $totalVacationComputedValue) {
                     $newVacationLeaveAbsUndWP = $initialValue;
                     $newVacationLeaveBalance = 0;
-                    $newVacationLeaveAbsUndWOP = 0 + ($totalComputedValue - $initialValue);
+                    $newVacationLeaveAbsUndWOP = 0 + ($totalVacationComputedValue - $initialValue);
                 } else {
-                    $newVacationLeaveAbsUndWP = $totalComputedValue;
-                    $newVacationLeaveBalance = $initialValue - $totalComputedValue;
+                    $newVacationLeaveAbsUndWP = $totalVacationComputedValue;
+                    $newVacationLeaveBalance = $initialValue - $totalVacationComputedValue;
                     $newVacationLeaveAbsUndWOP = 0;
                 }
             }
 
             if ($particularType == "Sick Leave") {
                 $newSickLeaveEarned = $initialValue;
-                if ($initialValue <= $totalComputedValue) {
+                if ($initialValue <= $totalSickComputedValue) {
                     $newSickLeaveAbsUndWP = $initialValue;
                     $newSickLeaveBalance = 0;
-                    $newSickLeaveAbsUndWOP = 0 + ($totalComputedValue - $initialValue);
+                    $newSickLeaveAbsUndWOP = 0 + ($totalSickComputedValue - $initialValue);
                 } else {
-                    $newSickLeaveAbsUndWP = $totalComputedValue;
-                    $newSickLeaveBalance = $initialValue - $totalComputedValue;
+                    $newSickLeaveAbsUndWP = $totalSickComputedValue;
+                    $newSickLeaveBalance = $initialValue - $totalSickComputedValue;
                     $newSickLeaveAbsUndWOP = 0;
                 }
             }
 
             $insertLeaveDataQuery = "INSERT INTO tbl_leavedataform 
-    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
-    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
-    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
-    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
+                                    (employee_id, dateCreated, period, periodEnd, particular, particularLabel, days, hours, minutes, vacationLeaveEarned, 
+                                    vacationLeaveAbsUndWP, vacationLeaveBalance, vacationLeaveAbsUndWOP, sickLeaveEarned, sickLeaveAbsUndWP, 
+                                    sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction, dateLastModified)
+                                    VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
 
             $stmtInsertLeaveData = $database->prepare($insertLeaveDataQuery);
 
@@ -205,101 +207,122 @@ if (isset($_POST['addLeaveDataRecord'])) {
                     $_SESSION['alert_type'] = $error_color;
                 }
 
-                $stmtInsertLeaveData->close();
+                // $stmtInsertLeaveData->close();
             }
 
         }
-        $stmtFetchLatestLeaveData->close();
+        // $stmtFetchLatestLeaveData->close();
     } else {
         // Something went wrong with the statement preparation
     }
 
-    // Now, retrieve all rows with the same period
+    // Now, retrieve all rows next to the added data
     $sqlGetNextData = " SELECT * FROM tbl_leavedataform 
                         WHERE employee_id = ? 
                         AND period >= ? 
-                        ORDER BY dateCreated ASC"; // Assuming dateCreated is the timestamp indicating the order
+                        ORDER BY period ASC, dateCreated ASC"; // Assuming dateCreated is the timestamp indicating the order
 
     $stmtNext = $database->prepare($sqlGetNextData);
 
-    // if ($stmtNext) {
-    //     $stmtNext->bind_param("ss", $empId, $period);
-    //     $stmtNext->execute();
+    if ($stmtNext) {
+        $stmtNext->bind_param("ss", $empId, $period);
+        $stmtNext->execute();
 
-    //     $resultNext = $stmtNext->get_result();
+        $resultNext = $stmtNext->get_result();
 
-    //     while ($rowNext = $resultNext->fetch_assoc()) {
-    //         $arrayLeaveDataRecord[] = $rowNext;
-    //     }
+        while ($rowNext = $resultNext->fetch_assoc()) {
+            $arrayLeaveDataRecord[] = $rowNext;
+        }
 
-    //     for ($i = 0; $i < count($arrayLeaveDataRecord); $i++) {
-    //         $leavedataform_id = $arrayLeaveDataRecord[$i]['leavedataform_id'];
-    //         if ($i == 0) {
-    //             //Something
-    //         } else {
-    //             if ($arrayLeaveDataRecord[$i]['particular'] == "Vacation Leave" || $arrayLeaveDataRecord[$i]['particular'] == "Late") {
-    //                 $newVacationLeaveEarned = $arrayLeaveDataRecord[$i - 1]['vacationLeaveBalance'];
-    //                 if ($newVacationLeaveEarned <= $totalComputedValue) {
-    //                     $newVacationLeaveAbsUndWP = $newVacationLeaveEarned;
-    //                     $newVacationLeaveBalance = 0;
-    //                     $newVacationLeaveAbsUndWOP = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'] + ($totalComputedValue - $newVacationLeaveEarned);
-    //                 } else {
-    //                     $newVacationLeaveAbsUndWP = $totalComputedValue;
-    //                     $newVacationLeaveBalance = $newVacationLeaveEarned - $totalComputedValue;
-    //                     $newVacationLeaveAbsUndWOP = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'];
-    //                 }
-    //             }
+        for ($i = 0; $i < count($arrayLeaveDataRecord); $i++) {
+            echo $arrayLeaveDataRecord[$i]['particular'];
+            echo '<br>';
+            if ($i == 0) {
+                //Does not do Something
+            } else {
+                $totalMinutes = (($arrayLeaveDataRecord[$i]['days'] * 8) * 60) + ($arrayLeaveDataRecord[$i]['hours'] * 60) + $arrayLeaveDataRecord[$i]['minutes'];
 
-    //             if ($particularType == "Sick Leave") {
-    //                 $newSickLeaveEarned = $arrayLeaveDataRecord[$i - 1]['sickLeaveBalance'];
-    //                 if ($newSickLeaveEarned <= $totalComputedValue) {
-    //                     $newSickLeaveAbsUndWP = $newSickLeaveEarned;
-    //                     $newSickLeaveBalance = 0;
-    //                     $newSickLeaveAbsUndWOP = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'] + ($totalComputedValue - $newSickLeaveEarned);
-    //                 } else {
-    //                     $newSickLeaveAbsUndWP = $totalComputedValue;
-    //                     $newSickLeaveBalance = $newSickLeaveEarned - $totalComputedValue;
-    //                     $newSickLeaveAbsUndWOP = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'];
-    //                 }
-    //             }
-    //         }
-    //         $sqlUpdateData = "  UPDATE tbl_leavedataform 
-    //                             SET vacationLeaveEarned = ?, 
-    //                                 vacationLeaveAbsUndWP = ?, 
-    //                                 vacationLeaveBalance = ?, 
-    //                                 vacationLeaveAbsUndWOP = ?, 
-    //                                 sickLeaveEarned = ?, 
-    //                                 sickLeaveAbsUndWP = ?, 
-    //                                 sickLeaveBalance = ?, 
-    //                                 sickLeaveAbsUndWOP = ?
-    //                             WHERE leavedataform_id = ? AND employee_id = ?";
+                $totalVacationComputedValue = 0;
+                $totalSickComputedValue = 0;
 
-    //         $stmtUpdate = $database->prepare($sqlUpdateData);
-    //         $stmtUpdate->bind_param(
-    //             "ddddddddss",
-    //             $newVacationLeaveEarned,
-    //             $newVacationLeaveAbsUndWP,
-    //             $newVacationLeaveBalance,
-    //             $newVacationLeaveAbsUndWOP,
-    //             $newSickLeaveEarned,
-    //             $newSickLeaveAbsUndWP,
-    //             $newSickLeaveBalance,
-    //             $newSickLeaveAbsUndWOP,
-    //             $leavedataform_id,
-    //             $empId
-    //         );
+                if ($arrayLeaveDataRecord[$i]['particular'] == "Sick Leave") {
+                    $totalSickComputedValue = 0.002 * $totalMinutes * 1.0416667;
+                } else if ($arrayLeaveDataRecord[$i]['particular'] == "Vacation Leave" || $arrayLeaveDataRecord[$i]['particular'] == "Late") {
+                    $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
+                }
 
-    //         $stmtUpdate->execute();
-    //     }
+                $tempVacationBalance = $arrayLeaveDataRecord[$i - 1]['vacationLeaveBalance'];
+                $arrayLeaveDataRecord[$i]['vacationLeaveEarned'] = $tempVacationBalance;
+                $tempSickBalance = $arrayLeaveDataRecord[$i - 1]['sickLeaveBalance'];
+                $arrayLeaveDataRecord[$i]['sickLeaveEarned'] = $tempSickBalance;
+                $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'];
+                $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'];
 
-    //     $stmtUpdate->close();
+                if ($arrayLeaveDataRecord[$i]['particular'] == "Vacation Leave" || $arrayLeaveDataRecord[$i]['particular'] == "Late") {
+                    if ($tempVacationBalance <= $totalVacationComputedValue) {
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWP'] = $tempVacationBalance;
+                        $arrayLeaveDataRecord[$i]['vacationLeaveBalance'] = 0;
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'] + ($totalVacationComputedValue - $tempVacationBalance);
+                    } else {
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWP'] = $totalVacationComputedValue;
+                        $arrayLeaveDataRecord[$i]['vacationLeaveBalance'] = $tempVacationBalance - $totalVacationComputedValue;
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'];
+                    }
+                }
 
-    //     $stmtNext->close();
-    // } else {
-    //     // Something Error
-    // }
+                if ($arrayLeaveDataRecord[$i]['particular'] == "Sick Leave") {
+                    if ($tempSickBalance <= $totalSickComputedValue) {
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWP'] = $tempSickBalance;
+                        $arrayLeaveDataRecord[$i]['sickLeaveBalance'] = 0;
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'] + ($totalSickComputedValue - $tempSickBalance);
+                    } else {
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWP'] = $totalSickComputedValue;
+                        $arrayLeaveDataRecord[$i]['sickLeaveBalance'] = $tempSickBalance - $totalSickComputedValue;
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'];
+                    }
+                }
+            }
 
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+                $sqlUpdateData = "  UPDATE tbl_leavedataform 
+                                    SET vacationLeaveEarned = ?, 
+                                        vacationLeaveAbsUndWP = ?, 
+                                        vacationLeaveBalance = ?, 
+                                        vacationLeaveAbsUndWOP = ?, 
+                                        sickLeaveEarned = ?, 
+                                        sickLeaveAbsUndWP = ?, 
+                                        sickLeaveBalance = ?, 
+                                        sickLeaveAbsUndWOP = ?
+                                    WHERE leavedataform_id = ? AND employee_id = ?";
+
+                $stmtUpdate = $database->prepare($sqlUpdateData);
+
+                if ($stmtUpdate) {
+                    $stmtUpdate->bind_param(
+                        "ddddddddss",
+                        $arrayLeaveDataRecord[$i]['vacationLeaveEarned'],
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWP'],
+                        $arrayLeaveDataRecord[$i]['vacationLeaveBalance'],
+                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'],
+                        $arrayLeaveDataRecord[$i]['sickLeaveEarned'],
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWP'],
+                        $arrayLeaveDataRecord[$i]['sickLeaveBalance'],
+                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'],
+                        $arrayLeaveDataRecord[$i]['leavedataform_id'],
+                        $empId
+                    );
+
+                    $stmtUpdate->execute();
+                }
+        }
+
+        // $stmtUpdate->close();
+
+        // $stmtNext->close();
+    } else {
+        // Something Error
+    }
+
+    // header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 } else {
     header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 }
