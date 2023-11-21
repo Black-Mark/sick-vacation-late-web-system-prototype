@@ -48,6 +48,7 @@ $assets_datatable_js_select = $webhostpage.'/assets/datatables/jquery-datatables
 $assets_toastify_css = $webhostpage.'/assets/toastify/toastify.css';
 $assets_toastify_js = $webhostpage.'/assets/toastify/toastify.js';
 $assets_tailwind = $webhostpage.'/assets/js/tailwind.js';
+$assets_file_leavedataform = $webhostpage.'/assets/js/leaveDataForm.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;

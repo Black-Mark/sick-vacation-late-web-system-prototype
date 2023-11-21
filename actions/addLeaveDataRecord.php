@@ -32,7 +32,6 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $days = isset($_POST['dayInput']) ? sanitizeInput($_POST['dayInput']) : null;
     $hours = isset($_POST['hourInput']) ? sanitizeInput($_POST['hourInput']) : null;
     $minutes = isset($_POST['minuteInput']) ? sanitizeInput($_POST['minuteInput']) : null;
-    $inputType = isset($_POST['inputType']) ? sanitizeInput($_POST['inputType']) : null;
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
     if ($selectedYear) {
