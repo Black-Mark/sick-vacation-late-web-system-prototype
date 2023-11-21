@@ -464,8 +464,10 @@ if ($selectedYear) {
                 </form>
 
                 <div class="text-center font-weight-bold text-uppercase title-text component-container">
-                    <span>Year</span> 
-                    <span id="selectedYear"><?php echo $selectedYear; ?></span>
+                    <span>Year</span>
+                    <span id="selectedYear">
+                        <?php echo $selectedYear; ?>
+                    </span>
                 </div>
 
                 <div class="button-container component-container mb-2">
@@ -680,6 +682,8 @@ if ($selectedYear) {
                                                             method="post">
                                                             <input type="hidden" name="leavedataformId"
                                                                 value="<?php echo $ldata['leavedataform_id']; ?>" />
+                                                            <input type="hidden" name="period"
+                                                                value="<?php echo $ldata['period']; ?>" />
                                                             <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
                                                             <input type="hidden" name="selectedYear"
                                                                 value="<?php echo $selectedYear; ?>" />
@@ -716,7 +720,7 @@ if ($selectedYear) {
                     </div>
                 </div>
 
-                
+
 
             </div>
 

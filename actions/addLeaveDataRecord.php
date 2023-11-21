@@ -235,11 +235,12 @@ if (isset($_POST['addLeaveDataRecord'])) {
         }
 
         for ($i = 0; $i < count($arrayLeaveDataRecord); $i++) {
-            echo $arrayLeaveDataRecord[$i]['particular'];
-            echo '<br>';
+            // echo $arrayLeaveDataRecord[$i]['particular'];
+            // echo '<br>';
             if ($i == 0) {
                 //Does not do Something
             } else {
+                $totalMinutes = 0;
                 $totalMinutes = (($arrayLeaveDataRecord[$i]['days'] * 8) * 60) + ($arrayLeaveDataRecord[$i]['hours'] * 60) + $arrayLeaveDataRecord[$i]['minutes'];
 
                 $totalVacationComputedValue = 0;
@@ -257,6 +258,8 @@ if (isset($_POST['addLeaveDataRecord'])) {
                 $arrayLeaveDataRecord[$i]['sickLeaveEarned'] = $tempSickBalance;
                 $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['vacationLeaveAbsUndWOP'];
                 $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'] = $arrayLeaveDataRecord[$i - 1]['sickLeaveAbsUndWOP'];
+                $arrayLeaveDataRecord[$i]['vacationLeaveBalance'] = $tempVacationBalance;
+                $arrayLeaveDataRecord[$i]['sickLeaveBalance'] = $tempSickBalance;
 
                 if ($arrayLeaveDataRecord[$i]['particular'] == "Vacation Leave" || $arrayLeaveDataRecord[$i]['particular'] == "Late") {
                     if ($tempVacationBalance <= $totalVacationComputedValue) {
@@ -320,9 +323,10 @@ if (isset($_POST['addLeaveDataRecord'])) {
         // $stmtNext->close();
     } else {
         // Something Error
+        // echo "Error!";
     }
 
-    // header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 } else {
     header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
 }
