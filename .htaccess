@@ -9,14 +9,14 @@ RewriteEngine On
 RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 
-RewriteRule ^admin/employee-list/user-info/([^/]+)/$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
-RewriteRule ^admin/employee-list/user-info/([^/]+)$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/([^/]+)/$ admin/departments/employee-list/index.php?departmentlabel=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/([^/]+)$ admin/departments/employee-list/index.php?departmentlabel=$1 [L,QSA]
 
-RewriteRule ^admin/employee-list/leave-data-form/([^/]+)/$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
-RewriteRule ^admin/employee-list/leave-data-form/([^/]+)$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/user-info/([^/]+)/$ admin/departments/employee-list/user-info/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/user-info/([^/]+)$ admin/departments/employee-list/user-info/index.php?empid=$1 [L,QSA]
 
-RewriteRule ^admin/departments/office/([^/]+)/$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
-RewriteRule ^admin/departments/office/([^/]+)$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)/$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
 
 # Disable directory listing and deny direct access
 Options -Indexes

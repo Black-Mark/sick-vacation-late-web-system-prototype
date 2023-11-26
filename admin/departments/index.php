@@ -208,19 +208,29 @@ if ($employees_result->num_rows > 0) {
 
                 </div>
 
+                <div class="item-detail-container mb-2">
+                    <a href="<?php echo $location_admin_departments_office; ?>" class="item-detail-container-summary">
+                        Full Employee List
+                    </a>
+                </div>
+
                 <?php
                 if ($departments->num_rows > 0) {
                     while ($department = $departments->fetch_assoc()) {
                         ?>
                         <details class="item-detail-container">
-                            <summary>
-                                <div class="text-center">
+                            <summary class="item-detail-container-summary">
+                                <div>
                                     <?php echo $department['departmentName']; ?>
                                 </div>
-                                <div class="button-container">
+                            </summary>
+                            <div class="item-detail-content">
+                                <span class="font-weight-bold">Department Head Name: </span>
+                                <?php echo $department['headFirstName'] . ' ' . $department['headLastName']; ?>
+                                <div class="button-container m-2 justify-content-center">
                                     <a
                                         href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
-                                        <button class="custom-regular-button">View Employee</button>
+                                        <button class="custom-regular-button text-truncate">View</button>
                                     </a>
                                     <!-- Edit Department Modal -->
                                     <button type="button" class="custom-regular-button editDepartmentButton" data-toggle="modal"
@@ -237,10 +247,6 @@ if ($employees_result->num_rows > 0) {
                                             class="custom-regular-button" />
                                     </form>
                                 </div>
-                            </summary>
-                            <div class="item-detail-content">
-                                <span>Department Head Name: </span>
-                                <?php echo $department['headFirstName'] . ' ' . $department['headLastName']; ?>
                             </div>
                         </details>
                         <?php
@@ -251,6 +257,12 @@ if ($employees_result->num_rows > 0) {
                     <?php
                 }
                 ?>
+
+                <div class="item-detail-container mt-2">
+                    <a href="<?php echo $location_admin_departments_office.'/pending/'; ?>" class="item-detail-container-summary">
+                        Others / Pending / Unassigned
+                    </a>
+                </div>
 
             </div>
         </div>

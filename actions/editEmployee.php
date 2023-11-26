@@ -8,6 +8,7 @@ include($constants_variables);
 if (isset($_POST['editEmployee'])) {
     $oldEmployeeID = strip_tags(mysqli_real_escape_string($database, $_POST['oldEmployeeId']));
     $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
+    $departmentlabel = strip_tags(mysqli_real_escape_string($database, $_POST['departmentlabel']));
     $role = strip_tags(mysqli_real_escape_string($database, $_POST['role']));
     $email = strip_tags(mysqli_real_escape_string($database, $_POST['email']));
     $password = strip_tags(mysqli_real_escape_string($database, $_POST['password']));
@@ -56,11 +57,16 @@ if (isset($_POST['editEmployee'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    header("Location: " . $location_admin_employeelist);
+    if ($departmentlabel) {
+        header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+    } else {
+        header("Location: " . $location_admin_departments_office);
+    }
     exit();
 } else if (isset($_POST['editMultipleEmployee']) && isset($_POST['selectedEmpID'])) {
     try {
         $selectedEmpID = $_POST['selectedEmpID'];
+        $departmentlabel = strip_tags(mysqli_real_escape_string($database, $_POST['departmentlabel']));
         // $role = mysqli_real_escape_string($database, strip_tags($_POST['role']));
         // $dateStarted = mysqli_real_escape_string($database, strip_tags($_POST['dateStarted']));
         // $age = mysqli_real_escape_string($database, strip_tags($_POST['age']));
@@ -117,24 +123,40 @@ if (isset($_POST['editEmployee'])) {
             }
 
             header("Location: " . $_SERVER['PHP_SELF']);
-            header("Location: " . $location_admin_employeelist);
+            if ($departmentlabel) {
+                header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+            } else {
+                header("Location: " . $location_admin_departments_office);
+            }
             exit();
         } else {
             $_SESSION['alert_message'] = "Error decoding JSON String";
             $_SESSION['alert_type'] = $error_message;
             header("Location: " . $_SERVER['PHP_SELF']);
-            header("Location: " . $location_admin_employeelist);
+            if ($departmentlabel) {
+                header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+            } else {
+                header("Location: " . $location_admin_departments_office);
+            }
             exit();
         }
     } catch (Exception $e) {
         $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
         $_SESSION['alert_type'] = $error_color;
         header("Location: " . $_SERVER['PHP_SELF']);
-        header("Location: " . $location_admin_employeelist);
+        if ($departmentlabel) {
+            header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+        } else {
+            header("Location: " . $location_admin_departments_office);
+        }
         exit();
     }
 } else {
-    header("Location: " . $location_admin_employeelist);
+    if ($departmentlabel) {
+        header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+    } else {
+        header("Location: " . $location_admin_departments_office);
+    }
     exit();
 }
 ?>

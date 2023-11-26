@@ -35,11 +35,11 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
     exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
 }
 
 ?>

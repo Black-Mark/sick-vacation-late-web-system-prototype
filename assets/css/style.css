@@ -638,7 +638,7 @@ body::-webkit-scrollbar-thumb {
     color: var(--webtextcolor);
 }
 
-.item-detail-container summary {
+.item-detail-container-summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -883,3 +883,144 @@ body::-webkit-scrollbar-thumb {
         gap: none;
     }
 } */
+
+
+
+/* Leave Application Form */
+
+.custom-container-leave-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.custom-table-leave-form {
+    border-collapse: collapse;
+    font-size: 10px;
+    padding: 4px;
+}
+
+.custom-table-leave-form th,
+.custom-table-leave-form td {
+    border: 1px solid black;
+}
+
+.custom-input-leave-form {
+    background-color: transparent;
+}
+
+.leave-form-detail-container {
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    margin: 0 auto;
+}
+
+.leave-form-container {
+    width: 100%;
+    border: 2px solid #000;
+}
+
+.leave-form-container label {
+    margin: 0rem;
+    padding: 0rem;
+}
+
+.leave-form-section-divider {
+    border: 1px solid black;
+}
+
+.custom-div-leave-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.underline-input {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+}
+
+.transparent-input {
+    border: none;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+}
+
+.custom-underline-input {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+    width: 40%;
+}
+
+.custom-underline-input-form {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+    width: 50%;
+}
+
+.custom-underline-input-form-detail {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+    width: 60%;
+}
+
+.profile-rowing {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.account-profile-container label {
+    min-width: 120px;
+    margin-right: 10px;
+    margin: 0rem;
+    padding: 0rem;
+    font-weight: bold;
+}
+
+.account-profile-container span {
+    font-weight: normal;
+    cursor: default;
+}
+
+.account-profile-input:read-only {
+    min-width: 13rem;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: default;
+    appearance: none;
+    color: #000;
+}
+
+.account-profile-input:disabled {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: default;
+    appearance: none;
+    color: #000;
+}
+
+.custom-td {
+    border: 1px solid black;
+    padding: 8px;
+    /* Optional: Add padding for better appearance */
+}

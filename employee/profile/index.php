@@ -2,7 +2,7 @@
 include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
-include($constants_file_session_admin);
+include($constants_file_session_employee);
 
 $employeeData = [];
 
@@ -43,9 +43,9 @@ if (isset($_SESSION['employeeId'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Employee</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Employee Page">
     <?php
     include($constants_file_html_credits);
     ?>

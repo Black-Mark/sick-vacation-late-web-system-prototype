@@ -25,9 +25,9 @@ if (isset($_REQUEST['logout'])) {
 
             session_destroy();
 
-            header("location: ".$location_login);
+            header("location: " . $location_login);
         } else {
-            header("location: ".$location_login);
+            header("location: " . $location_login);
         }
     } catch (Exception $e) {
         echo '<script>alert("An error occurred: ' . $e->getMessage() . '");</script>';
@@ -54,22 +54,30 @@ if (isset($_REQUEST['logout'])) {
             <div class="top-nav-title-abbre">HR - Indang</div>
             <div class="top-nav-section">
                 <div class="top-nav-section-medium">
-                Human Resources
+                    Human Resources
                 </div>
                 <div>
-                <?php
-                if($_SESSION["role"] == 'Admin'){
-                    echo "Admin";
-                }else{
-                    echo "Employee";
-                }
-                ?>
-                Web Site
+                    <?php
+                    if ($_SESSION["role"] == 'Admin') {
+                        echo "Admin";
+                    } else {
+                        echo "Employee";
+                    }
+                    ?>
+                    Web Site
                 </div>
             </div>
         </div>
     </div>
     <div class="top-nav-content">
+        <div class="position-relative clickable-element">
+            <i class="fa fa-bell text-white">
+            </i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                9+
+                <span class="visually-hidden">unread messages</span>
+            </span>
+        </div>
         <div class="top-nav-username">
             <?php
             if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {

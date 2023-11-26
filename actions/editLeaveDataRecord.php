@@ -35,10 +35,10 @@ if (isset($_POST['editLeaveDataRecord'])) {
     $_SESSION['alert_message'] = "Not Yet Available!";
     $_SESSION['alert_type'] = $warning_color;
 
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
 } else {
     $_SESSION['alert_message'] = "Not Yet Available!";
     $_SESSION['alert_type'] = $warning_color;
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
 }
 ?>

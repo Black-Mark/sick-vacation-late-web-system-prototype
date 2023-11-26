@@ -1,33 +1,41 @@
 <?php
-include("../../constants/routes.php");
+include("../../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
+$empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
 
-if (isset($_SESSION['employeeId'])) {
-    $employeeId = $database->real_escape_string($_SESSION['employeeId']);
-
+if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
+    $empId = null;
+} else {
     $sql = "SELECT
-                ua.*,
-                d.departmentName
-            FROM
-                tbl_useraccounts ua
-            LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id
-            WHERE
-                ua.employee_id = ?";
-
+    ua.*,
+    d.departmentName
+FROM
+    tbl_useraccounts ua
+LEFT JOIN
+    tbl_departments d ON ua.department = d.department_id
+WHERE
+    ua.employee_id = ?";
     $stmt = $database->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("s", $employeeId);
+        $stmt->bind_param("s", $empId);
         $stmt->execute();
         $empResult = $stmt->get_result();
 
+        // if ($empResult->num_rows > 0) {
+        //     while ($employee = $empResult->fetch_assoc()) {
+        //         $employeeData[] = $employee;
+        //     }
+        //     echo $employeeData[0]['employee_id'];
+        // }
+
         if ($empResult->num_rows > 0) {
             $employeeData = $empResult->fetch_assoc();
+            // echo $employeeData['employee_id'];
         }
 
         $stmt->close();
@@ -62,6 +70,14 @@ if (isset($_SESSION['employeeId'])) {
     <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
     <script src="<?php echo $assets_toastify_js; ?>"></script>
 
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css; ?>">
+    <script src="<?php echo $assets_datatable_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css_select; ?>">
+    <script src="<?php echo $assets_datatable_js_select; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
+
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
     <!-- <script src="<?php
@@ -70,12 +86,16 @@ if (isset($_SESSION['employeeId'])) {
 </head>
 
 <body class="webpage-background-cover-admin">
-    <div class="component-container">
+    <div>
         <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
+
+            <div>
+                <?php include($components_file_navpanel); ?>
+            </div>
 
             <div class="box-container">
                 <h3 class="title-text">Account Profile Information</h3>
@@ -255,13 +275,13 @@ if (isset($_SESSION['employeeId'])) {
                     </div>
 
                 </form>
-                
+
             </div>
 
         </div>
     </div>
 
-    <div class="component-container">
+    <div>
         <?php
         include($components_file_footer);
         ?>

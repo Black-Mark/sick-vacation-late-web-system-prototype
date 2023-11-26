@@ -326,8 +326,8 @@ if (isset($_POST['addLeaveDataRecord'])) {
         // echo "Error!";
     }
 
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
 } else {
-    header("Location: " . $location_admin_employeelist_leavedataform . '/' . $empId . '/');
+    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
 }
 ?>

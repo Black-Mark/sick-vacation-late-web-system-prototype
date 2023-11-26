@@ -4,7 +4,7 @@
 session_start();
 
 // Set session timeout to 30 minutes
-$session_timeout = 30 * 60;
+$session_timeout = 480 * 60;
 
 // Check if the session variable last activity is set
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {

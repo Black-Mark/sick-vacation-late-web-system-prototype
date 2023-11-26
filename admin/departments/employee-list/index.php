@@ -1,39 +1,88 @@
 <?php
-include("../../constants/routes.php");
+include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-$empsql = "SELECT
-    ua.account_id,
-    ua.employee_id,
-    ua.role,
-    ua.email,
-    ua.password,
-    ua.photoURL,
-    ua.firstName,
-    ua.middleName,
-    ua.lastName,
-    ua.age,
-    ua.sex,
-    ua.civilStatus,
-    ua.department,
-    d.departmentName,
-    ua.jobPosition,
-    ua.dateStarted,
-    ua.dateCreated
-FROM
-    tbl_useraccounts ua
-LEFT JOIN
-    tbl_departments d ON ua.department = d.department_id;";
+$departmentlabel = "";
 
+if ($_GET['departmentlabel'] !== "index.php" && $_GET['departmentlabel'] !== "index.html") {
+    $departmentlabel = $_GET['departmentlabel'];
+    $_SESSION['departmentlabel'] = $_GET['departmentlabel'];
+} else {
+    if (isset($_SESSION['departmentlabel'])) {
+        unset($_SESSION['departmentlabel']);
+    }
+}
 
-$employees = $database->query($empsql);
+if ($departmentlabel) {
 
+    if (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) {
+        $empsql = "SELECT u.*, d.departmentName
+                    FROM tbl_useraccounts u
+                    LEFT JOIN tbl_departments d ON u.department = d.department_id
+                    WHERE d.department_id IS NULL;";
+        $employees = $database->query($empsql);
+    } else {
+        $empsql = "SELECT
+                    ua.account_id,
+                    ua.employee_id,
+                    ua.role,
+                    ua.email,
+                    ua.password,
+                    ua.photoURL,
+                    ua.firstName,
+                    ua.middleName,
+                    ua.lastName,
+                    ua.age,
+                    ua.sex,
+                    ua.civilStatus,
+                    ua.department,
+                    d.departmentName,
+                    ua.jobPosition,
+                    ua.dateStarted,
+                    ua.dateCreated
+                FROM
+                    tbl_useraccounts ua
+                LEFT JOIN
+                    tbl_departments d ON ua.department = d.department_id WHERE ua.department = ?";
 
+        $stmt = $database->prepare($empsql);
+        $stmt->bind_param("s", $departmentlabel);
+        $stmt->execute();
 
+        $employees = $stmt->get_result();
+    }
+
+} else {
+    $empsql = "SELECT
+                ua.account_id,
+                ua.employee_id,
+                ua.role,
+                ua.email,
+                ua.password,
+                ua.photoURL,
+                ua.firstName,
+                ua.middleName,
+                ua.lastName,
+                ua.age,
+                ua.sex,
+                ua.civilStatus,
+                ua.department,
+                d.departmentName,
+                ua.jobPosition,
+                ua.dateStarted,
+                ua.dateCreated
+            FROM
+                tbl_useraccounts ua
+            LEFT JOIN
+                tbl_departments d ON ua.department = d.department_id;";
+
+    $employees = $database->query($empsql);
+}
 
 $deptsql = "SELECT * FROM tbl_departments";
+
 $department_result = $database->query($deptsql);
 $departments = [];
 
@@ -93,7 +142,11 @@ if ($department_result->num_rows > 0) {
         <div class="page-content">
 
             <div class="box-container">
-                <h3 class="title-text">List of Employees</h3>
+                <div>
+                    <a href="<?php echo $location_admin_departments; ?>"><button
+                            class="custom-regular-button">Back</button></a>
+                    <div class="title-text">List of Employees</div>
+                </div>
 
                 <!-- Add Modal -->
                 <form action="<?php echo $action_add_employee; ?>" method="post" class="modal fade" id="addEmployee"
@@ -107,6 +160,7 @@ if ($department_result->num_rows > 0) {
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <input type="hidden" value="<?php echo $departmentlabel; ?>" name="departmentlabel" />
                                 <div class="row g-2 mb-2">
                                     <div class="col-md">
                                         <div class="form-floating">
@@ -245,6 +299,7 @@ if ($department_result->num_rows > 0) {
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" name="oldEmployeeId" id="floatingEditOldEmployeeId" />
+                                <input type="hidden" value="<?php echo $departmentlabel; ?>" name="departmentlabel" />
                                 <div class="row g-2 mb-2">
                                     <div class="col-md">
                                         <div class="form-floating">
@@ -346,7 +401,7 @@ if ($department_result->num_rows > 0) {
                                             }
                                         }
                                         ?>
-                                        <option value="4">Pending</option>
+                                        <option value="Pending">Pending</option>
                                     </select>
                                     <label for="floatingEditDepartmentSelect">Department <span
                                             class="required-color">*</span></label>
@@ -390,6 +445,7 @@ if ($department_result->num_rows > 0) {
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" name="selectedEmpID[]" id="selectedEmpID" />
+                                <input type="hidden" value="<?php echo $departmentlabel; ?>" name="departmentlabel" />
                                 <div class="row g-2 mb-2">
                                     <div class="col-md">
                                         <div class="form-floating">
@@ -488,6 +544,7 @@ if ($department_result->num_rows > 0) {
 
                 <form method="POST" action="<?php echo $action_delete_employee; ?>">
                     <div class="button-container mb-2">
+                        <input type="hidden" value="<?php echo $departmentlabel; ?>" name="departmentlabel" />
                         <!-- Add Button Modal -->
                         <button type="button" class="custom-regular-button" data-toggle="modal"
                             data-target="#addEmployee">
@@ -546,7 +603,7 @@ if ($department_result->num_rows > 0) {
                                         <td>
                                             <form method="POST" action="<?php echo $action_delete_employee; ?>">
                                                 <a
-                                                    href="<?php echo $location_admin_employeelist_user . '/' . $row['employee_id'] . '/'; ?>">
+                                                    href="<?php echo $location_admin_departments_employee . '/' . $row['employee_id'] . '/'; ?>">
                                                     <button type="button" class="custom-regular-button">
                                                         View
                                                     </button>
@@ -571,6 +628,8 @@ if ($department_result->num_rows > 0) {
 
                                                 <input type="hidden" name="employeeNum"
                                                     value="<?php echo $row['employee_id']; ?>" />
+                                                <input type="hidden" value="<?php echo $departmentlabel; ?>"
+                                                    name="departmentlabel" />
                                                 <input type="submit" name="deleteEmployee" value="Delete"
                                                     class="custom-regular-button" />
                                             </form>
@@ -599,6 +658,14 @@ if ($department_result->num_rows > 0) {
                         columnDefs: [
                             {
                                 'targets': 0,
+                                'orderable': false,
+                                // 'checkboxes': {
+                                //     'selectRow': true,
+                                //     // 'page': 'current',
+                                // }
+                            },
+                            {
+                                'targets': -1,
                                 'orderable': false,
                                 // 'checkboxes': {
                                 //     'selectRow': true,
