@@ -656,7 +656,7 @@ body::-webkit-scrollbar-thumb {
     padding: 0.25rem 0.25rem;
 }
 
-/* Data Management Navigation */
+/* Management Navigation */
 
 .tab-nav-container {
     display: flex;
@@ -733,6 +733,48 @@ body::-webkit-scrollbar-thumb {
     opacity: 0.6;
     cursor: default;
 } */
+
+
+
+/* Account Profile */
+
+.profile-rowing {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.account-profile-container label {
+    min-width: 120px;
+    margin-right: 10px;
+    margin: 0rem;
+    padding: 0rem;
+    font-weight: bold;
+}
+
+.account-profile-container span {
+    font-weight: normal;
+    cursor: default;
+}
+
+.account-profile-input:read-only {
+    min-width: 13rem;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: default;
+    appearance: none;
+    color: #000;
+}
+
+.account-profile-input:disabled {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: default;
+    appearance: none;
+    color: #000;
+}
 
 
 /* Leave Data Form */
@@ -907,6 +949,9 @@ body::-webkit-scrollbar-thumb {
 }
 
 .custom-input-leave-form {
+    border: none;
+    outline: none;
+    height: 1.5rem;
     background-color: transparent;
 }
 
@@ -981,43 +1026,6 @@ body::-webkit-scrollbar-thumb {
     width: 60%;
 }
 
-.profile-rowing {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.account-profile-container label {
-    min-width: 120px;
-    margin-right: 10px;
-    margin: 0rem;
-    padding: 0rem;
-    font-weight: bold;
-}
-
-.account-profile-container span {
-    font-weight: normal;
-    cursor: default;
-}
-
-.account-profile-input:read-only {
-    min-width: 13rem;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    cursor: default;
-    appearance: none;
-    color: #000;
-}
-
-.account-profile-input:disabled {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    cursor: default;
-    appearance: none;
-    color: #000;
-}
 
 .custom-td {
     border: 1px solid black;

@@ -14,6 +14,8 @@ $action_add_leaverecorddata = $webhostpage.'/actions/addLeaveDataRecord.php';
 $action_edit_leaverecorddata = $webhostpage.'/actions/editLeaveDataRecord.php';
 $action_delete_leaverecorddata = $webhostpage.'/actions/deleteLeaveDataRecord.php';
 
+$action_add_leaveappform = $webhostpage.'/actions/addLeaveAppForm.php';
+
 $components_file_error_handler = $webhostpath.'/components/error_handler.php';
 $components_file_topnav = $webhostpath.'/components/topnavigation.php';
 $components_file_footer = $webhostpath.'/components/footer.php';
