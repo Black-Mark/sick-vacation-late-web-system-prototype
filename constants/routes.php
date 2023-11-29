@@ -65,4 +65,7 @@ $location_admin_departments_employee_leavedataform = $webhostpage.'/admin/depart
 $location_employee = $webhostpage.'/employee';
 $location_employee_profile = $webhostpage.'/employee/profile';
 $location_employee_leave_form = $webhostpage.'/employee/leaveform';
+$location_employee_leave_form_record = $webhostpage.'/employee/leaveformrecord';
+$location_employee_leave_data_form = $webhostpage.'/employee/leavedataform';
+
 ?>
