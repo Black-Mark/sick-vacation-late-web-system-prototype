@@ -149,7 +149,7 @@ if (isset($_SESSION['employeeId'])) {
             if ($i >= count($fetchLeaveData) - 1) {
                 $today = (new DateTime())->format('Y-m-d');
                 $iterate = 0;
-                while ($holdMonth < $today) {
+                while ($holdMonth <= $today) {
                     $monthEarnedArray = [
                         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration . $iterate,
                         'employee_id' => $fetchLeaveData[$i]['employee_id'],
