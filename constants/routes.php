@@ -15,6 +15,8 @@ $action_edit_leaverecorddata = $webhostpage.'/actions/editLeaveDataRecord.php';
 $action_delete_leaverecorddata = $webhostpage.'/actions/deleteLeaveDataRecord.php';
 
 $action_add_leaveappform = $webhostpage.'/actions/addLeaveAppForm.php';
+$action_edit_leaveappform = $webhostpage.'/actions/addLeaveAppForm.php';
+$action_delete_leaveappform = $webhostpage.'/actions/deleteLeaveAppForm.php';
 
 $components_file_error_handler = $webhostpath.'/components/error_handler.php';
 $components_file_topnav = $webhostpath.'/components/topnavigation.php';
@@ -67,6 +69,8 @@ $location_employee = $webhostpage.'/employee';
 $location_employee_profile = $webhostpage.'/employee/profile';
 $location_employee_leave_form = $webhostpage.'/employee/leaveform';
 $location_employee_leave_form_record = $webhostpage.'/employee/leaveformrecord';
+$location_employee_leave_form_record_view = $webhostpage.'/employee/leaveformrecord/view';
+$location_employee_leave_form_record_edit = $webhostpage.'/employee/leaveformrecord/edit';
 $location_employee_leave_data_form = $webhostpage.'/employee/leavedataform';
 
 ?>

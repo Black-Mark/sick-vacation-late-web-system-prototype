@@ -4,10 +4,18 @@ include("../../constants/routes.php");
 include($constants_file_dbconnect);
 include($constants_file_session_employee);
 
-$employeeData = [];
+$leaveAppDataList = [];
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
+
+    $leavelistsql = "SELECT * FROM tbl_leaveappform WHERE employee_id = ?";
+
+    $stmt = $database->prepare($leavelistsql);
+    $stmt->bind_param("s", $employeeId);
+    $stmt->execute();
+
+    $leaveAppDataList = $stmt->get_result();
 }
 
 ?>
@@ -36,6 +44,14 @@ if (isset($_SESSION['employeeId'])) {
     <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
     <script src="<?php echo $assets_toastify_js; ?>"></script>
 
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css; ?>">
+    <script src="<?php echo $assets_datatable_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css_select; ?>">
+    <script src="<?php echo $assets_datatable_js_select; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
+
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
     <!-- <script src="<?php
@@ -53,11 +69,172 @@ if (isset($_SESSION['employeeId'])) {
 
             <div class="box-container">
                 <h3 class="title-text">Leave Application Record</h3>
-                
+
+                <table id="employees" class="text-center hover table-striped cell-border order-column"
+                    style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Type of Leave</th>
+                            <th>Inclusive Dates</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if (!empty($leaveAppDataList)) {
+                            foreach ($leaveAppDataList as $ldata) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="selectedLeaveForm[]"
+                                            value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                    </td>
+                                    <td>
+                                        <?php echo $ldata['typeOfLeave']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $ldata['inclusiveDates']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $ldata['status']; ?>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="<?php echo $action_delete_leaveappform; ?>">
+                                            <a
+                                                href="<?php echo $location_employee_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                                <button type="button" class="custom-regular-button">
+                                                    View
+                                                </button>
+                                            </a>
+
+                                            <a
+                                                href="<?php echo $location_employee_leave_form_record_edit . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                                <button type="button" class="custom-regular-button">
+                                                    Edit
+                                                </button>
+                                            </a>
+
+                                            <input type="hidden" name="leaveAppFormNum"
+                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
+                                                class="custom-regular-button" />
+
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
 
         </div>
     </div>
+
+    <!-- Data Table Configuration -->
+    <script>
+        let table = new DataTable('#employees', {
+            pagingType: 'full_numbers',
+            scrollCollapse: true,
+            scrollY: '100%',
+            scrollX: true,
+            // 'select': {
+            //     'style': 'multi',
+            // },
+            // ordering: false,
+            columnDefs: [
+                {
+                    'targets': 0,
+                    'orderable': false,
+                    // 'checkboxes': {
+                    //     'selectRow': true,
+                    //     // 'page': 'current',
+                    // }
+                },
+                {
+                    'targets': -1,
+                    'orderable': false,
+                    // 'checkboxes': {
+                    //     'selectRow': true,
+                    //     // 'page': 'current',
+                    // }
+                },
+                // {
+                //     targets: [0],
+                //     orderData: [0, 1]
+                // },
+                // {
+                //     targets: [1],
+                //     orderData: [1, 0]
+                // },
+                // {
+                //     targets: [4],
+                //     orderData: [4, 0]
+                // }
+            ],
+            search: {
+                return: true
+            },
+            "dom": 'Blfrtip',
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, 'All']
+            ],
+            // "colReorder": true,
+            "buttons": [
+                {
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'CustomExcelFileName',
+                    filename: 'custom_excel_file',
+                    exportOptions: {
+                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                    }
+                },
+                {
+                    extend: 'csv',
+                    title: 'CustomCSVFileName',
+                    filename: 'custom_csv_file',
+                    exportOptions: {
+                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'CustomPDFFileName',
+                    filename: 'custom_PDF_file',
+                    exportOptions: {
+                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'CustomPrintFileName',
+                    filename: 'custom_print_file',
+                    message: 'This print was produced by Computer',
+                    exportOptions: {
+                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                    }
+                },
+                {
+                    "extend": "colvis",
+                    text: 'Column Visibility',
+                    columns: ':first,:gt(0),:last'
+                }
+            ],
+            // responsive: true,
+        });
+
+    </script>
 
     <div class="component-container">
         <?php

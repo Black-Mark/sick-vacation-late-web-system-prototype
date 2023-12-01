@@ -743,6 +743,10 @@ if ($department_result->num_rows > 0) {
                         // responsive: true,
                     });
 
+                </script>
+
+                <!-- Checking Check Values -->
+                <script>
                     $(document).ready(function () {
                         $("#clearAddEmployeeInputs").click(function () {
                             $("#addEmployee :input:not(:submit)").val('');
