@@ -45,7 +45,19 @@ include($constants_variables);
 
     <div class="page-container">
         <div class="page-content">
-            <div class="text-experiment">This is Employee Home page</div>
+        <div class="card-container">
+
+                <div class="card">
+                    <h1>Available Vacation Leave:</h1>
+                    <h2>???</h2>
+                </div>
+
+                <div class="card">
+                    <h1>Available Sick Leave:</h1>
+                    <h2>???</h2>
+                </div>
+
+            </div>
         </div>
     </div>
 
