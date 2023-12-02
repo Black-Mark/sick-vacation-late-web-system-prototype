@@ -70,11 +70,10 @@ if (isset($_SESSION['employeeId'])) {
             <div class="box-container">
                 <h3 class="title-text">Leave Application Record</h3>
 
-                <table id="employees" class="text-center hover table-striped cell-border order-column"
+                <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">
                     <thead>
                         <tr>
-                            <th>Select</th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
                             <th>Status</th>
@@ -88,10 +87,6 @@ if (isset($_SESSION['employeeId'])) {
                                 ?>
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="selectedLeaveForm[]"
-                                            value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                    </td>
-                                    <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
@@ -101,27 +96,12 @@ if (isset($_SESSION['employeeId'])) {
                                         <?php echo $ldata['status']; ?>
                                     </td>
                                     <td>
-                                        <form method="POST" action="<?php echo $action_delete_leaveappform; ?>">
-                                            <a
-                                                href="<?php echo $location_employee_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    View
-                                                </button>
-                                            </a>
-
-                                            <a
-                                                href="<?php echo $location_employee_leave_form_record_edit . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    Edit
-                                                </button>
-                                            </a>
-
-                                            <input type="hidden" name="leaveAppFormNum"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
-
-                                        </form>
+                                        <a
+                                            href="<?php echo $location_employee_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                            <button type="button" class="custom-regular-button">
+                                                View
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
@@ -137,7 +117,7 @@ if (isset($_SESSION['employeeId'])) {
 
     <!-- Data Table Configuration -->
     <script>
-        let table = new DataTable('#employees', {
+        let table = new DataTable('#leaveAppList', {
             pagingType: 'full_numbers',
             scrollCollapse: true,
             scrollY: '100%',
@@ -147,14 +127,14 @@ if (isset($_SESSION['employeeId'])) {
             // },
             // ordering: false,
             columnDefs: [
-                {
-                    'targets': 0,
-                    'orderable': false,
-                    // 'checkboxes': {
-                    //     'selectRow': true,
-                    //     // 'page': 'current',
-                    // }
-                },
+                // {
+                //     'targets': 0,
+                //     'orderable': false,
+                //     'checkboxes': {
+                //         'selectRow': true,
+                //         // 'page': 'current',
+                //     }
+                // },
                 {
                     'targets': -1,
                     'orderable': false,
@@ -189,7 +169,7 @@ if (isset($_SESSION['employeeId'])) {
                 {
                     extend: 'copy',
                     exportOptions: {
-                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                        columns: ':visible:not(:eq(-1))',
                     }
                 },
                 {
@@ -197,7 +177,7 @@ if (isset($_SESSION['employeeId'])) {
                     title: 'CustomExcelFileName',
                     filename: 'custom_excel_file',
                     exportOptions: {
-                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                        columns: ':visible:not(:eq(-1))',
                     }
                 },
                 {
@@ -205,7 +185,7 @@ if (isset($_SESSION['employeeId'])) {
                     title: 'CustomCSVFileName',
                     filename: 'custom_csv_file',
                     exportOptions: {
-                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                        columns: ':visible:not(:eq(-1))',
                     }
                 },
                 {
@@ -213,7 +193,7 @@ if (isset($_SESSION['employeeId'])) {
                     title: 'CustomPDFFileName',
                     filename: 'custom_PDF_file',
                     exportOptions: {
-                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                        columns: ':visible:not(:eq(-1))',
                     }
                 },
                 {
@@ -222,7 +202,7 @@ if (isset($_SESSION['employeeId'])) {
                     filename: 'custom_print_file',
                     message: 'This print was produced by Computer',
                     exportOptions: {
-                        columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                        columns: ':visible:not(:eq(-1))',
                     }
                 },
                 {
