@@ -15,7 +15,7 @@ $action_edit_leaverecorddata = $webhostpage.'/actions/editLeaveDataRecord.php';
 $action_delete_leaverecorddata = $webhostpage.'/actions/deleteLeaveDataRecord.php';
 
 $action_add_leaveappform = $webhostpage.'/actions/addLeaveAppForm.php';
-$action_edit_leaveappform = $webhostpage.'/actions/addLeaveAppForm.php';
+$action_edit_leaveappform = $webhostpage.'/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage.'/actions/deleteLeaveAppForm.php';
 
 $components_file_error_handler = $webhostpath.'/components/error_handler.php';
