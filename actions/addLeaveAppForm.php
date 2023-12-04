@@ -62,21 +62,69 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
         mysqli_stmt_bind_param(
             $stmt,
             "sssssssssssssssssssisssddddddssiiisss",
-            $employeeId, $departmentName, $lastName, $firstName, $middleName, $dateFiling, $position, $salary,
-            $typeOfLeave, $typeOfSpecifiedOtherLeave, $typeOfVacationLeave, $typeOfVacationLeaveWithin, $typeOfVacationLeaveAbroad,
-            $typeOfSickLeave, $typeOfSickLeaveInHospital, $typeOfSickLeaveOutPatient, $typeOfSpecialLeaveForWomen, $typeOfStudyLeave,
-            $typeOfOtherLeave, $workingDays, $inclusiveDates, $commutation, 
-            $asOfDate, $vacationLeaveTotalEarned, $sickLeaveTotalEarned, $vacationLeaveLess, $sickLeaveLess,
-            $vacationLeaveBalance, $sickLeaveBalance, $recommendation, $recommendMessage,
-            $dayWithPay, $dayWithoutPay, $otherDayPay, $otherDaySpecify, $disapprovedMessage, $status
+            $employeeId,
+            $departmentName,
+            $lastName,
+            $firstName,
+            $middleName,
+            $dateFiling,
+            $position,
+            $salary,
+            $typeOfLeave,
+            $typeOfSpecifiedOtherLeave,
+            $typeOfVacationLeave,
+            $typeOfVacationLeaveWithin,
+            $typeOfVacationLeaveAbroad,
+            $typeOfSickLeave,
+            $typeOfSickLeaveInHospital,
+            $typeOfSickLeaveOutPatient,
+            $typeOfSpecialLeaveForWomen,
+            $typeOfStudyLeave,
+            $typeOfOtherLeave,
+            $workingDays,
+            $inclusiveDates,
+            $commutation,
+            $asOfDate,
+            $vacationLeaveTotalEarned,
+            $sickLeaveTotalEarned,
+            $vacationLeaveLess,
+            $sickLeaveLess,
+            $vacationLeaveBalance,
+            $sickLeaveBalance,
+            $recommendation,
+            $recommendMessage,
+            $dayWithPay,
+            $dayWithoutPay,
+            $otherDayPay,
+            $otherDaySpecify,
+            $disapprovedMessage,
+            $status
         );
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Leave Application Form Successfully Created";
             $_SESSION['alert_type'] = $success_color;
-            // header("Location: " . $_SERVER['PHP_SELF']);
-            // header("Location: " . $location_employee_leave_form);
-            // exit();
+
+            $notifEmpIdFrom = $_SESSION['employeeId'];
+            $notifEmpIdTo = '@Admin';
+            $notifSubject = $_SESSION['role'] . ' Submission of Leave Form';
+
+            $notifMessage = $_SESSION['username'] . ' is Applying For ' . $typeOfLeave;
+            $notifLink = $location_admin_leaveapplist;
+            $notifSeen = 'unread';
+
+            $queryNotif = "INSERT INTO tbl_notifications (dateCreated, empIdFrom, empIdTo, subject, message, link, seen) VALUES (CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?)";
+            $stmtNotif = mysqli_prepare($database, $queryNotif);
+
+            // Bind parameters
+            mysqli_stmt_bind_param($stmtNotif, "ssssss", $notifEmpIdFrom, $notifEmpIdTo, $notifSubject, $notifMessage, $notifLink, $notifSeen);
+
+            // Execute the statement
+            mysqli_stmt_execute($stmtNotif);
+
+            header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: " . $location_employee_leave_form);
+            exit();
         } else {
             $_SESSION['alert_message'] = "Error submitting Leave Application Form: " . mysqli_stmt_error($stmt);
             $_SESSION['alert_type'] = $error_color;
@@ -84,14 +132,14 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     } catch (Exception $e) {
         $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
         $_SESSION['alert_type'] = $error_color;
-        // header("Location: " . $_SERVER['PHP_SELF']);
-        // header("Location: " . $location_employee_leave_form);
-        // exit();
+        header("Location: " . $_SERVER['PHP_SELF']);
+        header("Location: " . $location_employee_leave_form);
+        exit();
         // throw new Exception("Database query failed: " . mysqli_error($database));
     }
 } else {
-    // echo '<script type="text/javascript">window.history.back();</script>';
-    // header("Location: " . $location_employee_leave_form);
-    // exit();
+    echo '<script type="text/javascript">window.history.back();</script>';
+    header("Location: " . $location_employee_leave_form);
+    exit();
 }
 ?>

@@ -70,14 +70,24 @@ if (isset($_REQUEST['logout'])) {
         </div>
     </div>
     <div class="top-nav-content">
+
         <div class="position-relative clickable-element">
-            <i class="fa fa-bell text-white">
-            </i>
+            <i class="fa fa-bell text-white"></i>
+            <?php
+            // Query to count unread notifications
+            $countQuery = "SELECT COUNT(*) as count FROM tbl_notifications WHERE empIdTo = '@Admin' AND seen = 'unread'";
+            $countResult = mysqli_query($database, $countQuery);
+            $countRow = mysqli_fetch_assoc($countResult);
+            $unreadCount = $countRow['count'];
+            ?>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                9+
+                <?php echo $unreadCount; ?>
                 <span class="visually-hidden">unread messages</span>
             </span>
         </div>
+
+        <div id="notification-container" ></div>
+
         <div class="top-nav-username">
             <?php
             if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
@@ -118,6 +128,27 @@ if (isset($_REQUEST['logout'])) {
     </ul>
 
 </div>
+
+<script>
+    $(document).ready(function () {
+        function fetchNotifications() {
+            // Make an AJAX request to fetch new notifications
+            $.ajax({
+                url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
+                method: 'POST', // Change the method to POST
+                success: function (data) {
+                    $('#notification-container').html(data);
+                }
+            });
+        }
+
+        // Fetch notifications every 30 seconds (adjust the interval as needed)
+        setInterval(fetchNotifications, 5000);
+
+        // Initial fetch
+        fetchNotifications();
+    });
+</script>
 
 <script src="<?php echo $assets_script_topnav; ?>"></script>
 
