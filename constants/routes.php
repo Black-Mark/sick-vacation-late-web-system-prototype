@@ -61,9 +61,10 @@ $location_admin = $webhostpage.'/admin';
 $location_admin_profile = $webhostpage.'/admin/profile';
 $location_admin_departments = $webhostpage.'/admin/departments';
 $location_admin_departments_office = $webhostpage.'/admin/departments/employee-list';
+
 $location_admin_departments_employee = $webhostpage.'/admin/departments/employee-list/user-info';
 $location_admin_departments_employee_leavedataform = $webhostpage.'/admin/departments/employee-list/leave-data-form';
-$location_admin_departments_employee_leaveappform = $webhostpage.'/admin/departments/employee-list/leave-app-form';
+$location_admin_departments_employee_leaveappform = $webhostpage.'/admin/departments/employee-list/leave-app-record';
 
 $location_employee = $webhostpage.'/employee';
 $location_employee_profile = $webhostpage.'/employee/profile';

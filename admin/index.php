@@ -52,7 +52,14 @@ include($constants_file_session_admin);
 
     <div class="page-container">
         <div class="page-content">
-            <div class="text-experiment">This is Admin Page</div>
+            <div class="card-container">
+
+                <div class="card">
+                    <h1>Total No. of Beneficiary</h1>
+                    <h2>???</h2>
+                </div>
+
+            </div>
         </div>
     </div>
 
