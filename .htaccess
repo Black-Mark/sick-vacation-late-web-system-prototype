@@ -18,6 +18,9 @@ RewriteRule ^admin/departments/employee-list/user-info/([^/]+)$ admin/department
 RewriteRule ^admin/departments/employee-list/leave-app-record/([^/]+)/$ admin/departments/employee-list/leave-app-record/index.php?empid=$1 [L,QSA]
 RewriteRule ^admin/departments/employee-list/leave-app-record/([^/]+)$ admin/departments/employee-list/leave-app-record/index.php?empid=$1 [L,QSA]
 
+RewriteRule ^admin/departments/employee-list/leave-app-record/view/([^/]+)/$ admin/departments/employee-list/leave-app-record/view/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-app-record/view/([^/]+)$ admin/departments/employee-list/leave-app-record/view/index.php?leaveappid=$1 [L,QSA]
+
 RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)/$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
 RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
 

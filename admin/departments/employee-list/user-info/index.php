@@ -9,7 +9,12 @@ $employeeData = [];
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
+    if (isset($_SESSION['post_empId'])) {
+        unset($_SESSION['post_empId']);
+    }
 } else {
+    $_SESSION['post_empId'] = $empId;
+
     $sql = "SELECT
     ua.*,
     d.departmentName

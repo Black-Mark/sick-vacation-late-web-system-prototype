@@ -10,6 +10,8 @@ $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRI
 $leaveAppDataList = [];
 
 if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
+    $_SESSION['post_empId'] = $empId;
+
     $empId = $database->real_escape_string($empId);
 
     $leavelistsql = "SELECT * FROM tbl_leaveappform WHERE employee_id = ?";
@@ -19,6 +21,10 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     $stmt->execute();
 
     $leaveAppDataList = $stmt->get_result();
+} else {
+    if (isset($_SESSION['post_empId'])) {
+        unset($_SESSION['post_empId']);
+    }
 }
 
 ?>
@@ -106,13 +112,14 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                                     <td>
                                         <form action="<?php echo $action_delete_leaveappform; ?>" method="post">
                                             <a
-                                                href="<?php echo $location_admin_departments_employee_leaveappform . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                                href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
                                                 <button type="button" class="custom-regular-button">
                                                     View
                                                 </button>
                                             </a>
                                             <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                            <input type="hidden" name="recordId" value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                            <input type="hidden" name="recordId"
+                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
                                             <input type="submit" name="deleteLeaveAppForm" value="Delete"
                                                 class="custom-regular-button" />
                                         </form>
