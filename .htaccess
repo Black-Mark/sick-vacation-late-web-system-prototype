@@ -52,3 +52,8 @@ RewriteRule ^Constants/.*\.(php|html|txt)$ - [F,L]
 # Example rule for department URL (commented out)
 # RewriteRule ^department/([A-Za-z]+)/group/([0-9]+)/uid/([0-9]+)$ department.php?departmentname=$1&group=$2&uid=$3 [L]
 #<a href="/department.php?departmentname=IT/group.php?group=1/&uid=4544">Click me</a>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)\.html$ $1.php [NC,L]
