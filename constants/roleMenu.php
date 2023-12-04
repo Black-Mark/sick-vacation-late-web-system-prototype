@@ -4,6 +4,7 @@ $adminMenu = array(
     "Home" => array("icon" => "fa fa-home", "link" => $location_admin),
     "Profile" => array("icon" => "fa fa-user", "link" => $location_admin_profile),
     "Department List" => array("icon" => "fa fa-align-justify", "link" => $location_admin_departments),
+    "Leave App List" => array("icon" => "fa fa-align-justify", "link" => $location_admin_leaveapplist),
 );
 
 $employeeMenu = array(
