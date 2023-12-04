@@ -92,7 +92,7 @@ if (isset($_GET['leaveappid'])) {
                 </div>
 
                 <div class="button-container component-container mb-2">
-                    <a href='<?php echo $location_employee_leave_form_record; ?>'><button type="button" class="custom-regular-button">Back</button></a>
+                    <a href='<?php echo $location_admin_leaveapplist; ?>'><button type="button" class="custom-regular-button">Back</button></a>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
 

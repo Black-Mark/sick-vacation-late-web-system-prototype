@@ -45,6 +45,14 @@ if ($employees_result->num_rows > 0) {
     <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
     <script src="<?php echo $assets_toastify_js; ?>"></script>
 
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css; ?>">
+    <script src="<?php echo $assets_datatable_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css_select; ?>">
+    <script src="<?php echo $assets_datatable_js_select; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
+
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
     <!-- <script src="<?php

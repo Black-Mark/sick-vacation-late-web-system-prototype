@@ -71,22 +71,23 @@ if (isset($_REQUEST['logout'])) {
     </div>
     <div class="top-nav-content">
 
-        <div class="position-relative clickable-element">
-            <i class="fa fa-bell text-white"></i>
-            <?php
-            // Query to count unread notifications
-            $countQuery = "SELECT COUNT(*) as count FROM tbl_notifications WHERE empIdTo = '@Admin' AND seen = 'unread'";
-            $countResult = mysqli_query($database, $countQuery);
-            $countRow = mysqli_fetch_assoc($countResult);
-            $unreadCount = $countRow['count'];
+        <?php
+        if ($_SESSION['role'] == 'Admin') {
             ?>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                <?php echo $unreadCount; ?>
-                <span class="visually-hidden">unread messages</span>
-            </span>
-        </div>
+            <div class="position-relative clickable-element toggle-notification">
+                <i class="fa fa-bell text-white"></i>
+                <span id="notifCount"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    0
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </div>
 
-        <div id="notification-container" ></div>
+            <div id="notification-container"></div>
+
+            <?php
+        }
+        ?>
 
         <div class="top-nav-username">
             <?php
@@ -129,26 +130,57 @@ if (isset($_REQUEST['logout'])) {
 
 </div>
 
-<script>
-    $(document).ready(function () {
-        function fetchNotifications() {
-            // Make an AJAX request to fetch new notifications
-            $.ajax({
-                url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
-                method: 'POST', // Change the method to POST
-                success: function (data) {
-                    $('#notification-container').html(data);
+<?php if ($_SESSION['role'] === 'Admin') {
+    ?>
+    <script>
+        $(document).ready(function () {
+            function fetchNotifications() {
+                // Make an AJAX request to fetch new notifications
+                $.ajax({
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
+                    method: 'POST', // Change the method to POST
+                    success: function (data) {
+                        $('#notification-container').html(data);
+                    }
+                });
+            }
+
+            function fetchNotificationsCount() {
+                // Make an AJAX request to fetch new notifications
+                $.ajax({
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotificationCount.php', // Create this file to fetch notifications
+                    method: 'POST', // Change the method to POST
+                    success: function (data) {
+                        $('#notifCount').html(data);
+                    }
+                });
+            }
+
+            // Toggle the 'show' class on the notification container when clicking the bell icon
+            $('.clickable-element').click(function (event) {
+                $('#notification-container').toggleClass('show');
+                event.stopPropagation(); // Prevent the click event from propagating to the document body
+            });
+
+            // Close the notification container when clicking outside of it
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#notification-container, .clickable-element').length) {
+                    $('#notification-container').removeClass('show');
                 }
             });
-        }
 
-        // Fetch notifications every 30 seconds (adjust the interval as needed)
-        setInterval(fetchNotifications, 5000);
+            // Fetch notifications every 30 seconds (adjust the interval as needed)
+            setInterval(fetchNotifications, 5000);
+            setInterval(fetchNotificationsCount, 5000);
 
-        // Initial fetch
-        fetchNotifications();
-    });
-</script>
+            // Initial fetch
+            fetchNotifications();
+            fetchNotificationsCount();
+        });
+    </script>
+    <?php
+}
+?>
 
 <script src="<?php echo $assets_script_topnav; ?>"></script>
 

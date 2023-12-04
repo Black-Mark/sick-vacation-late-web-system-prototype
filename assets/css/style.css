@@ -1032,3 +1032,62 @@ body::-webkit-scrollbar-thumb {
     padding: 8px;
     /* Optional: Add padding for better appearance */
 }
+
+/* Styles for the notification container */
+#notification-container {
+    z-index: 200;
+    position: fixed;
+    top: 64px;
+    right: -300px; /* Start off-screen to the right */
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    transition: right 0.3s ease; /* Animation transition */
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.notification-header {
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.notification-subject-text {
+    font-size: 16px;
+}
+
+.notification-message-text {
+    font-size: 12px;
+}
+
+.notification-footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-size: 14px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    border-top: 1px solid #ddd;
+}
+
+/* Styles for each notification */
+.notification {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: default;
+}
+
+.notification:hover {
+    background-color: var(--favcolor);
+}
+
+/* Animation for the notification container */
+#notification-container.show {
+    right: 0;
+}

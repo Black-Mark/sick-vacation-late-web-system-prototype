@@ -7,7 +7,12 @@ include($constants_file_session_admin);
 $leaveAppDataList = [];
 
 
-$leavelistsql = "SELECT * FROM tbl_leaveappform";
+$leavelistsql = "   SELECT leaveapp.*,
+                        users.firstName AS userFirstName,
+                        users.lastName AS userLastName
+                    FROM tbl_leaveappform leaveapp
+                    LEFT JOIN tbl_useraccounts users
+                    ON users.employee_id = leaveapp.employee_id";
 
 $leavelist_result = $database->query($leavelistsql);
 
@@ -73,6 +78,7 @@ if ($leavelist_result->num_rows > 0) {
                     style="width:100%">
                     <thead>
                         <tr>
+                            <th>Name</th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
                             <th>Status</th>
@@ -85,6 +91,9 @@ if ($leavelist_result->num_rows > 0) {
                             foreach ($leaveAppDataList as $ldata) {
                                 ?>
                                 <tr>
+                                    <td>
+                                        <?php echo $ldata['userLastName'] . ' ' . $ldata['userFirstName']; ?>
+                                    </td>
                                     <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>

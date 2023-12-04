@@ -30,7 +30,6 @@ if (isset($_SESSION['employeeId'])) {
             $employeeData = $empResult->fetch_assoc();
         }
 
-        $stmt->close();
     } else {
         // Something
     }
@@ -61,6 +60,14 @@ if (isset($_SESSION['employeeId'])) {
 
     <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
     <script src="<?php echo $assets_toastify_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css; ?>">
+    <script src="<?php echo $assets_datatable_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css_select; ?>">
+    <script src="<?php echo $assets_datatable_js_select; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
