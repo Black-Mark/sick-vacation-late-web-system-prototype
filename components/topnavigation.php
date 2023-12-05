@@ -156,9 +156,24 @@ if (isset($_REQUEST['logout'])) {
                 });
             }
 
+            // Function to mark notifications as seen
+            function markNotificationsAsSeen() {
+                $.ajax({
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/markNotificationsAsSeen.php',
+                    method: 'POST',
+                    success: function (data) {
+                        // You can handle the response if needed
+                    }
+                });
+            }
+
             // Toggle the 'show' class on the notification container when clicking the bell icon
             $('.clickable-element').click(function (event) {
                 $('#notification-container').toggleClass('show');
+
+                // Mark notifications as seen when the bell is clicked
+                markNotificationsAsSeen();
+
                 event.stopPropagation(); // Prevent the click event from propagating to the document body
             });
 
