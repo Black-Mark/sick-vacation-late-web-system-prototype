@@ -144,6 +144,123 @@ if ($selectedYear) {
 
             <div class='box-container'>
 
+                <!-- Initialize Record -->
+                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
+                    id="createInitialRecord" tabindex="-1" role="dialog" aria-labelledby="createInitialRecordTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="createInitialRecordModalLongTitle">Create Initial Record
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="period" class="form-control"
+                                                id="floatingInitializePeriod" placeholder="2020-12-31" required>
+                                            <label for="floatingInitializePeriod">Start Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" name="periodEnd" class="form-control"
+                                                id="floatingInitializePeriodEnd" placeholder="2020-12-31" required>
+                                            <label for="floatingInitializePeriodEnd">End Period <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="particularLabel" class="form-control"
+                                        id="floatingparticularLabel" placeholder="">
+                                    <label for="floatingparticularLabel">Label
+                                        <!-- <span class="required-color">*</span> -->
+                                    </label>
+                                </div>
+
+                                <div class="m-2">Vacation Leave</div>
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" step="any" name="vacationBalance"
+                                                class="form-control" id="vacationBalanceInput"
+                                                value="1.25" required>
+                                            <label for="vacationBalanceInput">Balance <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" step="any" name="vacationUnderWOPay"
+                                                class="form-control" id="vacationUnderWOPayInput"
+                                                value="0" required>
+                                            <label for="vacationUnderWOPayInput">Under W/O Pay <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="m-2">Sick Leave</div>
+
+                                <div class="row g-2 mb-2">
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" step="any" name="sickBalance"
+                                                class="form-control" id="sickBalanceInput"
+                                                value="1.25" required>
+                                            <label for="sickBalanceInput">Balance <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="number" step="any" name="sickUnderWOPay"
+                                                class="form-control" id="sickUnderWOPayInput"
+                                                value="0" required>
+                                            <label for="sickUnderWOPayInput">Under W/O Pay <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateOfAction" class="form-control"
+                                        id="floatingInitializeDateOfAction" placeholder="2020-12-31" required>
+                                    <label for="floatingInitializeDateOfAction">Date of Action <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary clearInitialize">Clear</button>
+                                <input type="submit" name="createInitialRecord" value="Create Initial Record"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <!-- Add Modal -->
                 <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
                     id="addLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle"
@@ -360,6 +477,7 @@ if ($selectedYear) {
                     </div>
                 </form>
 
+                <!-- Edit Modal -->
                 <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade"
                     id="editLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle"
                     aria-hidden="true">
@@ -499,12 +617,12 @@ if ($selectedYear) {
                             }
                             ?>
                         </select>
-                        <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
+                        <input type="submit" name="leaveFormYear" value="Load Year Record" class="custom-regular-button">
                     </form>
                     <?php
                     if (!empty($leaveData)) {
                         ?>
-                        <button type="button" id="createInitialRecord" class="custom-regular-button" data-toggle="modal"
+                        <button type="button" id="addLeaveDataRecordButton" class="custom-regular-button" data-toggle="modal"
                             data-target="#addLeaveDataRecord">
                             Add Leave Record
                         </button>
@@ -709,9 +827,11 @@ if ($selectedYear) {
                                                 There is no Data Found
                                             </div>
                                             <div class="button-container component-container justify-content-center py-1">
-                                                <button type="button" id="createInitialRecord" class="custom-regular-button"
-                                                    data-toggle="modal" data-target="#addLeaveDataRecord">
-                                                    Add New Leave Record
+                                                <button type="button" id="createInitialRecordButton"
+                                                    class="custom-regular-button" data-toggle="modal"
+                                                    data-target="#createInitialRecord"
+                                                    data-period-start="<?php echo $employeeData['dateStarted']; ?>">
+                                                    Create Initial Record
                                                 </button>
                                             </div>
                                         </td>
@@ -724,8 +844,6 @@ if ($selectedYear) {
                         </table>
                     </div>
                 </div>
-
-
 
             </div>
 

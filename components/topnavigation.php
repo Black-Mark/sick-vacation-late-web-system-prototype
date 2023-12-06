@@ -74,7 +74,7 @@ if (isset($_REQUEST['logout'])) {
         <?php
         if ($_SESSION['role'] == 'Admin') {
             ?>
-            <div class="position-relative clickable-element toggle-notification">
+            <div id="notification-menu" class="position-relative clickable-element toggle-notification">
                 <i class="fa fa-bell text-white"></i>
                 <span id="notifCount"
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -168,7 +168,7 @@ if (isset($_REQUEST['logout'])) {
             }
 
             // Toggle the 'show' class on the notification container when clicking the bell icon
-            $('.clickable-element').click(function (event) {
+            $('#notification-menu').click(function (event) {
                 $('#notification-container').toggleClass('show');
 
                 // Mark notifications as seen when the bell is clicked
@@ -179,7 +179,7 @@ if (isset($_REQUEST['logout'])) {
 
             // Close the notification container when clicking outside of it
             $(document).on('click', function (event) {
-                if (!$(event.target).closest('#notification-container, .clickable-element').length) {
+                if (!$(event.target).closest('#notification-container, #notification-menu').length) {
                     $('#notification-container').removeClass('show');
                 }
             });

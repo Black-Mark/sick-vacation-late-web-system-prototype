@@ -4,6 +4,13 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
+// Function to apply strip_tags and mysqli_real_escape_string
+function sanitizeInput($input)
+{
+    global $database;
+    return mysqli_real_escape_string($database, strip_tags($input));
+}
+
 if (isset($_POST['addLeaveDataRecord'])) {
     // Empty Variables
     $initialValue = 1.25;
@@ -17,13 +24,6 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $newSickLeaveAbsUndWOP = 0.00;
 
     $arrayLeaveDataRecord = [];
-
-    // Function to apply strip_tags and mysqli_real_escape_string
-    function sanitizeInput($input)
-    {
-        global $database;
-        return mysqli_real_escape_string($database, strip_tags($input));
-    }
 
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
     $selectedYear = isset($_POST['selectedYear']) ? sanitizeInput($_POST['selectedYear']) : null;
@@ -286,7 +286,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
                 }
             }
 
-                $sqlUpdateData = "  UPDATE tbl_leavedataform 
+            $sqlUpdateData = "  UPDATE tbl_leavedataform 
                                     SET vacationLeaveEarned = ?, 
                                         vacationLeaveAbsUndWP = ?, 
                                         vacationLeaveBalance = ?, 
@@ -297,25 +297,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
                                         sickLeaveAbsUndWOP = ?
                                     WHERE leavedataform_id = ? AND employee_id = ?";
 
-                $stmtUpdate = $database->prepare($sqlUpdateData);
+            $stmtUpdate = $database->prepare($sqlUpdateData);
 
-                if ($stmtUpdate) {
-                    $stmtUpdate->bind_param(
-                        "ddddddddss",
-                        $arrayLeaveDataRecord[$i]['vacationLeaveEarned'],
-                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWP'],
-                        $arrayLeaveDataRecord[$i]['vacationLeaveBalance'],
-                        $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'],
-                        $arrayLeaveDataRecord[$i]['sickLeaveEarned'],
-                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWP'],
-                        $arrayLeaveDataRecord[$i]['sickLeaveBalance'],
-                        $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'],
-                        $arrayLeaveDataRecord[$i]['leavedataform_id'],
-                        $empId
-                    );
+            if ($stmtUpdate) {
+                $stmtUpdate->bind_param(
+                    "ddddddddss",
+                    $arrayLeaveDataRecord[$i]['vacationLeaveEarned'],
+                    $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWP'],
+                    $arrayLeaveDataRecord[$i]['vacationLeaveBalance'],
+                    $arrayLeaveDataRecord[$i]['vacationLeaveAbsUndWOP'],
+                    $arrayLeaveDataRecord[$i]['sickLeaveEarned'],
+                    $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWP'],
+                    $arrayLeaveDataRecord[$i]['sickLeaveBalance'],
+                    $arrayLeaveDataRecord[$i]['sickLeaveAbsUndWOP'],
+                    $arrayLeaveDataRecord[$i]['leavedataform_id'],
+                    $empId
+                );
 
-                    $stmtUpdate->execute();
-                }
+                $stmtUpdate->execute();
+            }
         }
 
         // $stmtUpdate->close();
@@ -327,7 +327,113 @@ if (isset($_POST['addLeaveDataRecord'])) {
     }
 
     header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+} else if (isset($_POST['createInitialRecord'])) {
+    $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
+    $selectedYear = isset($_POST['selectedYear']) ? sanitizeInput($_POST['selectedYear']) : null;
+
+    $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : null;
+    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : null;
+    $particularLabel = isset($_POST['particularLabel']) ? sanitizeInput($_POST['particularLabel']) : null;
+
+    $vacationBalance = isset($_POST['vacationBalance']) ? sanitizeInput($_POST['vacationBalance']) : null;
+    $vacationUnderWOPay = isset($_POST['vacationUnderWOPay']) ? sanitizeInput($_POST['vacationUnderWOPay']) : null;
+    $sickBalance = isset($_POST['sickBalance']) ? sanitizeInput($_POST['sickBalance']) : null;
+    $sickUnderWOPay = isset($_POST['sickUnderWOPay']) ? sanitizeInput($_POST['sickUnderWOPay']) : null;
+
+    $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
+
+    $dataRecordType = "Initial Record";
+
+    // Check if an Initial Record already exists for the specified employee and year
+    $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ?";
+    $checkStmt = mysqli_prepare($database, $checkQuery);
+    mysqli_stmt_bind_param($checkStmt, "ss", $empId, $dataRecordType);
+    mysqli_stmt_execute($checkStmt);
+    mysqli_stmt_store_result($checkStmt);
+
+    if (mysqli_stmt_num_rows($checkStmt) > 0) {
+        // Record already exists, perform an update
+        $updateQuery = "UPDATE tbl_leavedataform 
+                        SET period = ?, periodEnd = ?, particularLabel = ?, 
+                            vacationLeaveEarned = ?, vacationLeaveBalance = ?, vacationLeaveAbsUndWOP = ?,
+                            sickLeaveEarned = ?, sickLeaveBalance = ?, sickLeaveAbsUndWOP = ?, dateOfAction = ? 
+                        WHERE employee_id = ? AND recordType = 'Initial Record' AND selectedYear = ?";
+
+        $updateStmt = mysqli_prepare($database, $updateQuery);
+        mysqli_stmt_bind_param(
+            $updateStmt,
+            "ssddddddssss",
+            $period,
+            $periodEnd,
+            $particularLabel,
+            $vacationBalance,
+            $vacationBalance,
+            $vacationUnderWOPay,
+            $sickBalance,
+            $sickBalance,
+            $sickUnderWOPay,
+            $dateOfAction,
+            $empId,
+            $selectedYear
+        );
+
+        if (mysqli_stmt_execute($updateStmt)) {
+            // Update successful
+            $_SESSION['alert_message'] = "Initialization Successfully Updated";
+            $_SESSION['alert_type'] = $success_color;
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            // Update failed
+            $_SESSION['alert_message'] = "Initialization Update Failed: " . mysqli_stmt_error($updateStmt);
+            $_SESSION['alert_type'] = $error_color;
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        }
+    } else {
+        $query = "  INSERT INTO tbl_leavedataform 
+                  (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel,
+                  vacationLeaveEarned, vacationLeaveBalance, vacationLeaveAbsUndWOP,
+                  sickLeaveEarned, sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction) 
+                VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        // Prepare the statement
+        $stmt = mysqli_prepare($database, $query);
+
+        // Bind parameters to the prepared statement
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssssssdddddds",
+            $empId,
+            $dataRecordType,
+            $period,
+            $periodEnd,
+            $dataRecordType,
+            $particularLabel,
+            $vacationBalance,
+            $vacationBalance,
+            $vacationUnderWOPay,
+            $sickBalance,
+            $sickBalance,
+            $sickUnderWOPay,
+            $dateOfAction
+        );
+
+        if (mysqli_stmt_execute($stmt)) {
+            $_SESSION['alert_message'] = "Initialization Successfully Created";
+            $_SESSION['alert_type'] = $success_color;
+            // header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            $_SESSION['alert_message'] = "Initialization Successfully Failed: " . mysqli_stmt_error($stmt);
+            $_SESSION['alert_type'] = $error_color;
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        }
+    }
 } else {
     header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    exit();
 }
 ?>

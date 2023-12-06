@@ -134,7 +134,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        $('#createInitialRecord').click(function () {
+        $('#createInitialRecordButton').click(function () {
+            addPeriod = $(this).data('period-start');
+            addPeriodEnd = formatDate(new Date());
+            addDateOfAction = formatDate(new Date());
+
+            // Set form field values
+            $('#floatingInitializePeriod').val(addPeriod);
+            $('#floatingInitializePeriodEnd').val(addPeriodEnd);
+            $('#floatingInitializeDateOfAction').val(addDateOfAction);
+
+            // Save the state
+            addLeaveDataRecordState = {
+                period: addPeriod,
+                periodEnd: addPeriodEnd,
+                dateOfAction: addDateOfAction,
+            };
+        });
+
+        $('#addLeaveDataRecordButton').click(function () {
             // console.log(selectedYear);
             // console.log(currentYear);
             if (selectedYear == currentYear) {
@@ -253,6 +271,28 @@ document.addEventListener("DOMContentLoaded", function () {
             $(":input:not(:submit, :hidden)").val('');
             $("select").prop('selectedIndex', 0);
             setAddDataFromState();
+        });
+
+        function setInitializeDataFromState() {
+            if (addLeaveDataRecordState) {
+                // Set form field values based on the saved state
+                $('#floatingInitializePeriod').val(addLeaveDataRecordState.period);
+                $('#floatingInitializePeriodEnd').val(addLeaveDataRecordState.periodEnd);
+
+                $('#vacationBalanceInput').val(1.25);
+                $('#vacationUnderWOPayInput').val(0);
+                $('#sickBalanceInput').val(1.25);
+                $('#sickUnderWOPayInput').val(0);
+
+                $('#floatingInitializeDateOfAction').val(addLeaveDataRecordState.dateOfAction);
+            }
+        }
+
+        $('.clearInitialize').click(function () {
+            // Reset form fields to their initial values
+            $(":input:not(:submit, :hidden)").val('');
+            $("select").prop('selectedIndex', 0);
+            setInitializeDataFromState();
         });
     });
 

@@ -160,7 +160,7 @@ if ($selectedYear) {
                             }
                             ?>
                         </select>
-                        <input type="submit" name="leaveFormYear" value="Submit" class="custom-regular-button">
+                        <input type="submit" name="leaveFormYear" value="Load Year Record" class="custom-regular-button">
                     </form>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
