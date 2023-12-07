@@ -27,27 +27,50 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
-    $dataRecordType = "Deduction Type";
+    $initial = "Initial Record";
+    $initialRecordData = [];
 
-    // Prepare the SQL query
-    $sql = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
-            VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? LIMIT 1";
+    $stmtForInitialRecord = $database->prepare($getInitialRecordQuery);
 
-    // Prepare and bind the statement
-    $stmt = $database->prepare($sql);
-    $stmt->bind_param('ssssssiiis', $empId, $dataRecordType, $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+    if ($stmtForInitialRecord) {
+        $stmtForInitialRecord->bind_param("ss", $empId, $initial);
+        $stmtForInitialRecord->execute();
+        $resultInitialRecord = $stmtForInitialRecord->get_result();
 
-    $stmt->execute();
+        if ($resultInitialRecord->num_rows > 0) {
+            $initialRecordData = $resultInitialRecord->fetch_assoc();
 
-    if ($stmt->error) {
-        $_SESSION['alert_message'] = "Adding New Leave Record Failed!: " . $stmt->error;
-        $_SESSION['alert_type'] = $error_color;
+            if ($period >= $initialRecordData['periodEnd'] && $periodEnd >= $initialRecordData['periodEnd']) {
+                $dataRecordType = "Deduction Type";
+
+                // Prepare the SQL query
+                $sql = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
+                        VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                // Prepare and bind the statement
+                $stmt = $database->prepare($sql);
+                $stmt->bind_param('ssssssiiis', $empId, $dataRecordType, $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+
+                $stmt->execute();
+
+                if ($stmt->error) {
+                    $_SESSION['alert_message'] = "Adding New Leave Record Failed!: " . $stmt->error;
+                    $_SESSION['alert_type'] = $error_color;
+                } else {
+                    $_SESSION['alert_message'] = "New Leave Record Successfully Added!";
+                    $_SESSION['alert_type'] = $success_color;
+                }
+
+                $stmt->close();
+            } else {
+                $_SESSION['alert_message'] = "The Period and the Period End Should Be Greater Than " . $initialRecordData['periodEnd'];
+                $_SESSION['alert_type'] = $warning_color;
+            }
+        }
     } else {
-        $_SESSION['alert_message'] = "New Leave Record Successfully Added!";
-        $_SESSION['alert_type'] = $success_color;
+        // Something
     }
-
-    $stmt->close();
 
     header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
     exit();
@@ -66,18 +89,16 @@ if (isset($_POST['addLeaveDataRecord'])) {
 
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
-    $arrayLeaveDataRecord = [];
-
     if ($selectedYear) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
     $dataRecordType = "Initial Record";
 
-    $sqlFetchPreviousLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND period <= ? AND recordType != ? ORDER BY period DESC, dateCreated DESC LIMIT 1";
+    $sqlFetchPreviousLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (period <= ? OR periodEnd <= ?) AND recordType != ? ORDER BY period DESC, dateCreated DESC LIMIT 1";
 
     $stmtFetchPreviousLeaveData = $database->prepare($sqlFetchPreviousLeaveData);
-    $stmtFetchPreviousLeaveData->bind_param("sss", $empId, $period, $dataRecordType);
+    $stmtFetchPreviousLeaveData->bind_param("ssss", $empId, $period, $periodEnd, $dataRecordType);
     $stmtFetchPreviousLeaveData->execute();
 
     $resultFetchPreviousLeaveData = $stmtFetchPreviousLeaveData->get_result();

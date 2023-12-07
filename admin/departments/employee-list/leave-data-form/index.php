@@ -7,6 +7,8 @@ include($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
+$fetchLeaveData = [];
+$leaveData = [];
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
@@ -17,14 +19,15 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $_SESSION['post_empId'] = $empId;
 
     $sql = "SELECT
-    ua.*,
-    d.departmentName
-FROM
-    tbl_useraccounts ua
-LEFT JOIN
-    tbl_departments d ON ua.department = d.department_id
-WHERE
-    ua.employee_id = ?";
+                ua.*,
+                d.departmentName
+            FROM
+                tbl_useraccounts ua
+            LEFT JOIN
+                tbl_departments d ON ua.department = d.department_id
+            WHERE
+                ua.employee_id = ?";
+
     $stmt = $database->prepare($sql);
 
     if ($stmt) {
@@ -48,9 +51,75 @@ WHERE
     } else {
         // Something
     }
-}
 
-$leaveData = [];
+    // Get all the Records
+    $sqlFetchAllLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? ORDER BY period ASC, dateCreated ASC";
+    $stmtsqlFetchAllLeaveData = $database->prepare($sqlFetchAllLeaveData);
+
+    if ($stmtsqlFetchAllLeaveData) {
+        $stmtsqlFetchAllLeaveData->bind_param("s", $empId);
+        $stmtsqlFetchAllLeaveData->execute();
+        $resultAllLeaveData = $stmtsqlFetchAllLeaveData->get_result();
+
+        while ($rowLeaveData = $resultAllLeaveData->fetch_assoc()) {
+            $fetchLeaveData[] = $rowLeaveData;
+        }
+
+        for ($i = 0; $i < count($fetchLeaveData); $i++) {
+            if ($i == 0) {
+                //Does not do Something
+            } else {
+                $totalMinutes = 0;
+                $totalMinutes = (($fetchLeaveData[$i]['days'] * 8) * 60) + ($fetchLeaveData[$i]['hours'] * 60) + $fetchLeaveData[$i]['minutes'];
+
+                $totalVacationComputedValue = 0;
+                $totalSickComputedValue = 0;
+
+                if ($fetchLeaveData[$i]['particular'] == "Sick Leave") {
+                    $totalSickComputedValue = 0.002 * $totalMinutes * 1.0416667;
+                } else if ($fetchLeaveData[$i]['particular'] == "Vacation Leave" || $fetchLeaveData[$i]['particular'] == "Late") {
+                    $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
+                }
+
+                $tempVacationBalance = $fetchLeaveData[$i - 1]['vacationLeaveBalance'];
+                $fetchLeaveData[$i]['vacationLeaveEarned'] = $tempVacationBalance;
+                $tempSickBalance = $fetchLeaveData[$i - 1]['sickLeaveBalance'];
+                $fetchLeaveData[$i]['sickLeaveEarned'] = $tempSickBalance;
+                $fetchLeaveData[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['vacationLeaveAbsUndWOP'];
+                $fetchLeaveData[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['sickLeaveAbsUndWOP'];
+                $fetchLeaveData[$i]['vacationLeaveBalance'] = $tempVacationBalance;
+                $fetchLeaveData[$i]['sickLeaveBalance'] = $tempSickBalance;
+
+                if ($fetchLeaveData[$i]['particular'] == "Vacation Leave" || $fetchLeaveData[$i]['particular'] == "Late") {
+                    if ($tempVacationBalance <= $totalVacationComputedValue) {
+                        $fetchLeaveData[$i]['vacationLeaveAbsUndWP'] = $tempVacationBalance;
+                        $fetchLeaveData[$i]['vacationLeaveBalance'] = 0;
+                        $fetchLeaveData[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['vacationLeaveAbsUndWOP'] + ($totalVacationComputedValue - $tempVacationBalance);
+                    } else {
+                        $fetchLeaveData[$i]['vacationLeaveAbsUndWP'] = $totalVacationComputedValue;
+                        $fetchLeaveData[$i]['vacationLeaveBalance'] = $tempVacationBalance - $totalVacationComputedValue;
+                        $fetchLeaveData[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['vacationLeaveAbsUndWOP'];
+                    }
+                }
+
+                if ($fetchLeaveData[$i]['particular'] == "Sick Leave") {
+                    if ($tempSickBalance <= $totalSickComputedValue) {
+                        $fetchLeaveData[$i]['sickLeaveAbsUndWP'] = $tempSickBalance;
+                        $fetchLeaveData[$i]['sickLeaveBalance'] = 0;
+                        $fetchLeaveData[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['sickLeaveAbsUndWOP'] + ($totalSickComputedValue - $tempSickBalance);
+                    } else {
+                        $fetchLeaveData[$i]['sickLeaveAbsUndWP'] = $totalSickComputedValue;
+                        $fetchLeaveData[$i]['sickLeaveBalance'] = $tempSickBalance - $totalSickComputedValue;
+                        $fetchLeaveData[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveData[$i - 1]['sickLeaveAbsUndWOP'];
+                    }
+                }
+            }
+        }
+
+    } else {
+        // Something Error
+    }
+}
 
 $selectedYear = date("Y");
 if (isset($_POST['leaveFormYear']) && $empId) {
@@ -65,24 +134,25 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 }
 
 if ($selectedYear) {
-    $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform 
-    WHERE employee_id = ? AND (YEAR(period) <= ? AND YEAR(periodEnd) >= ?) 
-    ORDER BY period ASC, dateCreated ASC";
+    foreach ($fetchLeaveData as $leaveRecord) {
 
-    $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
-
-    if ($stmtCurrentYearData) {
-        $stmtCurrentYearData->bind_param("sii", $empId, $selectedYear, $selectedYear);
-        $stmtCurrentYearData->execute();
-        $resultCurrentYearData = $stmtCurrentYearData->get_result();
-
-        while ($rowCurrentYearData = $resultCurrentYearData->fetch_assoc()) {
-            $leaveData[] = $rowCurrentYearData;
+        $periodYear = date('Y', strtotime($leaveRecord['period']));
+        $periodEndYear = date('Y', strtotime($leaveRecord['periodEnd']));
+        if ($periodYear <= $selectedYear && $periodEndYear >= $selectedYear) {
+            $leaveData[] = $leaveRecord;
         }
+    }
+}
 
-        $stmtCurrentYearData->close();
-    } else {
-        // Something Error
+$hasInitialRecord = false;
+
+if (!empty($leaveData)) {
+    foreach ($leaveData as $ldata) {
+        if ($ldata['recordType'] == "Initial Record" && $ldata['particular'] == "Initial Record") {
+            // If at least one Initial Record is found, set the flag to true
+            $hasInitialRecord = true;
+            break; // No need to continue checking, we found one Initial Record
+        }
     }
 }
 
@@ -618,7 +688,7 @@ if ($selectedYear) {
                             class="custom-regular-button">
                     </form>
                     <?php
-                    if (!empty($leaveData)) {
+                    if ($hasInitialRecord) {
                         ?>
                         <button type="button" id="addLeaveDataRecordButton" class="custom-regular-button"
                             data-toggle="modal" data-target="#addLeaveDataRecord">
@@ -700,18 +770,6 @@ if ($selectedYear) {
                             </thead>
                             <tbody>
                                 <?php
-                                $hasInitialRecord = false;
-
-                                if (!empty($leaveData)) {
-                                    foreach ($leaveData as $ldata) {
-                                        if ($ldata['recordType'] == "Initial Record" && $ldata['particular'] == "Initial Record") {
-                                            // If at least one Initial Record is found, set the flag to true
-                                            $hasInitialRecord = true;
-                                            break; // No need to continue checking, we found one Initial Record
-                                        }
-                                    }
-                                }
-
                                 if ($hasInitialRecord) {
                                     foreach ($leaveData as $ldata) {
                                         ?>

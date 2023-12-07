@@ -28,26 +28,49 @@ if (isset($_POST['editLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
-    // Prepare the SQL query for update
-    $sql = "UPDATE tbl_leavedataform 
-            SET period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? 
-            WHERE leavedataform_id = ? AND employee_id = ?";
+    $initial = "Initial Record";
+    $initialRecordData = [];
 
-    // Prepare and bind the statement
-    $stmt = $database->prepare($sql);
-    $stmt->bind_param('ssssiiisis', $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveDataFormId, $empId);
+    $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? LIMIT 1";
+    $stmtForInitialRecord = $database->prepare($getInitialRecordQuery);
 
-    $stmt->execute();
+    if ($stmtForInitialRecord) {
+        $stmtForInitialRecord->bind_param("ss", $empId, $initial);
+        $stmtForInitialRecord->execute();
+        $resultInitialRecord = $stmtForInitialRecord->get_result();
 
-    if ($stmt->error) {
-        $_SESSION['alert_message'] = "Update Failed: " . $stmt->error;
-        $_SESSION['alert_type'] = $error_color;
+        if ($resultInitialRecord->num_rows > 0) {
+            $initialRecordData = $resultInitialRecord->fetch_assoc();
+
+            if ($period >= $initialRecordData['periodEnd'] && $periodEnd >= $initialRecordData['periodEnd']) {
+                // Prepare the SQL query for update
+                $sql = "UPDATE tbl_leavedataform 
+                        SET period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? 
+                        WHERE leavedataform_id = ? AND employee_id = ?";
+
+                // Prepare and bind the statement
+                $stmt = $database->prepare($sql);
+                $stmt->bind_param('ssssiiisis', $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveDataFormId, $empId);
+
+                $stmt->execute();
+
+                if ($stmt->error) {
+                    $_SESSION['alert_message'] = "Update Failed: " . $stmt->error;
+                    $_SESSION['alert_type'] = $error_color;
+                } else {
+                    $_SESSION['alert_message'] = "Successfully Updated!";
+                    $_SESSION['alert_type'] = $success_color;
+                }
+
+                $stmt->close();
+            } else {
+                $_SESSION['alert_message'] = "The Period and the Period End Should Be Greater Than " . $initialRecordData['periodEnd'];
+                $_SESSION['alert_type'] = $warning_color;
+            }
+        }
     } else {
-        $_SESSION['alert_message'] = "Successfully Updated!";
-        $_SESSION['alert_type'] = $success_color;
+        // Something
     }
-
-    $stmt->close();
 
     header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
     exit();
