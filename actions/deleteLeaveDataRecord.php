@@ -14,7 +14,6 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
-    // Use prepared statement to prevent SQL injection
     $query = "DELETE FROM tbl_leavedataform WHERE leavedataform_id = ?";
     $stmt = mysqli_prepare($database, $query);
 

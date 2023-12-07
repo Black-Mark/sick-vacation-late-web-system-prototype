@@ -66,7 +66,7 @@ if (isset($_POST['leaveFormYear']) && $empId) {
 
 if ($selectedYear) {
     $sqlCurrentYearData = "SELECT * FROM tbl_leavedataform 
-    WHERE employee_id = ? AND (YEAR(period) = ? OR YEAR(periodEnd) = ?) 
+    WHERE employee_id = ? AND (YEAR(period) <= ? AND YEAR(periodEnd) >= ?) 
     ORDER BY period ASC, dateCreated ASC";
 
     $stmtCurrentYearData = $database->prepare($sqlCurrentYearData);
@@ -486,6 +486,7 @@ if ($selectedYear) {
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <input type="hidden" name="leavedataformId" id="floatingEditLeaveDataFormId" />
                                 <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
                                 <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
 
@@ -793,29 +794,34 @@ if ($selectedYear) {
                                                         <button type="button" id="addNewLeaveDataRecord"
                                                             class="addNewLeaveDataRecord custom-regular-button"
                                                             data-toggle="modal" data-target="#addNewLeaveDataRecord"
-                                                            data-period-date="<?php echo $ldata['period']; ?>"
+                                                            data-period-date="<?php echo $ldata['periodEnd']; ?>"
                                                             data-period-end-date="<?php echo $ldata['periodEnd']; ?>"
                                                             data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                             Add New Leave Record
                                                         </button>
-                                                        <button type="button" class="editLeaveDataRecord custom-regular-button"
-                                                            data-toggle="modal" data-target="#editLeaveDataRecord"
-                                                            data-period-start="<?php echo $ldata['period']; ?>"
-                                                            data-period-end="<?php echo $ldata['periodEnd']; ?>"
-                                                            data-particular-type="<?php echo $ldata['particular']; ?>"
-                                                            data-particular-label="<?php echo $ldata['particularLabel']; ?>"
-                                                            data-input-day="<?php echo $ldata['days']; ?>"
-                                                            data-input-hour="<?php echo $ldata['hours']; ?>"
-                                                            data-input-minute="<?php echo $ldata['minutes']; ?>"
-                                                            data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
-                                                            Edit Leave Record
-                                                        </button>
+                                                        <?php
+                                                        if ($ldata['recordType'] != "Initial Record") {
+                                                            ?>
+                                                            <button type="button" class="editLeaveDataRecord custom-regular-button"
+                                                                data-toggle="modal" data-target="#editLeaveDataRecord"
+                                                                data-leavedata-id="<?php echo $ldata['leavedataform_id']; ?>"
+                                                                data-period-start="<?php echo $ldata['period']; ?>"
+                                                                data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                                data-particular-type="<?php echo $ldata['particular']; ?>"
+                                                                data-particular-label="<?php echo $ldata['particularLabel']; ?>"
+                                                                data-input-day="<?php echo $ldata['days']; ?>"
+                                                                data-input-hour="<?php echo $ldata['hours']; ?>"
+                                                                data-input-minute="<?php echo $ldata['minutes']; ?>"
+                                                                data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
+                                                                Edit Leave Record
+                                                            </button>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                         <form action="<?php echo $action_delete_leaverecorddata; ?>"
                                                             method="post">
                                                             <input type="hidden" name="leavedataformId"
                                                                 value="<?php echo $ldata['leavedataform_id']; ?>" />
-                                                            <input type="hidden" name="period"
-                                                                value="<?php echo $ldata['period']; ?>" />
                                                             <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
                                                             <input type="hidden" name="selectedYear"
                                                                 value="<?php echo $selectedYear; ?>" />

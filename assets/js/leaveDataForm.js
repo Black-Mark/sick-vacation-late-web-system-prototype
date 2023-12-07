@@ -201,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         $('.editLeaveDataRecord').click(function () {
             // Set form field values
+            var editLeaveDataId = $(this).data('leavedata-id');
             var editPeriodStart = $(this).data('period-start');
             var editPeriodEnd = $(this).data('period-end');
             var editParticularType = $(this).data('particular-type');
@@ -211,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var editDateOfAction = $(this).data('date-of-action');
 
             // Set form field values
+            $('#floatingEditLeaveDataFormId').val(editLeaveDataId);
             $('#floatingEditPeriod').val(editPeriodStart);
             $('#floatingEditPeriodEnd').val(editPeriodEnd);
             $('#floatingEditParticularType').val(editParticularType);
@@ -222,6 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Save the state
             editLeaveDataRecordState = {
+                leaveDataId: editLeaveDataId,
                 periodStart: editPeriodStart,
                 periodEnd: editPeriodEnd,
                 particularType: editParticularType,
