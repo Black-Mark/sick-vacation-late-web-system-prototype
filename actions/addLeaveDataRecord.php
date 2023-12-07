@@ -342,94 +342,116 @@ if (isset($_POST['addLeaveDataRecord'])) {
 
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
+    $arrayLeaveDataRecord = [];
+
+    if ($selectedYear) {
+        $_SESSION['post_dataformyear'] = $selectedYear;
+    }
+
     $dataRecordType = "Initial Record";
 
-    // Check if an Initial Record already exists for the specified employee and year
-    $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ?";
-    $checkStmt = mysqli_prepare($database, $checkQuery);
-    mysqli_stmt_bind_param($checkStmt, "ss", $empId, $dataRecordType);
-    mysqli_stmt_execute($checkStmt);
-    mysqli_stmt_store_result($checkStmt);
+    $sqlFetchPreviousLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND period <= ? AND recordType != ? ORDER BY period DESC, dateCreated DESC LIMIT 1";
 
-    if (mysqli_stmt_num_rows($checkStmt) > 0) {
-        // Record already exists, perform an update
-        $updateQuery = "UPDATE tbl_leavedataform 
+    $stmtFetchPreviousLeaveData = $database->prepare($sqlFetchPreviousLeaveData);
+    $stmtFetchPreviousLeaveData->bind_param("ss", $empId, $period, $dataRecordType);
+    $stmtFetchPreviousLeaveData->execute();
+
+    $resultFetchPreviousLeaveData = $stmtFetchPreviousLeaveData->get_result();
+
+    if ($resultFetchPreviousLeaveData->num_rows > 0) {
+        $previousLeaveData = $resultFetchPreviousLeaveData->fetch_assoc();
+        $_SESSION['alert_message'] = "Initialization Should Be Earlier Than " . $previousLeaveData['period'];
+        $_SESSION['alert_type'] = $warning_color;
+        header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+        exit();
+    } else {
+        // Check if an Initial Record already exists for the specified employee and year
+        $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ?";
+        $checkStmt = mysqli_prepare($database, $checkQuery);
+        mysqli_stmt_bind_param($checkStmt, "ss", $empId, $dataRecordType);
+        mysqli_stmt_execute($checkStmt);
+        mysqli_stmt_store_result($checkStmt);
+
+        if (mysqli_stmt_num_rows($checkStmt) > 0) {
+            // Record already exists, perform an update
+            $updateQuery = "UPDATE tbl_leavedataform 
                         SET period = ?, periodEnd = ?, particularLabel = ?, 
                             vacationLeaveEarned = ?, vacationLeaveBalance = ?, vacationLeaveAbsUndWOP = ?,
                             sickLeaveEarned = ?, sickLeaveBalance = ?, sickLeaveAbsUndWOP = ?, dateOfAction = ? 
                         WHERE employee_id = ? AND recordType = 'Initial Record' AND selectedYear = ?";
 
-        $updateStmt = mysqli_prepare($database, $updateQuery);
-        mysqli_stmt_bind_param(
-            $updateStmt,
-            "ssddddddssss",
-            $period,
-            $periodEnd,
-            $particularLabel,
-            $vacationBalance,
-            $vacationBalance,
-            $vacationUnderWOPay,
-            $sickBalance,
-            $sickBalance,
-            $sickUnderWOPay,
-            $dateOfAction,
-            $empId,
-            $selectedYear
-        );
+            $updateStmt = mysqli_prepare($database, $updateQuery);
+            mysqli_stmt_bind_param(
+                $updateStmt,
+                "ssddddddssss",
+                $period,
+                $periodEnd,
+                $particularLabel,
+                $vacationBalance,
+                $vacationBalance,
+                $vacationUnderWOPay,
+                $sickBalance,
+                $sickBalance,
+                $sickUnderWOPay,
+                $dateOfAction,
+                $empId,
+                $selectedYear
+            );
 
-        if (mysqli_stmt_execute($updateStmt)) {
-            // Update successful
-            $_SESSION['alert_message'] = "Initialization Successfully Updated";
-            $_SESSION['alert_type'] = $success_color;
-            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
-            exit();
+            if (mysqli_stmt_execute($updateStmt)) {
+                // Update successful
+                $_SESSION['alert_message'] = "Initialization Successfully Updated";
+                $_SESSION['alert_type'] = $success_color;
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                // Update failed
+                $_SESSION['alert_message'] = "Initialization Update Failed: " . mysqli_stmt_error($updateStmt);
+                $_SESSION['alert_type'] = $error_color;
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            }
         } else {
-            // Update failed
-            $_SESSION['alert_message'] = "Initialization Update Failed: " . mysqli_stmt_error($updateStmt);
-            $_SESSION['alert_type'] = $error_color;
-            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
-            exit();
-        }
-    } else {
-        $query = "  INSERT INTO tbl_leavedataform 
+            $query = "  INSERT INTO tbl_leavedataform 
                   (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel,
                   vacationLeaveEarned, vacationLeaveBalance, vacationLeaveAbsUndWOP,
                   sickLeaveEarned, sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction) 
                 VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // Prepare the statement
-        $stmt = mysqli_prepare($database, $query);
+            // Prepare the statement
+            $stmt = mysqli_prepare($database, $query);
 
-        // Bind parameters to the prepared statement
-        mysqli_stmt_bind_param(
-            $stmt,
-            "ssssssdddddds",
-            $empId,
-            $dataRecordType,
-            $period,
-            $periodEnd,
-            $dataRecordType,
-            $particularLabel,
-            $vacationBalance,
-            $vacationBalance,
-            $vacationUnderWOPay,
-            $sickBalance,
-            $sickBalance,
-            $sickUnderWOPay,
-            $dateOfAction
-        );
+            // Bind parameters to the prepared statement
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ssssssdddddds",
+                $empId,
+                $dataRecordType,
+                $period,
+                $periodEnd,
+                $dataRecordType,
+                $particularLabel,
+                $vacationBalance,
+                $vacationBalance,
+                $vacationUnderWOPay,
+                $sickBalance,
+                $sickBalance,
+                $sickUnderWOPay,
+                $dateOfAction
+            );
 
-        if (mysqli_stmt_execute($stmt)) {
-            $_SESSION['alert_message'] = "Initialization Successfully Created";
-            $_SESSION['alert_type'] = $success_color;
-            // header("Location: " . $_SERVER['PHP_SELF']);
-            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
-            exit();
-        } else {
-            $_SESSION['alert_message'] = "Initialization Successfully Failed: " . mysqli_stmt_error($stmt);
-            $_SESSION['alert_type'] = $error_color;
-            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
-            exit();
+            if (mysqli_stmt_execute($stmt)) {
+                $_SESSION['alert_message'] = "Initialization Successfully Created";
+                $_SESSION['alert_type'] = $success_color;
+                // header("Location: " . $_SERVER['PHP_SELF']);
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                $_SESSION['alert_message'] = "Initialization Successfully Failed: " . mysqli_stmt_error($stmt);
+                $_SESSION['alert_type'] = $error_color;
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            }
         }
     }
 } else {

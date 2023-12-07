@@ -197,9 +197,8 @@ if ($selectedYear) {
 
                                     <div class="col-md">
                                         <div class="form-floating">
-                                            <input type="number" step="any" name="vacationBalance"
-                                                class="form-control" id="vacationBalanceInput"
-                                                value="1.25" required>
+                                            <input type="number" step="any" name="vacationBalance" class="form-control"
+                                                id="vacationBalanceInput" value="1.25" required>
                                             <label for="vacationBalanceInput">Balance <span
                                                     class="required-color">*</span></label>
                                         </div>
@@ -208,8 +207,7 @@ if ($selectedYear) {
                                     <div class="col-md">
                                         <div class="form-floating">
                                             <input type="number" step="any" name="vacationUnderWOPay"
-                                                class="form-control" id="vacationUnderWOPayInput"
-                                                value="0" required>
+                                                class="form-control" id="vacationUnderWOPayInput" value="0" required>
                                             <label for="vacationUnderWOPayInput">Under W/O Pay <span
                                                     class="required-color">*</span></label>
                                         </div>
@@ -223,9 +221,8 @@ if ($selectedYear) {
 
                                     <div class="col-md">
                                         <div class="form-floating">
-                                            <input type="number" step="any" name="sickBalance"
-                                                class="form-control" id="sickBalanceInput"
-                                                value="1.25" required>
+                                            <input type="number" step="any" name="sickBalance" class="form-control"
+                                                id="sickBalanceInput" value="1.25" required>
                                             <label for="sickBalanceInput">Balance <span
                                                     class="required-color">*</span></label>
                                         </div>
@@ -233,9 +230,8 @@ if ($selectedYear) {
 
                                     <div class="col-md">
                                         <div class="form-floating">
-                                            <input type="number" step="any" name="sickUnderWOPay"
-                                                class="form-control" id="sickUnderWOPayInput"
-                                                value="0" required>
+                                            <input type="number" step="any" name="sickUnderWOPay" class="form-control"
+                                                id="sickUnderWOPayInput" value="0" required>
                                             <label for="sickUnderWOPayInput">Under W/O Pay <span
                                                     class="required-color">*</span></label>
                                         </div>
@@ -617,13 +613,14 @@ if ($selectedYear) {
                             }
                             ?>
                         </select>
-                        <input type="submit" name="leaveFormYear" value="Load Year Record" class="custom-regular-button">
+                        <input type="submit" name="leaveFormYear" value="Load Year Record"
+                            class="custom-regular-button">
                     </form>
                     <?php
                     if (!empty($leaveData)) {
                         ?>
-                        <button type="button" id="addLeaveDataRecordButton" class="custom-regular-button" data-toggle="modal"
-                            data-target="#addLeaveDataRecord">
+                        <button type="button" id="addLeaveDataRecordButton" class="custom-regular-button"
+                            data-toggle="modal" data-target="#addLeaveDataRecord">
                             Add Leave Record
                         </button>
                         <?php
@@ -702,7 +699,19 @@ if ($selectedYear) {
                             </thead>
                             <tbody>
                                 <?php
+                                $hasInitialRecord = false;
+
                                 if (!empty($leaveData)) {
+                                    foreach ($leaveData as $ldata) {
+                                        if ($ldata['recordType'] == "Initial Record" && $ldata['particular'] == "Initial Record") {
+                                            // If at least one Initial Record is found, set the flag to true
+                                            $hasInitialRecord = true;
+                                            break; // No need to continue checking, we found one Initial Record
+                                        }
+                                    }
+                                }
+
+                                if ($hasInitialRecord) {
                                     foreach ($leaveData as $ldata) {
                                         ?>
                                         <!-- <tr key=""> -->
