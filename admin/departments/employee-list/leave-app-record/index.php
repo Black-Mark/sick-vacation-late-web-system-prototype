@@ -21,6 +21,31 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     $stmt->execute();
 
     $leaveAppDataList = $stmt->get_result();
+
+    $empQuery = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $empStmt = $database->prepare($empQuery);
+
+    if ($empStmt) {
+        $empStmt->bind_param("s", $empId);
+        $empStmt->execute();
+        $empResult = $empStmt->get_result();
+
+        // if ($empResult->num_rows > 0) {
+        //     while ($employee = $empResult->fetch_assoc()) {
+        //         $employeeData[] = $employee;
+        //     }
+        //     echo $employeeData[0]['employee_id'];
+        // }
+
+        if ($empResult->num_rows > 0) {
+            $employeeData = $empResult->fetch_assoc();
+            // echo $employeeData['employee_id'];
+        }
+
+        $empStmt->close();
+    } else {
+        // Something
+    }
 } else {
     if (isset($_SESSION['post_empId'])) {
         unset($_SESSION['post_empId']);
@@ -83,6 +108,7 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
 
             <div class="box-container">
                 <h3 class="title-text">Leave Application Record</h3>
+                Name: <?php echo $employeeData['firstName']; ?>
 
                 <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">
@@ -115,6 +141,12 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                                                 href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
                                                 <button type="button" class="custom-regular-button">
                                                     View
+                                                </button>
+                                            </a>
+                                            <a
+                                                href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                                <button type="button" class="custom-regular-button">
+                                                    Delete
                                                 </button>
                                             </a>
                                             <input type="hidden" name="empId" value="<?php echo $empId; ?>" />

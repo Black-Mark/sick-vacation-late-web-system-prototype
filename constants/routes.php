@@ -60,8 +60,8 @@ $location_login = $webhostpage;
 $location_admin = $webhostpage . '/admin';
 $location_admin_profile = $webhostpage . '/admin/profile';
 $location_admin_departments = $webhostpage . '/admin/departments';
-$location_admin_leaveapplist = $webhostpage . '/admin/leave-app-form';
-$location_admin_leaveapplist_view = $webhostpage . '/admin/leave-app-form/view';
+$location_admin_leaveapplist = $webhostpage . '/admin/leave-transaction';
+$location_admin_leaveapplist_view = $webhostpage . '/admin/leave-transaction/view';
 $location_admin_departments_office = $webhostpage . '/admin/departments/employee-list';
 
 $location_admin_departments_employee = $webhostpage . '/admin/departments/employee-list/user-info';

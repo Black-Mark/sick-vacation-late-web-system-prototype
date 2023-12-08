@@ -65,13 +65,33 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
             $fetchLeaveData[] = $rowLeaveData;
         }
 
+        $holdMonth = "";
+
         // In this Part I want to compute the Values and I want to create another array every first day of the Month starting
         // from the periodEnd (Date type) of the first array where recordType == "Initial Record".
         // Every Month Increases both Vacation and Sick Leave Earned by 1.25.
         for ($i = 0; $i < count($fetchLeaveData); $i++) {
             if ($i == 0) {
-                //Does not do Something
+                if($holdMonth == ""){
+                    $currentDate = $fetchLeaveData[$i]['periodEnd'];
+                    $date = new DateTime($currentDate);
+                    $date->modify('first day of next month');
+                    $holdMonth = $date->format('Y-m-d');
+                }else {
+                    $date = new DateTime();
+                    $date->modify('first day of next month');
+                    $holdMonth = $date->format('Y-m-d');
+                }
             } else {
+                // while($holdMonth >= $fetchLeaveData[$i]['period']){
+                //     $date = new DateTime($holdMonth);
+                //     $date->modify('first day of next month');
+                //     $holdMonth = $date->format('Y-m-d');
+                //     $newArray = array(
+                //         'employeeId' => "0001",
+                //         "dateCreated" => ""
+                //     );
+                // }
                 $totalMinutes = 0;
                 $totalMinutes = (($fetchLeaveData[$i]['days'] * 8) * 60) + ($fetchLeaveData[$i]['hours'] * 60) + $fetchLeaveData[$i]['minutes'];
 
@@ -148,15 +168,20 @@ if ($selectedYear) {
 }
 
 $hasInitialRecord = false;
+$hasYearRecord = false;
 
-if (!empty($leaveData)) {
-    foreach ($leaveData as $ldata) {
-        if ($ldata['recordType'] == "Initial Record" && $ldata['particular'] == "Initial Record") {
+if (!empty($fetchLeaveData)) {
+    foreach ($fetchLeaveData as $fdata) {
+        if ($fdata['recordType'] == "Initial Record" && $fdata['particular'] == "Initial Record") {
             // If at least one Initial Record is found, set the flag to true
             $hasInitialRecord = true;
             break; // No need to continue checking, we found one Initial Record
         }
     }
+}
+
+if(!empty($leaveData)){
+    $hasYearRecord = true;
 }
 
 ?>
@@ -680,10 +705,11 @@ if (!empty($leaveData)) {
 
                             for ($year = $currentYear; $year >= $start_year; $year--) {
                                 ?>
-                                <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
-                                    <?php echo $year; ?>
-                                </option>
-                                <?php
+                            <option value="<?php echo $year; ?>"
+                                <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
+                                <?php echo $year; ?>
+                            </option>
+                            <?php
                             }
                             ?>
                         </select>
@@ -693,11 +719,11 @@ if (!empty($leaveData)) {
                     <?php
                     if ($hasInitialRecord) {
                         ?>
-                        <button type="button" id="addLeaveDataRecordButton" class="custom-regular-button"
-                            data-toggle="modal" data-target="#addLeaveDataRecord">
-                            Add Leave Record
-                        </button>
-                        <?php
+                    <button type="button" class="addLeaveDataRecordButton custom-regular-button" data-toggle="modal"
+                        data-target="#addLeaveDataRecord">
+                        Add Leave Record
+                    </button>
+                    <?php
                     }
                     ?>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
@@ -773,23 +799,23 @@ if (!empty($leaveData)) {
                             </thead>
                             <tbody>
                                 <?php
-                                if ($hasInitialRecord) {
+                                if ($hasYearRecord) {
                                     foreach ($leaveData as $ldata) {
                                         ?>
-                                        <!-- <tr key=""> -->
-                                        <div id="accordionPanelsStayOpenExample">
-                                            <tr class="clickable-element" data-bs-toggle="collapse"
-                                                data-bs-target="#panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
-                                                aria-expanded="true"
-                                                aria-controls="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>">
-                                                <td class="table-item-base">
-                                                    <?php echo $ldata['period'];
+                                <!-- <tr key=""> -->
+                                <div id="accordionPanelsStayOpenExample">
+                                    <tr class="clickable-element" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
+                                        aria-expanded="true"
+                                        aria-controls="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>">
+                                        <td class="table-item-base">
+                                            <?php echo $ldata['period'];
                                                     if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
                                                         echo ' to ' . $ldata['periodEnd'];
                                                     }
                                                     ?>
-                                                </td>
-                                                <td title="<?php
+                                        </td>
+                                        <td title="<?php
                                                 if ($ldata['days'] > 0) {
                                                     echo ' ' . $ldata['days'] . ' days ';
                                                 }
@@ -800,7 +826,7 @@ if (!empty($leaveData)) {
                                                     echo ' ' . $ldata['minutes'] . ' minutes ';
                                                 }
                                                 ?>" class="table-item-base">
-                                                    <?php
+                                            <?php
                                                     if ($ldata['particular'] == "Others") {
                                                         if ($ldata['particularLabel']) {
                                                             echo $ldata['particularLabel'];
@@ -814,105 +840,120 @@ if (!empty($leaveData)) {
                                                         }
                                                     }
                                                     ?>
-                                                </td>
+                                        </td>
 
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
-                                                </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
+                                        </td>
 
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
-                                                </td>
-                                                <td class="table-item-base">
-                                                    <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
-                                                </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
+                                        </td>
+                                        <td class="table-item-base">
+                                            <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
+                                        </td>
 
-                                                <td class="table-item-base">
-                                                    <?php echo $ldata['dateOfAction']; ?>
-                                                </td>
-                                            </tr>
-                                            <tr id="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
-                                                class="component-container accordion-collapse collapse"
-                                                aria-labelledby="panelsStayOpen-heading<?php echo $ldata['leavedataform_id']; ?>">
-                                                <td colspan="11" class="component-container table-item-base">
-                                                    <div
-                                                        class="button-container component-container justify-content-center py-1">
-                                                        <button type="button" id="addNewLeaveDataRecord"
-                                                            class="addNewLeaveDataRecord custom-regular-button"
-                                                            data-toggle="modal" data-target="#addNewLeaveDataRecord"
-                                                            data-period-date="<?php echo $ldata['periodEnd']; ?>"
-                                                            data-period-end-date="<?php echo $ldata['periodEnd']; ?>"
-                                                            data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
-                                                            Add New Leave Record
-                                                        </button>
-                                                        <?php
+                                        <td class="table-item-base">
+                                            <?php echo $ldata['dateOfAction']; ?>
+                                        </td>
+                                    </tr>
+                                    <tr id="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
+                                        class="component-container accordion-collapse collapse"
+                                        aria-labelledby="panelsStayOpen-heading<?php echo $ldata['leavedataform_id']; ?>">
+                                        <td colspan="11" class="component-container table-item-base">
+                                            <div
+                                                class="button-container component-container justify-content-center py-1">
+                                                <button type="button" id="addNewLeaveDataRecord"
+                                                    class="addNewLeaveDataRecord custom-regular-button"
+                                                    data-toggle="modal" data-target="#addNewLeaveDataRecord"
+                                                    data-period-date="<?php echo $ldata['periodEnd']; ?>"
+                                                    data-period-end-date="<?php echo $ldata['periodEnd']; ?>"
+                                                    data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
+                                                    Add New Leave Record
+                                                </button>
+                                                <?php
                                                         if ($ldata['recordType'] != "Initial Record") {
                                                             ?>
-                                                            <button type="button" class="editLeaveDataRecord custom-regular-button"
-                                                                data-toggle="modal" data-target="#editLeaveDataRecord"
-                                                                data-leavedata-id="<?php echo $ldata['leavedataform_id']; ?>"
-                                                                data-period-start="<?php echo $ldata['period']; ?>"
-                                                                data-period-end="<?php echo $ldata['periodEnd']; ?>"
-                                                                data-particular-type="<?php echo $ldata['particular']; ?>"
-                                                                data-particular-label="<?php echo $ldata['particularLabel']; ?>"
-                                                                data-input-day="<?php echo $ldata['days']; ?>"
-                                                                data-input-hour="<?php echo $ldata['hours']; ?>"
-                                                                data-input-minute="<?php echo $ldata['minutes']; ?>"
-                                                                data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
-                                                                Edit Leave Record
-                                                            </button>
-                                                            <?php
+                                                <button type="button" class="editLeaveDataRecord custom-regular-button"
+                                                    data-toggle="modal" data-target="#editLeaveDataRecord"
+                                                    data-leavedata-id="<?php echo $ldata['leavedataform_id']; ?>"
+                                                    data-period-start="<?php echo $ldata['period']; ?>"
+                                                    data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                    data-particular-type="<?php echo $ldata['particular']; ?>"
+                                                    data-particular-label="<?php echo $ldata['particularLabel']; ?>"
+                                                    data-input-day="<?php echo $ldata['days']; ?>"
+                                                    data-input-hour="<?php echo $ldata['hours']; ?>"
+                                                    data-input-minute="<?php echo $ldata['minutes']; ?>"
+                                                    data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
+                                                    Edit Leave Record
+                                                </button>
+                                                <?php
                                                         }
                                                         ?>
-                                                        <form action="<?php echo $action_delete_leaverecorddata; ?>"
-                                                            method="post">
-                                                            <input type="hidden" name="leavedataformId"
-                                                                value="<?php echo $ldata['leavedataform_id']; ?>" />
-                                                            <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                                            <input type="hidden" name="selectedYear"
-                                                                value="<?php echo $selectedYear; ?>" />
-                                                            <input type="submit" name="deleteLeaveData"
-                                                                value="Delete Leave Record" class="custom-regular-button" />
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </div>
-                                        <?php
-                                    }
-                                } else {
-                                    ?>
-                                    <tr>
-                                        <td colspan="11" class="py-2">
-                                            <div class="py-1 font-weight-light">
-                                                There is no Data Found
-                                            </div>
-                                            <div class="button-container component-container justify-content-center py-1">
-                                                <button type="button" id="createInitialRecordButton"
-                                                    class="custom-regular-button" data-toggle="modal"
-                                                    data-target="#createInitialRecord"
-                                                    data-period-start="<?php echo $employeeData['dateStarted']; ?>">
-                                                    Create Initial Record
-                                                </button>
+                                                <form action="<?php echo $action_delete_leaverecorddata; ?>"
+                                                    method="post">
+                                                    <input type="hidden" name="leavedataformId"
+                                                        value="<?php echo $ldata['leavedataform_id']; ?>" />
+                                                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                                    <input type="hidden" name="selectedYear"
+                                                        value="<?php echo $selectedYear; ?>" />
+                                                    <input type="submit" name="deleteLeaveData"
+                                                        value="Delete Leave Record" class="custom-regular-button" />
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
-                                    <?php
+                                </div>
+                                <?php
+                                    }
+                                } else {
+                                    ?>
+                                <tr>
+                                    <td colspan="11" class="py-2">
+                                        <div class="py-1 font-weight-light">
+                                            There is no Data Found
+                                        </div>
+                                        <?php
+                                        if(!$hasInitialRecord){
+                                        ?>
+                                        <div class="button-container component-container justify-content-center py-1">
+                                            <button type="button" id="createInitialRecordButton"
+                                                class="custom-regular-button" data-toggle="modal"
+                                                data-target="#createInitialRecord"
+                                                data-period-start="<?php echo $employeeData['dateStarted']; ?>">
+                                                Create Initial Record
+                                            </button>
+                                        </div>
+                                        <?php
+                                        }else{
+                                            ?>
+                                        <div class="button-container component-container justify-content-center py-1">
+                                            <button type="button" class="addLeaveDataRecordButton custom-regular-button"
+                                                data-toggle="modal" data-target="#addLeaveDataRecord">
+                                                Add New Leave Record
+                                            </button>
+                                        </div>
+                                        <?php
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
+                                <?php
                                 }
                                 ?>
 

@@ -123,12 +123,12 @@ if (isset($_POST['addLeaveDataRecord'])) {
                         SET period = ?, periodEnd = ?, particularLabel = ?, 
                             vacationLeaveEarned = ?, vacationLeaveBalance = ?, vacationLeaveAbsUndWOP = ?,
                             sickLeaveEarned = ?, sickLeaveBalance = ?, sickLeaveAbsUndWOP = ?, dateOfAction = ? 
-                        WHERE employee_id = ? AND recordType = 'Initial Record' AND selectedYear = ?";
+                        WHERE employee_id = ? AND recordType = 'Initial Record'";
 
             $updateStmt = mysqli_prepare($database, $updateQuery);
             mysqli_stmt_bind_param(
                 $updateStmt,
-                "ssddddddssss",
+                "ssddddddsss",
                 $period,
                 $periodEnd,
                 $particularLabel,
@@ -140,7 +140,6 @@ if (isset($_POST['addLeaveDataRecord'])) {
                 $sickUnderWOPay,
                 $dateOfAction,
                 $empId,
-                $selectedYear
             );
 
             if (mysqli_stmt_execute($updateStmt)) {

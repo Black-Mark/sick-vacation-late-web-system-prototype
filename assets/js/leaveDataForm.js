@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         });
 
-        $('#addLeaveDataRecordButton').click(function () {
+        $('.addLeaveDataRecordButton').click(function () {
             // console.log(selectedYear);
             // console.log(currentYear);
             if (selectedYear == currentYear) {

@@ -26,7 +26,6 @@ if (isset($_REQUEST['login'])) {
                 session_regenerate_id();
                 $_SESSION['employeeId'] = $employeeId;
                 $_SESSION['role'] = $user_data['role'];
-                $_SESSION['username'] = $user_data['firstName'] . " " . $user_data['lastName'];
 
                 if ($_SESSION['role'] == 'Admin') {
                     $_SESSION['alert_message'] = "Logged In Successful!";
