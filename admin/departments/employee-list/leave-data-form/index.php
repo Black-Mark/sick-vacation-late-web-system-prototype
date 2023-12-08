@@ -65,6 +65,9 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
             $fetchLeaveData[] = $rowLeaveData;
         }
 
+        // In this Part I want to compute the Values and I want to create another array every first day of the Month starting
+        // from the periodEnd (Date type) of the first array where recordType == "Initial Record".
+        // Every Month Increases both Vacation and Sick Leave Earned by 1.25.
         for ($i = 0; $i < count($fetchLeaveData); $i++) {
             if ($i == 0) {
                 //Does not do Something
