@@ -310,7 +310,8 @@ if (isset($_SESSION['employeeId'])) {
                                             </div>
                                             <div>
                                                 <label for="others">Others: </label> <input type="text" id="others"
-                                                    name="typeOfSpecifiedOtherLeave" class='underline-input mt-4' />
+                                                    name="typeOfSpecifiedOtherLeave" value="Others"
+                                                    class='underline-input mt-4' />
                                             </div>
                                         </td>
                                         <td class='col-4 custom-td'>

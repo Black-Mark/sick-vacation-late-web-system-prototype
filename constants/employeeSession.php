@@ -3,7 +3,7 @@
 @ob_start();
 session_start();
 
-// Set session timeout to 30 minutes
+// Set session timeout to 60 minutes
 $session_timeout = 60 * 60;
 
 // Check if the session variable last activity is set

@@ -107,7 +107,7 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
             </div>
 
             <div class="box-container">
-                <div class="p-2" >
+                <div class="p-2">
                     <h3 class="title-text">Leave Application Record</h3>
                     <div class="title-text-caption">
                         (<?php echo $employeeData['firstName']." ".$employeeData['lastName']; ?>)
@@ -129,39 +129,33 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                         if (!empty($leaveAppDataList)) {
                             foreach ($leaveAppDataList as $ldata) {
                                 ?>
-                                <tr>
-                                    <td>
-                                        <?php echo $ldata['typeOfLeave']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['inclusiveDates']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['status']; ?>
-                                    </td>
-                                    <td>
-                                        <form action="<?php echo $action_delete_leaveappform; ?>" method="post">
-                                            <a
-                                                href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    View
-                                                </button>
-                                            </a>
-                                            <a
-                                                href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    Delete
-                                                </button>
-                                            </a>
-                                            <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                            <input type="hidden" name="recordId"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
-                                        </form>
-                                    </td>
-                                </tr>
-                                <?php
+                        <tr>
+                            <td>
+                                <?php echo $ldata['typeOfLeave']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['inclusiveDates']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['status']; ?>
+                            </td>
+                            <td>
+                                <form action="<?php echo $action_delete_leaveappform; ?>" method="post">
+                                    <a
+                                        href="<?php echo $location_admin_departments_employee_leaveappform_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                        <button type="button" class="custom-regular-button">
+                                            View
+                                        </button>
+                                    </a>
+                                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                    <input type="hidden" name="recordId"
+                                        value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                    <input type="submit" name="deleteLeaveAppForm" value="Delete"
+                                        class="custom-regular-button" />
+                                </form>
+                            </td>
+                        </tr>
+                        <?php
                             }
                         }
                         ?>
@@ -174,103 +168,101 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
 
     <!-- Data Table Configuration -->
     <script>
-        let table = new DataTable('#leaveAppList', {
-            pagingType: 'full_numbers',
-            scrollCollapse: true,
-            scrollY: '100%',
-            scrollX: true,
-            // 'select': {
-            //     'style': 'multi',
+    let table = new DataTable('#leaveAppList', {
+        pagingType: 'full_numbers',
+        scrollCollapse: true,
+        scrollY: '100%',
+        scrollX: true,
+        // 'select': {
+        //     'style': 'multi',
+        // },
+        // ordering: false,
+        columnDefs: [
+            // {
+            //     'targets': 0,
+            //     'orderable': false,
+            //     'checkboxes': {
+            //         'selectRow': true,
+            //         // 'page': 'current',
+            //     }
             // },
-            // ordering: false,
-            columnDefs: [
-                // {
-                //     'targets': 0,
-                //     'orderable': false,
-                //     'checkboxes': {
-                //         'selectRow': true,
-                //         // 'page': 'current',
-                //     }
-                // },
-                {
-                    'targets': -1,
-                    'orderable': false,
-                    // 'checkboxes': {
-                    //     'selectRow': true,
-                    //     // 'page': 'current',
-                    // }
-                },
-                // {
-                //     targets: [0],
-                //     orderData: [0, 1]
-                // },
-                // {
-                //     targets: [1],
-                //     orderData: [1, 0]
-                // },
-                // {
-                //     targets: [4],
-                //     orderData: [4, 0]
+            {
+                'targets': -1,
+                'orderable': false,
+                // 'checkboxes': {
+                //     'selectRow': true,
+                //     // 'page': 'current',
                 // }
-            ],
-            search: {
-                return: true
             },
-            "dom": 'Blfrtip',
-            lengthMenu: [
-                [10, 25, 50, 100, -1],
-                [10, 25, 50, 100, 'All']
-            ],
-            // "colReorder": true,
-            "buttons": [
-                {
-                    extend: 'copy',
-                    exportOptions: {
-                        columns: ':visible:not(:eq(-1))',
-                    }
-                },
-                {
-                    extend: 'excel',
-                    title: 'CustomExcelFileName',
-                    filename: 'custom_excel_file',
-                    exportOptions: {
-                        columns: ':visible:not(:eq(-1))',
-                    }
-                },
-                {
-                    extend: 'csv',
-                    title: 'CustomCSVFileName',
-                    filename: 'custom_csv_file',
-                    exportOptions: {
-                        columns: ':visible:not(:eq(-1))',
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    title: 'CustomPDFFileName',
-                    filename: 'custom_PDF_file',
-                    exportOptions: {
-                        columns: ':visible:not(:eq(-1))',
-                    }
-                },
-                {
-                    extend: 'print',
-                    title: 'CustomPrintFileName',
-                    filename: 'custom_print_file',
-                    message: 'This print was produced by Computer',
-                    exportOptions: {
-                        columns: ':visible:not(:eq(-1))',
-                    }
-                },
-                {
-                    "extend": "colvis",
-                    text: 'Column Visibility',
-                    columns: ':first,:gt(0),:last'
+            // {
+            //     targets: [0],
+            //     orderData: [0, 1]
+            // },
+            // {
+            //     targets: [1],
+            //     orderData: [1, 0]
+            // },
+            // {
+            //     targets: [4],
+            //     orderData: [4, 0]
+            // }
+        ],
+        search: {
+            return: true
+        },
+        "dom": 'Blfrtip',
+        lengthMenu: [
+            [10, 25, 50, 100, -1],
+            [10, 25, 50, 100, 'All']
+        ],
+        // "colReorder": true,
+        "buttons": [{
+                extend: 'copy',
+                exportOptions: {
+                    columns: ':visible:not(:eq(-1))',
                 }
-            ],
-            // responsive: true,
-        });
-
+            },
+            {
+                extend: 'excel',
+                title: 'CustomExcelFileName',
+                filename: 'custom_excel_file',
+                exportOptions: {
+                    columns: ':visible:not(:eq(-1))',
+                }
+            },
+            {
+                extend: 'csv',
+                title: 'CustomCSVFileName',
+                filename: 'custom_csv_file',
+                exportOptions: {
+                    columns: ':visible:not(:eq(-1))',
+                }
+            },
+            {
+                extend: 'pdf',
+                title: 'CustomPDFFileName',
+                filename: 'custom_PDF_file',
+                exportOptions: {
+                    columns: ':visible:not(:eq(-1))',
+                }
+            },
+            {
+                extend: 'print',
+                title: 'CustomPrintFileName',
+                filename: 'custom_print_file',
+                message: 'This print was produced by Computer',
+                exportOptions: {
+                    columns: ':visible:not(:eq(-1))',
+                }
+            },
+            {
+                "extend": "colvis",
+                text: 'Column Visibility',
+                columns: ':first,:gt(0),:last'
+            }
+        ],
+        // responsive: true,
+    });
     </script>
 
     <div class="component-container">

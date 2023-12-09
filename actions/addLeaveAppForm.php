@@ -51,6 +51,34 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
         exit();
     } else {
         try {
+            // Check if typeOfVacationLeave is selected and if the required fields are filled
+            if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeaveWithin) && empty($typeOfVacationLeaveAbroad)) {
+                $_SESSION['alert_message'] = "Please select either 'Within the Philippines' or 'Abroad' for Vacation Leave";
+                $_SESSION['alert_type'] = $warning_color;
+                header("Location: " . $location_employee_leave_form);
+                exit();
+            } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeaveInHospital) && empty($typeOfSickLeaveInHospital)) {
+                $_SESSION['alert_message'] = "Please select either 'In Hospital' or 'Out Patient' for Sick Leave";
+                $_SESSION['alert_type'] = $warning_color;
+                header("Location: " . $location_employee_leave_form);
+                exit();
+            }  else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
+                $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
+                $_SESSION['alert_type'] = $warning_color;
+                header("Location: " . $location_employee_leave_form);
+                exit();
+            } else if ($typeOfLeave === 'Study Leave' && empty($typeOfStudyLeave)) {
+                $_SESSION['alert_message'] = "Please select either 'Completion of Master's Degree or Bar / Board Examination Review' Incase for Study Leave";
+                $_SESSION['alert_type'] = $warning_color;
+                header("Location: " . $location_employee_leave_form);
+                exit();
+            } else if ($typeOfLeave === 'Others' && empty($typeOfOtherLeave)) {
+                $_SESSION['alert_message'] = "Please select either 'Monetization of Leave Credit or Terminal Leave' Incase for Others";
+                $_SESSION['alert_type'] = $warning_color;
+                header("Location: " . $location_employee_leave_form);
+                exit();
+            }
+            
             $query = "INSERT INTO tbl_leaveappform
             (employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
             typeOfLeave, typeOfSpecifiedOtherLeave, typeOfVacationLeave, typeOfVacationLeaveWithin, typeOfVacationLeaveAbroad,

@@ -161,7 +161,7 @@ if (isset($_REQUEST['logout'])) {
             function fetchNotifications() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: 'http://192.168.1.6/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notification-container').html(data);
@@ -172,7 +172,7 @@ if (isset($_REQUEST['logout'])) {
             function fetchNotificationsCount() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: 'http://192.168.1.6/www.indang-municipal-hr.com.ph/actions/fetchNotificationCount.php', // Create this file to fetch notifications
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotificationCount.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notifCount').html(data);
@@ -183,7 +183,7 @@ if (isset($_REQUEST['logout'])) {
             // Function to mark notifications as seen
             function markNotificationsAsSeen() {
                 $.ajax({
-                    url: 'http://192.168.1.6/www.indang-municipal-hr.com.ph/actions/markNotificationsAsSeen.php',
+                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/markNotificationsAsSeen.php',
                     method: 'POST',
                     success: function (data) {
                         // You can handle the response if needed

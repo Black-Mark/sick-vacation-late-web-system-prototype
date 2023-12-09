@@ -3,8 +3,8 @@
 @ob_start();
 session_start();
 
-// Set session timeout to 30 minutes
-$session_timeout = 480 * 60;
+// Set session timeout to 8 hours
+$session_timeout = 8 * 60 * 60;
 
 // Check if the session variable last activity is set
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {

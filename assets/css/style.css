@@ -842,6 +842,8 @@ body::-webkit-scrollbar-thumb {
     /* 12px */
     line-height: 1rem;
     /* 16px */
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     border: 1px solid black;
     overflow: hidden;
     text-overflow: ellipsis;

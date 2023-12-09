@@ -35,13 +35,13 @@ if (isset($_POST['deleteLeaveAppForm'])) {
     if ($empId) {
         header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
     } else {
-        header("Location: " . $location_admin_departments_office);
+        header("Location: " . $location_admin_leaveapplist);
     }
     exit();
 } else {
     // $_SESSION['alert_message'] = "Not Yet Available!";
     // $_SESSION['alert_type'] = $warning_color;
-    header("Location: " . $location_admin_departments_office);
+    header("Location: " . $location_admin_leaveapplist);
     exit();
 }
 ?>
