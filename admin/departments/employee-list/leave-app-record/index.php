@@ -107,8 +107,12 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
             </div>
 
             <div class="box-container">
-                <h3 class="title-text">Leave Application Record</h3>
-                Name: <?php echo $employeeData['firstName']; ?>
+                <div class="p-2" >
+                    <h3 class="title-text">Leave Application Record</h3>
+                    <div class="title-text-caption">
+                        (<?php echo $employeeData['firstName']." ".$employeeData['lastName']; ?>)
+                    </div>
+                </div>
 
                 <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">

@@ -103,7 +103,9 @@ WHERE
             </div>
 
             <div class="box-container">
-                <h3 class="title-text">Account Profile Information</h3>
+                <div class="p-2">
+                    <h3 class="title-text">Account Profile Information</h3>
+                </div>
 
                 <form action="" method="post" class="account-profile-container print-form-container">
                     <div class="profile-rowing">

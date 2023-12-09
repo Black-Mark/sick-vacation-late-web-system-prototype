@@ -126,10 +126,23 @@ body.webpage-background-cover {
     text-shadow: 1px 1px 1px var(--webcolorlight);
     color: var(--webcolor);
     text-transform: uppercase;
-    padding: 0.25rem;
+    padding: 0px;
+    margin: 0px;
     cursor: default;
 }
 
+.title-text-caption {
+    text-align: center;
+    font-family: 'Times New Roman', serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px var(--webcolorlight);
+    color: var(--webcolor);
+    text-transform: uppercase;
+    padding: 0px;
+    margin: 0px;
+    cursor: default;
+}
 
 
 /* Containers and Groups */
