@@ -357,8 +357,8 @@ if (isset($_GET['leaveappid'])) {
                                                 value="In Hospital"
                                                 <?php echo $leaveAppFormData['typeOfSickLeave'] == 'In Hospital' ? 'checked' : '';  ?>
                                                 disabled /> <label for="inHospital" class='font-weight-bold'>
-                                                In Hospital (Specify Illness) <input type="hidden"
-                                                    name="typeOfSickLeaveInHospital"
+                                                In Hospital (Specify Illness) <input type="text"
+                                                    name="typeOfSickLeaveInHospital" class='custom-underline-input'
                                                     value="<?php echo $leaveAppFormData['typeOfSickLeaveInHospital']; ?>"
                                                     disabled />
                                             </label>
@@ -368,7 +368,7 @@ if (isset($_GET['leaveappid'])) {
                                                 value="Out Patient"
                                                 <?php echo $leaveAppFormData['typeOfSickLeave'] == 'Out Patient' ? 'checked' : '';  ?>
                                                 disabled /> <label for="outPatient" class='font-weight-bold'>
-                                                Out Patient (Specify Illness) <input type="hidden"
+                                                Out Patient (Specify Illness) <input type="text"
                                                     name="typeOfSickLeaveOutPatient" class='custom-underline-input'
                                                     value="<?php echo $leaveAppFormData['typeOfSickLeaveOutPatient']; ?>"
                                                     disabled />

@@ -12,6 +12,7 @@ $leaveData = [];
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
+    $empId = $employeeId;
 
     $sql = "SELECT
                 ua.*,
@@ -44,7 +45,7 @@ if (isset($_SESSION['employeeId'])) {
     $stmtsqlFetchAllLeaveData = $database->prepare($sqlFetchAllLeaveData);
 
     if ($stmtsqlFetchAllLeaveData) {
-        $stmtsqlFetchAllLeaveData->bind_param("s", $employeeId);
+        $stmtsqlFetchAllLeaveData->bind_param("s", $empId);
         $stmtsqlFetchAllLeaveData->execute();
         $resultAllLeaveData = $stmtsqlFetchAllLeaveData->get_result();
 
@@ -70,41 +71,41 @@ if (isset($_SESSION['employeeId'])) {
                     $holdMonth = $date->format('Y-m-d');
                 }
 
-                if ($holdMonth > $fetchLeaveData[$i]['periodEnd']) {
-                    $monthEarnedArray = [
-                        'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration,
-                        'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                        'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                        'recordType' => "Monthly Credit",
-                        'period' => $holdMonth,
-                        'periodEnd' => $holdMonth,
-                        'particular' => "Monthly Credit",
-                        'particularLabel' => "",
-                        'days' => 0,
-                        'hours' => 0,
-                        'minutes' => 0,
-                        'vacationLeaveEarned' => 0,
-                        'vacationLeaveAbsUndWP' => 0,
-                        'vacationLeaveBalance' => 0,
-                        'vacationLeaveAbsUndWOP' => 0,
-                        'sickLeaveEarned' => 0,
-                        'sickLeaveAbsUndWP' => 0,
-                        'sickLeaveBalance' => 0,
-                        'sickLeaveAbsUndWOP' => 0,
-                        'dateOfAction' => $holdMonth,
-                        'dateLastModified' => $holdMonth,
-                    ];
-                    $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                }
+                // if ($holdMonth > $fetchLeaveData[$i]['periodEnd']) {
+                //     $monthEarnedArray = [
+                //         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration,
+                //         'employee_id' => $fetchLeaveData[$i]['employee_id'],
+                //         'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
+                //         'recordType' => "Monthly Credit",
+                //         'period' => $holdMonth,
+                //         'periodEnd' => $holdMonth,
+                //         'particular' => "Monthly Credit",
+                //         'particularLabel' => "",
+                //         'days' => 0,
+                //         'hours' => 0,
+                //         'minutes' => 0,
+                //         'vacationLeaveEarned' => 0,
+                //         'vacationLeaveAbsUndWP' => 0,
+                //         'vacationLeaveBalance' => 0,
+                //         'vacationLeaveAbsUndWOP' => 0,
+                //         'sickLeaveEarned' => 0,
+                //         'sickLeaveAbsUndWP' => 0,
+                //         'sickLeaveBalance' => 0,
+                //         'sickLeaveAbsUndWOP' => 0,
+                //         'dateOfAction' => $holdMonth,
+                //         'dateLastModified' => $holdMonth,
+                //     ];
+                //     $fetchLeaveDataWithMontly[] = $monthEarnedArray;
+                // }
             } else {
                 if ($holdMonth != "") {
                     $iterate = 0;
 
                     // Updates the Initial Hold Month For Condition
-                    $currentDate = $holdMonth;
-                    $date = new DateTime($currentDate);
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
+                    // $currentDate = $holdMonth;
+                    // $date = new DateTime($currentDate);
+                    // $date->modify('first day of next month');
+                    // $holdMonth = $date->format('Y-m-d');
 
                     // Condition If First Month Reaches The Record To Update Credit
                     while ($holdMonth < $fetchLeaveData[$i]['period']) {
@@ -238,7 +239,7 @@ if (isset($_SESSION['employeeId'])) {
                 if ($fetchLeaveDataWithMontly[$i]['recordType'] == "Monthly Credit") {
                     if ($monthReset) {
                         if ($fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
+                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
                             $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
                         } else {
                             $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $vacationLeaveMonthlyCredit;
@@ -246,7 +247,7 @@ if (isset($_SESSION['employeeId'])) {
                         }
 
                         if ($fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
+                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
                             $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
                         } else {
                             $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $sickLeaveMonthlyCredit;
@@ -263,7 +264,7 @@ if (isset($_SESSION['employeeId'])) {
                             $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;
                             $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] - $vacationLeaveMonthlyCredit;
                         } else {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
+                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
                             $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
                         }
 
@@ -273,7 +274,7 @@ if (isset($_SESSION['employeeId'])) {
                             $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = 0;
                             $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] - $sickLeaveMonthlyCredit;
                         } else {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
+                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
                             $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
                         }
                     }
