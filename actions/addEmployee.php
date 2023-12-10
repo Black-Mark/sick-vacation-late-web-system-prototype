@@ -30,10 +30,7 @@ if (isset($_POST['addEmployee'])) {
                   (employee_id, role, email, password, firstName, middleName, lastName, age, sex, civilStatus, department, jobPosition, dateStarted, dateCreated) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
-        // Prepare the statement
         $stmt = mysqli_prepare($database, $query);
-
-        // Bind parameters to the prepared statement
         mysqli_stmt_bind_param($stmt, "sssssssisssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted);
 
         if (mysqli_stmt_execute($stmt)) {

@@ -13,7 +13,6 @@ if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])
     foreach ($selectedEmployees as $employeeId) {
         $employeeId = strip_tags(mysqli_real_escape_string($database, $employeeId));
 
-        // Use prepared statement to prevent SQL injection
         $query = "DELETE FROM tbl_useraccounts WHERE employee_id = ?";
         $stmt = mysqli_prepare($database, $query);
 
@@ -56,7 +55,6 @@ if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])
     $departmentlabel = strip_tags(mysqli_real_escape_string($database, $_POST['departmentlabel']));
     $errorMessages = [];
 
-    // Use prepared statement to prevent SQL injection
     $query = "DELETE FROM tbl_useraccounts WHERE employee_id = ?";
     $stmt = mysqli_prepare($database, $query);
 

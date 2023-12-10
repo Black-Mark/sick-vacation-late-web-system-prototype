@@ -3,6 +3,7 @@ include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_employee);
+include($constants_variables);
 
 $employeeData = [];
 
@@ -69,7 +70,7 @@ if (isset($_SESSION['employeeId'])) {
     ?>"></script> -->
 </head>
 
-<body class="webpage-background-cover-admin">
+<body class="webpage-background-cover">
     <div class="component-container">
         <?php include($components_file_topnav); ?>
     </div>

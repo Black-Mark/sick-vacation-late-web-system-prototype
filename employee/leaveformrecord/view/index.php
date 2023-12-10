@@ -1,6 +1,6 @@
 <?php
 include("../../../constants/routes.php");
-// include($components_file_error_handler);
+include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_employee);
 include($constants_variables);
@@ -10,6 +10,7 @@ $leaveAppFormData = [];
 if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
     $leaveAppFormId = $database->real_escape_string($_GET['leaveappid']);
+    
 
     $sql = "SELECT
                 laf.*,
@@ -73,6 +74,7 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_css_printmedia; ?>">
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -94,7 +96,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                 </div>
 
                 <div class="button-container component-container mb-2">
-                    <a href='<?php echo $location_employee_leave_form_record; ?>'><button type="button" class="custom-regular-button">Back</button></a>
+                    <a href='<?php echo $location_employee_leave_form_record; ?>'><button type="button"
+                            class="custom-regular-button">Back</button></a>
                     <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                 </div>
 
@@ -130,9 +133,11 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                             class='w-100 text-center underline-input'
                                             value="<?php echo $leaveAppFormData['lastName']; ?>" disabled /></td>
                                     <td class="pb-1 px-2"><input type="text" id="firstNameInput" name="firstName"
-                                            class='w-100 text-center underline-input' value="<?php echo $leaveAppFormData['firstName']; ?>" disabled/></td>
+                                            class='w-100 text-center underline-input'
+                                            value="<?php echo $leaveAppFormData['firstName']; ?>" disabled /></td>
                                     <td class="pb-1 px-2"><input type="text" id="middleNameInput" name="middleName"
-                                            class='w-100 text-center underline-input' value="<?php echo $leaveAppFormData['middleName']; ?>" disabled/></td>
+                                            class='w-100 text-center underline-input'
+                                            value="<?php echo $leaveAppFormData['middleName']; ?>" disabled /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -141,13 +146,17 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                             <tbody>
                                 <tr>
                                     <td class="pb-1 px-2"><label for="dateFiling">3. Date Of Filing </label><input
-                                            type="text" id="dateFiling" name="dateFiling" class='underline-input text-center' value="<?php echo $leaveAppFormData['dateFiling']; ?>" disabled/>
+                                            type="text" id="dateFiling" name="dateFiling"
+                                            class='underline-input text-center'
+                                            value="<?php echo $leaveAppFormData['dateFiling']; ?>" disabled />
                                     </td>
                                     <td class="pb-1 px-2"><label for="position">4. Position </label><input type="text"
-                                            id="position" name="position" class='underline-input text-center' value="<?php echo $leaveAppFormData['position']; ?>" disabled/>
+                                            id="position" name="position" class='underline-input text-center'
+                                            value="<?php echo $leaveAppFormData['position']; ?>" disabled />
                                     </td>
                                     <td class="pb-1 px-2"><label for="salary">5. Salary </label><input type="text"
-                                            id="salary" name="salary" class='underline-input text-center' value="<?php echo $leaveAppFormData['salary']; ?>" disabled />
+                                            id="salary" name="salary" class='underline-input text-center'
+                                            value="<?php echo $leaveAppFormData['salary']; ?>" disabled />
                                     </td>
                                 </tr>
                             </tbody>
@@ -171,8 +180,9 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                             Leave to be Availed Of</div>
                                         <div>
                                             <input type='radio' id="vacationLeave" name="typeOfLeave"
-                                                value="Vacation Leave" 
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Vacation Leave' ? 'checked' : '';  ?> disabled />
+                                                value="Vacation Leave"
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Vacation Leave' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="vacationLeave" class='font-weight-bold'> Vacation Leave
                                             </label>
                                             <span>
@@ -180,9 +190,9 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                             </span>
                                         </div>
                                         <div>
-                                            <input type='radio' id="forcedLeave" name="typeOfLeave"
-                                                value="Forced Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Forced Leave' ? 'checked' : '';  ?> disabled />
+                                            <input type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Forced Leave' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="forcedLeave" class='font-weight-bold'> Mandatory / Forced
                                                 Leave
                                             </label>
@@ -192,7 +202,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         </div>
                                         <div>
                                             <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] == 'Sick Leave' ? 'checked' : '';  ?> disabled />
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Sick Leave' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="sickLeave" class='font-weight-bold'> Sick Leave </label>
                                             <span>
                                                 (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
@@ -201,8 +212,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="maternityLeave" name="typeOfLeave"
                                                 value="Maternity Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Maternity Leave' ? 'checked' : '';  ?> disabled /> <label for="maternityLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Maternity Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="maternityLeave" class='font-weight-bold'>
                                                 Maternity Leave
                                             </label>
                                             <span>
@@ -212,8 +223,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="paternityLeave" name="typeOfLeave"
                                                 value="Paternity Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Paternity Leave' ? 'checked' : '';  ?> disabled /> <label for="paternityLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Paternity Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="paternityLeave" class='font-weight-bold'>
                                                 Paternity Leave
                                             </label>
                                             <span>
@@ -223,8 +234,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="special" name="typeOfLeave"
                                                 value="Special Privilege Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Privilege Leave' ? 'checked' : '';  ?> disabled /> <label for="special"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Privilege Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="special" class='font-weight-bold'>
                                                 Special Privilege Leave
                                             </label>
                                             <span>
@@ -234,8 +245,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="soloParent" name="typeOfLeave"
                                                 value="Solo Parent Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?> disabled /> <label for="soloParent"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="soloParent" class='font-weight-bold'>
                                                 Solo Parent Leave
                                             </label>
                                             <span>
@@ -243,9 +254,9 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                             </span>
                                         </div>
                                         <div>
-                                            <input type='radio' id="studyLeave" name="typeOfLeave"
-                                                value="Study Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Study Leave' ? 'checked' : '';  ?> disabled /> <label for="studyLeave" class='font-weight-bold'>
+                                            <input type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Study Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="studyLeave" class='font-weight-bold'>
                                                 Doctorate Degree / Study Leave
                                             </label>
                                             <span>
@@ -255,8 +266,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="vawcLeave" name="typeOfLeave"
                                                 value="10-Day VAWC Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == '10-Day VAWC Leave' ? 'checked' : '';  ?> disabled /> <label for="vawcLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == '10-Day VAWC Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="vawcLeave" class='font-weight-bold'>
                                                 10-Day VAWC Leave
                                             </label>
                                             <span>
@@ -266,8 +277,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="rehabilitation" name="typeOfLeave"
                                                 value="Rehabilitation Privilege"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Rehabilitation Privilege' ? 'checked' : '';  ?> disabled /> <label for="rehabilitation"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Rehabilitation Privilege' ? 'checked' : '';  ?>
+                                                disabled /> <label for="rehabilitation" class='font-weight-bold'>
                                                 Rehabilitation Privilege
                                             </label>
                                             <span>
@@ -277,8 +288,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="specialLeave" name="typeOfLeave"
                                                 value="Special Leave Benefits for Women"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Leave Benefits for Women' ? 'checked' : '';  ?> disabled /> <label for="specialLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Leave Benefits for Women' ? 'checked' : '';  ?>
+                                                disabled /> <label for="specialLeave" class='font-weight-bold'>
                                                 Special Leave Benefits for Women
                                             </label>
                                             <span>
@@ -288,8 +299,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="emergencyLeave" name="typeOfLeave"
                                                 value="Special Emergency (Calamity) Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?> disabled /> <label
-                                                for="emergencyLeave" class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="emergencyLeave" class='font-weight-bold'>
                                                 Special Emergency (Calamity) Leave
                                             </label>
                                             <span>
@@ -299,8 +310,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="adoptionLeave" name="typeOfLeave"
                                                 value="Adoption Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Adoption Leave' ? 'checked' : '';  ?> disabled /> <label for="adoptionLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Adoption Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="adoptionLeave" class='font-weight-bold'>
                                                 Adoption Leave
                                             </label>
                                             <span>
@@ -322,19 +333,23 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="withinPhi" name="typeOfVacationLeave"
                                                 value="Within the Philippines"
-                                                <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Within the Philippines' ? 'checked' : '';  ?> disabled /> <label for="withinPhi"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Within the Philippines' ? 'checked' : '';  ?>
+                                                disabled /> <label for="withinPhi" class='font-weight-bold'>
                                                 Within the Philippines <input type="text"
-                                                    name="typeOfVacationLeaveWithin"
-                                                    class='custom-underline-input-form' value="<?php echo $leaveAppFormData['typeOfVacationLeaveWithin']; ?>" disabled />
+                                                    name="typeOfVacationLeaveWithin" class='custom-underline-input-form'
+                                                    value="<?php echo $leaveAppFormData['typeOfVacationLeaveWithin']; ?>"
+                                                    disabled />
                                             </label>
                                         </div>
                                         <div>
                                             <input type='radio' id="abroad" name="typeOfVacationLeave" value="Abroad"
-                                            <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Abroad' ? 'checked' : '';  ?> disabled />
+                                                <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Abroad' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="abroad" class='font-weight-bold'>
                                                 Abroad (Specify) <input type="text" name="typeOfVacationLeaveAbroad"
-                                                    class='custom-underline-input-form' value="<?php echo $leaveAppFormData['typeOfVacationLeaveAbroad']; ?>" disabled />
+                                                    class='custom-underline-input-form'
+                                                    value="<?php echo $leaveAppFormData['typeOfVacationLeaveAbroad']; ?>"
+                                                    disabled />
                                             </label>
                                         </div>
                                         <div>
@@ -343,17 +358,23 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="inHospital" name="typeOfSickLeave"
                                                 value="In Hospital"
-                                                <?php echo $leaveAppFormData['typeOfSickLeave'] == 'In Hospital' ? 'checked' : '';  ?> disabled /> <label for="inHospital" class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfSickLeave'] == 'In Hospital' ? 'checked' : '';  ?>
+                                                disabled /> <label for="inHospital" class='font-weight-bold'>
                                                 In Hospital (Specify Illness) <input type="text"
-                                                    name="typeOfSickLeaveInHospital" class='custom-underline-input' value="<?php echo $leaveAppFormData['typeOfSickLeaveInHospital']; ?>" disabled />
+                                                    name="typeOfSickLeaveInHospital" class='custom-underline-input'
+                                                    value="<?php echo $leaveAppFormData['typeOfSickLeaveInHospital']; ?>"
+                                                    disabled />
                                             </label>
                                         </div>
                                         <div>
                                             <input type='radio' id="outPatient" name="typeOfSickLeave"
                                                 value="Out Patient"
-                                                <?php echo $leaveAppFormData['typeOfSickLeave'] == 'Out Patient' ? 'checked' : '';  ?> disabled /> <label for="outPatient" class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfSickLeave'] == 'Out Patient' ? 'checked' : '';  ?>
+                                                disabled /> <label for="outPatient" class='font-weight-bold'>
                                                 Out Patient (Specify Illness) <input type="text"
-                                                    name="typeOfSickLeaveOutPatient" class='custom-underline-input' value="<?php echo $leaveAppFormData['typeOfSickLeaveOutPatient']; ?>" disabled />
+                                                    name="typeOfSickLeaveOutPatient" class='custom-underline-input'
+                                                    value="<?php echo $leaveAppFormData['typeOfSickLeaveOutPatient']; ?>"
+                                                    disabled />
                                             </label>
                                         </div>
                                         <div>
@@ -367,7 +388,9 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                             <label for="specifyIllness" class='font-weight-bold'>
                                                 (Specify Illness)</label> <input id="specifyIllness"
                                                 name="typeOfSpecialLeaveForWomen"
-                                                class='custom-underline-input-form-detail' value="<?php echo $leaveAppFormData['typeOfSpecialLeaveForWomen']; ?>" disabled />
+                                                class='custom-underline-input-form-detail'
+                                                value="<?php echo $leaveAppFormData['typeOfSpecialLeaveForWomen']; ?>"
+                                                disabled />
                                             <input name="" class='underline-input' disabled />
                                         </div>
                                         <div>
@@ -376,16 +399,16 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="mastersDegree" name="typeOfStudyLeave"
                                                 value="Completion of Master Degree"
-                                                <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Completion of Master Degree' ? 'checked' : '';  ?> disabled /> <label for="mastersDegree"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Completion of Master Degree' ? 'checked' : '';  ?>
+                                                disabled /> <label for="mastersDegree" class='font-weight-bold'>
                                                 Completion of Master's Degree
                                             </label>
                                         </div>
                                         <div>
                                             <input type='radio' id="boardExam" name="typeOfStudyLeave"
                                                 value="Board Examination Review"
-                                                <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Board Examination Review' ? 'checked' : '';  ?> disabled /> <label for="boardExam"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Board Examination Review' ? 'checked' : '';  ?>
+                                                disabled /> <label for="boardExam" class='font-weight-bold'>
                                                 Bar / Board Examination Review
                                             </label>
                                         </div>
@@ -395,7 +418,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="monetizationLeave" name="typeOfOtherLeave"
                                                 value="Monetization of Leave Credit"
-                                                <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Monetization of Leave Credit' ? 'checked' : '';  ?> disabled />
+                                                <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Monetization of Leave Credit' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="monetizationLeave" class='font-weight-bold'>
                                                 Monetization of Leave Credit
                                             </label>
@@ -403,8 +427,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="terminalLeave" name="typeOfOtherLeave"
                                                 value="Terminal Leave"
-                                                <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Terminal Leave' ? 'checked' : '';  ?> disabled /> <label for="terminalLeave"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Terminal Leave' ? 'checked' : '';  ?>
+                                                disabled /> <label for="terminalLeave" class='font-weight-bold'>
                                                 Terminal Leave
                                             </label>
                                         </div>
@@ -422,14 +446,16 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         </div>
                                         <div>
                                             <input type="number" min="0" max="3652" id="workingDays" name="workingDays"
-                                                class='w-100 text-center custom-underline-input-form' value="<?php echo $leaveAppFormData['workingDays']; ?>" disabled />
+                                                class='w-100 text-center custom-underline-input-form'
+                                                value="<?php echo $leaveAppFormData['workingDays']; ?>" disabled />
                                         </div>
                                         <label for="inclusiveDates" class='font-weight-bold text-uppercase'>
                                             Inclusive Dates
                                         </label>
                                         <div>
                                             <input type="text" id="inclusiveDates" name="inclusiveDates"
-                                                class='w-100 text-center custom-underline-input-form' value="<?php echo $leaveAppFormData['inclusiveDates']; ?>" disabled />
+                                                class='w-100 text-center custom-underline-input-form'
+                                                value="<?php echo $leaveAppFormData['inclusiveDates']; ?>" disabled />
                                         </div>
                                     </td>
                                     <td class="col-4 custom-td">
@@ -438,7 +464,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         </div>
                                         <div>
                                             <input type='radio' id="requested" name="commutation" value="Requested"
-                                            <?php echo $leaveAppFormData['commutation'] == 'Requested' ? 'checked' : '';  ?> disabled />
+                                                <?php echo $leaveAppFormData['commutation'] == 'Requested' ? 'checked' : '';  ?>
+                                                disabled />
                                             <label for="requested" class='font-weight-bold'>
                                                 Requested
                                             </label>
@@ -446,8 +473,8 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="notRequested" name="commutation"
                                                 value="Not Requested"
-                                                <?php echo $leaveAppFormData['commutation'] == 'Not Requested' ? 'checked' : '';  ?> disabled /> <label for="notRequested"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['commutation'] == 'Not Requested' ? 'checked' : '';  ?>
+                                                disabled /> <label for="notRequested" class='font-weight-bold'>
                                                 Not Requested
                                             </label>
                                         </div>
@@ -497,23 +524,35 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Total Earned</td>
                                                         <td><input type="number" name="vacationLeaveTotalEarned"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['vacationLeaveTotalEarned']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['vacationLeaveTotalEarned']; ?>"
+                                                                disabled /></td>
                                                         <td><input type="number" name="sickLeaveTotalEarned"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['sickLeaveTotalEarned']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['sickLeaveTotalEarned']; ?>"
+                                                                disabled /></td>
                                                     </tr>
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Less this application</td>
                                                         <td><input type="number" name="vacationLeaveLess"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['vacationLeaveLess']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['vacationLeaveLess']; ?>"
+                                                                disabled /></td>
                                                         <td><input type="number" name="sickLeaveLess"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['sickLeaveLess']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['sickLeaveLess']; ?>"
+                                                                disabled /></td>
                                                     </tr>
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Balance</td>
                                                         <td><input type="number" name="vacationLeaveBalance"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['vacationLeaveBalance']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['vacationLeaveBalance']; ?>"
+                                                                disabled /></td>
                                                         <td><input type="number" name="sickLeaveBalance"
-                                                                class='custom-input-leave-form' value="<?php echo $leaveAppFormData['sickLeaveBalance']; ?>" disabled /></td>
+                                                                class='custom-input-leave-form'
+                                                                value="<?php echo $leaveAppFormData['sickLeaveBalance']; ?>"
+                                                                disabled /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -534,18 +573,20 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         <div>
                                             <input type='radio' id="forApproval" name="recommendation"
                                                 value="For Approval"
-                                                <?php echo $leaveAppFormData['recommendation'] == 'For Approval' ? 'checked' : '';  ?> disabled /> <label for="forApproval"
-                                                class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['recommendation'] == 'For Approval' ? 'checked' : '';  ?>
+                                                disabled /> <label for="forApproval" class='font-weight-bold'>
                                                 For Approval
                                             </label>
                                         </div>
                                         <div>
                                             <input type='radio' id="forDisapprovedDueToApproval" name="recommendation"
                                                 value="For Disapproved Due to"
-                                                <?php echo $leaveAppFormData['recommendation'] == 'For Disapproved Due to' ? 'checked' : '';  ?> disabled /> <label
-                                                for="forDisapprovedDueToApproval" class='font-weight-bold'>
+                                                <?php echo $leaveAppFormData['recommendation'] == 'For Disapproved Due to' ? 'checked' : '';  ?>
+                                                disabled /> <label for="forDisapprovedDueToApproval"
+                                                class='font-weight-bold'>
                                                 For Disapproved Due to </label> <input type="text"
-                                                name="recommendMessage" class='custom-underline-input-form' value="<?php echo $leaveAppFormData['recommendMessage']; ?>" disabled />
+                                                name="recommendMessage" class='custom-underline-input-form'
+                                                value="<?php echo $leaveAppFormData['recommendMessage']; ?>" disabled />
                                             <div><input class='w-100 underline-input' disabled /></div>
                                             <div><input class='w-100 underline-input' disabled /></div>
                                             <div><input class='w-100 underline-input' disabled /></div>
@@ -570,28 +611,36 @@ if (isset($_SESSION['employeeId']) && isset($_GET['leaveappid'])) {
                                         </div>
                                         <div>
                                             <input id="dayWithPay" type="number" name="dayWithPay"
-                                                class='underline-input' value="<?php echo $leaveAppFormData['dayWithPay']; ?>" disabled /><label for="dayWithPay"> days with
+                                                class='underline-input'
+                                                value="<?php echo $leaveAppFormData['dayWithPay']; ?>" disabled /><label
+                                                for="dayWithPay"> days with
                                                 pay</label>
                                         </div>
                                         <div>
                                             <input id="dayWithoutPay" type="number" name="dayWithoutPay"
-                                                class='underline-input' value="<?php echo $leaveAppFormData['dayWithoutPay']; ?>" disabled /><label for="dayWithoutPay"> days without
+                                                class='underline-input'
+                                                value="<?php echo $leaveAppFormData['dayWithoutPay']; ?>"
+                                                disabled /><label for="dayWithoutPay"> days without
                                                 pay</label>
                                         </div>
                                         <div>
                                             <input id="otherPay" type="number" name="otherDayPay"
-                                                class='underline-input' value="<?php echo $leaveAppFormData['otherDayPay']; ?>" disabled /> <label for="otherPay">Others</label>
+                                                class='underline-input'
+                                                value="<?php echo $leaveAppFormData['otherDayPay']; ?>" disabled />
+                                            <label for="otherPay">Others</label>
                                             <label for="otherPaySpecify">(Specify)</label>
                                             <input type="text" id="otherPaySpecify" name="otherDaySpecify"
-                                                class='underline-input' value="<?php echo $leaveAppFormData['otherDaySpecify']; ?>" disabled />
+                                                class='underline-input'
+                                                value="<?php echo $leaveAppFormData['otherDaySpecify']; ?>" disabled />
                                         </div>
                                     </td>
                                     <td class="col-4">
                                         <div class='font-weight-bold text-uppercase'>
                                             7. D.) DISAPPROVED DUE TO:
                                         </div>
-                                        <div><input type="text" name="disapprovedMessage"
-                                                class='w-100 underline-input' value="<?php echo $leaveAppFormData['disapprovedMessage']; ?>" disabled /></div>
+                                        <div><input type="text" name="disapprovedMessage" class='w-100 underline-input'
+                                                value="<?php echo $leaveAppFormData['disapprovedMessage']; ?>"
+                                                disabled /></div>
                                         <div><input class='w-100 underline-input' disabled /></div>
                                         <div><input class='w-100 underline-input' disabled /></div>
                                     </td>

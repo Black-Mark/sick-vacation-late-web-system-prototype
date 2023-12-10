@@ -157,11 +157,12 @@ if (isset($_REQUEST['logout'])) {
 <?php if ($_SESSION['role'] === 'Admin') {
     ?>
     <script>
+        var iphost = "http://192.168.1.10/www.indang-municipal-hr.com.ph";
         $(document).ready(function () {
             function fetchNotifications() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotification.php', // Create this file to fetch notifications
+                    url: iphost+'/actions/fetchNotification.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notification-container').html(data);
@@ -172,7 +173,7 @@ if (isset($_REQUEST['logout'])) {
             function fetchNotificationsCount() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/fetchNotificationCount.php', // Create this file to fetch notifications
+                    url: iphost+'/actions/fetchNotificationCount.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notifCount').html(data);
@@ -183,7 +184,7 @@ if (isset($_REQUEST['logout'])) {
             // Function to mark notifications as seen
             function markNotificationsAsSeen() {
                 $.ajax({
-                    url: 'http://localhost/www.indang-municipal-hr.com.ph/actions/markNotificationsAsSeen.php',
+                    url: iphost+'/actions/markNotificationsAsSeen.php',
                     method: 'POST',
                     success: function (data) {
                         // You can handle the response if needed
@@ -209,8 +210,8 @@ if (isset($_REQUEST['logout'])) {
             });
 
             // Fetch notifications every 30 seconds (adjust the interval as needed)
-            setInterval(fetchNotifications, 5000);
-            setInterval(fetchNotificationsCount, 5000);
+            setInterval(fetchNotifications, 3000);
+            setInterval(fetchNotificationsCount, 3000);
 
             // Initial fetch
             fetchNotifications();

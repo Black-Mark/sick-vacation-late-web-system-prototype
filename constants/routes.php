@@ -44,6 +44,7 @@ $assets_jquery = $webhostpage . '/assets/bootstrap/assets/js/vendor/jquery-slim.
 $assets_popper = $webhostpage . '/assets/bootstrap/assets/js/vendor/popper.min.js';
 $assets_fontawesome = $webhostpage . '/assets/font-awesome/css/font-awesome.min.css';
 $assets_css_styles = $webhostpage . '/assets/css/style.css';
+$assets_css_printmedia = $webhostpage . '/assets/css/mediaprint.css';
 $assets_datatable_css = $webhostpage . '/assets/datatables/datatables.min.css';
 $assets_datatable_js = $webhostpage . '/assets/datatables/datatables.min.js';
 $assets_datatable_bootstrap = $webhostpage . '/assets/datatables/DataTables-1.13.7/css/dataTables.bootstrap.css';

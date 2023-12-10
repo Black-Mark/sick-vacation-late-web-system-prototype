@@ -3,6 +3,7 @@ include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
 
 $departmentlabel = "";
 
@@ -727,9 +728,9 @@ if ($department_result->num_rows > 0) {
                             },
                             {
                                 extend: 'print',
-                                title: 'CustomPrintFileName',
+                                title: 'List of Employees',
                                 filename: 'custom_print_file',
-                                message: 'This print was produced by Computer',
+                                message: 'Municipal of Indang',
                                 exportOptions: {
                                     columns: ':visible:not(:eq(0)):not(:eq(-1))',
                                 }

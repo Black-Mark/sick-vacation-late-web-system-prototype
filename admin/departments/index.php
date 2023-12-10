@@ -3,6 +3,7 @@ include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
 
 $sql_department = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
                    FROM tbl_departments d
@@ -259,11 +260,12 @@ if ($employees_result->num_rows > 0) {
                         </details>
                         <?php
                     }
-                } else {
+                } 
+                // else {
                     ?>
-                    <div class="p-5 text-center">There are no existing departments</div>
+                    <!-- <div class="p-5 text-center">There are no existing departments</div> -->
                     <?php
-                }
+                // }
                 ?>
 
                 <div class="item-detail-container mt-2">

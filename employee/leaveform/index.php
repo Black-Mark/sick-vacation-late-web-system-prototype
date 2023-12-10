@@ -79,7 +79,7 @@ if (isset($_SESSION['employeeId'])) {
     ?>"></script> -->
 </head>
 
-<body class="webpage-background-cover-admin">
+<body class="webpage-background-cover">
     <div class="component-container">
         <?php include($components_file_topnav) ?>
     </div>
@@ -97,7 +97,6 @@ if (isset($_SESSION['employeeId'])) {
                     <div class="button-container component-container mb-2">
                         <input type="submit" name="submitLeaveAppForm" class="custom-regular-button"
                             value="Submit Leave Form" />
-                        <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                     </div>
 
                     <div class="print-form-container">

@@ -1,5 +1,6 @@
 <?php
 include("../constants/routes.php");
+// include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
@@ -27,6 +28,34 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
+    //Checks if there is an existing Employee ID
+    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
+
+    if ($stmtCheckEmployeeId) {
+        $stmtCheckEmployeeId->bind_param("s", $empId);
+        $stmtCheckEmployeeId->execute();
+        $resultCheckEmployeeId = $stmtCheckEmployeeId->get_result();
+
+        if ($resultCheckEmployeeId->num_rows > 0) {
+            // Will execute the next line of code:
+        } else {
+            // EmployeeId doesn't exist in the database
+            $_SESSION['alert_message'] = "There are no existing Employee!";
+            $_SESSION['alert_type'] = $warning_color;
+            header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+            exit();
+        }
+
+        $stmtCheckEmployeeId->close();
+    } else {
+        $_SESSION['alert_message'] = "Error Occured, Please Try Again With Valid Data(s)!";
+        $_SESSION['alert_type'] = $error_color;
+        header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+        // die("Error in Checking Id");
+        exit();
+    }
+
     $initial = "Initial Record";
     $initialRecordData = [];
 
@@ -44,11 +73,9 @@ if (isset($_POST['addLeaveDataRecord'])) {
             if ($period >= $initialRecordData['periodEnd'] && $periodEnd >= $initialRecordData['periodEnd']) {
                 $dataRecordType = "Deduction Type";
 
-                // Prepare the SQL query
                 $sql = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
                         VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                // Prepare and bind the statement
                 $stmt = $database->prepare($sql);
                 $stmt->bind_param('ssssssiiis', $empId, $dataRecordType, $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
 
@@ -91,6 +118,34 @@ if (isset($_POST['addLeaveDataRecord'])) {
 
     if ($selectedYear) {
         $_SESSION['post_dataformyear'] = $selectedYear;
+    }
+
+    //Checks if there is an existing Employee ID
+    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
+
+    if ($stmtCheckEmployeeId) {
+        $stmtCheckEmployeeId->bind_param("s", $empId);
+        $stmtCheckEmployeeId->execute();
+        $resultCheckEmployeeId = $stmtCheckEmployeeId->get_result();
+
+        if ($resultCheckEmployeeId->num_rows > 0) {
+            // Will execute the next line of code:
+        } else {
+            // EmployeeId doesn't exist in the database
+            $_SESSION['alert_message'] = "There are no existing Employee!";
+            $_SESSION['alert_type'] = $warning_color;
+            header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+            exit();
+        }
+
+        $stmtCheckEmployeeId->close();
+    } else {
+        $_SESSION['alert_message'] = "Error Occured, Please Try Again With Valid Data(s)!";
+        $_SESSION['alert_type'] = $error_color;
+        header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+        // die("Error in Checking Id");
+        exit();
     }
 
     $dataRecordType = "Initial Record";
@@ -162,10 +217,7 @@ if (isset($_POST['addLeaveDataRecord'])) {
                   sickLeaveEarned, sickLeaveBalance, sickLeaveAbsUndWOP, dateOfAction) 
                 VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Prepare the statement
             $stmt = mysqli_prepare($database, $query);
-
-            // Bind parameters to the prepared statement
             mysqli_stmt_bind_param(
                 $stmt,
                 "ssssssdddddds",

@@ -1,8 +1,9 @@
 <?php
 include("../../../../constants/routes.php");
-// include($components_file_error_handler);
+include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];

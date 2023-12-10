@@ -1,6 +1,6 @@
 <?php
 include("../../../../constants/routes.php");
-// include($components_file_error_handler);
+include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
@@ -8,12 +8,8 @@ include($constants_variables);
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
 $fetchLeaveData = [];
-$monthReset = true;
 $fetchLeaveDataWithMontly = [];
 $leaveData = [];
-$idGeneration = "12345678901234567890";
-$vacationLeaveMonthlyCredit = 1.25;
-$sickLeaveMonthlyCredit = 1.25;
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
@@ -380,6 +376,7 @@ if (!empty($leaveData)) {
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+    <link rel="stylesheet" href="<?php echo $assets_css_printmedia; ?>">
 
     <script src="<?php echo $assets_file_leavedataform; ?>"></script>
 
@@ -969,12 +966,40 @@ if (!empty($leaveData)) {
                                         ?>
                                         <!-- <tr key=""> -->
                                         <div id="accordionPanelsStayOpenExample">
-                                        <?php
-                                        ?>
-                                        <tr>
-                                        </tr>
-                                        <?php
-                                        ?>
+                                            <?php
+                                            if ($ldata['recordType'] == "Monthly Credit" && $ldata['period'] != $selectedYear . "-01-01") {
+                                                ?>
+                                                <tr>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                    <td class="table-item-base">
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                            ?>
+                                            <?php
+                                            ?>
+                                            <tr>
+                                            </tr>
+                                            <?php
+                                            ?>
                                             <tr class="clickable-element" data-bs-toggle="collapse"
                                                 data-bs-target="#panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
                                                 aria-expanded="true"

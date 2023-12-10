@@ -1,10 +1,9 @@
 <?php
-// Include database connection and any necessary constants
 include("../constants/routes.php");
+// include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 
-// Assuming you're using POST to send data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Your existing code to fetch unread notifications
     $queryUnreadNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '@Admin' AND seen = 'unread' ORDER BY dateCreated DESC LIMIT 5";
@@ -42,10 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_admin_leaveapplist . '">See all Leave Application Form</a></div>';
 
-    // Close the database connection
     mysqli_close($database);
 } else {
-    // Handle other cases if needed
     echo "Invalid request method";
 }
 ?>
