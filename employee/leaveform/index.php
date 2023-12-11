@@ -139,7 +139,7 @@ if (isset($_SESSION['employeeId'])) {
                                         </td>
                                         <td></td>
                                         <td class="pb-1 px-2"><input type="text" id="lastNameInput" name="lastName"
-                                                class='w-100 text-center underline-input' /></td>
+                                                class='w-100 text-center underline-input' value="<?php echo $employeeData['lastName']; ?>" /></td>
                                         <td class="pb-1 px-2"><input type="text" id="firstNameInput" name="firstName"
                                                 class='w-100 text-center underline-input' /></td>
                                         <td class="pb-1 px-2"><input type="text" id="middleNameInput" name="middleName"

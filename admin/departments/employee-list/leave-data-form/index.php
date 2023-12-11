@@ -121,7 +121,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                     // $holdMonth = $date->format('Y-m-d');
 
                     // Condition If First Month Reaches The Record To Update Credit
-                    while ($holdMonth < $fetchLeaveData[$i]['period']) {
+                    while ($holdMonth <= $fetchLeaveData[$i]['period']) {
                         $monthEarnedArray = [
                             'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $iterate . $idGeneration,
                             'employee_id' => $fetchLeaveData[$i]['employee_id'],

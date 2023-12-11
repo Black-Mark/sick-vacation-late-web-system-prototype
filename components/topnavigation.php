@@ -157,7 +157,7 @@ if (isset($_REQUEST['logout'])) {
 <?php if ($_SESSION['role'] === 'Admin') {
     ?>
     <script>
-        var iphost = "http://192.168.1.10/www.indang-municipal-hr.com.ph";
+        var iphost = "http://localhost/www.indang-municipal-hr.com.ph";
         $(document).ready(function () {
             function fetchNotifications() {
                 // Make an AJAX request to fetch new notifications
