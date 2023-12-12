@@ -18,7 +18,7 @@ $settingResult = mysqli_query($database, $settingQuery);
 
 if ($settingResult) {
     $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
-    mysqli_free_result($settingResult);
+    // mysqli_free_result($settingResult);
 }
 
 // print_r($settingData);
@@ -1179,9 +1179,13 @@ if (!empty($leaveData)) {
                         <div>Prepared by:</div>
                         <div style="width: 18rem;" class="mt-3 text-center underline-input">
                             <?php
-                            echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                            echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                            echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                            for ($i = 0; $i < count($settingData); $i++) {
+                                if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                    echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                                    echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                                    echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                }
+                            }
                             ?>
                         </div>
                     </div>
