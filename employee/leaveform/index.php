@@ -139,11 +139,14 @@ if (isset($_SESSION['employeeId'])) {
                                         </td>
                                         <td></td>
                                         <td class="pb-1 px-2"><input type="text" id="lastNameInput" name="lastName"
-                                                class='w-100 text-center underline-input' value="<?php echo $employeeData['lastName']; ?>" /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['lastName']; ?>" /></td>
                                         <td class="pb-1 px-2"><input type="text" id="firstNameInput" name="firstName"
-                                                class='w-100 text-center underline-input' /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['firstName']; ?>" /></td>
                                         <td class="pb-1 px-2"><input type="text" id="middleNameInput" name="middleName"
-                                                class='w-100 text-center underline-input' /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['middleName']; ?>" /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -155,7 +158,9 @@ if (isset($_SESSION['employeeId'])) {
                                                 type="text" id="dateFiling" name="dateFiling" class='underline-input' />
                                         </td>
                                         <td class="pb-1 px-2"><label for="position">4. Position </label><input
-                                                type="text" id="position" name="position" class='underline-input' />
+                                                type="text" id="position" name="position"
+                                                class='underline-input text-center'
+                                                value="<?php echo $employeeData['jobPosition']; ?>" />
                                         </td>
                                         <td class="pb-1 px-2"><label for="salary">5. Salary </label><input type="text"
                                                 id="salary" name="salary" class='underline-input' />
@@ -309,8 +314,7 @@ if (isset($_SESSION['employeeId'])) {
                                             </div>
                                             <div>
                                                 <label for="others">Others: </label> <input type="text" id="others"
-                                                    name="typeOfSpecifiedOtherLeave" value="Others"
-                                                    class='underline-input mt-4' />
+                                                    name="typeOfSpecifiedOtherLeave" class='underline-input mt-4' />
                                             </div>
                                         </td>
                                         <td class='col-4 custom-td'>

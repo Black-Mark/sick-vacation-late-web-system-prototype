@@ -991,6 +991,21 @@ body::-webkit-scrollbar-thumb {
     background-color: transparent;
 }
 
+.custom-option-leave-form-edit {
+    display: flex;
+    white-space: nowrap;
+}
+
+.custom-option-leave-form {
+    display: flex;
+    white-space: nowrap;
+}
+
+.custom-option-leave-form span {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
 .custom-underline-input {
     border: none;
     border-bottom: 1px solid black;
@@ -1018,10 +1033,17 @@ body::-webkit-scrollbar-thumb {
     width: 60%;
 }
 
+.custom-input-type {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    height: 1.5rem;
+    background-color: transparent;
+}
 
 .custom-td {
     border: 1px solid black;
-    padding: 8px;
+    padding: 6px;
     /* Optional: Add padding for better appearance */
 }
 
