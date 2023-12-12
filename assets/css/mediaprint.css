@@ -1,0 +1,23 @@
+@media print {
+    .component-container {
+        display: none;
+        visibility: hidden;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .print-form-container,
+    .print-form-container * {
+        visibility: visible;
+    }
+
+    .print-form-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+}

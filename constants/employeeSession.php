@@ -3,8 +3,8 @@
 @ob_start();
 session_start();
 
-// Set session timeout to 30 minutes
-$session_timeout = 30 * 60;
+// Set session timeout to 60 minutes
+$session_timeout = 60 * 60;
 
 // Check if the session variable last activity is set
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {
@@ -24,8 +24,8 @@ if (isset($_SESSION['employeeId'])) {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            if ($row['role'] != "Employee") {
-                if ($row['role'] == "Admin") {
+            if (strcasecmp($row['role'], "Employee") != 0) {
+                if (strcasecmp($row['role'], "Admin") == 0) {
                     header("location: " . $location_admin);
                 } else {
                     ?>

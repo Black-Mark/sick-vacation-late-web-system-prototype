@@ -9,7 +9,9 @@ function showToast($message, $type = 'success')
                 close: true,
                 gravity: 'top',
                 position: 'center',
-                backgroundColor: '$type',
+                style: {
+                    background: '$type',
+                },
                 stopOnFocus: true,
             }).showToast();
         </script>";

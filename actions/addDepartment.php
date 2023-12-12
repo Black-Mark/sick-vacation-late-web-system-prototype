@@ -14,10 +14,7 @@ if (isset($_POST['addDepartment'])) {
                   (departmentName, departmentHead) 
                   VALUES (?, ?)";
 
-        // Prepare the statement
         $stmt = mysqli_prepare($database, $query);
-
-        // Bind parameters to the prepared statement
         mysqli_stmt_bind_param($stmt, "ss", $departmentName, $departmentHead);
 
         if (mysqli_stmt_execute($stmt)) {

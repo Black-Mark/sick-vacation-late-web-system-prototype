@@ -3,15 +3,7 @@ include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
-
-$tablelist = isset($_GET['tablelist']) ? filter_var($_GET['tablelist'], FILTER_SANITIZE_STRING) : null;
-$formattedTableList = null;
-
-if ($tablelist === 'index.php' || $tablelist === 'index.html' || $tablelist === null) {
-    $tablelist = null;
-} else {
-    $formattedTableList = ucwords(str_replace('-', ' ', $tablelist));
-}
+include($constants_variables);
 
 ?>
 
@@ -35,70 +27,46 @@ if ($tablelist === 'index.php' || $tablelist === 'index.html' || $tablelist === 
     <script src='<?php echo $assets_bootstrap_js; ?>'></script>
 
     <link rel='stylesheet' href="<?php echo $assets_fontawesome; ?>">
+
+    <link rel="stylesheet" href="<?php echo $assets_toastify_css; ?>">
+    <script src="<?php echo $assets_toastify_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css; ?>">
+    <script src="<?php echo $assets_datatable_js; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_css_select; ?>">
+    <script src="<?php echo $assets_datatable_js_select; ?>"></script>
+
+    <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
+
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
-    <!-- <script src="../assets/js/tailwind.js"></script> -->
+    <!-- <script src="<?php
+    // echo $assets_tailwind; 
+    ?>"></script> -->
 </head>
 
 <body class="webpage-background-cover-admin">
-    <div>
-        <?php include($components_file_topnav) ?>
+    <div class="component-container">
+        <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
-            <div class='tab-nav-container custom-scrollbar'>
-                <a href="<?php echo $location_admin_datamanagement; ?>/gender/"
-                        class="tab-nav-button">Gender</a>
-            </div>
 
-            <div class="box-container">
-                <h3 class="title-text">List of
-                    <?php echo $formattedTableList; ?> Options
-                </h3>
-
-                <!-- Button trigger modal -->
-                <div>
-                    <button type="button" class="custom-regular-button" data-toggle="modal" data-target="#addDataManage">
-                        Add <?php echo $formattedTableList ? $formattedTableList : 'Option'; ?>
-                    </button>
-                </div>
-
-                <!-- Modal -->
-                <form action="" method="post" class="modal fade" id="addDataManage" tabindex="-1" role="dialog" aria-labelledby="addDataManageTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addDataManageModalLongTitle">Add <?php echo $formattedTableList; ?> Option
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="floatingInput"
-                                        placeholder="Data..." required>
-                                    <label for="floatingInput">Name</label>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add <?php echo $formattedTableList ? $formattedTableList : 'Option'; ?></button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-          </div>
+            <!-- Yung Content ng Data Management -->
+            
         </div>
     </div>
 
-    <!-- <div>
+    <div class="component-container">
         <?php
-        // include($components_file_footer)
+        include($components_file_footer);
         ?>
-    </div> -->
+    </div>
+
+    <?php include($components_file_toastify); ?>
+
 </body>
 
 </html>

@@ -11,6 +11,30 @@ if (isset($_SESSION) && isset($_SESSION["role"])) {
     }
 }
 
+$employeeUserName = [];
+
+if(isset($_SESSION['employeeId'])) {
+    $employeeId = $database->real_escape_string($_SESSION['employeeId']);
+    
+    $UserNamequery = "SELECT firstName, lastName FROM tbl_useraccounts WHERE employee_Id = ?";
+
+    $stmtUserName = $database->prepare($UserNamequery);
+    
+    if ($stmtUserName) {
+        $stmtUserName->bind_param("s", $employeeId);
+        $stmtUserName->execute();
+        $userResult = $stmtUserName->get_result();
+
+        if ($userResult->num_rows > 0) {
+            $employeeUserName = $userResult->fetch_assoc();
+        }
+
+        $stmtUserName->close();
+    } else {
+        // Something
+    }
+}
+
 if (isset($_REQUEST['logout'])) {
     try {
         if ($_SESSION) {
@@ -25,9 +49,9 @@ if (isset($_REQUEST['logout'])) {
 
             session_destroy();
 
-            header("location: ".$location_login);
+            header("location: " . $location_login);
         } else {
-            header("location: ".$location_login);
+            header("location: " . $location_login);
         }
     } catch (Exception $e) {
         echo '<script>alert("An error occurred: ' . $e->getMessage() . '");</script>';
@@ -54,26 +78,45 @@ if (isset($_REQUEST['logout'])) {
             <div class="top-nav-title-abbre">HR - Indang</div>
             <div class="top-nav-section">
                 <div class="top-nav-section-medium">
-                Human Resources
+                    Human Resources
                 </div>
                 <div>
-                <?php
-                if($_SESSION["role"] == 'Admin'){
-                    echo "Admin";
-                }else{
-                    echo "Employee";
-                }
-                ?>
-                Web Site
+                    <?php
+                    if ($_SESSION["role"] == 'Admin') {
+                        echo "Admin";
+                    } else {
+                        echo "Employee";
+                    }
+                    ?>
+                    Web Site
                 </div>
             </div>
         </div>
     </div>
     <div class="top-nav-content">
+
+        <?php
+        if ($_SESSION['role'] == 'Admin') {
+            ?>
+            <div id="notification-menu" class="position-relative clickable-element toggle-notification">
+                <i class="fa fa-bell text-white"></i>
+                <span id="notifCount"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    0
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </div>
+
+            <div id="notification-container"></div>
+
+            <?php
+        }
+        ?>
+
         <div class="top-nav-username">
             <?php
-            if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-                echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
+            if (isset($_SESSION['employeeId']) && !empty($employeeUserName)) {
+                echo htmlspecialchars($employeeUserName['firstName'] ." ". $employeeUserName['lastName'], ENT_QUOTES, 'UTF-8');
             } else {
                 echo 'Username';
             }
@@ -110,6 +153,74 @@ if (isset($_REQUEST['logout'])) {
     </ul>
 
 </div>
+
+<?php if ($_SESSION['role'] === 'Admin') {
+    ?>
+    <script>
+        var iphost = "http://192.168.1.10/www.indang-municipal-hr.com.ph";
+        $(document).ready(function () {
+            function fetchNotifications() {
+                // Make an AJAX request to fetch new notifications
+                $.ajax({
+                    url: iphost+'/actions/fetchNotification.php', // Create this file to fetch notifications
+                    method: 'POST', // Change the method to POST
+                    success: function (data) {
+                        $('#notification-container').html(data);
+                    }
+                });
+            }
+
+            function fetchNotificationsCount() {
+                // Make an AJAX request to fetch new notifications
+                $.ajax({
+                    url: iphost+'/actions/fetchNotificationCount.php', // Create this file to fetch notifications
+                    method: 'POST', // Change the method to POST
+                    success: function (data) {
+                        $('#notifCount').html(data);
+                    }
+                });
+            }
+
+            // Function to mark notifications as seen
+            function markNotificationsAsSeen() {
+                $.ajax({
+                    url: iphost+'/actions/markNotificationsAsSeen.php',
+                    method: 'POST',
+                    success: function (data) {
+                        // You can handle the response if needed
+                    }
+                });
+            }
+
+            // Toggle the 'show' class on the notification container when clicking the bell icon
+            $('#notification-menu').click(function (event) {
+                $('#notification-container').toggleClass('show');
+
+                // Mark notifications as seen when the bell is clicked
+                markNotificationsAsSeen();
+
+                event.stopPropagation(); // Prevent the click event from propagating to the document body
+            });
+
+            // Close the notification container when clicking outside of it
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#notification-container, #notification-menu').length) {
+                    $('#notification-container').removeClass('show');
+                }
+            });
+
+            // Fetch notifications every 30 seconds (adjust the interval as needed)
+            setInterval(fetchNotifications, 3000);
+            setInterval(fetchNotificationsCount, 3000);
+
+            // Initial fetch
+            fetchNotifications();
+            fetchNotificationsCount();
+        });
+    </script>
+    <?php
+}
+?>
 
 <script src="<?php echo $assets_script_topnav; ?>"></script>
 

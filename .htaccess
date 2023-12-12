@@ -6,17 +6,31 @@ ErrorDocument 403 /www.indang-municipal-hr.com.ph/404.html
 
 # Custom Pathing
 RewriteEngine On
-RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
-RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
+# RewriteRule ^admin/data-management/([^/]+)/$ admin/data-management/index.php?tablelist=$1 [L,QSA]
+# RewriteRule ^admin/data-management/([^/]+)$ admin/data-management/index.php?tablelist=$1 [L,QSA]
 
-RewriteRule ^admin/employee-list/user-info/([^/]+)/$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
-RewriteRule ^admin/employee-list/user-info/([^/]+)$ admin/employee-list/user-info/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/leave-transaction/view/([^/]+)/$ admin/leave-transaction/view/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^admin/leave-transaction/view/([^/]+)$ admin/leave-transaction/view/index.php?leaveappid=$1 [L,QSA]
 
-RewriteRule ^admin/employee-list/leave-data-form/([^/]+)/$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
-RewriteRule ^admin/employee-list/leave-data-form/([^/]+)$ admin/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/([^/]+)/$ admin/departments/employee-list/index.php?departmentlabel=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/([^/]+)$ admin/departments/employee-list/index.php?departmentlabel=$1 [L,QSA]
 
-RewriteRule ^admin/departments/office/([^/]+)/$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
-RewriteRule ^admin/departments/office/([^/]+)$ admin/departments/office/index.php?departmentlabel=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/user-info/([^/]+)/$ admin/departments/employee-list/user-info/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/user-info/([^/]+)$ admin/departments/employee-list/user-info/index.php?empid=$1 [L,QSA]
+
+RewriteRule ^admin/departments/employee-list/leave-app-record/([^/]+)/$ admin/departments/employee-list/leave-app-record/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-app-record/([^/]+)$ admin/departments/employee-list/leave-app-record/index.php?empid=$1 [L,QSA]
+
+RewriteRule ^admin/departments/employee-list/leave-app-record/view/([^/]+)/$ admin/departments/employee-list/leave-app-record/view/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-app-record/view/([^/]+)$ admin/departments/employee-list/leave-app-record/view/index.php?leaveappid=$1 [L,QSA]
+
+RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)/$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+RewriteRule ^admin/departments/employee-list/leave-data-form/([^/]+)$ admin/departments/employee-list/leave-data-form/index.php?empid=$1 [L,QSA]
+
+RewriteRule ^employee/leaveformrecord/view/([^/]+)/$ employee/leaveformrecord/view/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^employee/leaveformrecord/view/([^/]+)$ employee/leaveformrecord/view/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^employee/leaveformrecord/edit/([^/]+)/$ employee/leaveformrecord/edit/index.php?leaveappid=$1 [L,QSA]
+RewriteRule ^employee/leaveformrecord/edit/([^/]+)$ employee/leaveformrecord/edit/index.php?leaveappid=$1 [L,QSA]
 
 # Disable directory listing and deny direct access
 Options -Indexes
@@ -44,3 +58,8 @@ RewriteRule ^Constants/.*\.(php|html|txt)$ - [F,L]
 # Example rule for department URL (commented out)
 # RewriteRule ^department/([A-Za-z]+)/group/([0-9]+)/uid/([0-9]+)$ department.php?departmentname=$1&group=$2&uid=$3 [L]
 #<a href="/department.php?departmentname=IT/group.php?group=1/&uid=4544">Click me</a>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)\.html$ $1.php [NC,L]

@@ -26,7 +26,6 @@ if (isset($_REQUEST['login'])) {
                 session_regenerate_id();
                 $_SESSION['employeeId'] = $employeeId;
                 $_SESSION['role'] = $user_data['role'];
-                $_SESSION['username'] = $user_data['firstName'] . " " . $user_data['lastName'];
 
                 if ($_SESSION['role'] == 'Admin') {
                     $_SESSION['alert_message'] = "Logged In Successful!";
@@ -70,7 +69,7 @@ if (isset($_REQUEST['login'])) {
     <meta charset="UTF-8">
     <title>Human Resources of Municipality of Indang - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?php echo $web_description; ?>">
+    <meta name="description" content="Welcome to the Municipality of Indang's Human Resources portal, designed to streamline Sick and Vacation Leave processes for employees and offers a straightforward interface for efficient leave applications. Sick Leave benefits include generous allowances with minimal documentation requirements for health-related absences. Vacation Leave features flexible accrual systems and encourages advanced planning, promoting work-life balance. Our committed Human Resources team is ready to assist employees, prioritizing their needs throughout the leave application journey.">
     <?php
     include($constants_file_html_credits);
     ?>

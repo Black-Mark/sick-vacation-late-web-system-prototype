@@ -3,6 +3,27 @@ include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
+include($constants_variables);
+
+// Counts the Total Number of Department
+$departmentCount = 0;
+$departmentCountQuery = "SELECT COUNT(*) AS departmentCount FROM tbl_departments";
+$departmentCountResult = $database->query($departmentCountQuery);
+
+if ($departmentCountResult) {
+    $row = $departmentCountResult->fetch_assoc();
+    $departmentCount = $row['departmentCount'];
+}
+
+// Counts the Total Number of the Employees Only
+$employeeCount = 0;
+$employeeCountQuery = "SELECT COUNT(*) AS employeeCount FROM tbl_useraccounts WHERE UPPER(role) = 'EMPLOYEE'";
+$employeeCountResult = $database->query($employeeCountQuery);
+
+if ($employeeCountResult) {
+    $row = $employeeCountResult->fetch_assoc();
+    $employeeCount = $row['employeeCount'];
+}
 
 ?>
 
@@ -52,7 +73,19 @@ include($constants_file_session_admin);
 
     <div class="page-container">
         <div class="page-content">
-            <div class="text-experiment">This is Admin Page</div>
+            <div class="card-container">
+
+                <div class="card">
+                    <h1>Total No. of Beneficiary</h1>
+                    <h2><?php echo $employeeCount; ?></h2>
+                </div>
+
+                <div class="card">
+                    <h1>Total No. of Department</h1>
+                    <h2><?php echo $departmentCount; ?></h2>
+                </div>
+
+            </div>
         </div>
     </div>
 
