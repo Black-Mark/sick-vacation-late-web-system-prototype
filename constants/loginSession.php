@@ -26,9 +26,9 @@ if ($_SESSION) {
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    if ($row['role'] == "Admin") {
+                    if (strcasecmp($row['role'], "Admin") == 0) {
                         header("location: " . $location_admin);
-                    } else if ($row['role'] == "Employee") {
+                    } else if (strcasecmp($row['role'], "Employee") == 0) {
                         header("location: " . $location_employee);
                     } else {
                         ?>

@@ -20,33 +20,23 @@ if ($departmentlabel) {
 
     if (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) {
         $empsql = "SELECT u.*, d.departmentName
-                    FROM tbl_useraccounts u
-                    LEFT JOIN tbl_departments d ON u.department = d.department_id
-                    WHERE d.department_id IS NULL;";
+           FROM tbl_useraccounts u
+           LEFT JOIN tbl_departments d ON u.department = d.department_id
+           WHERE d.department_id IS NULL
+           ORDER BY u.lastName ASC";
         $employees = $database->query($empsql);
     } else {
         $empsql = "SELECT
-                    ua.account_id,
-                    ua.employee_id,
-                    ua.role,
-                    ua.email,
-                    ua.password,
-                    ua.photoURL,
-                    ua.firstName,
-                    ua.middleName,
-                    ua.lastName,
-                    ua.age,
-                    ua.sex,
-                    ua.civilStatus,
-                    ua.department,
-                    d.departmentName,
-                    ua.jobPosition,
-                    ua.dateStarted,
-                    ua.dateCreated
-                FROM
-                    tbl_useraccounts ua
-                LEFT JOIN
-                    tbl_departments d ON ua.department = d.department_id WHERE ua.department = ?";
+                        ua.*,
+                        d.departmentName
+                    FROM
+                        tbl_useraccounts ua
+                    LEFT JOIN
+                        tbl_departments d ON ua.department = d.department_id
+                    WHERE
+                        ua.department = ?
+                    ORDER BY
+                        ua.lastName ASC";
 
         $stmt = $database->prepare($empsql);
         $stmt->bind_param("s", $departmentlabel);
@@ -57,27 +47,12 @@ if ($departmentlabel) {
 
 } else {
     $empsql = "SELECT
-                ua.account_id,
-                ua.employee_id,
-                ua.role,
-                ua.email,
-                ua.password,
-                ua.photoURL,
-                ua.firstName,
-                ua.middleName,
-                ua.lastName,
-                ua.age,
-                ua.sex,
-                ua.civilStatus,
-                ua.department,
-                d.departmentName,
-                ua.jobPosition,
-                ua.dateStarted,
-                ua.dateCreated
+                ua.*,
+                d.departmentName
             FROM
                 tbl_useraccounts ua
             LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id;";
+                tbl_departments d ON ua.department = d.department_id ORDER BY ua.lastName ASC";
 
     $employees = $database->query($empsql);
 }
@@ -210,6 +185,11 @@ if ($department_result->num_rows > 0) {
                                         placeholder="Parker" required>
                                     <label for="floatingLastName">Last Name <span
                                             class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="suffix" class="form-control" id="floatingSuffix"
+                                        placeholder="Jr.">
+                                    <label for="floatingSuffix">Suffix</label>
                                 </div>
                                 <div class="row g-2 mb-2">
                                     <div class="col-md">
@@ -350,6 +330,11 @@ if ($department_result->num_rows > 0) {
                                         placeholder="Parker" required>
                                     <label for="floatingEditLastName">Last Name <span
                                             class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="suffix" class="form-control" id="floatingEditSuffix"
+                                        placeholder="Sr.">
+                                    <label for="floatingEditSuffix">Suffix</label>
                                 </div>
                                 <div class="row g-2 mb-2">
                                     <div class="col-md">
@@ -584,14 +569,20 @@ if ($department_result->num_rows > 0) {
                                                 value="<?php echo $row['employee_id']; ?>" />
                                         </td>
                                         <td>
-                                            <?php echo $row['lastName'] . ' ' . $row['firstName']; ?>
+                                            <?php
+                                            echo $row['lastName'] . ' ' . $row['firstName'];
+                                            echo $row['middleName'] ? ' ' . substr($row['middleName'], 0, 1) . '.' : $row['middleName'];
+                                            echo $row['suffix'] ? ' ' . $row['suffix'] : '';
+                                            ?>
                                         </td>
                                         <td>
                                             <?php
                                             if ($row['departmentName']) {
                                                 echo $row['departmentName'];
+                                            } else if (strcasecmp($row['department'], "Pending") == 0) {
+                                                echo "Pending";
                                             } else {
-                                                echo $row['department'];
+                                                echo "Unassigned";
                                             }
                                             ?>
                                         </td>
@@ -619,6 +610,7 @@ if ($department_result->num_rows > 0) {
                                                     data-first-name="<?php echo $row['firstName']; ?>"
                                                     data-middle-name="<?php echo $row['middleName']; ?>"
                                                     data-last-name="<?php echo $row['lastName']; ?>"
+                                                    data-suffix="<?php echo $row['suffix']; ?>"
                                                     data-age="<?php echo $row['age']; ?>" data-sex="<?php echo $row['sex']; ?>"
                                                     data-civil-status="<?php echo $row['civilStatus']; ?>"
                                                     data-department="<?php echo $row['department']; ?>"
@@ -657,6 +649,7 @@ if ($department_result->num_rows > 0) {
                         // },
                         // ordering: false,
                         columnDefs: [
+                            { targets: [3, 4], visible: false },
                             {
                                 'targets': 0,
                                 'orderable': false,
@@ -829,6 +822,7 @@ if ($department_result->num_rows > 0) {
                             var firstName = $(this).data('first-name');
                             var middleName = $(this).data('middle-name');
                             var lastName = $(this).data('last-name');
+                            var suffix = $(this).data('suffix');
                             var age = $(this).data('age');
                             var sex = $(this).data('sex');
                             var civilStatus = $(this).data('civil-status');
@@ -845,6 +839,7 @@ if ($department_result->num_rows > 0) {
                             $('#floatingEditFirstName').val(firstName);
                             $('#floatingEditMiddleName').val(middleName);
                             $('#floatingEditLastName').val(lastName);
+                            $('#floatingEditSuffix').val(suffix);
                             $('#floatingEditAge').val(age);
                             $('#floatingEditSex').val(sex);
                             $('#floatingEditCivilStatus').val(civilStatus);
@@ -861,6 +856,7 @@ if ($department_result->num_rows > 0) {
                                 firstName: firstName,
                                 middleName: middleName,
                                 lastName: lastName,
+                                suffix: suffix,
                                 age: age,
                                 sex: sex,
                                 civilStatus: civilStatus,
@@ -882,6 +878,7 @@ if ($department_result->num_rows > 0) {
                                 $('#floatingEditFirstName').val(editEmployeeState.firstName);
                                 $('#floatingEditMiddleName').val(editEmployeeState.middleName);
                                 $('#floatingEditLastName').val(editEmployeeState.lastName);
+                                $('#floatingEditSuffix').val(editEmployeeState.suffix);
                                 $('#floatingEditAge').val(editEmployeeState.age);
                                 $('#floatingEditSex').val(editEmployeeState.sex);
                                 $('#floatingEditCivilStatus').val(editEmployeeState.civilStatus);

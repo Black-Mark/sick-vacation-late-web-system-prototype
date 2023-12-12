@@ -75,6 +75,50 @@ if (isset($_SESSION['employeeId'])) {
         <?php include($components_file_topnav); ?>
     </div>
 
+    <!-- Change Password -->
+    <form action="<?php echo $action_update_password; ?>" method="post" class="modal fade"
+        id="changeUserProfilePassword" tabindex="-1" role="dialog" aria-labelledby="changeUserProfilePasswordTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeUserProfilePasswordModalLongTitle">Change User Password
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-floating mb-2">
+                        <input type="password" name="currentPassword" class="form-control" id="floatingCurrentPassword"
+                            placeholder="Password" required>
+                        <label for="floatingCurrentPassword">Current Password: <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="password" name="newPassword" class="form-control" id="floatingNewPassword"
+                            placeholder="New Password" required>
+                        <label for="floatingNewPassword">New Password: <span class="required-color">*</span></label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="password" name="confirmPassword" class="form-control" id="floatingConfirmPassword"
+                            placeholder="Confirm Password" required>
+                        <label for="floatingConfirmPassword">Confirm Password: <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" name="changeUserProfilePassword" value="Submit" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="page-container">
         <div class="page-content">
 
@@ -90,13 +134,6 @@ if (isset($_SESSION['employeeId'])) {
                     </div>
 
                     <div class="profile-rowing">
-                        <label for="roleInput">Role:</label>
-                        <span id="roleInput">
-                            <?php echo $employeeData['role']; ?>
-                        </span>
-                    </div>
-
-                    <div class="profile-rowing">
                         <label for="emailInput">Email:</label>
                         <span>
                             <input type="email" id="emailInput" name="email" class="account-profile-input"
@@ -104,20 +141,10 @@ if (isset($_SESSION['employeeId'])) {
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="passwordInput">Password:</label>
-                        <span>
-                            <input type="password" id="passwordInput" name="password" class="account-profile-input"
-                                value="<?php echo $employeeData['password']; ?>" readonly required />
-                        </span>
-                    </div>
-
-                    <div class="profile-rowing">
-                        <label for="photoURLInput">PhotoURL:</label>
-                        <span>
-                            <input type="text" id="photoURLInput" name="photoURL" class="account-profile-input"
-                                value="<?php echo $employeeData['photoURL']; ?>" readonly required />
-                        </span>
+                    <div class="profile-rowing text-primary">
+                        <i class="fa fa-lock"></i>
+                        <div class="pl-2 clickable-element text-primary" data-toggle="modal"
+                            data-target="#changeUserProfilePassword">Change Password</div>
                     </div>
 
                     <div class="profile-rowing">
@@ -141,6 +168,14 @@ if (isset($_SESSION['employeeId'])) {
                         <span>
                             <input type="text" id="lastNameInput" name="lastName" class="account-profile-input"
                                 value="<?php echo $employeeData['lastName']; ?>" readonly required />
+                        </span>
+                    </div>
+
+                    <div class="profile-rowing">
+                        <label for="suffixInput">Suffix:</label>
+                        <span>
+                            <input type="text" id="suffixInput" name="suffix" class="account-profile-input"
+                                value="<?php echo $employeeData['suffix']; ?>" readonly required />
                         </span>
                     </div>
 

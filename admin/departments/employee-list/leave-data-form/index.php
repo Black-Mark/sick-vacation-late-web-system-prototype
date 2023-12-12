@@ -11,6 +11,18 @@ $fetchLeaveData = [];
 $fetchLeaveDataWithMontly = [];
 $leaveData = [];
 
+$settingData = [];
+$settingQuery = "SELECT * FROM tbl_systemsettings
+                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
+$settingResult = mysqli_query($database, $settingQuery);
+
+if ($settingResult) {
+    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
+    mysqli_free_result($settingResult);
+}
+
+// print_r($settingData);
+
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
     if (isset($_SESSION['post_empId'])) {
@@ -1161,6 +1173,17 @@ if (!empty($leaveData)) {
 
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="px-2 py-4">
+                        <div>Prepared by:</div>
+                        <div style="width: 18rem;" class="mt-3 text-center underline-input">
+                            <?php
+                            echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                            echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                            echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                            ?>
+                        </div>
                     </div>
                 </div>
 

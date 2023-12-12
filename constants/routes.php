@@ -18,6 +18,9 @@ $action_add_leaveappform = $webhostpage . '/actions/addLeaveAppForm.php';
 $action_edit_leaveappform = $webhostpage . '/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage . '/actions/deleteLeaveAppForm.php';
 
+$action_update_password = $webhostpage . '/actions/updatePassword.php';
+$action_update_system_setting = $webhostpage . '/actions/updateSystemSetting.php';
+
 $components_file_error_handler = $webhostpath . '/components/error_handler.php';
 $components_file_topnav = $webhostpath . '/components/topnavigation.php';
 $components_file_footer = $webhostpath . '/components/footer.php';
@@ -69,6 +72,8 @@ $location_admin_departments_employee = $webhostpage . '/admin/departments/employ
 $location_admin_departments_employee_leaveappform = $webhostpage . '/admin/departments/employee-list/leave-app-record';
 $location_admin_departments_employee_leaveappform_view = $webhostpage . '/admin/departments/employee-list/leave-app-record/view';
 $location_admin_departments_employee_leavedataform = $webhostpage . '/admin/departments/employee-list/leave-data-form';
+
+$location_admin_datamanagement = $webhostpage . '/admin/data-management';
 
 $location_employee = $webhostpage . '/employee';
 $location_employee_profile = $webhostpage . '/employee/profile';

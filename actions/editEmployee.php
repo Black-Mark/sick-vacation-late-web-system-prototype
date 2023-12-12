@@ -15,6 +15,7 @@ if (isset($_POST['editEmployee'])) {
     $firstName = strip_tags(mysqli_real_escape_string($database, $_POST['firstName']));
     $middleName = strip_tags(mysqli_real_escape_string($database, $_POST['middleName']));
     $lastName = strip_tags(mysqli_real_escape_string($database, $_POST['lastName']));
+    $suffix = strip_tags(mysqli_real_escape_string($database, $_POST["suffix"]));
     $age = strip_tags(mysqli_real_escape_string($database, $_POST['age']));
     $sex = strip_tags(mysqli_real_escape_string($database, $_POST['sex']));
     $civilStatus = strip_tags(mysqli_real_escape_string($database, $_POST['civilStatus']));
@@ -30,6 +31,7 @@ if (isset($_POST['editEmployee'])) {
               firstName = ?,
               middleName = ?,
               lastName = ?,
+              suffix = ?,
               age = ?,
               sex = ?,
               civilStatus = ?,
@@ -41,7 +43,7 @@ if (isset($_POST['editEmployee'])) {
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "sssssssissssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted, $oldEmployeeID);
+        mysqli_stmt_bind_param($stmt, "ssssssssissssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted, $oldEmployeeID);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Employee with ID $employeeId successfully updated";
