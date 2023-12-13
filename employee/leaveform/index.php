@@ -6,13 +6,15 @@ include($constants_file_session_employee);
 include($constants_variables);
 
 $employeeData = [];
+$departmentHeadData = [];
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
 
     $sql = "SELECT
                 ua.*,
-                d.departmentName
+                d.departmentName,
+                d.departmentHead
             FROM
                 tbl_useraccounts ua
             LEFT JOIN
@@ -35,6 +37,37 @@ if (isset($_SESSION['employeeId'])) {
     } else {
         // Something
     }
+
+    if ($employeeData['departmentHead']) {
+
+        $departmentHeadFetchQuery = "SELECT
+                                        firstName, lastName, middleName, suffix, jobPosition
+                                    FROM
+                                        tbl_useraccounts
+                                    WHERE
+                                        employee_id = ?";
+
+        $statement = $database->prepare($departmentHeadFetchQuery);
+        $statement->bind_param("s", $employeeData['departmentHead']);
+        $statement->execute();
+        $departmentHeadResult = $statement->get_result();
+
+        if ($departmentHeadResult) {
+            $departmentHeadData = $departmentHeadResult->fetch_assoc();
+        }
+        $statement->close();
+    }
+
+}
+
+$settingData = [];
+$settingQuery = "SELECT * FROM tbl_systemsettings
+                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
+$settingResult = mysqli_query($database, $settingQuery);
+
+if ($settingResult) {
+    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
+    // mysqli_free_result($settingResult);
 }
 
 ?>
@@ -139,11 +172,14 @@ if (isset($_SESSION['employeeId'])) {
                                         </td>
                                         <td></td>
                                         <td class="pb-1 px-2"><input type="text" id="lastNameInput" name="lastName"
-                                                class='w-100 text-center underline-input' value="<?php echo $employeeData['lastName']; ?>" /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['lastName']; ?>" readonly /></td>
                                         <td class="pb-1 px-2"><input type="text" id="firstNameInput" name="firstName"
-                                                class='w-100 text-center underline-input' /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['firstName']; ?>" readonly /></td>
                                         <td class="pb-1 px-2"><input type="text" id="middleNameInput" name="middleName"
-                                                class='w-100 text-center underline-input' /></td>
+                                                class='w-100 text-center underline-input'
+                                                value="<?php echo $employeeData['middleName']; ?>" readonly /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -152,10 +188,14 @@ if (isset($_SESSION['employeeId'])) {
                                 <tbody>
                                     <tr>
                                         <td class="pb-1 px-2"><label for="dateFiling">3. Date Of Filing </label><input
-                                                type="text" id="dateFiling" name="dateFiling" class='underline-input' />
+                                                type="text" id="dateFiling" name="dateFiling"
+                                                value="<?php echo date("Y-m-d"); ?>" class='text-center underline-input'
+                                                readonly />
                                         </td>
                                         <td class="pb-1 px-2"><label for="position">4. Position </label><input
-                                                type="text" id="position" name="position" class='underline-input' />
+                                                type="text" id="position" name="position"
+                                                class='underline-input text-center'
+                                                value="<?php echo $employeeData['jobPosition']; ?>" readonly />
                                         </td>
                                         <td class="pb-1 px-2"><label for="salary">5. Salary </label><input type="text"
                                                 id="salary" name="salary" class='underline-input' />
@@ -309,8 +349,7 @@ if (isset($_SESSION['employeeId'])) {
                                             </div>
                                             <div>
                                                 <label for="others">Others: </label> <input type="text" id="others"
-                                                    name="typeOfSpecifiedOtherLeave" value="Others"
-                                                    class='underline-input mt-4' />
+                                                    name="typeOfSpecifiedOtherLeave" class='underline-input mt-4' />
                                             </div>
                                         </td>
                                         <td class='col-4 custom-td'>
@@ -515,10 +554,36 @@ if (isset($_SESSION['employeeId'])) {
                                                 </table>
                                             </div>
                                             <div class='mt-3 font-weight-bold text-center'>
-                                                Leilani R. Vicedo
+                                                <?php
+                                                if (count($settingData) > 0) {
+                                                    for ($i = 0; $i < count($settingData); $i++) {
+                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                            echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                                                            echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                                                            echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                                        }
+                                                    }
+                                                } else {
+                                                    echo ' ';
+                                                }
+                                                ?>
                                             </div>
                                             <div class='text-center'>
-                                                Human Resource Mgt. Officer IV
+                                                <?php
+                                                if (count($settingData) > 0) {
+                                                    for ($i = 0; $i < count($settingData); $i++) {
+                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                            if ($settingData[$i]['jobPosition'] != "") {
+                                                                echo $settingData[$i]['jobPosition'];
+                                                            } else {
+                                                                echo "Human Resources Manager";
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    echo "Human Resources Manager";
+                                                }
+                                                ?>
                                             </div>
                                         </td>
 
@@ -545,7 +610,13 @@ if (isset($_SESSION['employeeId'])) {
                                                 <div><input class='w-100 underline-input' disabled /></div>
                                                 <div class='custom-div-leave-form'>
                                                     <input class='mt-4 w-100 text-center custom-underline-input-form'
-                                                        disabled />
+                                                        value="<?php
+                                                        if (!empty($departmentHeadData)) {
+                                                            echo $departmentHeadData['lastName'] . ' ' . $departmentHeadData['firstName'];
+                                                            echo $departmentHeadData['middleName'] ? ' ' . substr($departmentHeadData['middleName'], 0, 1) . '.' : $departmentHeadData['middleName'];
+                                                            echo $departmentHeadData['suffix'] ? ' ' . $departmentHeadData['suffix'] : '';
+                                                        }
+                                                        ?>" disabled />
                                                     <div class='text-center font-weight-normal'>Department Head
                                                     </div>
                                                 </div>
@@ -599,9 +670,37 @@ if (isset($_SESSION['employeeId'])) {
                                         <td colspan="2">
                                             <div class='custom-div-leave-form'>
                                                 <input class='mt-4 text-center custom-underline-input-form' disabled />
-                                                <div class='font-weight-bold text-center'>Perfecto V. Fidel
+                                                <div class='font-weight-bold text-center'>
+                                                    <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                                echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                                                                echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                                                                echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo " ";
+                                                    }
+                                                    ?>
                                                 </div>
-                                                <div class='font-weight-normal text-center'>Municipal Mayor
+                                                <div class='font-weight-normal text-center'>
+                                                    <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                                if ($settingData[$i]['jobPosition'] != "") {
+                                                                    echo $settingData[$i]['jobPosition'];
+                                                                } else {
+                                                                    echo "Municipal Mayor";
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo "Municipal Mayor";
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
                                         </td>
