@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2023 at 01:36 PM
+-- Generation Time: Dec 13, 2023 at 10:16 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -121,14 +121,6 @@ CREATE TABLE `tbl_leavedataform` (
   `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `tbl_leavedataform`
---
-
-INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `dateCreated`, `recordType`, `period`, `periodEnd`, `particular`, `particularLabel`, `days`, `hours`, `minutes`, `vacationLeaveEarned`, `vacationLeaveAbsUndWP`, `vacationLeaveBalance`, `vacationLeaveAbsUndWOP`, `sickLeaveEarned`, `sickLeaveAbsUndWP`, `sickLeaveBalance`, `sickLeaveAbsUndWOP`, `dateOfAction`, `dateLastModified`) VALUES
-(243, 'TEMP002', '2023-12-12 12:06:48', 'Initial Record', '2023-01-10', '2023-01-12', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2023-12-12', '2023-12-12 12:06:48'),
-(244, 'PRO001', '2023-12-12 12:09:46', 'Initial Record', '2023-12-12', '2023-12-12', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2023-12-12', '2023-12-12 12:09:46');
-
 -- --------------------------------------------------------
 
 --
@@ -144,6 +136,22 @@ CREATE TABLE `tbl_notifications` (
   `message` varchar(255) NOT NULL,
   `link` varchar(255) NOT NULL,
   `seen` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_passwordreset_tokens`
+--
+
+CREATE TABLE `tbl_passwordreset_tokens` (
+  `token_id` int(255) NOT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `employee_id` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `resetTokenHash` varchar(255) NOT NULL,
+  `resetTokenExpiration` datetime NOT NULL,
+  `status` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -237,6 +245,13 @@ ALTER TABLE `tbl_notifications`
   ADD PRIMARY KEY (`notification_id`);
 
 --
+-- Indexes for table `tbl_passwordreset_tokens`
+--
+ALTER TABLE `tbl_passwordreset_tokens`
+  ADD PRIMARY KEY (`token_id`),
+  ADD UNIQUE KEY `resetTokenHash` (`resetTokenHash`);
+
+--
 -- Indexes for table `tbl_systemsettings`
 --
 ALTER TABLE `tbl_systemsettings`
@@ -276,6 +291,12 @@ ALTER TABLE `tbl_leavedataform`
 --
 ALTER TABLE `tbl_notifications`
   MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
+--
+ALTER TABLE `tbl_passwordreset_tokens`
+  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_systemsettings`
