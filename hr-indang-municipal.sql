@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2023 at 10:16 AM
+-- Generation Time: Dec 13, 2023 at 03:34 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,7 +39,7 @@ CREATE TABLE `tbl_departments` (
 
 INSERT INTO `tbl_departments` (`department_id`, `departmentName`, `departmentHead`) VALUES
 (7, 'Department of Human Resources', '201910776'),
-(8, 'Department of Agriculture', '201910776'),
+(8, 'Department of Agriculture', 'SHADOW'),
 (9, 'Municipal Office', '201915197');
 
 -- --------------------------------------------------------
@@ -88,6 +88,10 @@ CREATE TABLE `tbl_leaveappform` (
   `otherDayPay` int(255) NOT NULL,
   `otherDaySpecify` varchar(255) NOT NULL,
   `disapprovedMessage` varchar(255) NOT NULL,
+  `manager_id` varchar(255) NOT NULL,
+  `hrName` varchar(255) NOT NULL,
+  `deptHeadName` varchar(255) NOT NULL,
+  `mayorName` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -137,6 +141,13 @@ CREATE TABLE `tbl_notifications` (
   `link` varchar(255) NOT NULL,
   `seen` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_notifications`
+--
+
+INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, `empIdTo`, `subject`, `message`, `link`, `seen`) VALUES
+(27, '2023-12-13 14:08:08', 'SHADOW', '@Admin', 'Employee Submission of Leave Form', 'Bay Jeshua Mark is Applying For Vacation Leave', '/www.indang-municipal-hr.com.ph/admin/leave-transaction', 'seen');
 
 -- --------------------------------------------------------
 
@@ -207,13 +218,10 @@ CREATE TABLE `tbl_useraccounts` (
 --
 
 INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `age`, `sex`, `civilStatus`, `department`, `jobPosition`, `dateStarted`, `dateCreated`) VALUES
-(77, 'TEMP001', 'Employee', 'dummy@gmail.com', 'Password', '', 'Dummy', '', 'Accounts', '', 20, 'Female', 'Widowed', 'Pending', 'Content Creator ', '2023-11-18', '2023-11-18 10:40:13'),
 (78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte', 'Jr.', 24, 'Male', 'Single', '7', 'Grim Reaper', '2023-11-24', '2023-11-24 01:56:11'),
 (83, 'SHADOW', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Jeshua Mark', 'Sarmiento', 'Bay', '', 5, 'Male', 'Single', '8', 'Eminence in Shadow', '2020-04-08', '2023-12-08 12:57:45'),
 (84, '201910776', 'Employee', 'maepayad000@gmail.com', 'password', '', 'Nina Mae', 'Lontoc', 'Payad', '', 21, 'Female', 'Divorced', '7', 'Content Creator ', '2023-12-10', '2023-12-10 08:05:08'),
-(85, 'TEMP002', 'Employee', 'dummy@gmail.com', 'Password', '', 'Sample', '', 'Account', 'Sr.', 21, 'Prefer Not To Say', 'Married', '7', 'Content Creator ', '2021-01-10', '2023-12-11 00:25:41'),
-(86, 'Password', 'Employee', 'Password@gmail.com', 'Password', '', 'Password', 'Password', 'Password', 'E.N.D.', 1, 'Male', 'Single', '7', 'Content Creator ', '2023-12-12', '2023-12-12 03:17:28'),
-(88, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', 25, 'Male', 'Single', 'Pending', 'Web Developer V', '2023-12-12', '2023-12-12 04:22:22');
+(91, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', 20, 'Prefer Not To Say', 'Single', '7', 'Web Developer VII', '2023-12-13', '2023-12-13 12:47:22');
 
 --
 -- Indexes for dumped tables
@@ -278,19 +286,19 @@ ALTER TABLE `tbl_departments`
 -- AUTO_INCREMENT for table `tbl_leaveappform`
 --
 ALTER TABLE `tbl_leaveappform`
-  MODIFY `leaveappform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `leaveappform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=246;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
@@ -308,7 +316,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
