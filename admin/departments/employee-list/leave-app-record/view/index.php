@@ -15,13 +15,14 @@ if ($empId && $leaveAppFormId) {
     $sql = "SELECT
                 laf.*,
                 ua.department AS userDepartment,
-                d.departmentName AS deptName
+                d.departmentName AS deptName,
+                d.departmentHead
             FROM
                 tbl_leaveappform laf
             LEFT JOIN
                 tbl_useraccounts ua ON laf.employee_id = ua.employee_id
             LEFT JOIN
-                tbl_departments d ON ua.department = d.departmentName
+                tbl_departments d ON laf.departmentName = d.department_id
             WHERE
                 laf.employee_id = ? AND
                 laf.leaveappform_id = ?";
@@ -42,13 +43,14 @@ if ($empId && $leaveAppFormId) {
     $sql = "SELECT
                 laf.*,
                 ua.department AS userDepartment,
-                d.departmentName AS deptName
+                d.departmentName AS deptName,
+                d.departmentHead
             FROM
                 tbl_leaveappform laf
             LEFT JOIN
                 tbl_useraccounts ua ON laf.employee_id = ua.employee_id
             LEFT JOIN
-                tbl_departments d ON ua.department = d.departmentName
+                tbl_departments d ON laf.departmentName = d.department_id
             WHERE
                 laf.leaveappform_id = ?";
 
@@ -63,6 +65,40 @@ if ($empId && $leaveAppFormId) {
         // echo $employeeData['employee_id'];
     }
 
+}
+
+$departmentHeadData = [];
+
+if ($leaveAppFormData['departmentHead']) {
+
+    $departmentHeadFetchQuery = "SELECT
+                                    firstName, lastName, middleName, suffix, jobPosition
+                                FROM
+                                    tbl_useraccounts
+                                WHERE
+                                    employee_id = ?";
+
+    $statement = $database->prepare($departmentHeadFetchQuery);
+    $statement->bind_param("s", $leaveAppFormData['departmentHead']);
+    $statement->execute();
+    $departmentHeadResult = $statement->get_result();
+
+    if ($departmentHeadResult) {
+        $departmentHeadData = $departmentHeadResult->fetch_assoc();
+    }
+    $statement->close();
+}
+
+
+
+$settingData = [];
+$settingQuery = "SELECT * FROM tbl_systemsettings
+                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
+$settingResult = mysqli_query($database, $settingQuery);
+
+if ($settingResult) {
+    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
+    // mysqli_free_result($settingResult);
 }
 
 ?>
@@ -154,7 +190,7 @@ if ($empId && $leaveAppFormId) {
                                     <td class="pb-1 px-2">
                                         <input type="text" id="department" name="departmentName"
                                             class='w-100 text-center underline-input'
-                                            value="<?php echo $leaveAppFormData['departmentName']; ?>" disabled />
+                                            value="<?php echo $leaveAppFormData['deptName']; ?>" disabled />
                                     </td>
                                     <td></td>
                                     <td class="pb-1 px-2"><input type="text" id="lastNameInput" name="lastName"
@@ -203,162 +239,183 @@ if ($empId && $leaveAppFormId) {
                         <table class='w-100 border border-dark'>
                             <tbody>
                                 <tr>
-                                    <td class="col-6 custom-td">
+                                    <td class="col-7 custom-td" style="width: 55%;">
+
                                         <div class='font-weight-bold text-uppercase'>6.A Type of
                                             Leave to be Availed Of</div>
                                         <div>
-                                            <input type='radio' id="vacationLeave" name="typeOfLeave"
-                                                value="Vacation Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Vacation Leave' ? 'checked' : '';  ?>
-                                                disabled />
-                                            <label for="vacationLeave" class='font-weight-bold'> Vacation Leave
-                                            </label>
-                                            <span>
-                                                (Sec. 51, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Forced Leave' ? 'checked' : '';  ?>
-                                                disabled />
-                                            <label for="forcedLeave" class='font-weight-bold'> Mandatory / Forced
-                                                Leave
-                                            </label>
-                                            <span>
-                                                (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Sick Leave' ? 'checked' : '';  ?>
-                                                disabled />
-                                            <label for="sickLeave" class='font-weight-bold'> Sick Leave </label>
-                                            <span>
-                                                (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="maternityLeave" name="typeOfLeave"
-                                                value="Maternity Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Maternity Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="maternityLeave" class='font-weight-bold'>
-                                                Maternity Leave
-                                            </label>
-                                            <span>
-                                                (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="paternityLeave" name="typeOfLeave"
-                                                value="Paternity Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Paternity Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="paternityLeave" class='font-weight-bold'>
-                                                Paternity Leave
-                                            </label>
-                                            <span>
-                                                (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="special" name="typeOfLeave"
-                                                value="Special Privilege Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Privilege Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="special" class='font-weight-bold'>
-                                                Special Privilege Leave
-                                            </label>
-                                            <span>
-                                                (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="soloParent" name="typeOfLeave"
-                                                value="Solo Parent Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="soloParent" class='font-weight-bold'>
-                                                Solo Parent Leave
-                                            </label>
-                                            <span>
-                                                (RA No. 8972 / CSC MC No. 8, s. 2004)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Study Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="studyLeave" class='font-weight-bold'>
-                                                Doctorate Degree / Study Leave
-                                            </label>
-                                            <span>
-                                                (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="vawcLeave" name="typeOfLeave"
-                                                value="10-Day VAWC Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == '10-Day VAWC Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="vawcLeave" class='font-weight-bold'>
-                                                10-Day VAWC Leave
-                                            </label>
-                                            <span>
-                                                (RA No. 9262 / CSC MC No. 15, s. 2005)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="rehabilitation" name="typeOfLeave"
-                                                value="Rehabilitation Privilege"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Rehabilitation Privilege' ? 'checked' : '';  ?>
-                                                disabled /> <label for="rehabilitation" class='font-weight-bold'>
-                                                Rehabilitation Privilege
-                                            </label>
-                                            <span>
-                                                (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="specialLeave" name="typeOfLeave"
-                                                value="Special Leave Benefits for Women"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Leave Benefits for Women' ? 'checked' : '';  ?>
-                                                disabled /> <label for="specialLeave" class='font-weight-bold'>
-                                                Special Leave Benefits for Women
-                                            </label>
-                                            <span>
-                                                (RA No. 9710 / CSC MC No. 25, s. 2010)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="emergencyLeave" name="typeOfLeave"
-                                                value="Special Emergency (Calamity) Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="emergencyLeave" class='font-weight-bold'>
-                                                Special Emergency (Calamity) Leave
-                                            </label>
-                                            <span>
-                                                (CSC MC No. 2, s. 2012, as amended)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <input type='radio' id="adoptionLeave" name="typeOfLeave"
-                                                value="Adoption Leave"
-                                                <?php echo $leaveAppFormData['typeOfLeave'] == 'Adoption Leave' ? 'checked' : '';  ?>
-                                                disabled /> <label for="adoptionLeave" class='font-weight-bold'>
-                                                Adoption Leave
-                                            </label>
-                                            <span>
-                                                (R.A. No. 8552)
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <label for="others">Others: </label> <input type="text" id="others"
-                                                name="typeOfSpecifiedOtherLeave" class='underline-input mt-4'
-                                                value="<?php echo $leaveAppFormData['salary']; ?>" disabled />
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="vacationLeave" name="typeOfLeave"
+                                                    value="Vacation Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Vacation Leave' ? 'checked' : '';  ?>
+                                                    disabled />
+                                                <label for="vacationLeave" class='font-weight-bold'> Vacation Leave
+                                                </label>
+                                                <span>
+                                                    (Sec. 51, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="forcedLeave" name="typeOfLeave"
+                                                    value="Forced Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Forced Leave' ? 'checked' : '';  ?>
+                                                    disabled />
+                                                <label for="forcedLeave" class='font-weight-bold'>Mandatory/Forced
+                                                    Leave
+                                                </label>
+                                                <span>
+                                                    (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Sick Leave' ? 'checked' : '';  ?>
+                                                    disabled />
+                                                <label for="sickLeave" class='font-weight-bold'> Sick Leave </label>
+                                                <span>
+                                                    (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="maternityLeave" name="typeOfLeave"
+                                                    value="Maternity Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Maternity Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="maternityLeave" class='font-weight-bold'>
+                                                    Maternity Leave
+                                                </label>
+                                                <span>
+                                                    (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="paternityLeave" name="typeOfLeave"
+                                                    value="Paternity Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Paternity Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="paternityLeave" class='font-weight-bold'>
+                                                    Paternity Leave
+                                                </label>
+                                                <span>
+                                                    (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="special" name="typeOfLeave"
+                                                    value="Special Privilege Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Privilege Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="special" class='font-weight-bold'>
+                                                    Special Privilege Leave
+                                                </label>
+                                                <span>
+                                                    (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="soloParent" name="typeOfLeave"
+                                                    value="Solo Parent Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="soloParent" class='font-weight-bold'>
+                                                    Solo Parent Leave
+                                                </label>
+                                                <span>
+                                                    (RA No. 8972 / CSC MC No. 8, s. 2004)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="studyLeave" name="typeOfLeave"
+                                                    value="Study Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Study Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="studyLeave" class='font-weight-bold'>
+                                                    Doctorate Degree / Study Leave
+                                                </label>
+                                                <span>
+                                                    (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="vawcLeave" name="typeOfLeave"
+                                                    value="10-Day VAWC Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == '10-Day VAWC Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="vawcLeave" class='font-weight-bold'>
+                                                    10-Day VAWC Leave
+                                                </label>
+                                                <span>
+                                                    (RA No. 9262 / CSC MC No. 15, s. 2005)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="rehabilitation" name="typeOfLeave"
+                                                    value="Rehabilitation Privilege"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Rehabilitation Privilege' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="rehabilitation" class='font-weight-bold'>
+                                                    Rehabilitation Privilege
+                                                </label>
+                                                <span>
+                                                    (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="specialLeave" name="typeOfLeave"
+                                                    value="Special Leave Benefits for Women"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Special Leave Benefits for Women' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="specialLeave" class='font-weight-bold'>
+                                                    Special Leave Benefits for Women
+                                                </label>
+                                                <span>
+                                                    (RA No. 9710 / CSC MC No. 25, s. 2010)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="emergencyLeave" name="typeOfLeave"
+                                                    value="Special Emergency (Calamity) Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Solo Parent Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="emergencyLeave" class='font-weight-bold'>
+                                                    Special Emergency (Calamity) Leave
+                                                </label>
+                                                <span>
+                                                    (CSC MC No. 2, s. 2012, as amended)
+                                                </span>
+                                            </div>
+
+                                            <div class='custom-option-leave-form'>
+                                                <input type='radio' id="adoptionLeave" name="typeOfLeave"
+                                                    value="Adoption Leave"
+                                                    <?php echo $leaveAppFormData['typeOfLeave'] == 'Adoption Leave' ? 'checked' : '';  ?>
+                                                    disabled /> <label for="adoptionLeave" class='font-weight-bold'>
+                                                    Adoption Leave
+                                                </label>
+                                                <span>
+                                                    (R.A. No. 8552)
+                                                </span>
+                                            </div>
+
+                                            <div>
+                                                <label for="others">Others: </label> <input type="text" id="others"
+                                                    name="typeOfSpecifiedOtherLeave" class='underline-input mt-4'
+                                                    value="<?php echo $leaveAppFormData['others']; ?>" disabled />
+                                            </div>
+
                                         </div>
                                     </td>
-                                    <td class='col-4 custom-td'>
+
+                                    <td class='col-3 custom-td'>
                                         <div class='font-weight-bold text-uppercase'>6.B Details
                                             of Leave</div>
                                         <div>
                                             In case of Vacation/Special Privilege Leave:
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form'>
                                             <input type='radio' id="withinPhi" name="typeOfVacationLeave"
                                                 value="Within the Philippines"
                                                 <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Within the Philippines' ? 'checked' : '';  ?>
@@ -369,7 +426,8 @@ if ($empId && $leaveAppFormId) {
                                                     disabled />
                                             </label>
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="abroad" name="typeOfVacationLeave" value="Abroad"
                                                 <?php echo $leaveAppFormData['typeOfVacationLeave'] == 'Abroad' ? 'checked' : '';  ?>
                                                 disabled />
@@ -380,10 +438,12 @@ if ($empId && $leaveAppFormId) {
                                                     disabled />
                                             </label>
                                         </div>
+
                                         <div>
                                             In case of Sick Leave:
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="inHospital" name="typeOfSickLeave"
                                                 value="In Hospital"
                                                 <?php echo $leaveAppFormData['typeOfSickLeave'] == 'In Hospital' ? 'checked' : '';  ?>
@@ -394,7 +454,8 @@ if ($empId && $leaveAppFormId) {
                                                     disabled />
                                             </label>
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="outPatient" name="typeOfSickLeave"
                                                 value="Out Patient"
                                                 <?php echo $leaveAppFormData['typeOfSickLeave'] == 'Out Patient' ? 'checked' : '';  ?>
@@ -405,14 +466,17 @@ if ($empId && $leaveAppFormId) {
                                                     disabled />
                                             </label>
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type="text" name="" class='custom-underline-input-form-detail'
                                                 disabled />
                                         </div>
+
                                         <div>
                                             In case of Special Leave Benefits for Women:
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <label for="specifyIllness" class='font-weight-bold'>
                                                 (Specify Illness)</label> <input id="specifyIllness"
                                                 name="typeOfSpecialLeaveForWomen"
@@ -421,10 +485,12 @@ if ($empId && $leaveAppFormId) {
                                                 disabled />
                                             <input name="" class='underline-input' disabled />
                                         </div>
+
                                         <div>
                                             In Case of Study Leave:
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="mastersDegree" name="typeOfStudyLeave"
                                                 value="Completion of Master Degree"
                                                 <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Completion of Master Degree' ? 'checked' : '';  ?>
@@ -432,7 +498,8 @@ if ($empId && $leaveAppFormId) {
                                                 Completion of Master's Degree
                                             </label>
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="boardExam" name="typeOfStudyLeave"
                                                 value="Board Examination Review"
                                                 <?php echo $leaveAppFormData['typeOfStudyLeave'] == 'Board Examination Review' ? 'checked' : '';  ?>
@@ -440,10 +507,12 @@ if ($empId && $leaveAppFormId) {
                                                 Bar / Board Examination Review
                                             </label>
                                         </div>
+
                                         <div>
                                             Other Purpose:
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="monetizationLeave" name="typeOfOtherLeave"
                                                 value="Monetization of Leave Credit"
                                                 <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Monetization of Leave Credit' ? 'checked' : '';  ?>
@@ -452,7 +521,8 @@ if ($empId && $leaveAppFormId) {
                                                 Monetization of Leave Credit
                                             </label>
                                         </div>
-                                        <div>
+
+                                        <div class='custom-option-leave-form-edit'>
                                             <input type='radio' id="terminalLeave" name="typeOfOtherLeave"
                                                 value="Terminal Leave"
                                                 <?php echo $leaveAppFormData['typeOfOtherLeave'] == 'Terminal Leave' ? 'checked' : '';  ?>
@@ -460,6 +530,7 @@ if ($empId && $leaveAppFormId) {
                                                 Terminal Leave
                                             </label>
                                         </div>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -468,7 +539,7 @@ if ($empId && $leaveAppFormId) {
                         <table class="w-100 border border-dark">
                             <tbody>
                                 <tr>
-                                    <td class="col-6 custom-td">
+                                    <td class="col-7 custom-td" style="width: 55%;">
                                         <div class='font-weight-bold text-uppercase'><label for="workingDays">
                                                 6.C NUMBER OF WORKING DAYS APPLIED FOR </label>
                                         </div>
@@ -486,7 +557,7 @@ if ($empId && $leaveAppFormId) {
                                                 value="<?php echo $leaveAppFormData['inclusiveDates']; ?>" disabled />
                                         </div>
                                     </td>
-                                    <td class="col-4 custom-td">
+                                    <td class="col-3 custom-td">
                                         <div class='font-weight-bold text-uppercase'>
                                             6.D Commutation
                                         </div>
@@ -530,7 +601,7 @@ if ($empId && $leaveAppFormId) {
                         <table class='w-100 border border-dark'>
                             <tbody>
                                 <tr>
-                                    <td class="col-6 custom-td">
+                                    <td class="col-7 custom-td" style="width: 55%;">
                                         <div class='font-weight-bold text-uppercase'>
                                             7.A Certification of Leave Credits
                                         </div>
@@ -552,33 +623,33 @@ if ($empId && $leaveAppFormId) {
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Total Earned</td>
                                                         <td><input type="number" name="vacationLeaveTotalEarned"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['vacationLeaveTotalEarned']; ?>"
                                                                 disabled /></td>
                                                         <td><input type="number" name="sickLeaveTotalEarned"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['sickLeaveTotalEarned']; ?>"
                                                                 disabled /></td>
                                                     </tr>
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Less this application</td>
                                                         <td><input type="number" name="vacationLeaveLess"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['vacationLeaveLess']; ?>"
                                                                 disabled /></td>
                                                         <td><input type="number" name="sickLeaveLess"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['sickLeaveLess']; ?>"
                                                                 disabled /></td>
                                                     </tr>
                                                     <tr class='text-center'>
                                                         <td class='font-italic'>Balance</td>
                                                         <td><input type="number" name="vacationLeaveBalance"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['vacationLeaveBalance']; ?>"
                                                                 disabled /></td>
                                                         <td><input type="number" name="sickLeaveBalance"
-                                                                class='custom-input-leave-form'
+                                                                class='text-center custom-input-leave-form'
                                                                 value="<?php echo $leaveAppFormData['sickLeaveBalance']; ?>"
                                                                 disabled /></td>
                                                     </tr>
@@ -586,15 +657,41 @@ if ($empId && $leaveAppFormId) {
                                             </table>
                                         </div>
                                         <div class='mt-3 font-weight-bold text-center'>
-                                            Leilani R. Vicedo
+                                            <?php
+                                                if (count($settingData) > 0) {
+                                                    for ($i = 0; $i < count($settingData); $i++) {
+                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                            echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                                                            echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                                                            echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                                        }
+                                                    }
+                                                } else {
+                                                    echo ' ';
+                                                }
+                                                ?>
                                         </div>
                                         <div class='text-center'>
-                                            Human Resource Mgt. Officer IV
+                                            <?php
+                                                if (count($settingData) > 0) {
+                                                    for ($i = 0; $i < count($settingData); $i++) {
+                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                            if ($settingData[$i]['jobPosition'] != "") {
+                                                                echo $settingData[$i]['jobPosition'];
+                                                            } else {
+                                                                echo "Human Resources Manager";
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    echo "Human Resources Manager";
+                                                }
+                                                ?>
                                         </div>
                                     </td>
 
 
-                                    <td class='col-4 custom-td'>
+                                    <td class='col-3 custom-td'>
                                         <div class='font-weight-bold text-uppercase'>
                                             7.B Recommendation
                                         </div>
@@ -620,7 +717,13 @@ if ($empId && $leaveAppFormId) {
                                             <div><input class='w-100 underline-input' disabled /></div>
                                             <div class='custom-div-leave-form'>
                                                 <input class='mt-4 w-100 text-center custom-underline-input-form'
-                                                    disabled />
+                                                value="<?php
+                                                        if (!empty($departmentHeadData)) {
+                                                            echo $departmentHeadData['lastName'] . ' ' . $departmentHeadData['firstName'];
+                                                            echo $departmentHeadData['middleName'] ? ' ' . substr($departmentHeadData['middleName'], 0, 1) . '.' : $departmentHeadData['middleName'];
+                                                            echo $departmentHeadData['suffix'] ? ' ' . $departmentHeadData['suffix'] : '';
+                                                        }
+                                                        ?>" disabled />
                                                 <div class='text-center font-weight-normal'>Department Head
                                                 </div>
                                             </div>
@@ -633,27 +736,27 @@ if ($empId && $leaveAppFormId) {
                         <table class='w-100'>
                             <tbody>
                                 <tr>
-                                    <td class="col-6">
+                                    <td class="col-7" style="width: 55%;">
                                         <div class='font-weight-bold text-uppercase'>
                                             7. C.) APPROVED FOR:
                                         </div>
                                         <div>
                                             <input id="dayWithPay" type="number" name="dayWithPay"
-                                                class='underline-input'
+                                                class='text-center underline-input'
                                                 value="<?php echo $leaveAppFormData['dayWithPay']; ?>" disabled /><label
                                                 for="dayWithPay"> days with
                                                 pay</label>
                                         </div>
                                         <div>
                                             <input id="dayWithoutPay" type="number" name="dayWithoutPay"
-                                                class='underline-input'
+                                                class='text-center underline-input'
                                                 value="<?php echo $leaveAppFormData['dayWithoutPay']; ?>"
                                                 disabled /><label for="dayWithoutPay"> days without
                                                 pay</label>
                                         </div>
                                         <div>
                                             <input id="otherPay" type="number" name="otherDayPay"
-                                                class='underline-input'
+                                                class='text-center underline-input'
                                                 value="<?php echo $leaveAppFormData['otherDayPay']; ?>" disabled />
                                             <label for="otherPay">Others</label>
                                             <label for="otherPaySpecify">(Specify)</label>
@@ -662,7 +765,7 @@ if ($empId && $leaveAppFormId) {
                                                 value="<?php echo $leaveAppFormData['otherDaySpecify']; ?>" disabled />
                                         </div>
                                     </td>
-                                    <td class="col-4">
+                                    <td class="col-3">
                                         <div class='font-weight-bold text-uppercase'>
                                             7. D.) DISAPPROVED DUE TO:
                                         </div>
@@ -681,10 +784,38 @@ if ($empId && $leaveAppFormId) {
                                 <tr>
                                     <td colspan="2">
                                         <div class='custom-div-leave-form'>
-                                            <input class='mt-4 text-center custom-underline-input-form' disabled />
-                                            <div class='font-weight-bold text-center'>Perfecto V. Fidel
+                                            <input class='mt-2 text-center custom-underline-input-form' disabled />
+                                            <div class='font-weight-bold text-center'>
+                                                <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                                echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
+                                                                echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
+                                                                echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo " ";
+                                                    }
+                                                    ?>
                                             </div>
-                                            <div class='font-weight-normal text-center'>Municipal Mayor
+                                            <div class='font-weight-normal text-center'>
+                                                <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                                if ($settingData[$i]['jobPosition'] != "") {
+                                                                    echo $settingData[$i]['jobPosition'];
+                                                                } else {
+                                                                    echo "Municipal Mayor";
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo "Municipal Mayor";
+                                                    }
+                                                    ?>
                                             </div>
                                         </div>
                                     </td>

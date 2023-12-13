@@ -13,13 +13,13 @@ if (isset($_SESSION) && isset($_SESSION["role"])) {
 
 $employeeUserName = [];
 
-if(isset($_SESSION['employeeId'])) {
+if (isset($_SESSION['employeeId'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
-    
+
     $UserNamequery = "SELECT firstName, lastName FROM tbl_useraccounts WHERE employee_Id = ?";
 
     $stmtUserName = $database->prepare($UserNamequery);
-    
+
     if ($stmtUserName) {
         $stmtUserName->bind_param("s", $employeeId);
         $stmtUserName->execute();
@@ -116,7 +116,7 @@ if (isset($_REQUEST['logout'])) {
         <div class="top-nav-username">
             <?php
             if (isset($_SESSION['employeeId']) && !empty($employeeUserName)) {
-                echo htmlspecialchars($employeeUserName['firstName'] ." ". $employeeUserName['lastName'], ENT_QUOTES, 'UTF-8');
+                echo htmlspecialchars($employeeUserName['firstName'] . " " . $employeeUserName['lastName'], ENT_QUOTES, 'UTF-8');
             } else {
                 echo 'Username';
             }
@@ -157,12 +157,12 @@ if (isset($_REQUEST['logout'])) {
 <?php if ($_SESSION['role'] === 'Admin') {
     ?>
     <script>
-        var iphost = "http://192.168.1.10/www.indang-municipal-hr.com.ph";
+        var iphost = "http://localhost/www.indang-municipal-hr.com.ph";
         $(document).ready(function () {
             function fetchNotifications() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: iphost+'/actions/fetchNotification.php', // Create this file to fetch notifications
+                    url: iphost + '/actions/fetchNotification.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notification-container').html(data);
@@ -173,7 +173,7 @@ if (isset($_REQUEST['logout'])) {
             function fetchNotificationsCount() {
                 // Make an AJAX request to fetch new notifications
                 $.ajax({
-                    url: iphost+'/actions/fetchNotificationCount.php', // Create this file to fetch notifications
+                    url: iphost + '/actions/fetchNotificationCount.php', // Create this file to fetch notifications
                     method: 'POST', // Change the method to POST
                     success: function (data) {
                         $('#notifCount').html(data);
@@ -184,7 +184,7 @@ if (isset($_REQUEST['logout'])) {
             // Function to mark notifications as seen
             function markNotificationsAsSeen() {
                 $.ajax({
-                    url: iphost+'/actions/markNotificationsAsSeen.php',
+                    url: iphost + '/actions/markNotificationsAsSeen.php',
                     method: 'POST',
                     success: function (data) {
                         // You can handle the response if needed
@@ -197,6 +197,7 @@ if (isset($_REQUEST['logout'])) {
                 $('#notification-container').toggleClass('show');
 
                 // Mark notifications as seen when the bell is clicked
+                $('#notifCount').html(0);
                 markNotificationsAsSeen();
 
                 event.stopPropagation(); // Prevent the click event from propagating to the document body
@@ -209,7 +210,7 @@ if (isset($_REQUEST['logout'])) {
                 }
             });
 
-            // Fetch notifications every 30 seconds (adjust the interval as needed)
+            // Fetch notifications every 3 seconds (adjust the interval as needed)
             setInterval(fetchNotifications, 3000);
             setInterval(fetchNotificationsCount, 3000);
 

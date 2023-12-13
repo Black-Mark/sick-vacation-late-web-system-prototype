@@ -35,9 +35,12 @@ if (isset($_SESSION['employeeId'])) {
             }
         }
     } else {
+        header("Location: " . $location_login);
         ?>
         <script>alert("An error has occurred: There is no registered employee ID.");</script>
         <?php
+        session_unset();
+        session_destroy();
     }
 } else {
     header("location: " . $location_login);

@@ -108,7 +108,7 @@ if (isset($_SESSION['employeeId'])) {
                     // $holdMonth = $date->format('Y-m-d');
 
                     // Condition If First Month Reaches The Record To Update Credit
-                    while ($holdMonth < $fetchLeaveData[$i]['period']) {
+                    while ($holdMonth <= $fetchLeaveData[$i]['period']) {
                         $monthEarnedArray = [
                             'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $iterate . $idGeneration,
                             'employee_id' => $fetchLeaveData[$i]['employee_id'],
@@ -149,7 +149,7 @@ if (isset($_SESSION['employeeId'])) {
             if ($i >= count($fetchLeaveData) - 1) {
                 $today = (new DateTime())->format('Y-m-d');
                 $iterate = 0;
-                while ($holdMonth < $today) {
+                while ($holdMonth <= $today) {
                     $monthEarnedArray = [
                         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration . $iterate,
                         'employee_id' => $fetchLeaveData[$i]['employee_id'],

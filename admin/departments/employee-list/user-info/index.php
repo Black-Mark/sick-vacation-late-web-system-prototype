@@ -132,22 +132,6 @@ WHERE
                     </div>
 
                     <div class="profile-rowing">
-                        <label for="passwordInput">Password:</label>
-                        <span>
-                            <input type="password" id="passwordInput" name="password" class="account-profile-input"
-                                value="<?php echo $employeeData['password']; ?>" readonly required />
-                        </span>
-                    </div>
-
-                    <div class="profile-rowing">
-                        <label for="photoURLInput">PhotoURL:</label>
-                        <span>
-                            <input type="text" id="photoURLInput" name="photoURL" class="account-profile-input"
-                                value="<?php echo $employeeData['photoURL']; ?>" readonly required />
-                        </span>
-                    </div>
-
-                    <div class="profile-rowing">
                         <label for="firstNameInput">First Name:</label>
                         <span>
                             <input type="text" id="firstNameInput" name="firstName" class="account-profile-input"
@@ -168,6 +152,14 @@ WHERE
                         <span>
                             <input type="text" id="lastNameInput" name="lastName" class="account-profile-input"
                                 value="<?php echo $employeeData['lastName']; ?>" readonly required />
+                        </span>
+                    </div>
+
+                    <div class="profile-rowing">
+                        <label for="suffixInput">Suffix:</label>
+                        <span>
+                            <input type="text" id="suffixInput" name="suffix" class="account-profile-input"
+                                value="<?php echo $employeeData['suffix']; ?>" readonly required />
                         </span>
                     </div>
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2023 at 06:50 AM
+-- Generation Time: Dec 13, 2023 at 03:34 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -38,8 +38,9 @@ CREATE TABLE `tbl_departments` (
 --
 
 INSERT INTO `tbl_departments` (`department_id`, `departmentName`, `departmentHead`) VALUES
-(2, 'Department of Human Resources', 'PRO001'),
-(4, 'Department of Death', '201915197');
+(7, 'Department of Human Resources', '201910776'),
+(8, 'Department of Agriculture', 'SHADOW'),
+(9, 'Municipal Office', '201915197');
 
 -- --------------------------------------------------------
 
@@ -87,18 +88,12 @@ CREATE TABLE `tbl_leaveappform` (
   `otherDayPay` int(255) NOT NULL,
   `otherDaySpecify` varchar(255) NOT NULL,
   `disapprovedMessage` varchar(255) NOT NULL,
+  `manager_id` varchar(255) NOT NULL,
+  `hrName` varchar(255) NOT NULL,
+  `deptHeadName` varchar(255) NOT NULL,
+  `mayorName` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tbl_leaveappform`
---
-
-INSERT INTO `tbl_leaveappform` (`leaveappform_id`, `dateLastModified`, `dateCreated`, `employee_id`, `departmentName`, `lastName`, `firstName`, `middleName`, `dateFiling`, `position`, `salary`, `typeOfLeave`, `typeOfSpecifiedOtherLeave`, `typeOfVacationLeave`, `typeOfVacationLeaveWithin`, `typeOfVacationLeaveAbroad`, `typeOfSickLeave`, `typeOfSickLeaveInHospital`, `typeOfSickLeaveOutPatient`, `typeOfSpecialLeaveForWomen`, `typeOfStudyLeave`, `typeOfOtherLeave`, `workingDays`, `inclusiveDates`, `commutation`, `asOfDate`, `vacationLeaveTotalEarned`, `sickLeaveTotalEarned`, `vacationLeaveLess`, `sickLeaveLess`, `vacationLeaveBalance`, `sickLeaveBalance`, `recommendation`, `recommendMessage`, `dayWithPay`, `dayWithoutPay`, `otherDayPay`, `otherDaySpecify`, `disapprovedMessage`, `status`) VALUES
-(1, '2023-12-02 03:31:34', '2023-11-29 09:40:44', 'TEMP001', 'Pending', 'Bay', 'Jeshua Mark', 'Sarmiento', 'July, 2022', 'Hello', '350', 'Sick Leave', 'Hello', 'Within the Philippines', 'jnhjj', 'nmkjnjk', 'Out Patient', 'nbjbj', 'jnjkn', 'jnjnnjnkn', 'Completion of Master Degree', 'Terminal Leave', 2, 'jnknjnjnj', 'Requested', '2023-11-18', 78.0000, 78.0000, 78.0000, 878.0000, 878.0000, 878.0000, 'For Approval', '898u8u', 56, 56, 56, 'ughbvbn', 'jhbjhjbjhjbmhbb', 'Submitted'),
-(7, '2023-12-04 12:42:36', '2023-12-04 12:42:36', 'TEMP001', 'Pending', '', '', '', '', '', '', 'Forced Leave', '', '', '', '', '', '', '', '', '', '', 0, '', '', '2023-11-18', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', 'Submitted'),
-(8, '2023-12-04 14:17:43', '2023-12-04 14:17:43', 'TEMP001', 'Pending', '', '', '', '', '', '', 'Vacation Leave', '', 'Within the Philippines', '', '', '', '', '', '', '', '', 0, '', '', '2023-11-18', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', 'Submitted'),
-(9, '2023-12-04 14:23:13', '2023-12-04 14:23:13', 'TEMP001', 'Pending', '', '', '', '', '', '', 'Paternity Leave', '', '', '', '', '', '', '', '', '', '', 0, '', '', '2023-11-18', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', 'Submitted');
 
 -- --------------------------------------------------------
 
@@ -110,6 +105,7 @@ CREATE TABLE `tbl_leavedataform` (
   `leavedataform_id` int(255) NOT NULL,
   `employee_id` varchar(255) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
+  `recordType` varchar(255) NOT NULL,
   `period` date NOT NULL,
   `periodEnd` date NOT NULL,
   `particular` varchar(255) NOT NULL,
@@ -128,14 +124,6 @@ CREATE TABLE `tbl_leavedataform` (
   `dateOfAction` date NOT NULL,
   `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tbl_leavedataform`
---
-
-INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `dateCreated`, `period`, `periodEnd`, `particular`, `particularLabel`, `days`, `hours`, `minutes`, `vacationLeaveEarned`, `vacationLeaveAbsUndWP`, `vacationLeaveBalance`, `vacationLeaveAbsUndWOP`, `sickLeaveEarned`, `sickLeaveAbsUndWP`, `sickLeaveBalance`, `sickLeaveAbsUndWOP`, `dateOfAction`, `dateLastModified`) VALUES
-(136, 'PRO001', '2023-11-26 02:00:02', '2023-11-26', '2023-11-26', 'Sick Leave', '', 1, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 0.0000, 0.0000, 0.0000, 1.7500, '2023-11-26', '2023-11-26 02:03:29'),
-(139, '201915197', '2023-11-30 06:30:43', '2023-11-30', '2023-11-30', 'Sick Leave', '', 1, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 1.0000, 0.2500, 0.0000, '2023-11-30', '2023-11-30 06:30:43');
 
 -- --------------------------------------------------------
 
@@ -159,9 +147,45 @@ CREATE TABLE `tbl_notifications` (
 --
 
 INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, `empIdTo`, `subject`, `message`, `link`, `seen`) VALUES
-(1, '2023-12-05 04:31:43', 'TEMP001', '@Admin', 'Employee Submission of Leave Form', 'Dummy Account is Applying For Forced Leave', '/www.indang-municipal-hr.com.ph/admin/leave-app-form', 'seen'),
-(2, '2023-12-05 04:31:43', 'TEMP001', '@Admin', 'Employee Submission of Leave Form', 'Dummy Account is Applying For Vacation Leave', '/www.indang-municipal-hr.com.ph/admin/leave-app-form', 'seen'),
-(3, '2023-12-05 04:31:43', 'TEMP001', '@Admin', 'Employee Submission of Leave Form', 'Dummy Account is Applying For Paternity Leave', '/www.indang-municipal-hr.com.ph/admin/leave-app-form', 'seen');
+(27, '2023-12-13 14:08:08', 'SHADOW', '@Admin', 'Employee Submission of Leave Form', 'Bay Jeshua Mark is Applying For Vacation Leave', '/www.indang-municipal-hr.com.ph/admin/leave-transaction', 'seen');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_passwordreset_tokens`
+--
+
+CREATE TABLE `tbl_passwordreset_tokens` (
+  `token_id` int(255) NOT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `employee_id` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `resetTokenHash` varchar(255) NOT NULL,
+  `resetTokenExpiration` datetime NOT NULL,
+  `status` int(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_systemsettings`
+--
+
+CREATE TABLE `tbl_systemsettings` (
+  `setting_id` int(255) NOT NULL,
+  `settingType` varchar(255) NOT NULL,
+  `settingSubject` varchar(255) NOT NULL,
+  `settingKey` varchar(255) NOT NULL,
+  `dateModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_systemsettings`
+--
+
+INSERT INTO `tbl_systemsettings` (`setting_id`, `settingType`, `settingSubject`, `settingKey`, `dateModified`) VALUES
+(1, 'Authorized User', 'Human Resources Manager', '201910776', '2023-12-12 12:00:33'),
+(2, 'Authorized User', 'Municipal Mayor', '201915197', '2023-12-12 11:52:07');
 
 -- --------------------------------------------------------
 
@@ -179,6 +203,7 @@ CREATE TABLE `tbl_useraccounts` (
   `firstName` varchar(255) NOT NULL,
   `middleName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
+  `suffix` varchar(255) NOT NULL,
   `age` int(4) NOT NULL,
   `sex` varchar(255) NOT NULL,
   `civilStatus` varchar(255) NOT NULL,
@@ -192,10 +217,11 @@ CREATE TABLE `tbl_useraccounts` (
 -- Dumping data for table `tbl_useraccounts`
 --
 
-INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `age`, `sex`, `civilStatus`, `department`, `jobPosition`, `dateStarted`, `dateCreated`) VALUES
-(1, 'PRO001', 'Admin', 'jeshuabay@gmail.com', 'Password', '', 'Jeshua Mark', 'Sarmiento', 'Bay', 2, 'Male', 'Single', '2', 'Tiktokerist ', '2022-01-01', '2023-11-14 15:40:55'),
-(77, 'TEMP001', 'Employee', 'dummy@gmail.com', 'Password', '', 'Dummy', '', 'Account', 20, 'Female', 'Widowed', 'Pending', 'Content Creator ', '2023-11-18', '2023-11-18 10:40:13'),
-(78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte Jr.', 24, 'Male', 'Single', '4', 'Grim Reaper', '2023-11-24', '2023-11-24 01:56:11');
+INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `age`, `sex`, `civilStatus`, `department`, `jobPosition`, `dateStarted`, `dateCreated`) VALUES
+(78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte', 'Jr.', 24, 'Male', 'Single', '7', 'Grim Reaper', '2023-11-24', '2023-11-24 01:56:11'),
+(83, 'SHADOW', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Jeshua Mark', 'Sarmiento', 'Bay', '', 5, 'Male', 'Single', '8', 'Eminence in Shadow', '2020-04-08', '2023-12-08 12:57:45'),
+(84, '201910776', 'Employee', 'maepayad000@gmail.com', 'password', '', 'Nina Mae', 'Lontoc', 'Payad', '', 21, 'Female', 'Divorced', '7', 'Content Creator ', '2023-12-10', '2023-12-10 08:05:08'),
+(91, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', 20, 'Prefer Not To Say', 'Single', '7', 'Web Developer VII', '2023-12-13', '2023-12-13 12:47:22');
 
 --
 -- Indexes for dumped tables
@@ -227,6 +253,19 @@ ALTER TABLE `tbl_notifications`
   ADD PRIMARY KEY (`notification_id`);
 
 --
+-- Indexes for table `tbl_passwordreset_tokens`
+--
+ALTER TABLE `tbl_passwordreset_tokens`
+  ADD PRIMARY KEY (`token_id`),
+  ADD UNIQUE KEY `resetTokenHash` (`resetTokenHash`);
+
+--
+-- Indexes for table `tbl_systemsettings`
+--
+ALTER TABLE `tbl_systemsettings`
+  ADD PRIMARY KEY (`setting_id`);
+
+--
 -- Indexes for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
@@ -241,31 +280,43 @@ ALTER TABLE `tbl_useraccounts`
 -- AUTO_INCREMENT for table `tbl_departments`
 --
 ALTER TABLE `tbl_departments`
-  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_leaveappform`
 --
 ALTER TABLE `tbl_leaveappform`
-  MODIFY `leaveappform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `leaveappform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=246;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
+--
+ALTER TABLE `tbl_passwordreset_tokens`
+  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `tbl_systemsettings`
+--
+ALTER TABLE `tbl_systemsettings`
+  MODIFY `setting_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
