@@ -69,7 +69,8 @@ if (isset($_REQUEST['login'])) {
     <meta charset="UTF-8">
     <title>Human Resources of Municipality of Indang - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Welcome to the Municipality of Indang's Human Resources portal, designed to streamline Sick and Vacation Leave processes for employees and offers a straightforward interface for efficient leave applications. Sick Leave benefits include generous allowances with minimal documentation requirements for health-related absences. Vacation Leave features flexible accrual systems and encourages advanced planning, promoting work-life balance. Our committed Human Resources team is ready to assist employees, prioritizing their needs throughout the leave application journey.">
+    <meta name="description"
+        content="Welcome to the Municipality of Indang's Human Resources portal, designed to streamline Sick and Vacation Leave processes for employees and offers a straightforward interface for efficient leave applications. Sick Leave benefits include generous allowances with minimal documentation requirements for health-related absences. Vacation Leave features flexible accrual systems and encourages advanced planning, promoting work-life balance. Our committed Human Resources team is ready to assist employees, prioritizing their needs throughout the leave application journey.">
     <?php
     include($constants_file_html_credits);
     ?>
@@ -111,7 +112,10 @@ if (isset($_REQUEST['login'])) {
                             <input type="checkbox" id="showPassword"> Show Password
                         </label>
                     </div>
-                    <input type="submit" name="login" value="Login" class="login-button">
+                    <div class="d-flex flex-column gap-1 align-items-center" >
+                        <input type="submit" name="login" value="Login" class="w-100 login-button">
+                        <a href="<?php echo $location_forgotpassword; ?>" class="text-primary">Forgot Password?</a>
+                    </div>
                 </div>
             </form>
         </div>

@@ -18,6 +18,9 @@ $action_add_leaveappform = $webhostpage . '/actions/addLeaveAppForm.php';
 $action_edit_leaveappform = $webhostpage . '/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage . '/actions/deleteLeaveAppForm.php';
 
+$action_forgotpassword_mailer = $webhostpage.'/actions/forgotPasswordMailer.php';
+$action_resetpassword = $webhostpage.'/actions/resetPassword.php';
+
 $action_update_password = $webhostpage . '/actions/updatePassword.php';
 $action_update_system_setting = $webhostpage . '/actions/updateSystemSetting.php';
 
@@ -34,6 +37,10 @@ $constants_file_session_employee = $webhostpath . '/constants/employeeSession.ph
 $constants_file_role_menu = $webhostpath . '/constants/roleMenu.php';
 $constants_file_html_credits = $webhostpath . '/constants/htmlHead.php';
 $constants_variables = $webhostpath . '/constants/globalVariable.php';
+
+$assets_phpmailer = $webhostpath . '/assets/phpmailer/src/PHPMailer.php';
+$assets_phpmailer_exception = $webhostpath . '/assets/phpmailer/src/Exception.php';
+$assets_phpmailer_smtp = $webhostpath . '/assets/phpmailer/src/SMTP.php';
 
 // Web Host Page - Assets
 $assets_script_topnav = $webhostpage . '/assets/js/topnav.js';
@@ -60,6 +67,8 @@ $assets_file_leavedataform = $webhostpage . '/assets/js/leaveDataForm.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
+$location_forgotpassword = $webhostpage.'/forgot-password.php';
+$location_resetpassword = $webhostpage.'/reset-password.php';
 
 $location_admin = $webhostpage . '/admin';
 $location_admin_profile = $webhostpage . '/admin/profile';

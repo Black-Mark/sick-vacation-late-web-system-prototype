@@ -273,8 +273,11 @@ body.webpage-background-cover {
 /* Login Page Styles */
 
 .login-page-content {
-    height: 100%;
-    /* overflow: auto; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: auto;
 }
 
 .login-container {
@@ -285,7 +288,7 @@ body.webpage-background-cover {
     min-width: 280px;
     border-radius: 0.5rem;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
-    margin: 80px auto;
+    margin: 0 auto;
     padding: 2rem;
     text-align: center;
 }

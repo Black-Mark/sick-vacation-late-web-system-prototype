@@ -1,2 +1,2 @@
-<meta name="author" content="Jeshua Bay and Ren Dimabogte">
-<meta name="keywords" content="Human Resources">
+<meta name="author" content="Jeshua Bay, Ren Dimabogte, Nina Payad">
+<meta name="keywords" content="Human Resources, Indang, Municipality, Sick Leave, Vacation Leave">
