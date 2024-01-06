@@ -1,6 +1,8 @@
 <?php
-$webhostpath = 'C:\xampp\htdocs\www.indang-municipal-hr.com.ph';
-$webhostpage = '/www.indang-municipal-hr.com.ph';
+$webhostpath = 'C:\xampp\htdocs\www.indang-municipal-hr.com.ph'; // Files of the Includes and Requires
+$webhostpage = '/www.indang-municipal-hr.com.ph'; // Location based of the Pages
+// $webIphost = 'http://localhost/indang-sil-system'; //Complete Address and will be used for Notification and Other Fetches
+$webResetPasswordMessageLink = 'http://localhost/www.indang-municipal-hr.com.ph/reset-password.php'; // Message Base Link For Password Reset
 
 $action_add_employee = $webhostpage . '/actions/addEmployee.php';
 $action_edit_employee = $webhostpage . '/actions/editEmployee.php';
@@ -14,12 +16,13 @@ $action_add_leaverecorddata = $webhostpage . '/actions/addLeaveDataRecord.php';
 $action_edit_leaverecorddata = $webhostpage . '/actions/editLeaveDataRecord.php';
 $action_delete_leaverecorddata = $webhostpage . '/actions/deleteLeaveDataRecord.php';
 
+$action_employee_submit_leaveform = $webhostpage . '/actions/submitEmployeeLeaveForm.php';
 $action_add_leaveappform = $webhostpage . '/actions/addLeaveAppForm.php';
 $action_edit_leaveappform = $webhostpage . '/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage . '/actions/deleteLeaveAppForm.php';
 
-$action_forgotpassword_mailer = $webhostpage.'/actions/forgotPasswordMailer.php';
-$action_resetpassword = $webhostpage.'/actions/resetPassword.php';
+$action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.php';
+$action_resetpassword = $webhostpage . '/actions/resetPassword.php';
 
 $action_update_password = $webhostpage . '/actions/updatePassword.php';
 $action_update_system_setting = $webhostpage . '/actions/updateSystemSetting.php';
@@ -64,11 +67,13 @@ $assets_toastify_css = $webhostpage . '/assets/toastify/toastify.css';
 $assets_toastify_js = $webhostpage . '/assets/toastify/toastify.js';
 $assets_tailwind = $webhostpage . '/assets/js/tailwind.js';
 $assets_file_leavedataform = $webhostpage . '/assets/js/leaveDataForm.js';
+$assets_file_employeeListing = $webhostpage . '/assets/js/employeeListing.js';
+$assets_file_leaveappform = $webhostpage . '/assets/js/leaveappform.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
-$location_forgotpassword = $webhostpage.'/forgot-password.php';
-$location_resetpassword = $webhostpage.'/reset-password.php';
+$location_forgotpassword = $webhostpage . '/forgot-password.php';
+$location_resetpassword = $webhostpage . '/reset-password.php';
 
 $location_admin = $webhostpage . '/admin';
 $location_admin_profile = $webhostpage . '/admin/profile';

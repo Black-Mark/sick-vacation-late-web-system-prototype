@@ -5,29 +5,8 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
-$settingData = [];
-$settingQuery = "SELECT * FROM tbl_systemsettings
-                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey";
-$settingResult = mysqli_query($database, $settingQuery);
-
-if ($settingResult) {
-    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
-    mysqli_free_result($settingResult);
-}
-
-// print_r($settingData);
-
-$employees = [];
-
-$sql_employee = "SELECT firstName, lastName, employee_id FROM tbl_useraccounts";
-$employees_result = $database->query($sql_employee);
-
-if ($employees_result) {
-    $employees = mysqli_fetch_all($employees_result, MYSQLI_ASSOC);
-    mysqli_free_result($employees_result);
-}
-
-// print_r($employees);
+$settingData = getAllSettingData();
+$employeesNameAndId = getAllEmployeesNameAndID();
 
 ?>
 
@@ -87,7 +66,8 @@ if ($employees_result) {
 
                     <h5 class="mt-4 mb-2 text-uppercase font-weight-bold">Authorized Person:</h5>
 
-                    <form action="<?php echo $action_update_system_setting; ?>" method="post" class="d-flex flex-row gap-2 align-items-center mb-2">
+                    <form action="<?php echo $action_update_system_setting; ?>" method="post"
+                        class="d-flex flex-row gap-2 align-items-center mb-2">
                         <div class="w-25 font-weight-bold text-truncate">Human Resources Manager:</div>
                         <?php
                         for ($i = 0; $i < count($settingData); $i++) {
@@ -95,9 +75,7 @@ if ($employees_result) {
                                 ?>
                                 <div class="w-25 text-truncate">
                                     <?php
-                                    echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                                    echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                                    echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                    echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
                                     ?>
                                 </div>
                                 <input type="hidden" name="settingIdentifier"
@@ -105,25 +83,27 @@ if ($employees_result) {
                                 <select name="selectedAuthorizedUser" class="w-25 text-center form-select text-truncate">
                                     <option value="" selected>---Auto---</option>
                                     <?php
-                                    if (!empty($employees)) {
-                                        foreach ($employees as $employee) {
+                                    if (!empty($employeesNameAndId)) {
+                                        foreach ($employeesNameAndId as $employee) {
                                             ?>
                                             <option value="<?php echo $employee['employee_id']; ?>">
-                                                <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 2); ?>
                                             </option>
                                             <?php
                                         }
                                     }
                                     ?>
                                 </select>
-                                <input type="submit" name="changeSetting" class="w-25 custom-regular-button text-truncate" value="Change" />
+                                <input type="submit" name="changeSetting" class="w-25 custom-regular-button text-truncate"
+                                    value="Change" />
                                 <?php
                             }
                         }
                         ?>
                     </form>
 
-                    <form action="<?php echo $action_update_system_setting; ?>" method="post" class="d-flex flex-row gap-2 align-items-center">
+                    <form action="<?php echo $action_update_system_setting; ?>" method="post"
+                        class="d-flex flex-row gap-2 align-items-center">
                         <div class="w-25 font-weight-bold text-truncate">Municipal Mayor:</div>
                         <?php
                         for ($i = 0; $i < count($settingData); $i++) {
@@ -131,9 +111,7 @@ if ($employees_result) {
                                 ?>
                                 <div class="w-25 text-truncate">
                                     <?php
-                                    echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                                    echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                                    echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                    echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
                                     ?>
                                 </div>
                                 <input type="hidden" name="settingIdentifier"
@@ -141,18 +119,19 @@ if ($employees_result) {
                                 <select name="selectedAuthorizedUser" class="w-25 text-center form-select text-truncate">
                                     <option value="" selected>---Auto---</option>
                                     <?php
-                                    if (!empty($employees)) {
-                                        foreach ($employees as $employee) {
+                                    if (!empty($employeesNameAndId)) {
+                                        foreach ($employeesNameAndId as $employee) {
                                             ?>
                                             <option value="<?php echo $employee['employee_id']; ?>">
-                                                <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 1); ?>
                                             </option>
                                             <?php
                                         }
                                     }
                                     ?>
                                 </select>
-                                <input type="submit" name="changeSetting" class="w-25 custom-regular-button text-truncate" value="Change" />
+                                <input type="submit" name="changeSetting" class="w-25 custom-regular-button text-truncate"
+                                    value="Change" />
                                 <?php
                             }
                         }

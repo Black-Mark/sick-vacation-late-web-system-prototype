@@ -7,7 +7,6 @@ include($constants_variables);
 
 $leaveAppDataList = [];
 
-
 $leavelistsql = "   SELECT leaveapp.*,
                         users.firstName AS userFirstName,
                         users.lastName AS userLastName
@@ -197,33 +196,33 @@ if ($leavelist_result->num_rows > 0) {
             },
             {
                 extend: 'excel',
-                title: 'CustomExcelFileName',
-                filename: 'custom_excel_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: 'CustomCSVFileName',
-                filename: 'custom_csv_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: 'CustomPDFFileName',
-                filename: 'custom_PDF_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: 'CustomPrintFileName',
-                filename: 'custom_print_file',
-                message: 'This print was produced by Computer',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
+                message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }

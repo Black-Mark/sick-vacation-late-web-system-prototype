@@ -14,40 +14,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
         unset($_SESSION['post_empId']);
     }
 } else {
-    $_SESSION['post_empId'] = $empId;
-
-    $sql = "SELECT
-    ua.*,
-    d.departmentName
-FROM
-    tbl_useraccounts ua
-LEFT JOIN
-    tbl_departments d ON ua.department = d.department_id
-WHERE
-    ua.employee_id = ?";
-    $stmt = $database->prepare($sql);
-
-    if ($stmt) {
-        $stmt->bind_param("s", $empId);
-        $stmt->execute();
-        $empResult = $stmt->get_result();
-
-        // if ($empResult->num_rows > 0) {
-        //     while ($employee = $empResult->fetch_assoc()) {
-        //         $employeeData[] = $employee;
-        //     }
-        //     echo $employeeData[0]['employee_id'];
-        // }
-
-        if ($empResult->num_rows > 0) {
-            $employeeData = $empResult->fetch_assoc();
-            // echo $employeeData['employee_id'];
-        }
-
-        $stmt->close();
-    } else {
-        // Something
-    }
+    $_SESSION['post_empId'] = sanitizeInput($empId);
+    $employeeData = getEmployeeData($empId);
 }
 
 ?>
@@ -104,150 +72,83 @@ WHERE
             </div>
 
             <div class="box-container">
-                <div class="p-2">
-                    <h3 class="title-text">Account Profile Information</h3>
-                </div>
+                <h3 class="title-text">Account Profile Information</h3>
 
-                <form action="" method="post" class="account-profile-container print-form-container">
-                    <div class="profile-rowing">
-                        <label for="employeeIdInput">Employee ID:</label>
-                        <span id="employeeIdInput">
+                <div class="account-profile-container print-form-container">
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Employee ID:</span>
+                        <span class="account-profile-context">
                             <?php echo $employeeData['employee_id']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="roleInput">Role:</label>
-                        <span id="roleInput">
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Account Role:</span>
+                        <span class="account-profile-context">
                             <?php echo $employeeData['role']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="emailInput">Email:</label>
-                        <span>
-                            <input type="email" id="emailInput" name="email" class="account-profile-input"
-                                value="<?php echo $employeeData['email']; ?>" readonly required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Email:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['email']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="firstNameInput">First Name:</label>
-                        <span>
-                            <input type="text" id="firstNameInput" name="firstName" class="account-profile-input"
-                                value="<?php echo $employeeData['firstName']; ?>" readonly required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">First Name:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['firstName']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="middleNameInput">Middle Name:</label>
-                        <span>
-                            <input type="text" id="middleNameInput" name="middleName" class="account-profile-input"
-                                value="<?php echo $employeeData['middleName']; ?>" readonly required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Middle Name:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['middleName']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="lastNameInput">Last Name:</label>
-                        <span>
-                            <input type="text" id="lastNameInput" name="lastName" class="account-profile-input"
-                                value="<?php echo $employeeData['lastName']; ?>" readonly required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Last Name:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['lastName']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="suffixInput">Suffix:</label>
-                        <span>
-                            <input type="text" id="suffixInput" name="suffix" class="account-profile-input"
-                                value="<?php echo $employeeData['suffix']; ?>" readonly required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Suffix:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['suffix']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="ageInput">Age:</label>
-                        <span>
-                            <input type="number" min="0" max="130" id="ageInput" name="age"
-                                class="account-profile-input" value="<?php echo $employeeData['age']; ?>" readonly
-                                required />
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Age:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['age']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="sexInput">Sex:</label>
-                        <span>
-                            <select id="sexInput" name="sex" class="account-profile-input" disabled required>
-                                <option value="" <?php
-                                if (strcasecmp($employeeData['sex'], '') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                </option>
-                                <option value="Male" <?php
-                                if (strcasecmp($employeeData['sex'], 'Male') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Male
-                                </option>
-                                <option value="Female" <?php
-                                if (strcasecmp($employeeData['sex'], 'Female') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Female
-                                </option>
-                                <option value="Prefer Not To Say" <?php
-                                if (strcasecmp($employeeData['sex'], 'Prefer Not To Say') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Prefer Not To Say
-                                </option>
-                            </select>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Sex:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['sex']; ?>
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Civil Status:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['civilStatus']; ?>
                         </span>
                     </div>
 
 
-                    <div class="profile-rowing">
-                        <label for="civilStatusInput">Civil Status:</label>
-                        <span>
-                            <select id="civilStatusInput" name="civilStatus" class="account-profile-input" disabled
-                                required>
-                                <option value="Single" <?php
-                                if (strcasecmp($employeeData['civilStatus'], 'Single') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Single
-                                </option>
-                                <option value="Married" <?php
-                                if (strcasecmp($employeeData['civilStatus'], 'Married') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Married
-                                </option>
-                                <option value="Widowed" <?php
-                                if (strcasecmp($employeeData['civilStatus'], 'Widowed') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Widowed
-                                </option>
-                                <option value="Divorced" <?php
-                                if (strcasecmp($employeeData['civilStatus'], 'Divorced') == 0) {
-                                    echo "selected";
-                                }
-                                ?>>
-                                    Divorced
-                                </option>
-                            </select>
-                        </span>
-                    </div>
-
-                    <div class="profile-rowing">
-                        <label for="departmentInput">Department:</label>
-                        <span>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Department:</span>
+                        <span class="account-profile-context">
                             <?php
                             if ($employeeData['departmentName']) {
                                 echo $employeeData['departmentName'];
@@ -260,21 +161,21 @@ WHERE
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="jobPosition">Job Position:</label>
-                        <span>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Job Position:</span>
+                        <span class="account-profile-context">
                             <?php echo $employeeData['jobPosition']; ?>
                         </span>
                     </div>
 
-                    <div class="profile-rowing">
-                        <label for="dateStarted">Date Started:</label>
-                        <span>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Date Started:</span>
+                        <span class="account-profile-context">
                             <?php echo $employeeData['dateStarted']; ?>
                         </span>
                     </div>
 
-                </form>
+                </div>
 
             </div>
 

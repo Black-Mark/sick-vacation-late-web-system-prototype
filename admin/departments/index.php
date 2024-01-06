@@ -5,20 +5,12 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
-$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
+$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
                    FROM tbl_departments d
-                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id";
+                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id ORDER BY departmentName";
 $departments = $database->query($sql_department);
 
-$sql_employee = "SELECT * FROM tbl_useraccounts";
-$employees_result = $database->query($sql_employee);
-$employees = [];
-
-if ($employees_result->num_rows > 0) {
-    while ($employee = $employees_result->fetch_assoc()) {
-        $employees[] = $employee;
-    }
-}
+$employeesNameAndId = getAllEmployeesNameAndID();
 
 ?>
 
@@ -90,22 +82,17 @@ if ($employees_result->num_rows > 0) {
                                     <label for="floatingDepartmentName">Department Name <span
                                             class="required-color">*</span></label>
                                 </div>
-                                <!-- <div class="form-floating">
-                                    <input type="text" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
 
                                 <div class="form-floating">
                                     <select name="departmentHead" class="form-select" id="floatingDepartmentHead"
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if (!empty($employees)) {
-                                            foreach ($employees as $employee) {
+                                        if (!empty($employeesNameAndId)) {
+                                            foreach ($employeesNameAndId as $employee) {
                                                 ?>
                                                 <option value="<?php echo $employee['employee_id']; ?>">
-                                                    <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                    <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 2); ?>
                                                 </option>
                                                 <?php
                                             }
@@ -114,18 +101,6 @@ if ($employees_result->num_rows > 0) {
                                     </select>
                                     <label for="floatingDepartmentHead">Department Head</label>
                                 </div>
-
-                                <!-- <div class="form-floating">
-                                    <input list="browsers" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <datalist id="browsers">
-                                        <option value="Internet Explorer">
-                                        <option value="Firefox">
-                                        <option value="Chrome">
-                                        <option value="Opera">
-                                    </datalist>
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
 
                             </div>
                             <div class="modal-footer">
@@ -158,22 +133,17 @@ if ($employees_result->num_rows > 0) {
                                     <label for="floatingEditDepartmentName">Department Name <span
                                             class="required-color">*</span></label>
                                 </div>
-                                <!-- <div class="form-floating">
-                                    <input type="text" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
 
                                 <div class="form-floating">
                                     <select name="departmentHead" class="form-select" id="floatingEditDepartmentHead"
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if (!empty($employees)) {
-                                            foreach ($employees as $employee) {
+                                        if (!empty($employeesNameAndId)) {
+                                            foreach ($employeesNameAndId as $employee) {
                                                 ?>
                                                 <option value="<?php echo $employee['employee_id']; ?>">
-                                                    <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                    <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 2); ?>
                                                 </option>
                                                 <?php
                                             }
@@ -182,18 +152,6 @@ if ($employees_result->num_rows > 0) {
                                     </select>
                                     <label for="floatingEditDepartmentHead">Department Head</label>
                                 </div>
-
-                                <!-- <div class="form-floating">
-                                    <input list="browsers" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <datalist id="browsers">
-                                        <option value="Internet Explorer">
-                                        <option value="Firefox">
-                                        <option value="Chrome">
-                                        <option value="Opera">
-                                    </datalist>
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
 
                             </div>
                             <div class="modal-footer">
@@ -235,7 +193,9 @@ if ($employees_result->num_rows > 0) {
                             </summary>
                             <div class="item-detail-content">
                                 <span class="font-weight-bold">Department Head Name: </span>
-                                <?php echo $department['headFirstName'] . ' ' . $department['headLastName']; ?>
+                                <?php
+                                    echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
+                                    ?>
                                 <div class="button-container m-2 justify-content-center">
                                     <a
                                         href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
@@ -260,16 +220,17 @@ if ($employees_result->num_rows > 0) {
                         </details>
                         <?php
                     }
-                } 
+                }
                 // else {
-                    ?>
-                    <!-- <div class="p-5 text-center">There are no existing departments</div> -->
-                    <?php
+                ?>
+                <!-- <div class="p-5 text-center">There are no existing departments</div> -->
+                <?php
                 // }
                 ?>
 
                 <div class="item-detail-container mt-2">
-                    <a href="<?php echo $location_admin_departments_office.'/pending/'; ?>" class="item-detail-container-summary">
+                    <a href="<?php echo $location_admin_departments_office . '/pending/'; ?>"
+                        class="item-detail-container-summary">
                         Others / Pending / Unassigned
                     </a>
                 </div>

@@ -6,17 +6,15 @@ include($constants_file_session_employee);
 include($constants_variables);
 
 $leaveAppDataList = [];
+$fullName = "";
 
 if (isset($_SESSION['employeeId'])) {
-    $employeeId = $database->real_escape_string($_SESSION['employeeId']);
-
-    $leavelistsql = "SELECT * FROM tbl_leaveappform WHERE employee_id = ?";
-
-    $stmt = $database->prepare($leavelistsql);
-    $stmt->bind_param("s", $employeeId);
-    $stmt->execute();
-
-    $leaveAppDataList = $stmt->get_result();
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
+    $leaveAppDataList = getLeaveAppFormRecord($employeeId);
+    if (!empty($employeeData)) {
+        $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
+    }
 }
 
 ?>
@@ -86,26 +84,26 @@ if (isset($_SESSION['employeeId'])) {
                         if (!empty($leaveAppDataList)) {
                             foreach ($leaveAppDataList as $ldata) {
                                 ?>
-                        <tr>
-                            <td>
-                                <?php echo $ldata['typeOfLeave']; ?>
-                            </td>
-                            <td>
-                                <?php echo $ldata['inclusiveDates']; ?>
-                            </td>
-                            <td>
-                                <?php echo $ldata['status']; ?>
-                            </td>
-                            <td>
-                                <a
-                                    href="<?php echo $location_employee_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                    <button type="button" class="custom-regular-button">
-                                        View
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        <?php
+                                <tr>
+                                    <td>
+                                        <?php echo $ldata['typeOfLeave']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $ldata['inclusiveDates']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $ldata['status']; ?>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="<?php echo $location_employee_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                            <button type="button" class="custom-regular-button">
+                                                View
+                                            </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
                             }
                         }
                         ?>
@@ -118,55 +116,55 @@ if (isset($_SESSION['employeeId'])) {
 
     <!-- Data Table Configuration -->
     <script>
-    let table = new DataTable('#leaveAppList', {
-        pagingType: 'full_numbers',
-        scrollCollapse: true,
-        scrollY: '100%',
-        scrollX: true,
-        // 'select': {
-        //     'style': 'multi',
-        // },
-        // ordering: false,
-        columnDefs: [
-            // {
-            //     'targets': 0,
-            //     'orderable': false,
-            //     'checkboxes': {
-            //         'selectRow': true,
-            //         // 'page': 'current',
-            //     }
+        let table = new DataTable('#leaveAppList', {
+            pagingType: 'full_numbers',
+            scrollCollapse: true,
+            scrollY: '100%',
+            scrollX: true,
+            // 'select': {
+            //     'style': 'multi',
             // },
-            {
-                'targets': -1,
-                'orderable': false,
-                // 'checkboxes': {
-                //     'selectRow': true,
-                //     // 'page': 'current',
+            // ordering: false,
+            columnDefs: [
+                // {
+                //     'targets': 0,
+                //     'orderable': false,
+                //     'checkboxes': {
+                //         'selectRow': true,
+                //         // 'page': 'current',
+                //     }
+                // },
+                {
+                    'targets': -1,
+                    'orderable': false,
+                    // 'checkboxes': {
+                    //     'selectRow': true,
+                    //     // 'page': 'current',
+                    // }
+                },
+                // {
+                //     targets: [0],
+                //     orderData: [0, 1]
+                // },
+                // {
+                //     targets: [1],
+                //     orderData: [1, 0]
+                // },
+                // {
+                //     targets: [4],
+                //     orderData: [4, 0]
                 // }
+            ],
+            search: {
+                return: true
             },
-            // {
-            //     targets: [0],
-            //     orderData: [0, 1]
-            // },
-            // {
-            //     targets: [1],
-            //     orderData: [1, 0]
-            // },
-            // {
-            //     targets: [4],
-            //     orderData: [4, 0]
-            // }
-        ],
-        search: {
-            return: true
-        },
-        "dom": 'Blfrtip',
-        lengthMenu: [
-            [10, 25, 50, 100, -1],
-            [10, 25, 50, 100, 'All']
-        ],
-        // "colReorder": true,
-        "buttons": [{
+            "dom": 'Blfrtip',
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, 'All']
+            ],
+            // "colReorder": true,
+            "buttons": [{
                 extend: 'copy',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
@@ -174,33 +172,33 @@ if (isset($_SESSION['employeeId'])) {
             },
             {
                 extend: 'excel',
-                title: 'CustomExcelFileName',
-                filename: 'custom_excel_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: 'CustomCSVFileName',
-                filename: 'custom_csv_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: 'CustomPDFFileName',
-                filename: 'custom_PDF_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: 'CustomPrintFileName',
-                filename: 'custom_print_file',
-                message: 'This print was produced by Computer',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
@@ -210,9 +208,9 @@ if (isset($_SESSION['employeeId'])) {
                 text: 'Column Visibility',
                 columns: ':first,:gt(0),:last'
             }
-        ],
-        // responsive: true,
-    });
+            ],
+            // responsive: true,
+        });
     </script>
 
     <div class="component-container">

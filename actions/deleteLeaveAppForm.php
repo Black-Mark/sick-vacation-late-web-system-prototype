@@ -7,11 +7,6 @@ include($constants_variables);
 
 if (isset($_POST['deleteLeaveAppForm'])) {
     // Function to apply strip_tags and mysqli_real_escape_string
-    function sanitizeInput($input)
-    {
-        global $database;
-        return mysqli_real_escape_string($database, strip_tags($input));
-    }
 
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
     $recordId = isset($_POST['recordId']) ? sanitizeInput($_POST['recordId']) : null;

@@ -8,43 +8,18 @@ include($constants_variables);
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 
 $leaveAppDataList = [];
+$employeeData = [];
+$fullName = "";
 
 if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     $_SESSION['post_empId'] = $empId;
 
-    $empId = $database->real_escape_string($empId);
+    $empId = sanitizeInput($empId);
 
-    $leavelistsql = "SELECT * FROM tbl_leaveappform WHERE employee_id = ?";
-
-    $stmt = $database->prepare($leavelistsql);
-    $stmt->bind_param("s", $empId);
-    $stmt->execute();
-
-    $leaveAppDataList = $stmt->get_result();
-
-    $empQuery = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
-    $empStmt = $database->prepare($empQuery);
-
-    if ($empStmt) {
-        $empStmt->bind_param("s", $empId);
-        $empStmt->execute();
-        $empResult = $empStmt->get_result();
-
-        // if ($empResult->num_rows > 0) {
-        //     while ($employee = $empResult->fetch_assoc()) {
-        //         $employeeData[] = $employee;
-        //     }
-        //     echo $employeeData[0]['employee_id'];
-        // }
-
-        if ($empResult->num_rows > 0) {
-            $employeeData = $empResult->fetch_assoc();
-            // echo $employeeData['employee_id'];
-        }
-
-        $empStmt->close();
-    } else {
-        // Something
+    $leaveAppDataList = getLeaveAppFormRecord($empId);
+    $employeeData = getEmployeeData($empId);
+    if (!empty($employeeData)) {
+        $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
     }
 } else {
     if (isset($_SESSION['post_empId'])) {
@@ -110,7 +85,7 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                 <div class="p-2">
                     <h3 class="title-text">Leave Application Record</h3>
                     <div class="title-text-caption">
-                        (<?php echo $employeeData['firstName']." ".$employeeData['lastName']; ?>)
+                        (<?php echo $fullName; ?>)
                     </div>
                 </div>
 
@@ -224,33 +199,33 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
             },
             {
                 extend: 'excel',
-                title: 'CustomExcelFileName',
-                filename: 'custom_excel_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: 'CustomCSVFileName',
-                filename: 'custom_csv_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: 'CustomPDFFileName',
-                filename: 'custom_PDF_file',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: 'CustomPrintFileName',
-                filename: 'custom_print_file',
-                message: 'This print was produced by Computer',
+                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }

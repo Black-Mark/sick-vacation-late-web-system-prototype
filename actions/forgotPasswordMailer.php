@@ -14,40 +14,37 @@ require($assets_phpmailer);
 require($assets_phpmailer_smtp);
 
 if (isset($_REQUEST['sendForgotPassword'])) {
-    $emailToBeVerify = strip_tags(mysqli_real_escape_string($database, $_POST['emailToBeVerify']));
+    $toBeVerify = strip_tags(mysqli_real_escape_string($database, $_POST['toBeVerify']));
 
-    $checkEmailExistQuery = "SELECT * FROM tbl_useraccounts WHERE email = ?";
-    $checkEmailExistStatement = mysqli_prepare($database, $checkEmailExistQuery);
+    $checkExistQuery = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $checkExistStatement = mysqli_prepare($database, $checkExistQuery);
 
-    mysqli_stmt_bind_param($checkEmailExistStatement, "s", $emailToBeVerify);
-    mysqli_stmt_execute($checkEmailExistStatement);
+    mysqli_stmt_bind_param($checkExistStatement, "s", $toBeVerify);
+    mysqli_stmt_execute($checkExistStatement);
 
-    $checkEmailExistResult = mysqli_stmt_get_result($checkEmailExistStatement);
+    $checkExistResult = mysqli_stmt_get_result($checkExistStatement);
 
-    $userData = mysqli_fetch_assoc($checkEmailExistResult);
+    $userData = mysqli_fetch_assoc($checkExistResult);
 
     if ($userData) {
-
-        // $_SESSION['alert_message'] = "Email exists. User ID: " . $userData['employee_id'] . ", Username: " . $userData['firstName'] . ", Email: " . $userData['email'];
-        // $_SESSION['alert_type'] = $success_color;
         $token = bin2hex(random_bytes(50));
-        // $_SESSION['resetToken'] = $token;
 
-        $email_message = '<b>Hello! ' . $userData['firstName'] . ' ' . substr($userData['middleName'], 0, 1) . '. ' . $userData['lastName'] . '</b>
-        <h3>We received a request to reset your password.</h3>
+        $email_message = '<b>Hello! ' . $userData['firstName'] . ' ' . ($userData['middleName'] != "" ? substr($userData['middleName'], 0, 1) . '. ' : '') . $userData['lastName'] . '</b>
+        <h3>We received a request to reset your password with the Employee ID: ' . $userData['employee_id'] . '.</h3>
         <p>Kindly click the below link to reset your password</p>'
-            .'http://localhost'. $location_resetpassword . '?resetToken=' . $token .
+            . $webResetPasswordMessageLink . '?resetToken=' . $token .
             '<br><br>
         <p>With regards,</p>
         <b>Human Resources System</b>';
-        $email_nonhtml = "Reset Your Password In This Link: " . $location_resetpassword . '?resetToken=' . $token;
+
+        $email_nonhtml = "Greetings! " . $userData['firstName'] . ' ' . ($userData['middleName'] != "" ? substr($userData['middleName'], 0, 1) . '. ' : '') . $userData['lastName'] . ". We have received your request to reset your password. Click this Link: " . $location_resetpassword . '?resetToken=' . $token;
 
         $recordResetPasswordTokenQuery = "INSERT INTO tbl_passwordreset_tokens 
         (employee_id, email, resetTokenHash, resetTokenExpiration, status) 
         VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR), 1)";
 
         $recordResetPasswordTokenStatement = $database->prepare($recordResetPasswordTokenQuery);
-        $recordResetPasswordTokenStatement->bind_param("sss", $userData['employee_id'], $emailToBeVerify, $token);
+        $recordResetPasswordTokenStatement->bind_param("sss", $toBeVerify, $userData['email'], $token);
         $recordResetPasswordTokenStatement->execute();
         $recordResetPasswordTokenStatement->close();
 
@@ -67,7 +64,7 @@ if (isset($_REQUEST['sendForgotPassword'])) {
 
             //Recipients
             $mail->setFrom('indang.mun.hr.sil@gmail.com', 'Human Resources Manager');
-            $mail->addAddress($emailToBeVerify);     //Add a recipient
+            $mail->addAddress($userData['email']);     //Add a recipient
             // $mail->addAddress('ellen@example.com');               //Name is optional
             $mail->addReplyTo('indang.mun.hr.sil@gmail.com', 'Human Resources Manager');
             // $mail->addCC('cc@example.com');
@@ -86,12 +83,14 @@ if (isset($_REQUEST['sendForgotPassword'])) {
 
             $mail->send();
 
-            $_SESSION['alert_message'] = 'Password Reset Link has been Sent';
+            $_SESSION['alert_message'] = 'Password Reset Link has been Sent on ' . $userData['email'];
             $_SESSION['alert_type'] = $success_color;
 
         } catch (Exception $e) {
             $_SESSION['alert_message'] = "Password Reset Link could not be Sent. Mailer Error: {$mail->ErrorInfo}";
             $_SESSION['alert_type'] = $error_color;
+            header("Location: " . $location_forgotpassword);
+            exit();
         }
 
     } else {
@@ -99,7 +98,7 @@ if (isset($_REQUEST['sendForgotPassword'])) {
         $_SESSION['alert_type'] = $warning_color;
     }
 
-    mysqli_stmt_close($checkEmailExistStatement);
+    mysqli_stmt_close($checkExistStatement);
 
     header("Location: " . $location_forgotpassword);
     exit();

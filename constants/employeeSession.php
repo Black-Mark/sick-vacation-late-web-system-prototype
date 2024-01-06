@@ -28,16 +28,26 @@ if (isset($_SESSION['employeeId'])) {
                 if (strcasecmp($row['role'], "Admin") == 0) {
                     header("location: " . $location_admin);
                 } else {
+                    header("Location: " . $location_login);
                     ?>
-                    <script>alert("Error: There is no such role!");</script>
+                    <script>
+                        alert("Error: There is no such role!");
+                    </script>
                     <?php
+                    session_unset();
+                    session_destroy();
                 }
             }
         }
     } else {
+        header("Location: " . $location_login);
         ?>
-        <script>alert("An error has occurred: There is no registered employee ID.");</script>
+        <script>
+            alert("An error has occurred: There is no registered employee ID found.");
+        </script>
         <?php
+        session_unset();
+        session_destroy();
     }
 } else {
     header("location: " . $location_login);

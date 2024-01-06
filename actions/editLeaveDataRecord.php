@@ -6,11 +6,6 @@ include($constants_file_session_admin);
 include($constants_variables);
 
 // Function to apply strip_tags and mysqli_real_escape_string
-function sanitizeInput($input)
-{
-    global $database;
-    return mysqli_real_escape_string($database, strip_tags($input));
-}
 
 if (isset($_POST['editLeaveDataRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;

@@ -1,17 +1,18 @@
 <?php
 include($constants_file_role_menu);
 
-$selectedMenu = []; // Initialize the selectedMenu as an empty array
+$selectedMenu = [];
 
 if (isset($_SESSION) && isset($_SESSION["role"])) {
-    if ($_SESSION["role"] == "Employee") {
+    if (strcasecmp($_SESSION['role'], "Employee") == 0) {
         $selectedMenu = $employeeMenu;
-    } else if ($_SESSION["role"] == "Admin") {
+    } else if (strcasecmp($_SESSION['role'], "Admin") == 0) {
         $selectedMenu = $adminMenu;
     }
 }
 
 $employeeUserName = [];
+$loginUserName = '';
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = $database->real_escape_string($_SESSION['employeeId']);
@@ -58,6 +59,10 @@ if (isset($_REQUEST['logout'])) {
     }
 }
 
+// if(!empty($employeeUserName)){
+//     $loginUserName = strlen($employeeUserName['firstName'] . " " . $employeeUserName['lastName']) > 15 ? substr($employeeUserName['firstName'] . " " . $employeeUserName['lastName'], 0, 15) . "..." : $employeeUserName['firstName'] . " " . $employeeUserName['lastName'];
+// }
+
 ?>
 
 <nav id="top-nav" class="top-nav-container">
@@ -95,27 +100,21 @@ if (isset($_REQUEST['logout'])) {
     </div>
     <div class="top-nav-content">
 
-        <?php
-        if ($_SESSION['role'] == 'Admin') {
-            ?>
-            <div id="notification-menu" class="position-relative clickable-element toggle-notification">
-                <i class="fa fa-bell text-white"></i>
-                <span id="notifCount"
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    0
-                    <span class="visually-hidden">unread messages</span>
-                </span>
-            </div>
+        <div id="notification-menu" class="position-relative clickable-element toggle-notification">
+            <i class="fa fa-bell text-white"></i>
+            <span id="notifCount"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                0
+                <span class="visually-hidden">unread messages</span>
+            </span>
+        </div>
 
-            <div id="notification-container"></div>
+        <div id="notification-container"></div>
 
-            <?php
-        }
-        ?>
-
-        <div class="top-nav-username">
+        <div class="top-nav-username text-truncate">
             <?php
             if (isset($_SESSION['employeeId']) && !empty($employeeUserName)) {
+                // echo $loginUserName;
                 echo htmlspecialchars($employeeUserName['firstName'] . " " . $employeeUserName['lastName'], ENT_QUOTES, 'UTF-8');
             } else {
                 echo 'Username';
@@ -153,75 +152,6 @@ if (isset($_REQUEST['logout'])) {
     </ul>
 
 </div>
-
-<?php if ($_SESSION['role'] === 'Admin') {
-    ?>
-    <script>
-        var iphost = "http://localhost/www.indang-municipal-hr.com.ph";
-        $(document).ready(function () {
-            function fetchNotifications() {
-                // Make an AJAX request to fetch new notifications
-                $.ajax({
-                    url: iphost + '/actions/fetchNotification.php', // Create this file to fetch notifications
-                    method: 'POST', // Change the method to POST
-                    success: function (data) {
-                        $('#notification-container').html(data);
-                    }
-                });
-            }
-
-            function fetchNotificationsCount() {
-                // Make an AJAX request to fetch new notifications
-                $.ajax({
-                    url: iphost + '/actions/fetchNotificationCount.php', // Create this file to fetch notifications
-                    method: 'POST', // Change the method to POST
-                    success: function (data) {
-                        $('#notifCount').html(data);
-                    }
-                });
-            }
-
-            // Function to mark notifications as seen
-            function markNotificationsAsSeen() {
-                $.ajax({
-                    url: iphost + '/actions/markNotificationsAsSeen.php',
-                    method: 'POST',
-                    success: function (data) {
-                        // You can handle the response if needed
-                    }
-                });
-            }
-
-            // Toggle the 'show' class on the notification container when clicking the bell icon
-            $('#notification-menu').click(function (event) {
-                $('#notification-container').toggleClass('show');
-
-                // Mark notifications as seen when the bell is clicked
-                $('#notifCount').html(0);
-                markNotificationsAsSeen();
-
-                event.stopPropagation(); // Prevent the click event from propagating to the document body
-            });
-
-            // Close the notification container when clicking outside of it
-            $(document).on('click', function (event) {
-                if (!$(event.target).closest('#notification-container, #notification-menu').length) {
-                    $('#notification-container').removeClass('show');
-                }
-            });
-
-            // Fetch notifications every 3 seconds (adjust the interval as needed)
-            setInterval(fetchNotifications, 3000);
-            setInterval(fetchNotificationsCount, 3000);
-
-            // Initial fetch
-            fetchNotifications();
-            fetchNotificationsCount();
-        });
-    </script>
-    <?php
-}
-?>
 
 <script src="<?php echo $assets_script_topnav; ?>"></script>
 

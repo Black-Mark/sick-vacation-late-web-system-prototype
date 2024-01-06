@@ -22,7 +22,9 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $typeOfSickLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeave']));
     $typeOfSickLeaveInHospital = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveInHospital']));
     $typeOfSickLeaveOutPatient = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveOutPatient']));
+    $typeOfSickLeaveOutPatientOne = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveOutPatientOne']));
     $typeOfSpecialLeaveForWomen = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSpecialLeaveForWomen']));
+    $typeOfSpecialLeaveForWomenOne = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSpecialLeaveForWomenOne']));
     $typeOfStudyLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfStudyLeave']));
     $typeOfOtherLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfOtherLeave']));
     $workingDays = strip_tags(mysqli_real_escape_string($database, $_POST['workingDays']));
@@ -37,12 +39,23 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $sickLeaveBalance = strip_tags(mysqli_real_escape_string($database, $_POST['sickLeaveBalance']));
     $recommendation = strip_tags(mysqli_real_escape_string($database, $_POST['recommendation']));
     $recommendMessage = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessage']));
+    $recommendMessageOne = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageOne']));
+    $recommendMessageTwo = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageTwo']));
+    $recommendMessageThree = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageThree']));
+    $recommendMessageFour = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageFour']));
     $dayWithPay = strip_tags(mysqli_real_escape_string($database, $_POST['dayWithPay']));
     $dayWithoutPay = strip_tags(mysqli_real_escape_string($database, $_POST['dayWithoutPay']));
     $otherDayPay = strip_tags(mysqli_real_escape_string($database, $_POST['otherDayPay']));
     $otherDaySpecify = strip_tags(mysqli_real_escape_string($database, $_POST['otherDaySpecify']));
     $disapprovedMessage = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessage']));
+    $disapprovedMessageOne = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageOne']));
+    $disapprovedMessageTwo = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageTwo']));
     $status = 'Submitted';
+
+    $recommendMessage = trim($recommendMessage).' '.trim($recommendMessageOne).' '.trim($recommendMessageTwo).' '.trim($recommendMessageThree).' '.trim($recommendMessageFour);
+    $typeOfSickLeaveOutPatient = trim($typeOfSickLeaveOutPatient).' '.trim($typeOfSickLeaveOutPatientOne);
+    $typeOfSpecialLeaveForWomen = trim($typeOfSpecialLeaveForWomen).' '.trim($typeOfSpecialLeaveForWomenOne);
+    $disapprovedMessage = trim($disapprovedMessage).' '.trim($disapprovedMessageOne).' '.trim($disapprovedMessageTwo);
 
     if (empty($typeOfLeave) || empty($inclusiveDates)) {
         $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";

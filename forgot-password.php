@@ -49,10 +49,10 @@ include($constants_variables);
             <form action="<?php echo $action_forgotpassword_mailer; ?>" method="POST" autoComplete="off" class="login-form">
                 <div class="input-container">
                     <div class='inputs-group'>
-                        <label for="emailToBeVerify" class="login-password-toggle mb-0">
-                            Enter Your Email Address
+                        <label for="toBeVerify" class="login-password-toggle mb-0">
+                            Enter Your Employee ID
                         </label>
-                        <input type="email" name="emailToBeVerify" autofocus placeholder="employee@gmail.com" id="emailToBeVerify"
+                        <input type="text" name="toBeVerify" autofocus placeholder="REG001" id="toBeVerify"
                             class="login-text-input" required>
                     </div>
                     <div class="d-flex flex-column gap-1 align-items-center">
