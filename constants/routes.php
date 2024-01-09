@@ -4,6 +4,8 @@ $webhostpage = '/www.indang-municipal-hr.com.ph'; // Location based of the Pages
 // $webIphost = 'http://localhost/indang-sil-system'; //Complete Address and will be used for Notification and Other Fetches
 $webResetPasswordMessageLink = 'http://localhost/www.indang-municipal-hr.com.ph/reset-password.php'; // Message Base Link For Password Reset
 
+$action_user_login = $webhostpage.'/actions/userLogin.php';
+
 $action_add_employee = $webhostpage . '/actions/addEmployee.php';
 $action_edit_employee = $webhostpage . '/actions/editEmployee.php';
 $action_delete_employee = $webhostpage . '/actions/deleteEmployee.php';
