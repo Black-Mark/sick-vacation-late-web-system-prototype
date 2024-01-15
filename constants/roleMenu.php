@@ -11,8 +11,8 @@ $adminMenu = array(
 $employeeMenu = array(
     "Home" => array("icon" => "fa fa-home", "link" => $location_employee),
     "Profile" => array("icon" => "fa fa-user", "link" => $location_employee_profile),
-    "Leave Form" => array("icon" => "fa fa-file-text", "link" => $location_employee_leave_form),
-    "Leave Form Record" => array("icon" => "fa fa-history", "link" => $location_employee_leave_form_record),
+    "Leave App Form" => array("icon" => "fa fa-file-text", "link" => $location_employee_leave_form),
+    "Leave App Record" => array("icon" => "fa fa-history", "link" => $location_employee_leave_form_record),
     "Leave Data Form" => array("icon" => "fa fa-list-ul", "link" => $location_employee_leave_data_form),
 );
 

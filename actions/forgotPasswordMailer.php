@@ -83,8 +83,9 @@ if (isset($_REQUEST['sendForgotPassword'])) {
 
             $mail->send();
 
-            $_SESSION['alert_message'] = 'Password Reset Link has been Sent on ' . $userData['email'];
+            $_SESSION['alert_message'] = 'Password Reset Link has been Sent to ' . $userData['email'];
             $_SESSION['alert_type'] = $success_color;
+            $_SESSION['temp_message'] = 'Password Reset Link has been Sent to ' . $userData['email'];
 
         } catch (Exception $e) {
             $_SESSION['alert_message'] = "Password Reset Link could not be Sent. Mailer Error: {$mail->ErrorInfo}";

@@ -76,12 +76,12 @@ if ($employeeCountResult) {
             <div class="card-container">
 
                 <div class="card">
-                    <h1>Total No. of Beneficiary</h1>
+                    <h1>Total No. of Employees</h1>
                     <h2><?php echo $employeeCount; ?></h2>
                 </div>
 
                 <div class="card">
-                    <h1>Total No. of Department</h1>
+                    <h1>Total No. of Departments</h1>
                     <h2><?php echo $departmentCount; ?></h2>
                 </div>
 

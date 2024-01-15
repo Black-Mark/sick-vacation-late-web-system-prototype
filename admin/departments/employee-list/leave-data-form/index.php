@@ -391,8 +391,8 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="number" min="0" max="3652" name="dayInput" class="form-control"
-                                    id="floatingDayInput" placeholder="3" required>
-                                <label for="floatingDayInput">Work Day(s) <span class="required-color">*</span></label>
+                                    id="floatingNewDayInput" placeholder="3" required>
+                                <label for="floatingNewDayInput">Work Day(s) <span class="required-color">*</span></label>
                             </div>
                         </div>
 

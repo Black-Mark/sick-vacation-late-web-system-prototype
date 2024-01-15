@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // If the count of unread notifications is less than 5, fetch additional seen notifications
                 $remainingLimit = 5 - count($unreadNotifications);
                 if ($remainingLimit > 0) {
-                    $querySeenNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '@Admin' ORDER BY dateCreated DESC LIMIT $remainingLimit";
+                    $querySeenNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '@Admin' AND status != 'unseen' ORDER BY dateCreated DESC LIMIT $remainingLimit";
                     $resultSeenNotifications = mysqli_query($database, $querySeenNotifications);
 
                     // Fetch remaining seen notifications
@@ -44,12 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Check if any notifications were fetched
                 if (!empty($unreadNotifications)) {
                     // Display notifications
-                    $classStatusType = "";
                     foreach ($unreadNotifications as $notification) {
-                        if ($notification['status'] == 'unseen') {
-                            $classStatusType = "notif-unseen";
-                        } else if ($notification['status'] == 'unread') {
+                        $classStatusType = "";
+                        if ($notification['status'] == 'unread') {
                             $classStatusType = "notif-unread";
+                        } else if ($notification['status'] == 'unseen') {
+                            $classStatusType = "notif-unseen";
+                        } else {
+                            $classStatusType = "";
                         }
 
                         echo '<a href="' . $location_admin_leaveapplist_view . '/' . $notification['subjectKey'] . '/' . '"><div class="notification text-center ' . $classStatusType . '">
@@ -57,12 +59,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             . $notification['subject'] . '</div><div class="notification-message-text">' . $notification['message'] .
                             '</div>
                             </div></a>';
+                        $classStatusType = "";
                     }
                 } else {
                     // Display a message when no notifications are found
                     echo '<div class="notification text-center font-italic">There are no recent notification.</div>';
                 }
-                echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_admin_leaveapplist . '">See all Leave Application Form</a></div>';
+                echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_admin_leaveapplist . '">See all Leave Application Transaction</a></div>';
 
                 mysqli_close($database);
             } else if (strcasecmp($userData['role'], "Employee") == 0) {
@@ -79,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // If the count of unread notifications is less than 5, fetch additional seen notifications
                 $remainingLimit = 5 - count($unreadNotifications);
                 if ($remainingLimit > 0) {
-                    $querySeenNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '$empId' ORDER BY dateCreated DESC LIMIT $remainingLimit";
+                    $querySeenNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '$empId' AND status != 'unseen' ORDER BY dateCreated DESC LIMIT $remainingLimit";
                     $resultSeenNotifications = mysqli_query($database, $querySeenNotifications);
 
                     // Fetch remaining seen notifications
@@ -95,10 +98,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Display notifications
                     $classStatusType = "";
                     foreach ($unreadNotifications as $notification) {
+                        $classStatusType = "";
                         if ($notification['status'] == 'unseen') {
                             $classStatusType = "notif-unseen";
                         } else if ($notification['status'] == 'unread') {
                             $classStatusType = "notif-unread";
+                        } else {
+                            $classStatusType = "";
                         }
 
                         echo '<a href="' . $location_employee_leave_form_record_view . '/' . $notification['subjectKey'] . '/' . '"><div class="notification text-center ' . $classStatusType . '">
@@ -106,12 +112,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             . $notification['subject'] . '</div><div class="notification-message-text">' . $notification['message'] .
                             '</div>
                             </div></a>';
+                        $classStatusType = "";
                     }
                 } else {
                     // Display a message when no notifications are found
                     echo '<div class="notification text-center font-italic">There are no recent notification.</div>';
                 }
-                echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_employee_leave_form_record . '">See all Leave Application Form</a></div>';
+                echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_employee_leave_form_record . '">See all Leave Application Record</a></div>';
 
                 mysqli_close($database);
             }

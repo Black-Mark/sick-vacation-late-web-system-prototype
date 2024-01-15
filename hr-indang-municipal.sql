@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2024 at 05:41 AM
+-- Generation Time: Jan 15, 2024 at 08:06 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -151,7 +151,7 @@ INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `dateCreated
 
 CREATE TABLE `tbl_notifications` (
   `notification_id` int(255) NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `empIdFrom` varchar(255) NOT NULL,
   `empIdTo` varchar(255) NOT NULL,
   `subject` varchar(255) NOT NULL,

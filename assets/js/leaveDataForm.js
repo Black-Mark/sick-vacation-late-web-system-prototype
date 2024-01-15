@@ -19,35 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return `${year}-${month}-${day}`;
         }
 
-        // function validateDateInput(inputField) {
-        //     var selectedDate = new Date($(inputField).val());
 
-        //     // Format the selected date for comparison
-        //     var formattedSelectedDate = formatDate(selectedDate);
 
-        //     // Format January 1st of the selected year for comparison
-        //     var formattedJanuary1 = formatDate(new Date(selectedYear, 0, 1));
-
-        //     // Format December 31st of the selected year for comparison
-        //     var formattedDecember31 = formatDate(new Date(selectedYear, 12, 31));
-
-        //     // Check if selectedDate is within the range January 1st to December 31st of the selected year
-        //     if (!(formattedJanuary1 <= formattedSelectedDate && formattedSelectedDate <= formattedDecember31)) {
-        //         $(inputField).val(formattedJanuary1);
-        //         Toastify({
-        //             text: 'Enter Date Based on the Selected Year!',
-        //             duration: 3000,
-        //             newWindow: true,
-        //             close: true,
-        //             gravity: 'top',
-        //             position: 'center',
-        //             style: {
-        //                 background: '#fca100',
-        //             },
-        //             stopOnFocus: true,
-        //         }).showToast();
-        //     }
-        // }
+        // Computation of Days
 
         function computeDays(startDate, endDate) {
             const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
@@ -57,6 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const diffDays = Math.round(Math.abs((start - end) / oneDay)) + 1;
             return diffDays;
         }
+
+        // Adding Modal Days
 
         function updateDays() {
             const period = $('#floatingPeriod').val();
@@ -69,22 +45,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // $('#floatingDateOfAction').on('change', function () {
-        //     validateDateInput(this);
-        // });
-
-        var containerPeriod = null;
-        var containerPeriodEnd = null;
-
         $('#floatingPeriod').on('change', function () {
-            // validateDateInput(this);
-
             // Get the values of the two input fields
             var floatingPeriodValue = $('#floatingPeriod').val();
             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
             // Compare the values
-            if (floatingPeriodValue >= floatingPeriodEndValue) {
+            if (floatingPeriodValue > floatingPeriodEndValue) {
                 $('#floatingPeriodEnd').val(floatingPeriodValue);
                 Toastify({
                     text: 'Period should not be Greater Than the Period End!',
@@ -99,10 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     stopOnFocus: true,
                 }).showToast();
             } else {
-                updateDays();
                 containerPeriod = $('#floatingPeriod').val();
-                containerPeriodEnd = $('#floatingPeriodEnd').val();
             }
+            updateDays();
         });
 
         $('#floatingPeriodEnd').on('change', function () {
@@ -113,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
             // Compare the values
-            if (floatingPeriodValue >= floatingPeriodEndValue) {
+            if (floatingPeriodValue > floatingPeriodEndValue) {
                 $('#floatingPeriodEnd').val(floatingPeriodValue);
                 Toastify({
                     text: 'Period should not be Greater Than the Period End!',
@@ -128,11 +94,198 @@ document.addEventListener("DOMContentLoaded", function () {
                     stopOnFocus: true,
                 }).showToast();
             } else {
-                updateDays();
                 containerPeriod = $('#floatingPeriod').val();
-                containerPeriodEnd = $('#floatingPeriodEnd').val();
+            }
+            updateDays();
+        });
+
+        // Adding New Modal Days
+
+        function updateNewDays() {
+            const period = $('#floatingNewPeriod').val();
+            const periodEnd = $('#floatingNewPeriodEnd').val();
+
+            // Check if both period and periodEnd have valid values
+            if (period && periodEnd) {
+                const days = computeDays(period, periodEnd);
+                $('#floatingNewDayInput').val(days);
+            }
+        }
+
+        $('#floatingNewPeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingNewPeriod').val();
+            var floatingPeriodEndValue = $('#floatingNewPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingNewPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingNewPeriod').val();
+            }
+            updateNewDays();
+        });
+
+        $('#floatingNewPeriodEnd').on('change', function () {
+            // validateDateInput(this);
+
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingNewPeriod').val();
+            var floatingPeriodEndValue = $('#floatingNewPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingNewPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingNewPeriod').val();
+            }
+            updateNewDays();
+        });
+
+        // Adding New Modal Days
+
+        function updateEditDays() {
+            const period = $('#floatingEditPeriod').val();
+            const periodEnd = $('#floatingEditPeriodEnd').val();
+
+            // Check if both period and periodEnd have valid values
+            if (period && periodEnd) {
+                const days = computeDays(period, periodEnd);
+                $('#floatingEditDayInput').val(days);
+            }
+        }
+
+        $('#floatingEditPeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingEditPeriod').val();
+            var floatingPeriodEndValue = $('#floatingEditPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingEditPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingEditPeriod').val();
+            }
+            updateEditDays();
+        });
+
+        $('#floatingEditPeriodEnd').on('change', function () {
+            // validateDateInput(this);
+
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingEditPeriod').val();
+            var floatingPeriodEndValue = $('#floatingEditPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingEditPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingEditPeriod').val();
+            }
+            updateEditDays();
+        });
+
+        // Creating Initial Record
+
+        $('#floatingInitializePeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingInitializePeriod').val();
+            var floatingPeriodEndValue = $('#floatingInitializePeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingInitializePeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingInitializePeriod').val();
             }
         });
+
+        $('#floatingInitializePeriodEnd').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingInitializePeriod').val();
+            var floatingPeriodEndValue = $('#floatingInitializePeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingInitializePeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingInitializePeriod').val();
+            }
+        });
+
+        // Modals Function
 
         $('#createInitialRecordButton').click(function () {
             addPeriod = $(this).data('period-start');
