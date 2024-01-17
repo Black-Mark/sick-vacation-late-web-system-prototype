@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2024 at 08:06 AM
+-- Generation Time: Jan 17, 2024 at 10:14 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -72,7 +72,8 @@ CREATE TABLE `tbl_leaveappform` (
   `typeOfStudyLeave` varchar(100) NOT NULL,
   `typeOfOtherLeave` varchar(100) NOT NULL,
   `workingDays` int(50) NOT NULL,
-  `inclusiveDates` varchar(255) NOT NULL,
+  `inclusiveDateStart` date NOT NULL,
+  `inclusiveDateEnd` date NOT NULL,
   `commutation` varchar(100) NOT NULL,
   `asOfDate` date NOT NULL,
   `vacationLeaveTotalEarned` decimal(10,4) NOT NULL,
@@ -98,13 +99,6 @@ CREATE TABLE `tbl_leaveappform` (
   `mayor_id` varchar(100) NOT NULL,
   `status` varchar(80) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tbl_leaveappform`
---
-
-INSERT INTO `tbl_leaveappform` (`leaveappform_id`, `dateLastModified`, `dateCreated`, `employee_id`, `departmentName`, `lastName`, `firstName`, `middleName`, `dateFiling`, `position`, `salary`, `typeOfLeave`, `typeOfSpecifiedOtherLeave`, `typeOfVacationLeave`, `typeOfVacationLeaveWithin`, `typeOfVacationLeaveAbroad`, `typeOfSickLeave`, `typeOfSickLeaveInHospital`, `typeOfSickLeaveOutPatient`, `typeOfSpecialLeaveForWomen`, `typeOfStudyLeave`, `typeOfOtherLeave`, `workingDays`, `inclusiveDates`, `commutation`, `asOfDate`, `vacationLeaveTotalEarned`, `sickLeaveTotalEarned`, `vacationLeaveLess`, `sickLeaveLess`, `vacationLeaveBalance`, `sickLeaveBalance`, `recommendation`, `recommendMessage`, `dayWithPay`, `dayWithoutPay`, `otherDayPay`, `otherDaySpecify`, `disapprovedMessage`, `hrName`, `hrPosition`, `deptHeadName`, `mayorName`, `mayorPosition`, `hrmanager_id`, `depthead_id`, `mayor_id`, `status`) VALUES
-('572e226e3583655bbb4d0cd9915e2b17221767148b6de88b98', '2024-01-06 04:32:34', '2024-01-06 04:31:17', 'SHADOW', 'Department of Agriculture', 'Account', 'Shadow', '', '2024-01-06', 'Eminence in Shadow', '', 'Vacation Leave', '', 'Within the Philippines', 'Palengke', '', '', '', '', '', '', '', 2, 'January 18, 2024', 'Not Requested', '2020-04-08', 1.2500, 1.2500, 2.0000, 0.0000, -0.7500, 1.2500, 'For Approval', '', 0, 0, 0, '', '', 'Nina Mae L. Payad', 'Content Creator ', 'Shadow Account', 'Rene Antonio C. Dimabogte Jr.', 'Grim Reaper', '201910776', 'SHADOW', '201915197', 'Validated');
 
 -- --------------------------------------------------------
 
@@ -136,13 +130,6 @@ CREATE TABLE `tbl_leavedataform` (
   `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `tbl_leavedataform`
---
-
-INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `dateCreated`, `recordType`, `period`, `periodEnd`, `particular`, `particularLabel`, `days`, `hours`, `minutes`, `vacationLeaveEarned`, `vacationLeaveAbsUndWP`, `vacationLeaveBalance`, `vacationLeaveAbsUndWOP`, `sickLeaveEarned`, `sickLeaveAbsUndWP`, `sickLeaveBalance`, `sickLeaveAbsUndWOP`, `dateOfAction`, `dateLastModified`) VALUES
-(254, 'SHADOW', '2024-01-03 04:14:37', 'Initial Record', '2020-04-08', '2024-01-03', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-01-03', '2024-01-03 04:14:37');
-
 -- --------------------------------------------------------
 
 --
@@ -160,14 +147,6 @@ CREATE TABLE `tbl_notifications` (
   `link` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tbl_notifications`
---
-
-INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, `empIdTo`, `subject`, `message`, `subjectKey`, `link`, `status`) VALUES
-(40, '2024-01-06 04:40:37', 'SHADOW', '@Admin', 'Employee Submission of Leave Form', 'Account Shadow is Applying For Vacation Leave', '572e226e3583655bbb4d0cd9915e2b17221767148b6de88b98', '', 'read'),
-(41, '2024-01-06 04:39:40', '@Admin', 'SHADOW', 'Validation of Leave Form', 'Your Leave Application Form has been Validated', '572e226e3583655bbb4d0cd9915e2b17221767148b6de88b98', '', 'read');
 
 -- --------------------------------------------------------
 
@@ -308,13 +287,13 @@ ALTER TABLE `tbl_departments`
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=255;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=257;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`

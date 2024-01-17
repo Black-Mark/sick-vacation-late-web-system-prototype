@@ -86,8 +86,8 @@ if ($empId && $leaveAppFormId) {
 
                 <div>
                     <div class="button-container component-container mb-2">
-                        <a href="<?php echo $location_employee_leave_form_record; ?>"><button
-                                type="button" class="custom-regular-button">Back</button></a>
+                        <a href="<?php echo $location_employee_leave_form_record; ?>"><button type="button"
+                                class="custom-regular-button">Back</button></a>
                         <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                     </div>
 
@@ -446,26 +446,19 @@ if ($empId && $leaveAppFormId) {
                                             value="<?php echo $leaveAppFormData['workingDays']; ?>" />
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
-                                        <label for="inclusiveDates" class='leave-app-form-label'>
+
+                                        <label for="inclusiveDateStart" class='leave-app-form-label'>
                                             Inclusive Dates
                                         </label>
-                                        <div>
-                                            <input disabled type="text" id="inclusiveDates" name="inclusiveDates"
-                                                class='leave-app-form-input'
-                                                value="<?php echo $leaveAppFormData['inclusiveDates']; ?>" />
+                                        <div class="leave-app-form-inclusivedate-input-container">
+                                            <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
+                                            <span class="inclusive-date-text">to</span>
+                                            <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
                                         </div>
-
-                                        <!-- <div class="leave-app-form-inclusivedate-detail-container">
-                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
-                                                Inclusive Dates
-                                            </label>
-                                            <div class="leave-app-form-inclusivedate-input-container">
-                                                <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart"
-                                                    class='leave-app-form-input' value="<?php // echo date('Y-m-d'); ?>" />
-                                                <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
-                                                    class='leave-app-form-input' value="<?php // echo date('Y-m-d'); ?>" />
-                                            </div>
-                                        </div> -->
 
                                     </div>
                                 </div>

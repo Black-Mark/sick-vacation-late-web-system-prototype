@@ -31,6 +31,89 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initial state
     handleLeaveTypeChange();
+
+    $(document).ready(function () {
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Computation of Days
+
+        function computeDays(startDate, endDate) {
+            const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            const diffDays = Math.round(Math.abs((start - end) / oneDay)) + 1;
+            return diffDays;
+        }
+
+        function updateWorkDays() {
+            const inclusiveDateStart = $('#inclusiveDateStart').val();
+            const inclusiveDateEnd = $('#inclusiveDateEnd').val();
+
+            if (inclusiveDateStart && inclusiveDateEnd) {
+                const days = computeDays(inclusiveDateStart, inclusiveDateEnd);
+                $('#workingDays').val(days);
+            }
+        }
+
+        $('#inclusiveDateStart').on('change', function () {
+            // Get the values of the two input fields
+            var inclusiveDateStart = $('#inclusiveDateStart').val();
+            var inclusiveDateEnd = $('#inclusiveDateEnd').val();
+
+            // Compare the values
+            if (inclusiveDateStart > inclusiveDateEnd) {
+                $('#inclusiveDateEnd').val(inclusiveDateStart);
+                Toastify({
+                    text: 'Inclusive Start Date should not be Greater Than the Inclusive End Date!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#inclusiveDateStart').val();
+            }
+            updateWorkDays();
+        });
+
+        $('#inclusiveDateEnd').on('change', function () {
+            // Get the values of the two input fields
+            var inclusiveDateStart = $('#inclusiveDateStart').val();
+            var inclusiveDateEnd = $('#inclusiveDateEnd').val();
+
+            // Compare the values
+            if (inclusiveDateStart > inclusiveDateEnd) {
+                $('#inclusiveDateEnd').val(inclusiveDateStart);
+                Toastify({
+                    text: 'Inclusive Start Date should not be Greater Than the Inclusive End Date!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#inclusiveDateStart').val();
+            }
+            updateWorkDays();
+        });
+        
+    });
 });
 
 // function handleOtherLeaveTypeChange() {

@@ -160,7 +160,8 @@ if ($empId && $leaveAppFormId) {
                                 </div>
                                 <div class="leave-app-form-salary-container">
                                     <label for="salaryInput" class="leave-app-form-label">5. Salary</label>
-                                    <input disabled type="text" id="salaryInput" name="salary" class="leave-app-form-input-grow"
+                                    <input disabled type="text" id="salaryInput" name="salary"
+                                        class="leave-app-form-input-grow"
                                         value="<?php echo $leaveAppFormData['salary']; ?>" />
                                 </div>
                             </div>
@@ -172,20 +173,18 @@ if ($empId && $leaveAppFormId) {
                                 <div class="leave-app-form-leavetype-container">
                                     <div class='leave-app-form-third-row-head'>6.A Type of Leave to be Availed Of</div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="vacationLeave" name="typeOfLeave" value="Vacation Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Vacation Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="vacationLeave" name="typeOfLeave"
+                                            value="Vacation Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Vacation Leave' ? 'checked' : ''; ?> />
                                         <label for="vacationLeave" class='leave-app-form-detail-subject'>Vacation
                                             Leave</label>
                                         <span class="leave-app-form-leavetype-detail-context">(Sec. 51, Rule XVI,
                                             Omnibus Rules Implementing E.O. No. 292)</span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Forced Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="forcedLeave" name="typeOfLeave"
+                                            value="Forced Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Forced Leave' ? 'checked' : ''; ?> />
                                         <label for="forcedLeave" class='leave-app-form-detail-subject'>
                                             Mandatory / Forced
                                             Leave
@@ -195,10 +194,9 @@ if ($empId && $leaveAppFormId) {
                                         </span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Sick Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="sickLeave" name="typeOfLeave"
+                                            value="Sick Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Sick Leave' ? 'checked' : ''; ?> />
                                         <label for="sickLeave" class='leave-app-form-detail-subject'> Sick
                                             Leave </label>
                                         <span class="leave-app-form-leavetype-detail-context">
@@ -208,8 +206,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="maternityLeave" name="typeOfLeave"
                                             value="Maternity Leave" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Maternity Leave' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Maternity Leave' ? 'checked' : ''; ?> />
                                         <label for="maternityLeave" class='leave-app-form-detail-subject'>
                                             Maternity Leave
                                         </label>
@@ -220,8 +217,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="paternityLeave" name="typeOfLeave"
                                             value="Paternity Leave" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Paternity Leave' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Paternity Leave' ? 'checked' : ''; ?> />
                                         <label for="paternityLeave" class='leave-app-form-detail-subject'>
                                             Paternity Leave
                                         </label>
@@ -232,8 +228,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="special" name="typeOfLeave"
                                             value="Special Privilege Leave" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Privilege Leave' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Privilege Leave' ? 'checked' : ''; ?> />
                                         <label for="special" class='leave-app-form-detail-subject'>
                                             Special Privilege Leave
                                         </label>
@@ -242,10 +237,9 @@ if ($empId && $leaveAppFormId) {
                                         </span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="soloParent" name="typeOfLeave" value="Solo Parent Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Solo Parent Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="soloParent" name="typeOfLeave"
+                                            value="Solo Parent Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Solo Parent Leave' ? 'checked' : ''; ?> />
                                         <label for="soloParent" class='leave-app-form-detail-subject'>
                                             Solo Parent Leave
                                         </label>
@@ -254,10 +248,9 @@ if ($empId && $leaveAppFormId) {
                                         </span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Study Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="studyLeave" name="typeOfLeave"
+                                            value="Study Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Study Leave' ? 'checked' : ''; ?> />
                                         <label for="studyLeave" class='leave-app-form-detail-subject-small'>
                                             Doctorate Degree / Study Leave
                                         </label>
@@ -266,10 +259,9 @@ if ($empId && $leaveAppFormId) {
                                         </span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="vawcLeave" name="typeOfLeave" value="10-Day VAWC Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === '10-Day VAWC Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="vawcLeave" name="typeOfLeave"
+                                            value="10-Day VAWC Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === '10-Day VAWC Leave' ? 'checked' : ''; ?> />
                                         <label for="vawcLeave" class='leave-app-form-detail-subject'>
                                             10-Day VAWC Leave
                                         </label>
@@ -280,8 +272,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="rehabilitation" name="typeOfLeave"
                                             value="Rehabilitation Privilege" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Rehabilitation Privilege' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Rehabilitation Privilege' ? 'checked' : ''; ?> />
                                         <label for="rehabilitation" class='leave-app-form-detail-subject'>
                                             Rehabilitation Privilege
                                         </label>
@@ -292,8 +283,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="specialLeave" name="typeOfLeave"
                                             value="Special Leave Benefits for Women" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Leave Benefits for Women' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Leave Benefits for Women' ? 'checked' : ''; ?> />
                                         <label for="specialLeave" class='leave-app-form-detail-subject'>
                                             Special Leave Benefits for Women
                                         </label>
@@ -304,8 +294,7 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input disabled type='radio' id="emergencyLeave" name="typeOfLeave"
                                             value="Special Emergency (Calamity) Leave" class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Emergency (Calamity) Leave' ? 'checked' : ''; ?>
-                                            />
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Emergency (Calamity) Leave' ? 'checked' : ''; ?> />
                                         <label for="emergencyLeave" class='leave-app-form-detail-subject'>
                                             Special Emergency (Calamity) Leave
                                         </label>
@@ -314,10 +303,9 @@ if ($empId && $leaveAppFormId) {
                                         </span>
                                     </div>
                                     <div class="leave-app-form-leavetype-detail-container">
-                                        <input disabled type='radio' id="adoptionLeave" name="typeOfLeave" value="Adoption Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Adoption Leave' ? 'checked' : ''; ?>
-                                            />
+                                        <input disabled type='radio' id="adoptionLeave" name="typeOfLeave"
+                                            value="Adoption Leave" class="custom-checkbox-input"
+                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Adoption Leave' ? 'checked' : ''; ?> />
                                         <label for="adoptionLeave" class='leave-app-form-detail-subject'>
                                             Adoption Leave
                                         </label>
@@ -331,8 +319,7 @@ if ($empId && $leaveAppFormId) {
                                             class="leave-app-form-detail-subject font-italic">Others:</label>
                                         <input disabled type="text" id="otherTypeOfLeave" name="otherTypeOfLeave"
                                             class="leave-app-form-input-custom-width"
-                                            value="<?php echo $leaveAppFormData['typeOfSpecifiedOtherLeave']; ?>"
-                                            />
+                                            value="<?php echo $leaveAppFormData['typeOfSpecifiedOtherLeave']; ?>" />
                                     </div>
                                 </div>
                                 <div class="leave-app-form-leaveclass-container">
@@ -353,8 +340,8 @@ if ($empId && $leaveAppFormId) {
                                             value="<?php echo $leaveAppFormData['typeOfVacationLeaveWithin']; ?>" />
                                     </div>
                                     <div class="leave-app-form-leaveclass-detail-container">
-                                        <input disabled type='radio' id="abroad" name="typeOfVacationLeave" value="Abroad"
-                                            class="custom-checkbox-input"
+                                        <input disabled type='radio' id="abroad" name="typeOfVacationLeave"
+                                            value="Abroad" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfVacationLeave'] === 'Abroad' ? 'checked' : ''; ?> />
                                         <label for="abroad" class='leave-app-form-detail-subject'>
                                             Abroad (Specify)
@@ -368,8 +355,8 @@ if ($empId && $leaveAppFormId) {
                                         In case of Sick Leave:
                                     </div>
                                     <div class="leave-app-form-leaveclass-detail-container">
-                                        <input disabled type='radio' id="inHospital" name="typeOfSickLeave" value="In Hospital"
-                                            class="custom-checkbox-input"
+                                        <input disabled type='radio' id="inHospital" name="typeOfSickLeave"
+                                            value="In Hospital" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfSickLeave'] === 'In Hospital' ? 'checked' : ''; ?> />
                                         <label for="inHospital" class='leave-app-form-detail-subject'>
                                             In Hospital (Specify Illness)
@@ -379,8 +366,8 @@ if ($empId && $leaveAppFormId) {
                                             value="<?php echo $leaveAppFormData['typeOfSickLeaveInHospital']; ?>" />
                                     </div>
                                     <div class="leave-app-form-leaveclass-detail-container">
-                                        <input disabled type='radio' id="outPatient" name="typeOfSickLeave" value="Out Patient"
-                                            class="custom-checkbox-input"
+                                        <input disabled type='radio' id="outPatient" name="typeOfSickLeave"
+                                            value="Out Patient" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfSickLeave'] === 'Out Patient' ? 'checked' : ''; ?> />
                                         <label for="outPatient" class='leave-app-form-detail-subject'>
                                             Out Patient (Specify Illness)
@@ -460,31 +447,24 @@ if ($empId && $leaveAppFormId) {
                                             6.C Number of Working Days Applied For</label>
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
-                                        <input disabled type="number" min="0" max="3652" id="workingDays" name="workingDays"
-                                            class='leave-app-form-input'
+                                        <input disabled type="number" min="0" max="3652" id="workingDays"
+                                            name="workingDays" class='leave-app-form-input'
                                             value="<?php echo $leaveAppFormData['workingDays']; ?>" />
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
-                                        <label for="inclusiveDates" class='leave-app-form-label'>
+
+                                        <label for="inclusiveDateStart" class='leave-app-form-label'>
                                             Inclusive Dates
                                         </label>
-                                        <div>
-                                            <input disabled type="text" id="inclusiveDates" name="inclusiveDates"
-                                                class='leave-app-form-input'
-                                                value="<?php echo $leaveAppFormData['inclusiveDates']; ?>" />
+                                        <div class="leave-app-form-inclusivedate-input-container">
+                                            <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
+                                            <span class="inclusive-date-text">to</span>
+                                            <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
                                         </div>
-
-                                        <!-- <div class="leave-app-form-inclusivedate-detail-container">
-                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
-                                                Inclusive Dates
-                                            </label>
-                                            <div class="leave-app-form-inclusivedate-input-container">
-                                                <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart"
-                                                    class='leave-app-form-input' value="<?php // echo date('Y-m-d'); ?>" />
-                                                <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
-                                                    class='leave-app-form-input' value="<?php // echo date('Y-m-d'); ?>" />
-                                            </div>
-                                        </div> -->
 
                                     </div>
                                 </div>
@@ -493,8 +473,8 @@ if ($empId && $leaveAppFormId) {
                                         6.D Commutation
                                     </div>
                                     <div class="leave-app-form-commutation-detail-container">
-                                        <input disabled type='radio' id="notRequested" name="commutation" value="Not Requested"
-                                            class="custom-checkbox-input"
+                                        <input disabled type='radio' id="notRequested" name="commutation"
+                                            value="Not Requested" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['commutation'] === 'Not Requested' ? 'checked' : ''; ?> />
                                         <label for="notRequested" class='leave-app-form-detail-subject'>
                                             Not Requested
@@ -593,8 +573,8 @@ if ($empId && $leaveAppFormId) {
                                         7.B Recommendation
                                     </div>
                                     <div class="leave-app-form-departmenthead-detail-container">
-                                        <input disabled type='radio' id="forApproval" name="recommendation" value="For Approval"
-                                            class="custom-checkbox-input"
+                                        <input disabled type='radio' id="forApproval" name="recommendation"
+                                            value="For Approval" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['recommendation'] === 'For Approval' ? 'checked' : ''; ?> />
                                         <label for="forApproval" class='leave-app-form-detail-subject'>
                                             For Approval
@@ -602,24 +582,30 @@ if ($empId && $leaveAppFormId) {
                                     </div>
 
                                     <div class="leave-app-form-departmenthead-detail-container">
-                                        <input disabled type='radio' id="forDisapprovedDueToApproval" name="recommendation"
-                                            value="For Disapproved Due to" class="custom-checkbox-input"
+                                        <input disabled type='radio' id="forDisapprovedDueToApproval"
+                                            name="recommendation" value="For Disapproved Due to"
+                                            class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['recommendation'] === 'For Disapproved Due to' ? 'checked' : ''; ?> />
                                         <label for="forDisapprovedDueToApproval" class='leave-app-form-detail-subject'>
                                             For Disapproved Due to
                                         </label>
-                                        <input disabled type="text" name="recommendMessage" class='leave-app-form-input-grow'
+                                        <input disabled type="text" name="recommendMessage"
+                                            class='leave-app-form-input-grow'
                                             value="<?php echo substr($leaveAppFormData['recommendMessage'], 0, 40); ?>" />
                                     </div>
 
                                     <div class="leave-app-form-departmenthead-detail-container-column">
-                                        <input disabled type="text" name="recommendMessageOne" class='leave-app-form-input'
+                                        <input disabled type="text" name="recommendMessageOne"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['recommendMessage'], 41, 90); ?>" />
-                                        <input disabled type="text" name="recommendMessageTwo" class='leave-app-form-input'
+                                        <input disabled type="text" name="recommendMessageTwo"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['recommendMessage'], 91, 140); ?>" />
-                                        <input disabled type="text" name="recommendMessageThree" class='leave-app-form-input'
+                                        <input disabled type="text" name="recommendMessageThree"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['recommendMessage'], 141, 190); ?>" />
-                                        <input disabled type="text" name="recommendMessageFour" class='leave-app-form-input'
+                                        <input disabled type="text" name="recommendMessageFour"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['recommendMessage'], 191, 240); ?>" />
                                     </div>
 
@@ -678,11 +664,14 @@ if ($empId && $leaveAppFormId) {
                                         7.D Disapproved Due To:
                                     </div>
                                     <div class="leave-app-form-disapprovemessage-detail-container">
-                                        <input disabled type="text" name="disapprovedMessage" class='leave-app-form-input'
+                                        <input disabled type="text" name="disapprovedMessage"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['disapprovedMessage'], 0, 50); ?>" />
-                                        <input disabled type="text" name="disapprovedMessageOne" class='leave-app-form-input'
+                                        <input disabled type="text" name="disapprovedMessageOne"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['disapprovedMessage'], 51, 100); ?>" />
-                                        <input disabled type="text" name="disapprovedMessageTwo" class='leave-app-form-input'
+                                        <input disabled type="text" name="disapprovedMessageTwo"
+                                            class='leave-app-form-input'
                                             value="<?php echo substr($leaveAppFormData['disapprovedMessage'], 101); ?>" />
                                     </div>
                                 </div>
@@ -706,10 +695,10 @@ if ($empId && $leaveAppFormId) {
                 <?php
                 }else{
                     ?>
-                    <div class="title-text-caption">
-                        (No Leave Data Found! It might be Deleted or Does Not Exist!)
-                    </div>
-                    <?php
+                <div class="title-text-caption">
+                    (No Leave Data Found! It might be Deleted or Does Not Exist!)
+                </div>
+                <?php
                 }
                 ?>
 

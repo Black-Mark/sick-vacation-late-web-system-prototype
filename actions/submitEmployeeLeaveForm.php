@@ -29,7 +29,8 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $typeOfStudyLeave = isset($_POST['typeOfStudyLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfStudyLeave'])) : '';
     $typeOfOtherLeave = isset($_POST['typeOfOtherLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfOtherLeave'])) : 0;
     $workingDays = isset($_POST['workingDays']) ? strip_tags(mysqli_real_escape_string($database, $_POST['workingDays'])) : '';
-    $inclusiveDates = isset($_POST['inclusiveDates']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDates'])) : '';
+    $inclusiveDateStart = isset($_POST['inclusiveDateStart']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateStart'])) : '';
+    $inclusiveDateEnd = isset($_POST['inclusiveDateEnd']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateEnd'])) : '';
     $commutation = isset($_POST['commutation']) ? strip_tags(mysqli_real_escape_string($database, $_POST['commutation'])) : '';
     $status = 'Submitted';
 
@@ -44,7 +45,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $departmentHeadData = [];
 
     // Checks the Input of the Leave Application Form
-    if (empty($typeOfLeave) || empty($inclusiveDates)) {
+    if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
         $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";
         $_SESSION['alert_type'] = $warning_color;
         header("Location: " . $location_employee_leave_form);
@@ -174,18 +175,18 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             (leaveappform_id, employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
             typeOfLeave, typeOfSpecifiedOtherLeave, typeOfVacationLeave, typeOfVacationLeaveWithin, typeOfVacationLeaveAbroad,
             typeOfSickLeave, typeOfSickLeaveInHospital, typeOfSickLeaveOutPatient, typeOfSpecialLeaveForWomen, typeOfStudyLeave,
-            typeOfOtherLeave, workingDays, inclusiveDates, commutation,
+            typeOfOtherLeave, workingDays, inclusiveDateStart, inclusiveDateEnd, commutation,
             asOfDate, vacationLeaveTotalEarned, sickLeaveTotalEarned, vacationLeaveLess, sickLeaveLess,
             vacationLeaveBalance, sickLeaveBalance, recommendation, recommendMessage,
             dayWithPay, dayWithoutPay, otherDayPay, otherDaySpecify, disapprovedMessage,
             hrName, hrPosition, deptHeadName, mayorName, mayorPosition, hrmanager_id, depthead_id, mayor_id, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = mysqli_prepare($database, $query);
 
             mysqli_stmt_bind_param(
                 $stmt,
-                "ssssssssssssssssssssisssddddddssiiisssssssssss",
+                "ssssssssssssssssssssissssddddddssiiisssssssssss",
                 $leaveappformId,
                 $employeeId,
                 $departmentName,
@@ -210,7 +211,8 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
 
                 $typeOfOtherLeave,
                 $workingDays,
-                $inclusiveDates,
+                $inclusiveDateStart,
+                $inclusiveDateEnd,
                 $commutation,
 
                 $asOfDate,

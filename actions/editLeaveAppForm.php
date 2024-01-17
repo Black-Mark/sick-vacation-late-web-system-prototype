@@ -31,7 +31,8 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $typeOfStudyLeave = isset($_POST['typeOfStudyLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfStudyLeave'])) : '';
     $typeOfOtherLeave = isset($_POST['typeOfOtherLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfOtherLeave'])) : '';
     $workingDays = isset($_POST['workingDays']) ? strip_tags(mysqli_real_escape_string($database, $_POST['workingDays'])) : '';
-    $inclusiveDates = isset($_POST['inclusiveDates']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDates'])) : '';
+    $inclusiveDateStart = isset($_POST['inclusiveDateStart']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateStart'])) : '';
+    $inclusiveDateEnd = isset($_POST['inclusiveDateEnd']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateEnd'])) : '';
     $commutation = isset($_POST['commutation']) ? strip_tags(mysqli_real_escape_string($database, $_POST['commutation'])) : '';
     $asOfDate = isset($_POST['asOfDate']) ? strip_tags(mysqli_real_escape_string($database, $_POST['asOfDate'])) : '';
     $vacationLeaveTotalEarned = isset($_POST['vacationLeaveTotalEarned']) ? strip_tags(mysqli_real_escape_string($database, $_POST['vacationLeaveTotalEarned'])) : '';
@@ -56,7 +57,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $status = 'Validated';
 
     // Checks the Input of the Leave Application Form
-    if (empty($typeOfLeave) || empty($inclusiveDates)) {
+    if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
         $_SESSION['alert_message'] = "Please Specify the Type Leave and Inclusive Dates";
         $_SESSION['alert_type'] = $warning_color;
     } else if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && empty($typeOfVacationLeaveWithin) && empty($typeOfVacationLeaveAbroad)) {
@@ -106,7 +107,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                             typeOfVacationLeave = ?, typeOfVacationLeaveWithin = ?, typeOfVacationLeaveAbroad = ?,
                             typeOfSickLeave = ?, typeOfSickLeaveInHospital = ?, typeOfSickLeaveOutPatient = ?,
                             typeOfSpecialLeaveForWomen = ?, typeOfStudyLeave = ?, typeOfOtherLeave = ?,
-                            workingDays = ?, inclusiveDates = ?, commutation = ?,
+                            workingDays = ?, inclusiveDateStart = ?, inclusiveDateEnd = ?, commutation = ?,
                             asOfDate = ?, vacationLeaveTotalEarned = ?, sickLeaveTotalEarned = ?,
                             vacationLeaveLess = ?, sickLeaveLess = ?, vacationLeaveBalance = ?, sickLeaveBalance = ?,
                             recommendation = ?, recommendMessage = ?,
@@ -116,7 +117,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                 $stmt = mysqli_prepare($database, $query);
                 mysqli_stmt_bind_param(
                     $stmt,
-                    "ssssssssssssssssssisssddddddssiiissss",
+                    "ssssssssssssssssssissssddddddssiiissss",
                     $departmentName, $lastName,
                     $firstName,
                     $middleName,
@@ -135,7 +136,8 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $typeOfStudyLeave,
                     $typeOfOtherLeave,
                     $workingDays,
-                    $inclusiveDates,
+                    $inclusiveDateStart,
+                    $inclusiveDateEnd,
                     $commutation,
                     $asOfDate,
                     $vacationLeaveTotalEarned,

@@ -6,8 +6,71 @@ include($constants_file_session_admin);
 include($constants_variables);
 
 $leaveAppDataList = [];
+$minStartYear = date("Y");
+$minEndYear = date("Y");
+$mostMinimalYear = date("Y");
 
-$leavelistsql = "   SELECT leaveapp.*,
+try {
+    // Determining Minimum Year
+    $minYearQuery = "SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear FROM tbl_leaveappform";
+    $minYearStatement = $database->prepare($minYearQuery);
+    $minYearStatement->execute();
+
+    $result = $minYearStatement->get_result();
+    
+    if ($result) {
+        $minYears = $result->fetch_assoc();
+        $minStartYear = $minYears['minStartYear'] ?? date("Y");
+        $minEndYear = $minYears['minEndYear'] ?? date("Y");
+
+        if (isset($minStartYear, $minEndYear)) {
+            $mostMinimalYear = min($minStartYear, $minEndYear);
+        }
+    } else {
+        throw new Exception("Error fetching data");
+    }
+
+    $minYearStatement->close();
+} catch (Exception $e) {
+    echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
+}
+
+$selectedYear = date("Y");
+if (isset($_POST['leaveTransactionYear'])) {
+    $selectedYear = sanitizeInput($_POST['selectedYear']);
+    $_SESSION['post_transactionyear'] = $selectedYear;
+} else if (isset($_SESSION['post_transactionyear'])) {
+    $selectedYear = sanitizeInput($_SESSION['post_transactionyear']);
+} else {
+    $selectedYear = date("Y");
+    if (isset($_SESSION['post_transactionyear'])) {
+        unset($_SESSION['post_transactionyear']);
+    }
+}
+
+if ($selectedYear && $selectedYear != 'All') {
+    $leavelistsql = "SELECT leaveapp.*, users.firstName AS userFirstName, users.lastName AS userLastName
+                FROM tbl_leaveappform leaveapp
+                LEFT JOIN tbl_useraccounts users ON users.employee_id = leaveapp.employee_id
+                WHERE YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?
+                ORDER BY dateCreated DESC";
+
+    $leavelist_statement = $database->prepare($leavelistsql);
+    $leavelist_statement->bind_param("ss", $selectedYear, $selectedYear);
+    $leavelist_statement->execute();
+
+    $result = $leavelist_statement->get_result();
+
+    if ($result->num_rows > 0) {
+        while ($leaveform = $result->fetch_assoc()) {
+            $leaveAppDataList[] = $leaveform;
+        }
+    }
+
+    $leavelist_statement->close();
+
+} else if ($selectedYear == 'All') {
+    $leavelistsql = "   SELECT leaveapp.*,
                         users.firstName AS userFirstName,
                         users.lastName AS userLastName
                     FROM tbl_leaveappform leaveapp
@@ -15,11 +78,12 @@ $leavelistsql = "   SELECT leaveapp.*,
                     ON users.employee_id = leaveapp.employee_id
                     ORDER BY dateCreated DESC";
 
-$leavelist_result = $database->query($leavelistsql);
+    $leavelist_result = $database->query($leavelistsql);
 
-if ($leavelist_result->num_rows > 0) {
-    while ($leaveform = $leavelist_result->fetch_assoc()) {
-        $leaveAppDataList[] = $leaveform;
+    if ($leavelist_result->num_rows > 0) {
+        while ($leaveform = $leavelist_result->fetch_assoc()) {
+            $leaveAppDataList[] = $leaveform;
+        }
     }
 }
 
@@ -75,6 +139,35 @@ if ($leavelist_result->num_rows > 0) {
             <div class="box-container">
                 <h3 class="title-text">Leave Application Transaction</h3>
 
+                <div class="button-container component-container mb-2">
+                    <form action="" method="post">
+                        <label for="selectedYear">Select a Year:</label>
+                        <select name="selectedYear" id="selectedYear" class="custom-regular-button"
+                            aria-label="Year Selection">
+                            <?php
+                            $currentYear = date("Y");
+
+                            $start_year = $mostMinimalYear;
+
+                            if (!$start_year || $start_year <= 1924) {
+                                $start_year = $currentYear;
+                            }
+
+                            for ($year = $currentYear; $year >= $start_year; $year--) {
+                                ?>
+                            <option value="<?php echo $year; ?>"
+                                <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
+                                <?php echo $year; ?>
+                            </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                        <input type="submit" name="leaveTransactionYear" value="Load Year Record"
+                            class="custom-regular-button">
+                    </form>
+                </div>
+
                 <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">
                     <thead>
@@ -93,42 +186,42 @@ if ($leavelist_result->num_rows > 0) {
                         if (!empty($leaveAppDataList)) {
                             foreach ($leaveAppDataList as $ldata) {
                                 ?>
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="selectedLeaveForm[]"
-                                            value="<?php echo $ldata['dateLastModified']; ?>" />
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['dateLastModified']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['userLastName'] . ' ' . $ldata['userFirstName']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['typeOfLeave']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['inclusiveDates']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['status']; ?>
-                                    </td>
-                                    <td>
-                                        <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
-                                            <a
-                                                href="<?php echo $location_admin_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    View
-                                                </button>
-                                            </a>
-                                            <input type="hidden" name="recordId"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
-                                        </form>
-                                    </td>
-                                </tr>
-                                <?php
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedLeaveForm[]"
+                                    value="<?php echo $ldata['dateLastModified']; ?>" />
+                            </td>
+                            <td>
+                                <?php echo $ldata['dateLastModified']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['userLastName'] . ' ' . $ldata['userFirstName']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['typeOfLeave']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['inclusiveDateStart'] . ' to ' . $ldata['inclusiveDateEnd']; ?>
+                            </td>
+                            <td>
+                                <?php echo $ldata['status']; ?>
+                            </td>
+                            <td>
+                                <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
+                                    <a
+                                        href="<?php echo $location_admin_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                        <button type="button" class="custom-regular-button">
+                                            View
+                                        </button>
+                                    </a>
+                                    <input type="hidden" name="recordId"
+                                        value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                    <input type="submit" name="deleteLeaveAppForm" value="Delete"
+                                        class="custom-regular-button" />
+                                </form>
+                            </td>
+                        </tr>
+                        <?php
                             }
                         }
                         ?>
@@ -141,16 +234,16 @@ if ($leavelist_result->num_rows > 0) {
 
     <!-- Data Table Configuration -->
     <script>
-        let table = new DataTable('#leaveAppList', {
-            pagingType: 'full_numbers',
-            scrollCollapse: true,
-            scrollY: '100%',
-            scrollX: true,
-            // 'select': {
-            //     'style': 'multi',
-            // },
-            // ordering: false,
-            columnDefs: [{
+    let table = new DataTable('#leaveAppList', {
+        pagingType: 'full_numbers',
+        scrollCollapse: true,
+        scrollY: '100%',
+        scrollX: true,
+        // 'select': {
+        //     'style': 'multi',
+        // },
+        // ordering: false,
+        columnDefs: [{
                 'targets': 0,
                 'orderable': false,
                 // 'checkboxes': {
@@ -166,29 +259,29 @@ if ($leavelist_result->num_rows > 0) {
                 //     // 'page': 'current',
                 // }
             },
-                // {
-                //     targets: [0],
-                //     orderData: [0, 1]
-                // },
-                // {
-                //     targets: [1],
-                //     orderData: [1, 0]
-                // },
-                // {
-                //     targets: [4],
-                //     orderData: [4, 0]
-                // }
-            ],
-            search: {
-                return: true
-            },
-            "dom": 'Blfrtip',
-            lengthMenu: [
-                [10, 25, 50, 100, -1],
-                [10, 25, 50, 100, 'All']
-            ],
-            // "colReorder": true,
-            "buttons": [{
+            // {
+            //     targets: [0],
+            //     orderData: [0, 1]
+            // },
+            // {
+            //     targets: [1],
+            //     orderData: [1, 0]
+            // },
+            // {
+            //     targets: [4],
+            //     orderData: [4, 0]
+            // }
+        ],
+        search: {
+            return: true
+        },
+        "dom": 'Blfrtip',
+        lengthMenu: [
+            [10, 25, 50, 100, -1],
+            [10, 25, 50, 100, 'All']
+        ],
+        // "colReorder": true,
+        "buttons": [{
                 extend: 'copy',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
@@ -232,9 +325,9 @@ if ($leavelist_result->num_rows > 0) {
                 text: 'Column Visibility',
                 columns: ':first,:gt(0),:last'
             }
-            ],
-            // responsive: true,
-        });
+        ],
+        // responsive: true,
+    });
     </script>
 
     <div class="component-container">

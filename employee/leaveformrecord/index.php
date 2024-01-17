@@ -11,9 +11,27 @@ $fullName = "";
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
-    $leaveAppDataList = getLeaveAppFormRecord($employeeId);
     if (!empty($employeeData)) {
         $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
+    }
+
+    $selectedYear = date("Y");
+    if (isset($_POST['leaveFormYear'])) {
+        $selectedYear = sanitizeInput($_POST['selectedYear']);
+        $_SESSION['post_leaveformyear'] = $selectedYear;
+    } else if (isset($_SESSION['post_leaveformyear'])) {
+        $selectedYear = sanitizeInput($_SESSION['post_leaveformyear']);
+    } else {
+        $selectedYear = date("Y");
+        if (isset($_SESSION['post_leaveformyear'])) {
+            unset($_SESSION['post_leaveformyear']);
+        }
+    }
+
+    if ($selectedYear && $selectedYear != 'All') {
+        $leaveAppDataList = getLeaveAppFormRecordBasedYear($employeeId, $selectedYear);
+    } else if ($selectedYear == 'All') {
+        $leaveAppDataList = getLeaveAppFormRecord($employeeId);
     }
 }
 
@@ -69,6 +87,35 @@ if (isset($_SESSION['employeeId'])) {
             <div class="box-container">
                 <h3 class="title-text">Leave Application Record</h3>
 
+                <div class="button-container component-container mb-2">
+                    <form action="" method="post">
+                        <label for="selectedYear">Select a Year:</label>
+                        <select name="selectedYear" id="selectedYear" class="custom-regular-button"
+                            aria-label="Year Selection">
+                            <?php
+                            $currentYear = date("Y");
+                            $start_date = $employeeData['dateStarted'];
+
+                            $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
+
+                            if (!$start_year || $start_year <= 1924) {
+                                $start_year = $currentYear;
+                            }
+
+                            for ($year = $currentYear; $year >= $start_year; $year--) {
+                                ?>
+                                <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
+                                    <?php echo $year; ?>
+                                </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <input type="submit" name="leaveFormYear" value="Load Year Record"
+                            class="custom-regular-button">
+                    </form>
+                </div>
+
                 <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">
                     <thead>
@@ -89,7 +136,7 @@ if (isset($_SESSION['employeeId'])) {
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDates']; ?>
+                                        <?php echo $ldata['inclusiveDateStart'] . ' to ' . $ldata['inclusiveDateEnd']; ?>
                                     </td>
                                     <td>
                                         <?php echo $ldata['status']; ?>
@@ -172,32 +219,32 @@ if (isset($_SESSION['employeeId'])) {
             },
             {
                 extend: 'excel',
-                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
-                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
-                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
-                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: '<?php echo $fullName.' - Leave Application Record List' ?>',
-                filename: '<?php echo $fullName.' - Leave Application Record List' ?>',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',

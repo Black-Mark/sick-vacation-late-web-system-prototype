@@ -175,6 +175,23 @@ function getLeaveAppFormRecord($employee_id)
     return $leaveAppRecordList;
 }
 
+function getLeaveAppFormRecordBasedYear($employee_id, $year)
+{
+    global $database;
+
+    $leaveAppRecordList = [];
+
+    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?)";
+
+    $leaveAppFormRecordStatement = $database->prepare($leaveAppFormRecordQuery);
+    $leaveAppFormRecordStatement->bind_param("sss", $employee_id, $year, $year);
+    $leaveAppFormRecordStatement->execute();
+
+    $leaveAppRecordList = $leaveAppFormRecordStatement->get_result();
+
+    return $leaveAppRecordList;
+}
+
 // Getting Data of Certain Leave Application Form of the Employee
 function getEmployeeLeaveAppFormData($employee_id, $leaveappform_id)
 {

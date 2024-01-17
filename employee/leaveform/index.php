@@ -63,7 +63,6 @@ $settingData = getAuthorizedUser();
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
-    <link rel="stylesheet" href="<?php echo $assets_css_printmedia; ?>">
 
     <script src="<?php echo $assets_file_leaveappform; ?>"></script>
 
@@ -416,25 +415,19 @@ $settingData = getAuthorizedUser();
                                             class='leave-app-form-input' />
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
-                                        <label for="inclusiveDates" class='leave-app-form-label'>
+
+                                        <label for="inclusiveDateStart" class='leave-app-form-label'>
                                             Inclusive Dates
                                         </label>
-                                        <div>
-                                            <input type="text" id="inclusiveDates" name="inclusiveDates"
-                                                class='leave-app-form-input' />
+                                        <div class="leave-app-form-inclusivedate-input-container">
+                                            <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo date('Y-m-d'); ?>" />
+                                            <span class="inclusive-date-text">to</span>
+                                            <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
+                                                class='leave-app-form-input-plain'
+                                                value="<?php echo date('Y-m-d'); ?>" />
                                         </div>
-
-                                        <!-- <div class="leave-app-form-inclusivedate-detail-container">
-                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
-                                                Inclusive Dates
-                                            </label>
-                                            <div class="leave-app-form-inclusivedate-input-container">
-                                                <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
-                                                    class='leave-app-form-input' value="<?php echo date('Y-m-d'); ?>" />
-                                                <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
-                                                    class='leave-app-form-input' value="<?php echo date('Y-m-d'); ?>" />
-                                            </div>
-                                        </div> -->
 
                                     </div>
                                 </div>
@@ -495,25 +488,30 @@ $settingData = getAuthorizedUser();
                                             <div class="leave-app-form-leave-table-column-container">
                                                 <div class="leave-app-form-leave-table-field">Vacation Leave</div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
-                                                        name="vacationLeaveTotalEarned"
-                                                        class='leave-app-form-input-plain'
-                                                        value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2) : 0 ?>" disabled /></div>
+                                                        name="vacationLeaveTotalEarned" class='leave-app-form-input-plain'
+                                                        value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2) : 0 ?>"
+                                                        disabled /></div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
-                                                        name="vacationLeaveLess" class='leave-app-form-input-plain' disabled /></div>
+                                                        name="vacationLeaveLess" class='leave-app-form-input-plain'
+                                                        disabled /></div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
-                                                        name="vacationLeaveBalance" class='leave-app-form-input-plain' disabled />
+                                                        name="vacationLeaveBalance" class='leave-app-form-input-plain'
+                                                        disabled />
                                                 </div>
                                             </div>
                                             <div class="leave-app-form-leave-table-column-container">
                                                 <div class="leave-app-form-leave-table-field">Sick Leave</div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
                                                         name="sickLeaveTotalEarned" class='leave-app-form-input-plain'
-                                                        value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2) : 0 ?>" disabled />
+                                                        value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2) : 0 ?>"
+                                                        disabled />
                                                 </div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
-                                                        name="sickLeaveLess" class='leave-app-form-input-plain' disabled /></div>
+                                                        name="sickLeaveLess" class='leave-app-form-input-plain' disabled />
+                                                </div>
                                                 <div class="leave-app-form-leave-table-field"><input type="number"
-                                                        name="sickLeaveBalance" class='leave-app-form-input-plain' disabled /></div>
+                                                        name="sickLeaveBalance" class='leave-app-form-input-plain'
+                                                        disabled /></div>
                                             </div>
                                         </div>
 
@@ -570,19 +568,25 @@ $settingData = getAuthorizedUser();
                                             <label for="forDisapprovedDueToApproval" class='leave-app-form-detail-subject'>
                                                 For Disapproved Due to
                                             </label>
-                                            <input type="text" name="recommendMessage" class='leave-app-form-input-grow' disabled />
+                                            <input type="text" name="recommendMessage" class='leave-app-form-input-grow'
+                                                disabled />
                                         </div>
 
                                         <div class="leave-app-form-departmenthead-detail-container-column">
-                                            <input type="text" name="recommendMessageOne" class='leave-app-form-input' disabled />
-                                            <input type="text" name="recommendMessageTwo" class='leave-app-form-input' disabled />
-                                            <input type="text" name="recommendMessageThree" class='leave-app-form-input' disabled />
-                                            <input type="text" name="recommendMessageFour" class='leave-app-form-input' disabled />
+                                            <input type="text" name="recommendMessageOne" class='leave-app-form-input'
+                                                disabled />
+                                            <input type="text" name="recommendMessageTwo" class='leave-app-form-input'
+                                                disabled />
+                                            <input type="text" name="recommendMessageThree" class='leave-app-form-input'
+                                                disabled />
+                                            <input type="text" name="recommendMessageFour" class='leave-app-form-input'
+                                                disabled />
                                         </div>
 
                                         <div class="leave-app-form-signature-container">
                                             <!-- <input class="leave-app-form-input" readonly /> -->
-                                            <div class="leave-app-form-signature-context <?php echo empty($departmentHeadData) ? 'mt-4' : ''; ?>">
+                                            <div
+                                                class="leave-app-form-signature-context <?php echo empty($departmentHeadData) ? 'mt-4' : ''; ?>">
                                                 <?php
                                                 if (!empty($departmentHeadData)) {
                                                     echo organizeFullName($departmentHeadData['firstName'], $departmentHeadData['middleName'], $departmentHeadData['lastName'], $departmentHeadData['suffix']);
@@ -632,9 +636,12 @@ $settingData = getAuthorizedUser();
                                             7.D Disapproved Due To:
                                         </div>
                                         <div class="leave-app-form-disapprovemessage-detail-container">
-                                            <input type="text" name="disapprovedMessage" class='leave-app-form-input' disabled />
-                                            <input type="text" name="disapprovedMessageOne" class='leave-app-form-input' disabled />
-                                            <input type="text" name="disapprovedMessageTwo" class='leave-app-form-input' disabled />
+                                            <input type="text" name="disapprovedMessage" class='leave-app-form-input'
+                                                disabled />
+                                            <input type="text" name="disapprovedMessageOne" class='leave-app-form-input'
+                                                disabled />
+                                            <input type="text" name="disapprovedMessageTwo" class='leave-app-form-input'
+                                                disabled />
                                         </div>
                                     </div>
                                 </div>
