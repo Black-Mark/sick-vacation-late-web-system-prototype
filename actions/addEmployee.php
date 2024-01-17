@@ -60,6 +60,11 @@ if (isset($_POST['addEmployee'])) {
         exit();
         // throw new Exception("Database query failed: " . mysqli_error($database));
     }
+    if ($departmentlabel) {
+        header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+    } else {
+        header("Location: " . $location_admin_departments_office);
+    }
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     if ($departmentlabel) {

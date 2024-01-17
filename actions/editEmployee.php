@@ -65,6 +65,7 @@ if (isset($_POST['editEmployee'])) {
         header("Location: " . $location_admin_departments_office);
     }
     exit();
+    
 } else if (isset($_POST['editMultipleEmployee']) && isset($_POST['selectedEmpID'])) {
     try {
         $selectedEmpID = $_POST['selectedEmpID'];
@@ -153,6 +154,13 @@ if (isset($_POST['editEmployee'])) {
         }
         exit();
     }
+
+    if ($departmentlabel) {
+        header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+    } else {
+        header("Location: " . $location_admin_departments_office);
+    }
+    exit();
 } else {
     if ($departmentlabel) {
         header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');

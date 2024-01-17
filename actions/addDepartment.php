@@ -35,6 +35,9 @@ if (isset($_POST['addDepartment'])) {
         exit();
         // throw new Exception("Database query failed: " . mysqli_error($database));
     }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    header("Location: " . $location_admin_departments);
+    exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     header("Location: " . $location_admin_departments);

@@ -52,10 +52,10 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $disapprovedMessageTwo = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageTwo']));
     $status = 'Submitted';
 
-    $recommendMessage = trim($recommendMessage).' '.trim($recommendMessageOne).' '.trim($recommendMessageTwo).' '.trim($recommendMessageThree).' '.trim($recommendMessageFour);
-    $typeOfSickLeaveOutPatient = trim($typeOfSickLeaveOutPatient).' '.trim($typeOfSickLeaveOutPatientOne);
-    $typeOfSpecialLeaveForWomen = trim($typeOfSpecialLeaveForWomen).' '.trim($typeOfSpecialLeaveForWomenOne);
-    $disapprovedMessage = trim($disapprovedMessage).' '.trim($disapprovedMessageOne).' '.trim($disapprovedMessageTwo);
+    $recommendMessage = trim($recommendMessage) . ' ' . trim($recommendMessageOne) . ' ' . trim($recommendMessageTwo) . ' ' . trim($recommendMessageThree) . ' ' . trim($recommendMessageFour);
+    $typeOfSickLeaveOutPatient = trim($typeOfSickLeaveOutPatient) . ' ' . trim($typeOfSickLeaveOutPatientOne);
+    $typeOfSpecialLeaveForWomen = trim($typeOfSpecialLeaveForWomen) . ' ' . trim($typeOfSpecialLeaveForWomenOne);
+    $disapprovedMessage = trim($disapprovedMessage) . ' ' . trim($disapprovedMessageOne) . ' ' . trim($disapprovedMessageTwo);
 
     if (empty($typeOfLeave) || empty($inclusiveDates)) {
         $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";
@@ -75,7 +75,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 $_SESSION['alert_type'] = $warning_color;
                 header("Location: " . $location_employee_leave_form);
                 exit();
-            }  else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
+            } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
                 $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
                 $_SESSION['alert_type'] = $warning_color;
                 header("Location: " . $location_employee_leave_form);
@@ -91,7 +91,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 header("Location: " . $location_employee_leave_form);
                 exit();
             }
-            
+
             $query = "INSERT INTO tbl_leaveappform
             (employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
             typeOfLeave, typeOfSpecifiedOtherLeave, typeOfVacationLeave, typeOfVacationLeaveWithin, typeOfVacationLeaveAbroad,
@@ -178,6 +178,8 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             exit();
         }
     }
+    header("Location: " . $location_employee_leave_form);
+    exit();
 } else {
     echo '<script type="text/javascript">window.history.back();</script>';
     header("Location: " . $location_employee_leave_form);
