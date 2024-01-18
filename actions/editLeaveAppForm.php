@@ -7,7 +7,12 @@ include($constants_variables);
 
 if (isset($_POST['validateLeaveAppForm'])) {
     // POST AND SESSION GET DATA FETCH
+    $initial = "Initial Record";
+    $initialRecordData = [];
+
     $completeField = false;
+    $completeVerification = false;
+
     $leaveappformId = strip_tags(mysqli_real_escape_string($database, $_POST['leaveappformId']));
     $ownerOfForm = strip_tags(mysqli_real_escape_string($database, $_POST['ownerOfForm']));
     $departmentName = isset($_POST['departmentName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['departmentName'])) : '';
@@ -88,9 +93,36 @@ if (isset($_POST['validateLeaveAppForm'])) {
         $completeField = true;
     }
 
-
-
+    // Checks first if the Inclusive Dates is Valid
     if ($completeField) {
+        // if possible checks if the employee Exist
+        $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? LIMIT 1";
+        $stmtForInitialRecord = $database->prepare($getInitialRecordQuery);
+
+        if ($stmtForInitialRecord) {
+            $stmtForInitialRecord->bind_param("ss", $ownerOfForm, $initial);
+            $stmtForInitialRecord->execute();
+            $resultInitialRecord = $stmtForInitialRecord->get_result();
+
+            if ($resultInitialRecord->num_rows > 0) {
+                $initialRecordData = $resultInitialRecord->fetch_assoc();
+
+                if ($inclusiveDateStart >= $initialRecordData['periodEnd'] && $inclusiveDateEnd >= $initialRecordData['periodEnd']) {
+                    $completeVerification = true;
+                } else {
+                    $_SESSION['alert_message'] = "The Inclusive Start Date and the Inclusive End Date Should Be Greater Than " . $initialRecordData['periodEnd'];
+                    $_SESSION['alert_type'] = $warning_color;
+                }
+            } else {
+                $_SESSION['alert_message'] = "Please Create A Initial Record for This Employee First!";
+                $_SESSION['alert_type'] = $warning_color;
+            }
+        } else {
+            // Something
+        }
+    }
+
+    if ($completeField && $completeVerification) {
         try {
             // Checks if there is an existing Leave App ID
             $checkLeaveFormIdQuery = "SELECT * FROM tbl_leaveappform WHERE leaveappform_id = ?";
@@ -118,7 +150,8 @@ if (isset($_POST['validateLeaveAppForm'])) {
                 mysqli_stmt_bind_param(
                     $stmt,
                     "ssssssssssssssssssissssddddddssiiissss",
-                    $departmentName, $lastName,
+                    $departmentName,
+                    $lastName,
                     $firstName,
                     $middleName,
                     $dateFiling,
@@ -160,6 +193,43 @@ if (isset($_POST['validateLeaveAppForm'])) {
                 if (mysqli_stmt_execute($stmt)) {
                     $_SESSION['alert_message'] = "Leave Application Form Successfully Validated";
                     $_SESSION['alert_type'] = $success_color;
+
+                    $dataRecordType = "Deduction Type";
+                    $particularType = "";
+                    $particularLabel = "";
+                    if ($typeOfLeave != '') {
+                        if ($typeOfLeave == "Vacation Leave" || $typeOfLeave == "Sick Leave") {
+                            $particularType = $typeOfLeave;
+                        } else {
+                            $particularType = "Other";
+                            $particularLabel = $typeOfLeave;
+                        }
+                    } else if ($typeOfOtherLeave != '') {
+                        $particularType = "Other";
+                        $particularLabel = $typeOfOtherLeave;
+                    }
+                    $days = $workingDays;
+                    $hours = 0;
+                    $minutes = 0;
+                    $dateOfAction = date("Y-m-d");
+
+                    $dataFormInitialRetrieveQuery = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
+                        VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                    $stmtAddDataRecord = $database->prepare($dataFormInitialRetrieveQuery);
+                    $stmtAddDataRecord->bind_param('ssssssiiis', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+
+                    $stmtAddDataRecord->execute();
+
+                    if ($stmtAddDataRecord->error) {
+                        $_SESSION['alert_message'] = "Adding New Leave Record Failed!: " . $stmtAddDataRecord->error;
+                        $_SESSION['alert_type'] = $error_color;
+                    } else {
+                        $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Added!";
+                        $_SESSION['alert_type'] = $success_color;
+                    }
+
+                    $stmtAddDataRecord->close();
 
                     // Notification
                     $notifEmpIdFrom = '@Admin';

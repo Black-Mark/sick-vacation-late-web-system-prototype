@@ -52,6 +52,23 @@ $sickLeaveLess = $typeOfLeave === "Sick Leave" ? number_format($workingDays, 2) 
 $vacationLeaveBalance = $typeOfLeave == "Vacation Leave" ? number_format($vacationLeaveTotalEarned - $workingDays, 2) : number_format($vacationLeaveTotalEarned, 2);
 $sickLeaveBalance = $typeOfLeave == "Sick Leave" ? number_format($sickLeaveTotalEarned - $workingDays, 2) : number_format($sickLeaveTotalEarned, 2);
 
+$daysWithPay = 0;
+$daysWithoutPay = 0;
+
+if($vacationLeaveTotalEarned < $vacationLeaveLess){
+    $daysWithPay = $vacationLeaveTotalEarned;
+    $daysWithoutPay = $vacationLeaveLess - $vacationLeaveTotalEarned;
+}else if($vacationLeaveTotalEarned >= $vacationLeaveLess){
+    $daysWithPay = $vacationLeaveLess;
+}
+
+if($sickLeaveTotalEarned < $sickLeaveLess){
+    $daysWithPay += $sickLeaveTotalEarned;
+    $daysWithoutPay += $sickLeaveLess - $sickLeaveTotalEarned;
+}else if($sickLeaveTotalEarned >= $sickLeaveLess){
+    $daysWithPay += $sickLeaveLess;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -669,14 +686,14 @@ $sickLeaveBalance = $typeOfLeave == "Sick Leave" ? number_format($sickLeaveTotal
                                     <div class="leave-app-form-approvaldays-detail-container">
                                         <input id="dayWithPay" type="number" name="dayWithPay"
                                             class='leave-app-form-input-days'
-                                            value="<?php echo $leaveAppFormData['dayWithPay']; ?>" />
+                                            value="<?php echo $daysWithPay; ?>" />
                                         <label for="dayWithPay"> days with pay</label>
                                     </div>
 
                                     <div class="leave-app-form-approvaldays-detail-container">
                                         <input id="dayWithoutPay" type="number" name="dayWithoutPay"
                                             class='leave-app-form-input-days'
-                                            value="<?php echo $leaveAppFormData['dayWithoutPay']; ?>" />
+                                            value="<?php echo $daysWithoutPay; ?>" />
                                         <label for="dayWithoutPay"> days without pay</label>
                                     </div>
 

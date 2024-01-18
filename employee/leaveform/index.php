@@ -411,8 +411,8 @@ $settingData = getAuthorizedUser();
                                             6.C Number of Working Days Applied For</label>
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
-                                        <input type="number" min="0" max="3652" id="workingDays" name="workingDays"
-                                            class='leave-app-form-input' />
+                                        <input type="number" step="any" min="0" max="3652" id="workingDays" name="workingDays"
+                                            class='leave-app-form-input' value="1" />
                                     </div>
                                     <div class="leave-app-form-inclusivedate-detail-container">
 
