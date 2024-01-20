@@ -9,6 +9,8 @@ $departmentlabel = "";
 $departmentName = "";
 $departments = getAllDepartments();
 
+$generatedEmpId = bin2hex(random_bytes(4));
+
 if ($_GET['departmentlabel'] !== "index.php" && $_GET['departmentlabel'] !== "index.html") {
     $departmentlabel = sanitizeInput($_GET['departmentlabel']);
     $_SESSION['departmentlabel'] = $departmentlabel;
@@ -135,7 +137,7 @@ if ($departmentlabel) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="text" name="employeeId" class="form-control" id="floatingEmployeeId"
-                                    placeholder="TEMP0001" required>
+                                    placeholder="TEMP0001" value="<?php echo $generatedEmpId; ?>" required>
                                 <label for="floatingEmployeeId">Employee ID <span
                                         class="required-color">*</span></label>
                             </div>
@@ -243,6 +245,17 @@ if ($departmentlabel) {
                         <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
                             placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
                         <label for="floatingDateStarted">Date Started <span class="required-color">*</span></label>
+                    </div>
+                    <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
+                    <div class="form-floating mb-2">
+                        <input type="number" step="any" name="initialVacationCredit" class="form-control" id="floatingInitialVacationCredit"
+                            placeholder="1.25" value="1.25" required>
+                        <label for="floatingInitialVacationCredit">Initial Vacation Credit <span class="required-color">*</span></label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="number" step="any" name="initialSickCredit" class="form-control" id="floatingInitialSickCredit"
+                            placeholder="1.25" value="1.25" required>
+                        <label for="floatingInitialSickCredit">Initial Sick Credit <span class="required-color">*</span></label>
                     </div>
                 </div>
                 <div class="modal-footer">
