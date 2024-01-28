@@ -28,7 +28,7 @@ if ($departmentlabel) {
         $empsql = "SELECT u.*, d.departmentName
            FROM tbl_useraccounts u
            LEFT JOIN tbl_departments d ON u.department = d.department_id
-           WHERE d.department_id IS NULL
+           WHERE d.department_id IS NULL OR d.archive COLLATE latin1_general_ci = 'deleted'
            ORDER BY u.lastName ASC";
         $employees = $database->query($empsql);
 
@@ -48,7 +48,7 @@ if ($departmentlabel) {
                     LEFT JOIN
                         tbl_departments d ON ua.department = d.department_id
                     WHERE
-                        ua.department = ?
+                        ua.department = ? AND ua.archive COLLATE latin1_general_ci != 'deleted'
                     ORDER BY
                         ua.lastName ASC";
 
@@ -68,8 +68,10 @@ if ($departmentlabel) {
             FROM
                 tbl_useraccounts ua
             LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id ORDER BY ua.lastName ASC";
-
+                tbl_departments d ON ua.department = d.department_id
+            WHERE
+                ua.archive COLLATE latin1_general_ci != 'deleted'
+            ORDER BY ua.lastName ASC";
     $employees = $database->query($empsql);
 }
 

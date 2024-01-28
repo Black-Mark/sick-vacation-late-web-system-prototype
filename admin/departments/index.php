@@ -5,9 +5,16 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
-$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
-                   FROM tbl_departments d
-                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id ORDER BY departmentName";
+$sql_department = "SELECT
+                        d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
+                   FROM
+                        tbl_departments d
+                   LEFT JOIN
+                        tbl_useraccounts u ON d.departmentHead = u.employee_id
+                    WHERE 
+                        d.archive COLLATE latin1_general_ci != 'deleted'
+                    ORDER BY 
+                        departmentName";
 $departments = $database->query($sql_department);
 
 $employeesNameAndId = getAllEmployeesNameAndID();

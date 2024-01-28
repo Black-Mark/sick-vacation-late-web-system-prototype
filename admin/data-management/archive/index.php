@@ -1,29 +1,9 @@
 <?php
-include("../constants/routes.php");
+include("../../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
-
-// Counts the Total Number of Department
-$departmentCount = 0;
-$departmentCountQuery = "SELECT COUNT(*) AS departmentCount FROM tbl_departments WHERE archive COLLATE latin1_general_ci != 'deleted'";
-$departmentCountResult = $database->query($departmentCountQuery);
-
-if ($departmentCountResult) {
-    $row = $departmentCountResult->fetch_assoc();
-    $departmentCount = $row['departmentCount'];
-}
-
-// Counts the Total Number of the Employees Only
-$employeeCount = 0;
-$employeeCountQuery = "SELECT COUNT(*) AS employeeCount FROM tbl_useraccounts WHERE UPPER(role) = 'EMPLOYEE' AND archive COLLATE latin1_general_ci != 'deleted'";
-$employeeCountResult = $database->query($employeeCountQuery);
-
-if ($employeeCountResult) {
-    $row = $employeeCountResult->fetch_assoc();
-    $employeeCount = $row['employeeCount'];
-}
 
 ?>
 
@@ -67,29 +47,49 @@ if ($employeeCountResult) {
 </head>
 
 <body class="webpage-background-cover-admin">
-    <div>
-        <?php include($components_file_topnav) ?>
+    <div class="component-container">
+        <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
-            <div class="card-container">
 
-                <div class="card">
-                    <h1>Total No. of Employees</h1>
-                    <h2><?php echo $employeeCount; ?></h2>
+            <div class="box-container">
+                <div>
+                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                            class="custom-regular-button">Back</button></a>
+                    <div class="title-text">Archive Data(s)</div>
                 </div>
-
-                <div class="card">
-                    <h1>Total No. of Departments</h1>
-                    <h2><?php echo $departmentCount; ?></h2>
+                <div class="item-detail-container mb-2">
+                    <a href="<?php echo $location_admin_datamanagement_archive_employee; ?>"
+                        class="item-detail-container-summary">
+                        Employee
+                    </a>
                 </div>
-
+                <div class="item-detail-container mb-2">
+                    <a href="<?php echo $location_admin_datamanagement_archive_department; ?>"
+                        class="item-detail-container-summary">
+                        Department
+                    </a>
+                </div>
+                <div class="item-detail-container mb-2">
+                    <a href="<?php echo $location_admin_datamanagement_archive_leaveform; ?>"
+                        class="item-detail-container-summary">
+                        Leave Form
+                    </a>
+                </div>
+                <div class="item-detail-container">
+                    <a href="<?php echo $location_admin_datamanagement_archive_leavedata; ?>"
+                        class="item-detail-container-summary">
+                        Leave Data Form
+                    </a>
+                </div>
             </div>
+
         </div>
     </div>
 
-    <div>
+    <div class="component-container">
         <?php
         include($components_file_footer);
         ?>

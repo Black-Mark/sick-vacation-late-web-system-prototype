@@ -138,6 +138,21 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         ?>
                     </form>
 
+                    <h5 class="mt-4 mb-2 text-uppercase font-weight-bold"><a
+                            href="<?php echo $location_admin_datamanagement_archive; ?>">Archive Data(s):</a></h5>
+                    <ul>
+                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
+                                href="<?php echo $location_admin_datamanagement_archive_employee; ?>">Employee</a></li>
+                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
+                                href="<?php echo $location_admin_datamanagement_archive_department; ?>">Department</a>
+                        </li>
+                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
+                                href="<?php echo $location_admin_datamanagement_archive_leaveform; ?>">Leave Form</a>
+                        </li>
+                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
+                                href="<?php echo $location_admin_datamanagement_archive_leavedata; ?>">Leave Data</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

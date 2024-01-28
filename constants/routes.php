@@ -4,24 +4,29 @@ $webhostpage = '/www.indang-municipal-hr.com.ph'; // Location based of the Pages
 // $webIphost = 'http://localhost/indang-sil-system'; //Complete Address and will be used for Notification and Other Fetches
 $webResetPasswordMessageLink = 'http://localhost/www.indang-municipal-hr.com.ph/reset-password.php'; // Message Base Link For Password Reset
 
-$action_user_login = $webhostpage.'/actions/userLogin.php';
+$action_user_login = $webhostpage . '/actions/userLogin.php';
 
 $action_add_employee = $webhostpage . '/actions/addEmployee.php';
 $action_edit_employee = $webhostpage . '/actions/editEmployee.php';
 $action_delete_employee = $webhostpage . '/actions/deleteEmployee.php';
+$action_retrieve_employee = $webhostpage . '/actions/retrieveEmployee.php';
 
 $action_add_department = $webhostpage . '/actions/addDepartment.php';
 $action_edit_department = $webhostpage . '/actions/editDepartment.php';
 $action_delete_department = $webhostpage . '/actions/deleteDepartment.php';
+$action_retrieve_department = $webhostpage . '/actions/retrieveDepartment.php';
 
 $action_add_leaverecorddata = $webhostpage . '/actions/addLeaveDataRecord.php';
 $action_edit_leaverecorddata = $webhostpage . '/actions/editLeaveDataRecord.php';
 $action_delete_leaverecorddata = $webhostpage . '/actions/deleteLeaveDataRecord.php';
+$action_retrieve_leaverecorddata = $webhostpage . '/actions/retrieveLeaveDataRecord.php';
 
 $action_employee_submit_leaveform = $webhostpage . '/actions/submitEmployeeLeaveForm.php';
+
 $action_add_leaveappform = $webhostpage . '/actions/addLeaveAppForm.php';
 $action_edit_leaveappform = $webhostpage . '/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage . '/actions/deleteLeaveAppForm.php';
+$action_retrieve_leaveappform = $webhostpage . '/actions/retrieveLeaveAppForm.php';
 
 $action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.php';
 $action_resetpassword = $webhostpage . '/actions/resetPassword.php';
@@ -71,6 +76,7 @@ $assets_tailwind = $webhostpage . '/assets/js/tailwind.js';
 $assets_file_leavedataform = $webhostpage . '/assets/js/leaveDataForm.js';
 $assets_file_employeeListing = $webhostpage . '/assets/js/employeeListing.js';
 $assets_file_leaveappform = $webhostpage . '/assets/js/leaveappform.js';
+$assets_file_archive = $webhostpage . '/assets/js/archiveListing.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
@@ -90,6 +96,11 @@ $location_admin_departments_employee_leaveappform_view = $webhostpage . '/admin/
 $location_admin_departments_employee_leavedataform = $webhostpage . '/admin/departments/employee-list/leave-data-form';
 
 $location_admin_datamanagement = $webhostpage . '/admin/data-management';
+$location_admin_datamanagement_archive = $webhostpage . '/admin/data-management/archive';
+$location_admin_datamanagement_archive_employee = $webhostpage . '/admin/data-management/archive/employee';
+$location_admin_datamanagement_archive_department = $webhostpage . '/admin/data-management/archive/department';
+$location_admin_datamanagement_archive_leaveform = $webhostpage . '/admin/data-management/archive/leaveform';
+$location_admin_datamanagement_archive_leavedata = $webhostpage . '/admin/data-management/archive/leavedata';
 
 $location_employee = $webhostpage . '/employee';
 $location_employee_profile = $webhostpage . '/employee/profile';
