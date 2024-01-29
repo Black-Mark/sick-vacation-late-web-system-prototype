@@ -7,12 +7,42 @@ include($constants_variables);
 
 $leaveAppDataList = [];
 $fullName = "";
+$minStartYear = date("Y");
+$minEndYear = date("Y");
+$mostMinimalYear = date("Y");
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
     if (!empty($employeeData)) {
         $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
+    }
+
+    try {
+        $minYearQuery = "SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
+                 FROM tbl_leaveappform
+                 WHERE UPPER(archive) != 'DELETED' AND employee_id = ?";
+        $minYearStatement = $database->prepare($minYearQuery);
+        $minYearStatement->bind_param("s", $employeeId);
+        $minYearStatement->execute();
+
+        $result = $minYearStatement->get_result();
+
+        if ($result) {
+            $minYears = $result->fetch_assoc();
+            $minStartYear = $minYears['minStartYear'] ?? date("Y");
+            $minEndYear = $minYears['minEndYear'] ?? date("Y");
+
+            if (isset($minStartYear, $minEndYear)) {
+                $mostMinimalYear = min($minStartYear, $minEndYear);
+            }
+        } else {
+            throw new Exception("Error fetching data");
+        }
+
+        $minYearStatement->close();
+    } catch (Exception $e) {
+        echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
     }
 
     $selectedYear = date("Y");
@@ -94,7 +124,7 @@ if (isset($_SESSION['employeeId'])) {
                             aria-label="Year Selection">
                             <?php
                             $currentYear = date("Y");
-                            $start_date = $employeeData['dateStarted'];
+                            $start_date = $mostMinimalYear;
 
                             $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
 

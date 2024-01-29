@@ -21,7 +21,7 @@ if ($_SESSION) {
     if (isset($_SESSION["employeeId"])) {
         $employeeId = $_SESSION['employeeId'];
         if ($employeeId) {
-            $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id= '$employeeId'";
+            $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id= '$employeeId' AND UPPER(archive) != 'DELETED'";
             $result = $database->query($sql);
 
             if ($result->num_rows > 0) {

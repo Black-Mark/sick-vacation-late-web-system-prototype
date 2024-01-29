@@ -16,7 +16,7 @@ if ($leaveAppFormID === 'index.php' || $leaveAppFormID === 'index.html' || $leav
 } else {
     $leaveAppFormID = sanitizeInput($leaveAppFormID);
 
-    $fetchLeaveAppFormDataQuery = " SELECT * FROM tbl_leaveappform WHERE leaveappform_id = ?";
+    $fetchLeaveAppFormDataQuery = " SELECT * FROM tbl_leaveappform WHERE leaveappform_id = ? AND UPPER(archive) != 'DELETED'";
 
     $fetchLeaveAppFormDataStatement = $database->prepare($fetchLeaveAppFormDataQuery);
     $fetchLeaveAppFormDataStatement->bind_param("s", $leaveAppFormID);

@@ -19,7 +19,7 @@ $_SESSION['last_activity'] = time();
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = $_SESSION['employeeId'];
-    $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id= '$employeeId'";
+    $sql = "SELECT * FROM tbl_useraccounts WHERE employee_id= '$employeeId' AND UPPER(archive) != 'DELETED'";
     $result = $database->query($sql);
 
     if ($result->num_rows > 0) {

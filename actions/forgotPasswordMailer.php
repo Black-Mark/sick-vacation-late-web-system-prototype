@@ -16,7 +16,7 @@ require($assets_phpmailer_smtp);
 if (isset($_REQUEST['sendForgotPassword'])) {
     $toBeVerify = strip_tags(mysqli_real_escape_string($database, $_POST['toBeVerify']));
 
-    $checkExistQuery = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $checkExistQuery = "SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'";
     $checkExistStatement = mysqli_prepare($database, $checkExistQuery);
 
     mysqli_stmt_bind_param($checkExistStatement, "s", $toBeVerify);
@@ -95,7 +95,7 @@ if (isset($_REQUEST['sendForgotPassword'])) {
         }
 
     } else {
-        $_SESSION['alert_message'] = "Email does not exist";
+        $_SESSION['alert_message'] = "Useraccount does not exist";
         $_SESSION['alert_type'] = $warning_color;
     }
 

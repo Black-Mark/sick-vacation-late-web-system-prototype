@@ -12,7 +12,7 @@ $sql_department = "SELECT
                    LEFT JOIN
                         tbl_useraccounts u ON d.departmentHead = u.employee_id
                     WHERE 
-                        d.archive COLLATE latin1_general_ci != 'deleted'
+                        UPPER(d.archive) != 'DELETED'
                     ORDER BY 
                         departmentName";
 $departments = $database->query($sql_department);
@@ -201,8 +201,8 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                             <div class="item-detail-content">
                                 <span class="font-weight-bold">Department Head Name: </span>
                                 <?php
-                                    echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
-                                    ?>
+                                echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
+                                ?>
                                 <div class="button-container m-2 justify-content-center">
                                     <a
                                         href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">

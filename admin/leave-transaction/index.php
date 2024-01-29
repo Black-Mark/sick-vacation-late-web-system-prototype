@@ -14,7 +14,7 @@ try {
     // Determining Minimum Year
     $minYearQuery = "   SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
                         FROM tbl_leaveappform
-                        WHERE archive COLLATE latin1_general_ci != 'deleted'";
+                        WHERE UPPER(archive) != 'DELETED'";
     $minYearStatement = $database->prepare($minYearQuery);
     $minYearStatement->execute();
 
@@ -54,7 +54,7 @@ if ($selectedYear && $selectedYear != 'All') {
     $leavelistsql = "SELECT leaveapp.*, users.firstName AS userFirstName, users.lastName AS userLastName
                 FROM tbl_leaveappform leaveapp
                 LEFT JOIN tbl_useraccounts users ON users.employee_id = leaveapp.employee_id
-                WHERE (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) AND leaveapp.archive COLLATE latin1_general_ci != 'deleted'
+                WHERE (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) AND UPPER(leaveapp.archive) != 'DELETED'
                 ORDER BY dateCreated DESC";
 
     $leavelist_statement = $database->prepare($leavelistsql);
@@ -78,7 +78,7 @@ if ($selectedYear && $selectedYear != 'All') {
                     FROM tbl_leaveappform leaveapp
                     LEFT JOIN tbl_useraccounts users
                     ON users.employee_id = leaveapp.employee_id
-                    WHERE leaveapp.archive COLLATE latin1_general_ci != 'deleted'
+                    WHERE UPPER(leaveapp.archive) != 'DELETED'
                     ORDER BY dateCreated DESC";
 
     $leavelist_result = $database->query($leavelistsql);

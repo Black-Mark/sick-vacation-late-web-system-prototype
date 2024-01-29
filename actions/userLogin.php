@@ -14,7 +14,7 @@ if (isset($_REQUEST['login'])) {
 
     if (!empty($employeeId) && !empty($password)) {
         try {
-            $query = "SELECT * FROM tbl_useraccounts WHERE employee_id='$employeeId' AND BINARY password='$password' AND archive != 'deleted'";
+            $query = "SELECT * FROM tbl_useraccounts WHERE employee_id='$employeeId' AND BINARY password='$password' AND UPPER(archive) != 'DELETED'";
 
             $result = mysqli_query($database, $query);
             if ($result === false) {

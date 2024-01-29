@@ -64,7 +64,7 @@ function getEmployeeData($employee_id)
             LEFT JOIN
                 tbl_departments d ON ua.department = d.department_id
             WHERE
-                ua.employee_id = ?";
+                ua.employee_id = ? AND UPPER(ua.archive) != 'DELETED'";
 
     $fetchEmployeeStatement = $database->prepare($fetchEmployeeQuery);
 
@@ -89,7 +89,7 @@ function getAllDepartments()
 
     $departments = [];
 
-    $fetchAllDepartmentQuery = "SELECT * FROM tbl_departments";
+    $fetchAllDepartmentQuery = "SELECT * FROM tbl_departments WHERE UPPER(archive) != 'DELETED'";
 
     $fetchAllDepartmentResult = $database->query($fetchAllDepartmentQuery);
 
@@ -108,7 +108,10 @@ function getAllEmployeesNameAndID()
 
     $employeesNameAndId = [];
 
-    $fetchAllEmployeeNameAndIdQuery = "SELECT firstName, lastName, middleName, suffix, employee_id FROM tbl_useraccounts ORDER BY lastName";
+    $fetchAllEmployeeNameAndIdQuery = " SELECT firstName, lastName, middleName, suffix, employee_id 
+                                        FROM tbl_useraccounts
+                                        WHERE UPPER(archive) != 'DELETED'
+                                        ORDER BY lastName";
     $fetchAllEmployeeNameAndIdResult = $database->query($fetchAllEmployeeNameAndIdQuery);
 
     if ($fetchAllEmployeeNameAndIdResult) {
@@ -164,7 +167,7 @@ function getLeaveAppFormRecord($employee_id)
 
     $leaveAppRecordList = [];
 
-    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ?";
+    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND UPPER(archive) != 'DELETED'";
 
     $leaveAppFormRecordStatement = $database->prepare($leaveAppFormRecordQuery);
     $leaveAppFormRecordStatement->bind_param("s", $employee_id);
@@ -181,7 +184,7 @@ function getLeaveAppFormRecordBasedYear($employee_id, $year)
 
     $leaveAppRecordList = [];
 
-    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?)";
+    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND UPPER(archive) != 'DELETED' AND (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?)";
 
     $leaveAppFormRecordStatement = $database->prepare($leaveAppFormRecordQuery);
     $leaveAppFormRecordStatement->bind_param("sss", $employee_id, $year, $year);
@@ -211,6 +214,7 @@ function getEmployeeLeaveAppFormData($employee_id, $leaveappform_id)
                                         tbl_departments d ON ua.department = d.departmentName
                                     WHERE
                                         laf.employee_id = ? AND
+                                        UPPER(laf.archive) != 'DELETED' AND
                                         laf.leaveappform_id = ?";
 
     $fetchLeaveAppFormDataStatement = $database->prepare($fetchLeaveAppFormDataQuery);
@@ -242,7 +246,7 @@ function getIncentiveLeaveComputation($employee_id)
     $fetchLeaveDataWithMontly = [];
 
     // Get all the Records
-    $sqlFetchAllLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? ORDER BY period ASC, dateCreated ASC";
+    $sqlFetchAllLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND UPPER(archive) != 'DELETED' ORDER BY period ASC, dateCreated ASC";
     $stmtsqlFetchAllLeaveData = $database->prepare($sqlFetchAllLeaveData);
 
     if ($stmtsqlFetchAllLeaveData) {
