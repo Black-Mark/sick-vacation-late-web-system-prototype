@@ -47,6 +47,21 @@ function organizeFullName($firstName = "", $middleName = "", $lastName = "", $su
     return trim($fullName);
 }
 
+function identifyEmployeeAge($birthdate) {
+
+    if (empty($birthdate) || $birthdate == '0000-00-00') {
+        return 'Not Specified';
+    }
+
+    // Append a default time to the birthdate
+    $birthdate .= ' 00:00:00';
+    $birthDateTime = new DateTime($birthdate);
+    
+    $currentDate = new DateTime();
+    $ageInterval = $currentDate->diff($birthDateTime);
+    return $ageInterval->y;
+}
+
 // Function to Get Employee Data with Department Name and Department Head
 function getEmployeeData($employee_id)
 {

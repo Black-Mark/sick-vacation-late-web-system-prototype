@@ -167,7 +167,7 @@ if (isset($_SESSION['employeeId'])) {
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Age:</span>
                         <span class="account-profile-context">
-                            <?php echo $employeeData['age']; ?>
+                            <?php echo identifyEmployeeAge($employeeData['birthdate']); ?>
                         </span>
                     </div>
 
@@ -185,6 +185,18 @@ if (isset($_SESSION['employeeId'])) {
                         </span>
                     </div>
 
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Birthday:</span>
+                        <span class="account-profile-context">
+                            <?php
+                            if (empty($employeeData['birthdate']) || $employeeData['birthdate'] == '0000-00-00') {
+                                echo 'Not Specified';
+                            } else {
+                                echo $employeeData['birthdate'];
+                            }
+                            ?>
+                        </span>
+                    </div>
 
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Department:</span>

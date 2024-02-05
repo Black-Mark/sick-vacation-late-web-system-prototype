@@ -16,7 +16,7 @@ if (isset($_POST['editEmployee'])) {
     $middleName = strip_tags(mysqli_real_escape_string($database, $_POST['middleName']));
     $lastName = strip_tags(mysqli_real_escape_string($database, $_POST['lastName']));
     $suffix = strip_tags(mysqli_real_escape_string($database, $_POST["suffix"]));
-    $age = strip_tags(mysqli_real_escape_string($database, $_POST['age']));
+    $birthdate = strip_tags(mysqli_real_escape_string($database, $_POST['birthdate']));
     $sex = strip_tags(mysqli_real_escape_string($database, $_POST['sex']));
     $civilStatus = strip_tags(mysqli_real_escape_string($database, $_POST['civilStatus']));
     $department = strip_tags(mysqli_real_escape_string($database, $_POST['department']));
@@ -32,9 +32,9 @@ if (isset($_POST['editEmployee'])) {
               middleName = ?,
               lastName = ?,
               suffix = ?,
-              age = ?,
               sex = ?,
               civilStatus = ?,
+              birthdate = ?,
               department = ?,
               jobPosition = ?,
               dateStarted = ?
@@ -43,7 +43,7 @@ if (isset($_POST['editEmployee'])) {
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "ssssssssissssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted, $oldEmployeeID);
+        mysqli_stmt_bind_param($stmt, "sssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $oldEmployeeID);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Employee with ID $employeeId successfully updated";
@@ -82,7 +82,7 @@ if (isset($_POST['editEmployee'])) {
         // Decode the JSON string into an array
         $decodedArray = json_decode($selectedEmpID[0], true);
 
-        $fieldsToUpdate = array('role', 'dateStarted', 'age', 'sex', 'civilStatus', 'password', 'department', 'jobPosition');
+        $fieldsToUpdate = array('role', 'dateStarted', 'sex', 'civilStatus', 'password', 'department', 'jobPosition');
 
         if ($decodedArray !== null) {
             $allUpdated = true; // Flag to track if all employees are updated successfully

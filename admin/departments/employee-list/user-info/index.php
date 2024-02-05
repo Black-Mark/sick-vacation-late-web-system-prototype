@@ -127,7 +127,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Age:</span>
                         <span class="account-profile-context">
-                            <?php echo $employeeData['age']; ?>
+                            <?php echo identifyEmployeeAge($employeeData['birthdate']); ?>
                         </span>
                     </div>
 
@@ -145,6 +145,18 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                         </span>
                     </div>
 
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Birthday:</span>
+                        <span class="account-profile-context">
+                            <?php
+                            if (empty($employeeData['birthdate']) || $employeeData['birthdate'] == '0000-00-00') {
+                                echo 'Not Specified';
+                            } else {
+                                echo $employeeData['birthdate'];
+                            }
+                            ?>
+                        </span>
+                    </div>
 
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Department:</span>

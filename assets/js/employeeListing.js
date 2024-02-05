@@ -78,9 +78,9 @@ $(document).ready(function () {
         var middleName = $(this).data('middle-name');
         var lastName = $(this).data('last-name');
         var suffix = $(this).data('suffix');
-        var age = $(this).data('age');
         var sex = $(this).data('sex');
         var civilStatus = $(this).data('civil-status');
+        var birthdate = $(this).data('birthdate');
         var department = $(this).data('department');
         var jobPosition = $(this).data('job-position');
         var dateStarted = $(this).data('date-started');
@@ -95,9 +95,9 @@ $(document).ready(function () {
         $('#floatingEditMiddleName').val(middleName);
         $('#floatingEditLastName').val(lastName);
         $('#floatingEditSuffix').val(suffix);
-        $('#floatingEditAge').val(age);
         $('#floatingEditSex').val(sex);
         $('#floatingEditCivilStatus').val(civilStatus);
+        $('#floatingEditBirthdate').val(birthdate);
         $('#floatingEditDepartmentSelect').val(department);
         $('#floatingEditJobPosition').val(jobPosition);
         $('#floatingEditDateStarted').val(dateStarted);
@@ -112,9 +112,9 @@ $(document).ready(function () {
             middleName: middleName,
             lastName: lastName,
             suffix: suffix,
-            age: age,
             sex: sex,
             civilStatus: civilStatus,
+            birthdate: birthdate,
             department: department,
             jobPosition: jobPosition,
             dateStarted: dateStarted
@@ -134,9 +134,9 @@ $(document).ready(function () {
             $('#floatingEditMiddleName').val(editEmployeeState.middleName);
             $('#floatingEditLastName').val(editEmployeeState.lastName);
             $('#floatingEditSuffix').val(editEmployeeState.suffix);
-            $('#floatingEditAge').val(editEmployeeState.age);
             $('#floatingEditSex').val(editEmployeeState.sex);
             $('#floatingEditCivilStatus').val(editEmployeeState.civilStatus);
+            $('#floatingEditBirthdate').val(editEmployeeState.birthdate);
             $('#floatingEditDepartmentSelect').val(editEmployeeState.department);
             $('#floatingEditJobPosition').val(editEmployeeState.jobPosition);
             $('#floatingEditDateStarted').val(editEmployeeState.dateStarted);

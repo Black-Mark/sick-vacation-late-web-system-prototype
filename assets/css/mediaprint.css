@@ -239,25 +239,26 @@
     }
 
     .leave-app-form-name-container {
-        width: 10%;
+        width: 13%;
+        white-space: nowrap;
     }
 
     .leave-app-form-lastname-container {
-        width: 30%;
+        width: 29%;
         display: flex;
         flex-direction: column;
         text-align: center;
     }
 
     .leave-app-form-firstname-container {
-        width: 30%;
+        width: 29%;
         display: flex;
         flex-direction: column;
         text-align: center;
     }
 
     .leave-app-form-middlename-container {
-        width: 30%;
+        width: 29%;
         display: flex;
         flex-direction: column;
         text-align: center;

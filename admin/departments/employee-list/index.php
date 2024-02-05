@@ -188,13 +188,6 @@ if ($departmentlabel) {
                     <div class="row g-2 mb-2">
                         <div class="col-md">
                             <div class="form-floating">
-                                <input type="number" name="age" class="form-control" id="floatingAge" min="0" max="125"
-                                    placeholder="32" required>
-                                <label for="floatingAge">Age <span class="required-color">*</span></label>
-                            </div>
-                        </div>
-                        <div class="col-md">
-                            <div class="form-floating">
                                 <select name="sex" class="form-select" id="floatingSex"
                                     aria-label="Floating Sex Selection" required>
                                     <option value="" selected></option>
@@ -218,6 +211,11 @@ if ($departmentlabel) {
                                         class="required-color">*</span></label>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="date" name="birthdate" class="form-control" id="floatingBirthdate"
+                            placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>" required>
+                        <label for="floatingBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
                         <select name="department" class="form-select" id="floatingDepartmentSelect"
@@ -336,13 +334,6 @@ if ($departmentlabel) {
                     <div class="row g-2 mb-2">
                         <div class="col-md">
                             <div class="form-floating">
-                                <input type="number" name="age" class="form-control" id="floatingEditAge" min="0"
-                                    max="125" placeholder="32" required>
-                                <label for="floatingEditAge">Age <span class="required-color">*</span></label>
-                            </div>
-                        </div>
-                        <div class="col-md">
-                            <div class="form-floating">
                                 <select name="sex" class="form-select" id="floatingEditSex"
                                     aria-label="Floating Sex Selection" required>
                                     <option value="" selected></option>
@@ -366,6 +357,11 @@ if ($departmentlabel) {
                                         class="required-color">*</span></label>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="date" name="birthdate" class="form-control" id="floatingEditBirthdate"
+                            placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>" required>
+                        <label for="floatingEditBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
                         <select name="department" class="form-select" id="floatingEditDepartmentSelect"
@@ -610,8 +606,9 @@ if ($departmentlabel) {
                                                     data-middle-name="<?php echo $row['middleName']; ?>"
                                                     data-last-name="<?php echo $row['lastName']; ?>"
                                                     data-suffix="<?php echo $row['suffix']; ?>"
-                                                    data-age="<?php echo $row['age']; ?>" data-sex="<?php echo $row['sex']; ?>"
+                                                    data-sex="<?php echo $row['sex']; ?>"
                                                     data-civil-status="<?php echo $row['civilStatus']; ?>"
+                                                    data-birthdate="<?php echo $row['birthdate']; ?>"
                                                     data-department="<?php echo $row['department']; ?>"
                                                     data-job-position="<?php echo $row['jobPosition']; ?>"
                                                     data-date-started="<?php echo $row['dateStarted']; ?>">

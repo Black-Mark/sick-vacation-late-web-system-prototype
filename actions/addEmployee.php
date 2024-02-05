@@ -15,7 +15,7 @@ if (isset($_POST['addEmployee'])) {
     $middleName = strip_tags(mysqli_real_escape_string($database, $_POST["middleName"]));
     $lastName = strip_tags(mysqli_real_escape_string($database, $_POST["lastName"]));
     $suffix = strip_tags(mysqli_real_escape_string($database, $_POST["suffix"]));
-    $age = strip_tags(mysqli_real_escape_string($database, $_POST["age"]));
+    $birthdate = strip_tags(mysqli_real_escape_string($database, $_POST["birthdate"]));
     $sex = strip_tags(mysqli_real_escape_string($database, $_POST["sex"]));
     $civilStatus = strip_tags(mysqli_real_escape_string($database, $_POST["civilStatus"]));
     $department = strip_tags(mysqli_real_escape_string($database, $_POST["department"]));
@@ -47,11 +47,11 @@ if (isset($_POST['addEmployee'])) {
 
     try {
         $query = "INSERT INTO tbl_useraccounts 
-                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, age, sex, civilStatus, department, jobPosition, dateStarted, dateCreated) 
+                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, sex, civilStatus, birthdate, department, jobPosition, dateStarted, dateCreated) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = mysqli_prepare($database, $query);
-        mysqli_stmt_bind_param($stmt, "ssssssssisssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $age, $sex, $civilStatus, $department, $jobPosition, $dateStarted);
+        mysqli_stmt_bind_param($stmt, "ssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "New Employee Successfully Created";
