@@ -166,7 +166,11 @@ if (isset($_SESSION['employeeId'])) {
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDateStart'] . ' to ' . $ldata['inclusiveDateEnd']; ?>
+                                        <?php echo $ldata['inclusiveDateStart'];
+                                        if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
+                                            echo ' to ' . $ldata['inclusiveDateEnd'];
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <?php echo $ldata['status']; ?>

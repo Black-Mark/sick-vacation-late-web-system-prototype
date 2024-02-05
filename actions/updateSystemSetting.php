@@ -7,7 +7,10 @@ include($constants_variables);
 
 if (isset($_POST['changeSetting'])) {
     $settingId = strip_tags(mysqli_real_escape_string($database, $_POST['settingIdentifier']));
-    $selectedUser = strip_tags(mysqli_real_escape_string($database, $_POST['selectedAuthorizedUser']));
+    $selectedUser = isset($_POST['selectedAuthorizedUser']) ? strip_tags(mysqli_real_escape_string($database, $_POST['selectedAuthorizedUser'])) : "";
+    $nameOfInCharge = isset($_POST['nameOfInCharge']) ? strip_tags(mysqli_real_escape_string($database, $_POST['nameOfInCharge'])) : "";
+    $isFromDataHR = isset($_POST['isFromDataHR']) ? strip_tags(mysqli_real_escape_string($database, $_POST['isFromDataHR'])) : "";
+    $isFromDataMayor = isset($_POST['isFromDataMayor']) ? strip_tags(mysqli_real_escape_string($database, $_POST['isFromDataMayor'])) : "";
 
     $settingData = [];
     $departmentSearch = "";
@@ -27,80 +30,105 @@ if (isset($_POST['changeSetting'])) {
             mysqli_free_result($result);
 
             if ($settingData) {
-                if ($settingData['settingType'] == "Authorized User" && $selectedUser == "") {
-                    if ($settingData['settingSubject'] == "Human Resources Manager") {
-                        $departmentSearch = "Department of Human Resources";
-                    } else if ($settingData['settingSubject'] == "Municipal Mayor") {
-                        $departmentSearch = "Municipal Office";
-                    }
+                if ($isFromDataHR == 'on' || $isFromDataMayor == 'on') {
+                    if ($settingData['settingType'] == "Authorized User" && $selectedUser == "") {
+                        if ($settingData['settingSubject'] == "Human Resources Manager") {
+                            $departmentSearch = "Department of Human Resources";
+                        } else if ($settingData['settingSubject'] == "Municipal Mayor") {
+                            $departmentSearch = "Municipal Office";
+                        }
 
-                    $departmentQuery = "SELECT departmentHead FROM tbl_departments WHERE LOWER(departmentName) = LOWER(?)";
-                    $departmentStmt = mysqli_prepare($database, $departmentQuery);
+                        $departmentQuery = "SELECT departmentHead FROM tbl_departments WHERE LOWER(departmentName) = LOWER(?)";
+                        $departmentStmt = mysqli_prepare($database, $departmentQuery);
 
-                    if ($departmentStmt) {
-                        mysqli_stmt_bind_param($departmentStmt, "s", $departmentSearch);
-                        mysqli_stmt_execute($departmentStmt);
+                        if ($departmentStmt) {
+                            mysqli_stmt_bind_param($departmentStmt, "s", $departmentSearch);
+                            mysqli_stmt_execute($departmentStmt);
 
-                        $departmentResult = mysqli_stmt_get_result($departmentStmt);
+                            $departmentResult = mysqli_stmt_get_result($departmentStmt);
 
-                        if ($departmentResult) {
-                            $departmentData = mysqli_fetch_assoc($departmentResult);
-                            mysqli_free_result($departmentResult);
+                            if ($departmentResult) {
+                                $departmentData = mysqli_fetch_assoc($departmentResult);
+                                mysqli_free_result($departmentResult);
 
-                            $updateQuery = "UPDATE tbl_systemsettings SET settingKey = ? WHERE setting_id = ?";
-                            $updateStmt = mysqli_prepare($database, $updateQuery);
+                                $updateQuery = "UPDATE tbl_systemsettings SET settingKey = ?, settingInCharge = '' WHERE setting_id = ?";
+                                $updateStmt = mysqli_prepare($database, $updateQuery);
 
-                            if ($updateStmt) {
-                                mysqli_stmt_bind_param($updateStmt, "ss", $departmentData['departmentHead'], $settingId);
+                                if ($updateStmt) {
+                                    mysqli_stmt_bind_param($updateStmt, "ss", $departmentData['departmentHead'], $settingId);
 
-                                if (mysqli_stmt_execute($updateStmt)) {
-                                    $_SESSION['alert_message'] = "Automatically Sets Authorized User!";
-                                    $_SESSION['alert_type'] = $success_color;
+                                    if (mysqli_stmt_execute($updateStmt)) {
+                                        $_SESSION['alert_message'] = "Automatically Sets Authorized User!";
+                                        $_SESSION['alert_type'] = $success_color;
+                                    } else {
+                                        $_SESSION['alert_message'] = "Authorized User Changing Failed: " . mysqli_stmt_error($updateStmt);
+                                        $_SESSION['alert_type'] = $error_color;
+                                    }
+
+                                    mysqli_stmt_close($updateStmt);
                                 } else {
-                                    $_SESSION['alert_message'] = "Authorized User Changing Failed: " . mysqli_stmt_error($updateStmt);
+                                    $_SESSION['alert_message'] = "Error preparing the update statement: " . mysqli_error($database);
                                     $_SESSION['alert_type'] = $error_color;
                                 }
 
-                                mysqli_stmt_close($updateStmt);
                             } else {
-                                $_SESSION['alert_message'] = "Error preparing the update statement: " . mysqli_error($database);
+                                $_SESSION['alert_message'] = "Error executing the department query: " . mysqli_stmt_error($departmentStmt);
                                 $_SESSION['alert_type'] = $error_color;
                             }
 
+                            mysqli_stmt_close($departmentStmt);
                         } else {
-                            $_SESSION['alert_message'] = "Error executing the department query: " . mysqli_stmt_error($departmentStmt);
+                            $_SESSION['alert_message'] = "Error preparing the department statement: " . mysqli_error($database);
                             $_SESSION['alert_type'] = $error_color;
                         }
+                    } else if ($settingData['settingType'] == "Authorized User" && $selectedUser != "") {
+                        $updateQuery = "UPDATE tbl_systemsettings SET settingKey = ?, settingInCharge = '' WHERE setting_id = ?";
+                        $updateStmt = mysqli_prepare($database, $updateQuery);
 
-                        mysqli_stmt_close($departmentStmt);
-                    } else {
-                        $_SESSION['alert_message'] = "Error preparing the department statement: " . mysqli_error($database);
-                        $_SESSION['alert_type'] = $error_color;
-                    }
-                } else if ($settingData['settingType'] == "Authorized User" && $selectedUser != "") {
-                    $updateQuery = "UPDATE tbl_systemsettings SET settingKey = ? WHERE setting_id = ?";
-                    $updateStmt = mysqli_prepare($database, $updateQuery);
+                        if ($updateStmt) {
+                            mysqli_stmt_bind_param($updateStmt, "ss", $selectedUser, $settingId);
 
-                    if ($updateStmt) {
-                        mysqli_stmt_bind_param($updateStmt, "ss", $selectedUser, $settingId);
+                            if (mysqli_stmt_execute($updateStmt)) {
+                                $_SESSION['alert_message'] = "Authorized User Successfully Changed!";
+                                $_SESSION['alert_type'] = $success_color;
+                            } else {
+                                $_SESSION['alert_message'] = "Authorized User Changing Failed: " . mysqli_stmt_error($updateStmt);
+                                $_SESSION['alert_type'] = $error_color;
+                            }
 
-                        if (mysqli_stmt_execute($updateStmt)) {
-                            $_SESSION['alert_message'] = "Authorized User Successfully Changed!";
-                            $_SESSION['alert_type'] = $success_color;
+                            mysqli_stmt_close($updateStmt);
                         } else {
-                            $_SESSION['alert_message'] = "Authorized User Changing Failed: " . mysqli_stmt_error($updateStmt);
+                            $_SESSION['alert_message'] = "Error preparing the update statement: " . mysqli_error($database);
                             $_SESSION['alert_type'] = $error_color;
                         }
-
-                        mysqli_stmt_close($updateStmt);
                     } else {
-                        $_SESSION['alert_message'] = "Error preparing the update statement: " . mysqli_error($database);
-                        $_SESSION['alert_type'] = $error_color;
+                        $_SESSION['alert_message'] = "Not Yet Available!";
+                        $_SESSION['alert_type'] = $warning_color;
                     }
                 } else {
-                    $_SESSION['alert_message'] = "Not Yet Available!";
-                    $_SESSION['alert_type'] = $warning_color;
+                    if ($settingData['settingType'] == "Authorized User") {
+                        $updateQuery = "UPDATE tbl_systemsettings SET settingInCharge = ?, settingKey = '' WHERE setting_id = ?";
+                        $updateStmt = mysqli_prepare($database, $updateQuery);
+
+                        if ($updateStmt) {
+                            mysqli_stmt_bind_param($updateStmt, "ss", $nameOfInCharge, $settingId);
+
+                            if (mysqli_stmt_execute($updateStmt)) {
+                                $_SESSION['alert_message'] = "Authorized User Successfully Changed!";
+                                $_SESSION['alert_type'] = $success_color;
+                            } else {
+                                $_SESSION['alert_message'] = "Authorized User Changing Failed: " . mysqli_stmt_error($updateStmt);
+                                $_SESSION['alert_type'] = $error_color;
+                            }
+
+                            mysqli_stmt_close($updateStmt);
+                        } else {
+                            $_SESSION['alert_message'] = "Error preparing the update statement: " . mysqli_error($database);
+                            $_SESSION['alert_type'] = $error_color;
+                        }
+                    }
                 }
+
             }
         } else {
             $_SESSION['alert_message'] = "Error executing the query: " . mysqli_stmt_error($settingStmt);

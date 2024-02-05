@@ -154,6 +154,17 @@ body.webpage-background-cover {
     appearance: none;
 }
 
+.transparent-input {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    appearance: none;
+    width: 100%;
+    /* overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+}
+
 
 /* Containers and Groups */
 

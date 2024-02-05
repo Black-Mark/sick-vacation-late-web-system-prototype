@@ -43,6 +43,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+    <script src="<?php echo $assets_file_incharge_change; ?>"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -74,12 +75,17 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                             if ($settingData[$i]['settingType'] == "Authorized User" && $settingData[$i]['settingSubject'] == "Human Resources Manager") {
                                 ?>
                                 <div class="w-25 text-truncate">
-                                    <?php
-                                    echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
-                                    ?>
+                                    <input type="text" name="nameOfInCharge" class="transparent-input" readonly required value="<?php
+                                    if ($settingData[$i]['firstName'] != '' || $settingData[$i]['middleName'] != '' || $settingData[$i]['lastName'] != '' || $settingData[$i]['suffix'] != '') {
+                                        echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
+                                    } else {
+                                        echo $settingData[$i]['settingInCharge'];
+                                    }
+                                    ?>" />
                                 </div>
                                 <input type="hidden" name="settingIdentifier"
                                     value="<?php echo $settingData[$i]['setting_id']; ?>" />
+                                <input type="checkbox" name="isFromDataHR" checked />
                                 <select name="selectedAuthorizedUser" class="w-25 text-center form-select text-truncate">
                                     <option value="" selected>---Auto---</option>
                                     <?php
@@ -110,12 +116,12 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                             if ($settingData[$i]['settingType'] == "Authorized User" && $settingData[$i]['settingSubject'] == "Municipal Mayor") {
                                 ?>
                                 <div class="w-25 text-truncate">
-                                    <?php
-                                    echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
-                                    ?>
+                                    <input type="text" name="nameOfInCharge" class="transparent-input" readonly required
+                                        value="<?php echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1); ?>" />
                                 </div>
                                 <input type="hidden" name="settingIdentifier"
                                     value="<?php echo $settingData[$i]['setting_id']; ?>" />
+                                <input type="checkbox" name="isFromDataMayor" checked />
                                 <select name="selectedAuthorizedUser" class="w-25 text-center form-select text-truncate">
                                     <option value="" selected>---Auto---</option>
                                     <?php

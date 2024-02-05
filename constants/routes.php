@@ -77,6 +77,7 @@ $assets_file_leavedataform = $webhostpage . '/assets/js/leaveDataForm.js';
 $assets_file_employeeListing = $webhostpage . '/assets/js/employeeListing.js';
 $assets_file_leaveappform = $webhostpage . '/assets/js/leaveappform.js';
 $assets_file_archive = $webhostpage . '/assets/js/archiveListing.js';
+$assets_file_incharge_change = $webhostpage . '/assets/js/inChargeChange.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
