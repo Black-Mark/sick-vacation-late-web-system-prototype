@@ -213,23 +213,50 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $minutes = 0;
                     $dateOfAction = date("Y-m-d");
 
-                    $dataFormInitialRetrieveQuery = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
-                        VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    // if there is an existing update of not then insert by foreignkey
+                    $count = 0;
+                    // Check if the record exists
+                    $checkExistingQuery = "SELECT COUNT(*) AS count FROM tbl_leavedataform WHERE foreignKeyId = ?";
+                    $stmtCheckExisting = $database->prepare($checkExistingQuery);
+                    $stmtCheckExisting->bind_param('s', $leaveappformId);
+                    $stmtCheckExisting->execute();
+                    $stmtCheckExisting->bind_result($count);
+                    $stmtCheckExisting->fetch();
+                    $stmtCheckExisting->close();
 
-                    $stmtAddDataRecord = $database->prepare($dataFormInitialRetrieveQuery);
-                    $stmtAddDataRecord->bind_param('ssssssiiis', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+                    if ($count > 0) {
+                        // If record exists, perform update
+                        $updateQuery = "UPDATE tbl_leavedataform SET employee_id = ?, recordType = ?, period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? WHERE foreignKeyId = ?";
+                        $stmtUpdateRecord = $database->prepare($updateQuery);
+                        $stmtUpdateRecord->bind_param('ssssssiiiss', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveappformId);
+                        $stmtUpdateRecord->execute();
 
-                    $stmtAddDataRecord->execute();
+                        if ($stmtUpdateRecord->error) {
+                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Updation Failed!: " . $stmtUpdateRecord->error;
+                            $_SESSION['alert_type'] = $warning_color;
+                        } else {
+                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Updated!";
+                            $_SESSION['alert_type'] = $success_color;
+                        }
 
-                    if ($stmtAddDataRecord->error) {
-                        $_SESSION['alert_message'] = "Adding New Leave Record Failed!: " . $stmtAddDataRecord->error;
-                        $_SESSION['alert_type'] = $error_color;
+                        $stmtUpdateRecord->close();
                     } else {
-                        $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Added!";
-                        $_SESSION['alert_type'] = $success_color;
-                    }
+                        // If record doesn't exist, perform insert
+                        $insertQuery = "INSERT INTO tbl_leavedataform (employee_id, foreignKeyId, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $stmtInsertRecord = $database->prepare($insertQuery);
+                        $stmtInsertRecord->bind_param('sssssssiiis', $ownerOfForm, $leaveappformId, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+                        $stmtInsertRecord->execute();
 
-                    $stmtAddDataRecord->close();
+                        if ($stmtInsertRecord->error) {
+                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Failed: " . $stmtInsertRecord->error;
+                            $_SESSION['alert_type'] = $warning_color;
+                        } else {
+                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Added!";
+                            $_SESSION['alert_type'] = $success_color;
+                        }
+
+                        $stmtInsertRecord->close();
+                    }
 
                     // Notification
                     $notifEmpIdFrom = '@Admin';

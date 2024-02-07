@@ -22,8 +22,47 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
         mysqli_stmt_bind_param($archiveLeaveDataStatement, "i", $leaveDataFormId);
         mysqli_stmt_execute($archiveLeaveDataStatement);
         if (mysqli_stmt_affected_rows($archiveLeaveDataStatement) > 0) {
-            $_SESSION['alert_message'] = "Leave Data Successfully Moved to Trash";
-            $_SESSION['alert_type'] = $success_color;
+
+            $foreignKeyId = '';
+            $count = 0;
+            
+            $getForeignKeyQuery = "SELECT foreignKeyId FROM tbl_leavedataform WHERE leavedataform_id = ?";
+            $getForeignKeyStatement = $database->prepare($getForeignKeyQuery);
+            $getForeignKeyStatement->bind_param("i", $leaveDataFormId);
+            $getForeignKeyStatement->execute();
+            $getForeignKeyStatement->bind_result($foreignKeyId);
+            $getForeignKeyStatement->fetch();
+            $getForeignKeyStatement->close();
+
+            // Check if the record exists
+            $checkExistingQuery = "SELECT COUNT(*) AS count FROM tbl_leaveappform WHERE leaveappform_id = ?";
+            $stmtCheckExisting = $database->prepare($checkExistingQuery);
+            $stmtCheckExisting->bind_param('s', $foreignKeyId);
+            $stmtCheckExisting->execute();
+            $stmtCheckExisting->bind_result($count);
+            $stmtCheckExisting->fetch();
+            $stmtCheckExisting->close();
+
+            if ($count > 0) {
+                // If record exists, perform update
+                $updateQuery = "UPDATE tbl_leaveappform SET archive = 'deleted' WHERE leaveappform_id = ?";
+                $stmtUpdateRecord = $database->prepare($updateQuery);
+                $stmtUpdateRecord->bind_param('s', $foreignKeyId);
+                $stmtUpdateRecord->execute();
+
+                if ($stmtUpdateRecord->error) {
+                    $_SESSION['alert_message'] = "Leave Data Successfully Moved to Trash but Not Leave Form: " . $stmtUpdateRecord->error;
+                    $_SESSION['alert_type'] = $warning_color;
+                } else {
+                    $_SESSION['alert_message'] = "Leave Data and Leave Form Successfully Moved to Trash!";
+                    $_SESSION['alert_type'] = $success_color;
+                }
+
+                $stmtUpdateRecord->close();
+            } else {
+                $_SESSION['alert_message'] = "Leave Data Successfully Moved to Trash";
+                $_SESSION['alert_type'] = $success_color;
+            }
         } else {
             $_SESSION['alert_message'] = "Error Deleting Leave Data: " . mysqli_stmt_error($archiveLeaveDataStatement);
             $_SESSION['alert_type'] = $error_color;

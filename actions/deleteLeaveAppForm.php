@@ -17,8 +17,38 @@ if (isset($_POST['deleteLeaveAppForm'])) {
         mysqli_stmt_bind_param($archiveLeaveFormStatement, "s", $recordId);
         mysqli_stmt_execute($archiveLeaveFormStatement);
         if (mysqli_stmt_affected_rows($archiveLeaveFormStatement) > 0) {
-            $_SESSION['alert_message'] = "Leave Form Successfully Moved to Trash";
-            $_SESSION['alert_type'] = $success_color;
+
+            // if there is an existing foreignkey update it to deleted
+            $count = 0;
+            // Check if the record exists
+            $checkExistingQuery = "SELECT COUNT(*) AS count FROM tbl_leavedataform WHERE foreignKeyId = ?";
+            $stmtCheckExisting = $database->prepare($checkExistingQuery);
+            $stmtCheckExisting->bind_param('s', $recordId);
+            $stmtCheckExisting->execute();
+            $stmtCheckExisting->bind_result($count);
+            $stmtCheckExisting->fetch();
+            $stmtCheckExisting->close();
+
+            if ($count > 0) {
+                // If record exists, perform update
+                $updateQuery = "UPDATE tbl_leavedataform SET archive = 'deleted' WHERE foreignKeyId = ?";
+                $stmtUpdateRecord = $database->prepare($updateQuery);
+                $stmtUpdateRecord->bind_param('s', $recordId);
+                $stmtUpdateRecord->execute();
+
+                if ($stmtUpdateRecord->error) {
+                    $_SESSION['alert_message'] = "Leave Form Successfully Moved to Trash but Not Leave Data: " . $stmtUpdateRecord->error;
+                    $_SESSION['alert_type'] = $warning_color;
+                } else {
+                    $_SESSION['alert_message'] = "Leave Form and Leave Data Successfully Moved to Trash!";
+                    $_SESSION['alert_type'] = $success_color;
+                }
+
+                $stmtUpdateRecord->close();
+            } else {
+                $_SESSION['alert_message'] = "Leave Form Successfully Moved to Trash";
+                $_SESSION['alert_type'] = $success_color;
+            }
         } else {
             $_SESSION['alert_message'] = "Error Deleting Leave Form: " . mysqli_stmt_error($archiveLeaveFormStatement);
             $_SESSION['alert_type'] = $error_color;
