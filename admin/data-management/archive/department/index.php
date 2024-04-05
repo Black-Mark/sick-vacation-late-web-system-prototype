@@ -108,12 +108,20 @@ $departments = $database->query($sql_department);
                                             ?>
                                         </td>
                                         <td>
+                                            <div class="d-flex justify-content-center gap-2">
                                             <form method="POST" action="<?php echo $action_retrieve_department; ?>">
                                                 <input type="hidden" name="departmentNum"
                                                     value="<?php echo $row['department_id']; ?>" />
                                                 <input type="submit" name="retrieveDepartment" value="Retrieve"
                                                     class="custom-regular-button" />
                                             </form>
+                                            <form method="POST" action="<?php echo $action_delete_department; ?>">
+                                                <input type="hidden" name="departmentId"
+                                                    value="<?php echo $row['department_id']; ?>" />
+                                                <input type="submit" name="absoluteDeleteDepartment" value="Delete"
+                                                    class="custom-regular-button" />
+                                            </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php

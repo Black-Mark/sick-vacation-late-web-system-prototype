@@ -506,4 +506,62 @@ function getIncentiveLeaveComputation($employee_id)
 
     return $fetchLeaveDataWithMontly;
 }
+
+function computeExactTime($valuePoints) {
+    // Define the number of minutes in a workday
+    $minutesInWorkday = 8 * 60; // 8 hours * 60 minutes
+
+    // Calculate total minutes
+    $totalMinutes = $valuePoints * $minutesInWorkday;
+
+    // Calculate days
+    $days = floor($totalMinutes / $minutesInWorkday);
+
+    // Calculate remaining minutes after full days
+    $remainingMinutes = $totalMinutes % $minutesInWorkday;
+
+    // Convert remaining minutes to hours and minutes
+    $remainingHours = floor($remainingMinutes / 60);
+    $remainingMinutes %= 60;
+
+    // $result = [
+    //     'days' => $days,
+    //     'hours' => $remainingHours,
+    //     'minutes' => $remainingMinutes
+    // ];
+
+    $result = "";
+
+    if ($days > 0) {
+        $result .= $days . " day";
+        if ($days > 1) {
+            $result .= "s";
+        }
+        $result .= " ";
+    }
+
+    if ($remainingHours > 0) {
+        if ($result !== "") {
+            $result .= " ";
+        }
+        $result .= $remainingHours . " hour";
+        if ($remainingHours > 1) {
+            $result .= "s";
+        }
+    }
+
+    if ($remainingMinutes > 0) {
+        if ($result !== "") {
+            $result .= " ";
+        }
+        $result .= $remainingMinutes . " minute";
+        if ($remainingMinutes > 1) {
+            $result .= "s";
+        }
+    }
+
+    return $result;
+}
+
 ?>
+<!-- -->

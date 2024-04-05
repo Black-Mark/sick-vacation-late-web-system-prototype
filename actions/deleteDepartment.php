@@ -53,7 +53,7 @@ if (isset($_POST['deleteDepartment'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    header("Location: " . $location_admin_departments);
+    header("Location: " . $location_admin_datamanagement_archive_department);
     exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
@@ -61,3 +61,4 @@ if (isset($_POST['deleteDepartment'])) {
 }
 
 ?>
+<!-- -->

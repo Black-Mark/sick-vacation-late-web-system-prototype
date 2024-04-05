@@ -8,12 +8,24 @@ include($constants_variables);
 $employeeData = [];
 $leaveData = [];
 
+$availableSickLeave = "?";
+$availableVacationLeave = "?";
+
+$availableSickLeaveTime = "?";
+$availableVacationLeaveTime = "?";
+
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
     $leaveData = getIncentiveLeaveComputation($employeeId);
+    
+    if (count($leaveData) > 0) {
+        $availableSickLeave = number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2);
+        $availableVacationLeave = number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2);
+        $availableSickLeaveTime = computeExactTime($availableSickLeave);
+        $availableVacationLeaveTime = computeExactTime($availableVacationLeave);
+    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -66,28 +78,12 @@ if (isset($_SESSION['employeeId'])) {
 
                 <div class="card">
                     <h1>Available Vacation Leave:</h1>
-                    <h2>
-                        <?php
-                        if (count($leaveData) > 0) {
-                            echo number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2);
-                        } else {
-                            echo "?";
-                        }
-                        ?>
-                    </h2>
+                    <h2 title="<?php echo $availableVacationLeaveTime; ?>"><?php echo $availableVacationLeave; ?></h2>
                 </div>
 
                 <div class="card">
                     <h1>Available Sick Leave:</h1>
-                    <h2>
-                        <?php
-                        if (count($leaveData) > 0) {
-                            echo number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2);
-                        } else {
-                            echo "?";
-                        }
-                        ?>
-                    </h2>
+                    <h2 title="<?php echo $availableSickLeaveTime; ?>"><?php echo $availableSickLeave; ?></h2>
                 </div>
 
             </div>
