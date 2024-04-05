@@ -28,7 +28,7 @@ if ($departmentlabel) {
         $empsql = "SELECT u.*, d.departmentName
            FROM tbl_useraccounts u
            LEFT JOIN tbl_departments d ON u.department = d.department_id
-           WHERE d.department_id IS NULL OR UPPER(d.archive) != 'DELETED'
+           WHERE (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') AND UPPER(u.archive) != 'DELETED'
            ORDER BY u.lastName ASC";
         $employees = $database->query($empsql);
 
