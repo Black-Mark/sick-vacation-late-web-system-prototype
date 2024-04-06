@@ -122,12 +122,20 @@ $leaveforms = $database->query($leavelistsql);
                                             <?php echo $row['status']; ?>
                                         </td>
                                         <td>
+                                        <div class="d-flex justify-content-center gap-2">
                                             <form method="POST" action="<?php echo $action_retrieve_leaveappform; ?>">
                                                 <input type="hidden" name="leaveFormNum"
                                                     value="<?php echo $row['leaveappform_id']; ?>" />
                                                 <input type="submit" name="retrieveLeaveForm" value="Retrieve"
                                                     class="custom-regular-button" />
                                             </form>
+                                            <form method="POST" action="<?php echo $action_delete_leaveappform; ?>">
+                                                <input type="hidden" name="recordId"
+                                                    value="<?php echo $row['leaveappform_id']; ?>" />
+                                                <input type="submit" name="absoluteDeleteLeaveAppForm" value="Delete"
+                                                    class="custom-regular-button" />
+                                            </form>
+                                        </div>
                                         </td>
                                     </tr>
                                     <?php

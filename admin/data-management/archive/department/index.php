@@ -1,9 +1,9 @@
 <?php
-include("../../../../constants/routes.php");
+include ("../../../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $departments = [];
 
@@ -12,7 +12,7 @@ $sql_department = "SELECT d.*, u.firstName AS headFirstName, u.middleName AS hea
                    LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id 
                    WHERE d.archive COLLATE latin1_general_ci = 'deleted' 
                    ORDER BY d.departmentName";
-                   
+
 $departments = $database->query($sql_department);
 
 ?>
@@ -26,7 +26,7 @@ $departments = $database->query($sql_department);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -59,7 +59,7 @@ $departments = $database->query($sql_department);
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -109,18 +109,18 @@ $departments = $database->query($sql_department);
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
-                                            <form method="POST" action="<?php echo $action_retrieve_department; ?>">
-                                                <input type="hidden" name="departmentNum"
-                                                    value="<?php echo $row['department_id']; ?>" />
-                                                <input type="submit" name="retrieveDepartment" value="Retrieve"
-                                                    class="custom-regular-button" />
-                                            </form>
-                                            <form method="POST" action="<?php echo $action_delete_department; ?>">
-                                                <input type="hidden" name="departmentId"
-                                                    value="<?php echo $row['department_id']; ?>" />
-                                                <input type="submit" name="absoluteDeleteDepartment" value="Delete"
-                                                    class="custom-regular-button" />
-                                            </form>
+                                                <form method="POST" action="<?php echo $action_retrieve_department; ?>">
+                                                    <input type="hidden" name="departmentNum"
+                                                        value="<?php echo $row['department_id']; ?>" />
+                                                    <input type="submit" name="retrieveDepartment" value="Retrieve"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                                <form method="POST" action="<?php echo $action_delete_department; ?>">
+                                                    <input type="hidden" name="departmentId"
+                                                        value="<?php echo $row['department_id']; ?>" />
+                                                    <input type="submit" name="absoluteDeleteDepartment" value="Delete"
+                                                        class="custom-regular-button" />
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -242,11 +242,11 @@ $departments = $database->query($sql_department);
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

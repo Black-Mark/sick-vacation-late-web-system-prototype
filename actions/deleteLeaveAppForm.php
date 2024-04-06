@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['deleteLeaveAppForm'])) {
     // Only Update the Archive to Deleted
@@ -75,8 +75,20 @@ if (isset($_POST['deleteLeaveAppForm'])) {
     mysqli_stmt_bind_param($stmt, "s", $recordId);
 
     if (mysqli_stmt_execute($stmt)) {
-        $_SESSION['alert_message'] = "Leave Application Form Successfully Deleted";
-        $_SESSION['alert_type'] = $success_color;
+        $deleteLeaveDataRecordQuery = "DELETE FROM tbl_leavedataform WHERE foreignKeyId = ?";
+        $deleteLeaveDataRecordStatement = mysqli_prepare($database, $deleteLeaveDataRecordQuery);
+
+        mysqli_stmt_bind_param($deleteLeaveDataRecordStatement, "s", $recordId);
+
+        if (mysqli_stmt_execute($deleteLeaveDataRecordStatement)) {
+            $_SESSION['alert_message'] = "Leave Application Form Data Successfully Deleted";
+            $_SESSION['alert_type'] = $success_color;
+        } else {
+            $_SESSION['alert_message'] = "Error Deleting Leave Form Data Record: " . mysqli_stmt_error($deleteLeaveDataRecordStatement);
+            $_SESSION['alert_type'] = $error_color;
+        }
+
+        mysqli_stmt_close($deleteLeaveDataRecordStatement);
     } else {
         $_SESSION['alert_message'] = "Error Deleting Leave Application Form: " . mysqli_stmt_error($stmt);
         $_SESSION['alert_type'] = $error_color;
@@ -87,7 +99,7 @@ if (isset($_POST['deleteLeaveAppForm'])) {
     if ($empId) {
         header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
     } else {
-        header("Location: " . $location_admin_leaveapplist);
+        header("Location: " . $location_admin_datamanagement_archive_leaveform);
     }
     exit();
 } else {
