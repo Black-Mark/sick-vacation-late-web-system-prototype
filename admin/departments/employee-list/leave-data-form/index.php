@@ -606,7 +606,7 @@ if (!empty($leaveData)) {
                     </div>
 
                     <div class="overflow-auto custom-scrollbar">
-                        <table class="data-form-detail-table">
+                        <table id="adjustable-table" class="data-form-detail-table">
                             <thead>
                                 <tr>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
@@ -734,7 +734,7 @@ if (!empty($leaveData)) {
                                                     }
                                                     ?>
                                                     <?php
-                                                    if($ldata['particular'] != "Initial Record" || $ldata['particular'] != "Monthly Record"){
+                                                    if($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit"){
                                                         echo '('.formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']).')';
                                                     }
                                                 ?>
@@ -906,6 +906,8 @@ if (!empty($leaveData)) {
     </div>
 
     <?php include($components_file_toastify); ?>
+
+    <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
 
 </body>
 
