@@ -563,5 +563,36 @@ function computeExactTime($valuePoints) {
     return $result;
 }
 
+function formatExactTime($day, $hour, $minutes) {
+    $formattedTime = '';
+
+    if ($day > 0) {
+        $formattedTime .= $day . ' day';
+        if ($day > 1) {
+            $formattedTime .= 's';
+        }
+        $formattedTime .= ' ';
+    }
+
+    if ($hour > 0) {
+        $formattedTime .= $hour . ' hour';
+        if ($hour > 1) {
+            $formattedTime .= 's';
+        }
+        $formattedTime .= ' ';
+    }
+
+    if ($minutes > 0) {
+        $formattedTime .= $minutes . ' minute';
+        if ($minutes > 1) {
+            $formattedTime .= 's';
+        }
+    }
+
+    $formattedTime = trim($formattedTime);
+
+    return $formattedTime;
+}
+
 ?>
 <!-- -->

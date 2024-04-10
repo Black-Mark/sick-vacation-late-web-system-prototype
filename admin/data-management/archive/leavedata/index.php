@@ -1,9 +1,9 @@
 <?php
-include("../../../../constants/routes.php");
+include ("../../../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $leavedatas = [];
 $sql_leavedata = "  SELECT leavedata.*, ua.firstName, ua.middleName, ua.lastName, ua.suffix
@@ -24,7 +24,7 @@ $leavedatas = $database->query($sql_leavedata);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -57,7 +57,7 @@ $leavedatas = $database->query($sql_leavedata);
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -134,12 +134,20 @@ $leavedatas = $database->query($sql_leavedata);
                                             ?>
                                         </td>
                                         <td>
-                                            <form method="POST" action="<?php echo $action_retrieve_leaverecorddata; ?>">
-                                                <input type="hidden" name="leaveDataNum"
-                                                    value="<?php echo $row['leavedataform_id']; ?>" />
-                                                <input type="submit" name="retrieveLeaveData" value="Retrieve"
-                                                    class="custom-regular-button" />
-                                            </form>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <form method="POST" action="<?php echo $action_retrieve_leaverecorddata; ?>">
+                                                    <input type="hidden" name="leaveDataNum"
+                                                        value="<?php echo $row['leavedataform_id']; ?>" />
+                                                    <input type="submit" name="retrieveLeaveData" value="Retrieve"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                                <form method="POST" action="<?php echo $action_delete_leaverecorddata; ?>">
+                                                    <input type="hidden" name="leavedataformId"
+                                                        value="<?php echo $row['leavedataform_id']; ?>" />
+                                                    <input type="submit" name="absoluteDeleteLeaveData" value="Delete"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php
@@ -260,11 +268,11 @@ $leavedatas = $database->query($sql_leavedata);
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

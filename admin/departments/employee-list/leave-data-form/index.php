@@ -718,17 +718,7 @@ if (!empty($leaveData)) {
                                                     }
                                                     ?>
                                                 </td>
-                                                <td title="<?php
-                                                if ($ldata['days'] > 0) {
-                                                    echo ' ' . $ldata['days'] . ' day(s) ';
-                                                }
-                                                if ($ldata['hours'] > 0) {
-                                                    echo ' ' . $ldata['hours'] . ' hour(s) ';
-                                                }
-                                                if ($ldata['minutes'] > 0) {
-                                                    echo ' ' . $ldata['minutes'] . ' minute(s) ';
-                                                }
-                                                ?>" class="table-item-base">
+                                                <td title="" class="table-item-base">
                                                     <?php
                                                     if ($ldata['particular'] == "Others") {
                                                         if ($ldata['particularLabel']) {
@@ -743,6 +733,11 @@ if (!empty($leaveData)) {
                                                         }
                                                     }
                                                     ?>
+                                                    <?php
+                                                    if($ldata['particular'] != "Initial Record" || $ldata['particular'] != "Monthly Record"){
+                                                        echo '('.formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']).')';
+                                                    }
+                                                ?>
                                                 </td>
 
                                                 <td class="table-item-base">

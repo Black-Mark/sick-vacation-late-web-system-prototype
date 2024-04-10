@@ -158,7 +158,7 @@ if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])
     if ($departmentlabel) {
         header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
     } else {
-        header("Location: " . $location_admin_departments_office);
+        header("Location: " . $location_admin_datamanagement_archive_employee);
     }
     exit();
 } else {
