@@ -22,6 +22,7 @@ if (isset($_POST['editEmployee'])) {
     $department = strip_tags(mysqli_real_escape_string($database, $_POST['department']));
     $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST['jobPosition']));
     $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST['dateStarted']));
+    $accountStatus = strip_tags(mysqli_real_escape_string($database, $_POST['status']));
 
     $query = "UPDATE tbl_useraccounts SET
               employee_id = ?,
@@ -37,13 +38,14 @@ if (isset($_POST['editEmployee'])) {
               birthdate = ?,
               department = ?,
               jobPosition = ?,
-              dateStarted = ?
+              dateStarted = ?,
+              status = ?
               WHERE employee_id = ?";
 
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "sssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $oldEmployeeID);
+        mysqli_stmt_bind_param($stmt, "ssssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus, $oldEmployeeID);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Employee with ID $employeeId successfully updated";
@@ -82,7 +84,7 @@ if (isset($_POST['editEmployee'])) {
         // Decode the JSON string into an array
         $decodedArray = json_decode($selectedEmpID[0], true);
 
-        $fieldsToUpdate = array('role', 'dateStarted', 'sex', 'civilStatus', 'password', 'department', 'jobPosition');
+        $fieldsToUpdate = array('role', 'dateStarted', 'sex', 'civilStatus', 'password', 'department', 'jobPosition', 'status');
 
         if ($decodedArray !== null) {
             $allUpdated = true; // Flag to track if all employees are updated successfully

@@ -417,7 +417,7 @@ function getIncentiveLeaveComputation($employee_id)
 
                 if ($fetchLeaveDataWithMontly[$i]['particular'] == "Sick Leave") {
                     $totalSickComputedValue = 0.002 * $totalMinutes * 1.0416667;
-                } else if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
+                } else if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late" || $fetchLeaveDataWithMontly[$i]['particular'] == "Forced Leave") {
                     $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
                 }
 
@@ -432,7 +432,7 @@ function getIncentiveLeaveComputation($employee_id)
                 $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $tempVacationBalance;
                 $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $tempSickBalance;
 
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
+                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late" || $fetchLeaveDataWithMontly[$i]['particular'] == "Forced Leave") {
                     if ($tempVacationBalance <= $totalVacationComputedValue) {
                         $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = $tempVacationBalance;
                         $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;

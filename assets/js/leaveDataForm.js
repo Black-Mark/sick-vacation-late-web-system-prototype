@@ -450,6 +450,70 @@ document.addEventListener("DOMContentLoaded", function () {
             $("select").prop('selectedIndex', 0);
             setInitializeDataFromState();
         });
+
+        // Edit Initial Record
+        $('.editInitialRecord').click(function () {
+            // Set form field values
+            var editInitialPeriodStart = $(this).data('period-start');
+            var editInitialPeriodEnd = $(this).data('period-end');
+            var editInitialParticularLabel = $(this).data('particular-label') || "";
+
+            // Retrieve the data and convert to floating-point number, set to 0 if null
+            var editInitialVacationEarned = parseFloat($(this).data('vacation-earned')) || 0;
+            var editInitialSickEarned = parseFloat($(this).data('sick-earned')) || 0;
+            var editInitialVacationWithoutPay = parseFloat($(this).data('vacation-withoutpay')) || 0;
+            var editInitialSickWithoutPay = parseFloat($(this).data('sick-withoutpay')) || 0;
+
+            // Round the values to two decimal places if not zero
+            editInitialVacationEarned = editInitialVacationEarned !== 0 ? editInitialVacationEarned.toFixed(2) : '0';
+            editInitialSickEarned = editInitialSickEarned !== 0 ? editInitialSickEarned.toFixed(2) : '0';
+            editInitialVacationWithoutPay = editInitialVacationWithoutPay !== 0 ? editInitialVacationWithoutPay.toFixed(2) : '0';
+            editInitialSickWithoutPay = editInitialSickWithoutPay !== 0 ? editInitialSickWithoutPay.toFixed(2) : '0';
+
+            var editInitialDateOfAction = $(this).data('date-of-action');
+
+            // Set form field values
+            $('#floatingEditInitializePeriod').val(editInitialPeriodStart);
+            $('#floatingEditInitializePeriodEnd').val(editInitialPeriodEnd);
+            $('#floatingEditInitialParticularLabel').val(editInitialParticularLabel);
+            $('#editVacationBalanceInput').val(editInitialVacationEarned);
+            $('#editSickBalanceInput').val(editInitialSickEarned);
+            $('#editVacationUnderWOPayInput').val(editInitialVacationWithoutPay);
+            $('#editSickUnderWOPayInput').val(editInitialSickWithoutPay);
+            $('#floatingEditInitializeDateOfAction').val(editInitialDateOfAction);
+
+            // Save the state
+            editInitialLeaveDataRecordState = {
+                editInitialPeriodStart: editInitialPeriodStart,
+                editInitialPeriodEnd: editInitialPeriodEnd,
+                editInitialParticularLabel: editInitialParticularLabel,
+                editInitialVacationEarned: editInitialVacationEarned,
+                editInitialSickEarned: editInitialSickEarned,
+                editInitialVacationWithoutPay: editInitialVacationWithoutPay,
+                editInitialSickWithoutPay: editInitialSickWithoutPay,
+                editInitialDateOfAction: editInitialDateOfAction
+            };
+        });
+
+        function setEditInitialDataFromState() {
+            // Set form field values from the editInitialLeaveDataRecordState object
+            $('#floatingEditInitializePeriod').val(editInitialLeaveDataRecordState.editInitialPeriodStart);
+            $('#floatingEditInitializePeriodEnd').val(editInitialLeaveDataRecordState.editInitialPeriodEnd);
+            $('#floatingEditInitialParticularLabel').val(editInitialLeaveDataRecordState.editInitialParticularLabel);
+            $('#editVacationBalanceInput').val(editInitialLeaveDataRecordState.editInitialVacationEarned);
+            $('#editSickBalanceInput').val(editInitialLeaveDataRecordState.editInitialSickEarned);
+            $('#editVacationUnderWOPayInput').val(editInitialLeaveDataRecordState.editInitialVacationWithoutPay);
+            $('#editSickUnderWOPayInput').val(editInitialLeaveDataRecordState.editInitialSickWithoutPay);
+            $('#floatingEditInitializeDateOfAction').val(editInitialLeaveDataRecordState.editInitialDateOfAction);
+        }
+
+        $('.resetEditInitialRecord').click(function () {
+            // Reset form fields to their initial values
+            $(":input:not(:submit, :hidden)").val('');
+            $("select").prop('selectedIndex', 0);
+            setEditInitialDataFromState();
+        });
+
     });
 
 });

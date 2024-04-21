@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
+include ($constants_file_dbconnect);
 // include($constants_file_session_login);
-include($constants_variables);
+include ($constants_variables);
 
 @ob_start();
 session_start();
@@ -25,6 +25,13 @@ if (isset($_REQUEST['login'])) {
 
             if ($count > 0) {
                 $user_data = mysqli_fetch_assoc($result);
+
+                if (strcasecmp($user_data['status'], 'Banned') == 0) {
+                    $_SESSION['alert_message'] = "Your account has been banned!";
+                    $_SESSION['alert_type'] = $error_color;
+                    header("Location: " . $location_login);
+                    exit();
+                }
 
                 session_regenerate_id();
                 $_SESSION['employeeId'] = $employeeId;

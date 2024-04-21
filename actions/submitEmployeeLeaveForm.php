@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_employee);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_employee);
+include ($constants_variables);
 
 if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     // POST AND SESSION GET DATA FETCH
@@ -104,7 +104,13 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             // $leaveData = getIncentiveLeaveComputation($employeeId);
             $settingData = getAuthorizedUser();
             // Can either be not used
-            $departmentName = $employeeData['departmentName'];
+            if (($employeeData['department'] == "" || $employeeData['department'] == "Pending") && $employeeData['departmentName'] == "") {
+                $departmentName = "Pending";
+            } else if ($employeeData['department'] != "" && $employeeData['departmentName'] == "") {
+                $departmentName = "Unassigned";
+            } else {
+                $departmentName = $employeeData['departmentName'];
+            }
             $lastName = $employeeData['lastName'];
             $firstName = $employeeData['firstName'];
             $middleName = $employeeData['middleName'];

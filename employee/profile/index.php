@@ -118,6 +118,13 @@ if (isset($_SESSION['employeeId'])) {
                     </div>
 
                     <div class="d-flex flex-row gap-1 align-items-center">
+                        <span class="account-profile-subject">Account Status:</span>
+                        <span class="account-profile-context">
+                            <?php echo $employeeData['status']; ?>
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Email:</span>
                         <span class="account-profile-context">
                             <?php echo $employeeData['email']; ?>

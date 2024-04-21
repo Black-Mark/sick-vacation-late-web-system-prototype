@@ -1,9 +1,9 @@
 <?php
-include("../../../constants/routes.php");
+include ("../../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $departmentlabel = "";
 $departmentName = "";
@@ -86,7 +86,7 @@ if ($departmentlabel) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -119,7 +119,7 @@ if ($departmentlabel) {
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <!-- Add Modal -->
@@ -225,14 +225,14 @@ if ($departmentlabel) {
                             if (!empty($departments)) {
                                 foreach ($departments as $department) {
                                     ?>
-                                    <option value="<?php echo $department['department_id']; ?>">
+                                    <option value="<?php echo $department['department_id']; ?>" <?php echo ($department['department_id'] == $departmentlabel) ? 'selected' : ''; ?>>
                                         <?php echo $department['departmentName']; ?>
                                     </option>
                                     <?php
                                 }
                             }
                             ?>
-                            <option value="Pending">Pending</option>
+                            <option value="Pending" <?php echo (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) ? 'selected' : ''; ?>>Pending</option>
                         </select>
                         <label for="floatingDepartmentSelect">Department <span class="required-color">*</span></label>
                     </div>
@@ -241,21 +241,39 @@ if ($departmentlabel) {
                             placeholder="IT Personnel" required>
                         <label for="floatingJobPosition">Job Position <span class="required-color">*</span></label>
                     </div>
-                    <div class="form-floating mb-2">
-                        <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
-                            placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
-                        <label for="floatingDateStarted">Date Started <span class="required-color">*</span></label>
+                    <div class="row g-2 mb-2">
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
+                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
+                                <label for="floatingDateStarted">Date Started <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <select name="status" class="form-select" id="floatingSelectStatus"
+                                    aria-label="Floating Status Selection" required>
+                                    <option value="Active" selected>Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Banned">Banned</option>
+                                </select>
+                                <label for="floatingSelectStatus">Status <span class="required-color">*</span></label>
+                            </div>
+                        </div>
                     </div>
                     <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
                     <div class="form-floating mb-2">
-                        <input type="number" step="any" name="initialVacationCredit" class="form-control" id="floatingInitialVacationCredit"
-                            placeholder="1.25" value="1.25" required>
-                        <label for="floatingInitialVacationCredit">Initial Vacation Credit <span class="required-color">*</span></label>
+                        <input type="number" step="any" name="initialVacationCredit" class="form-control"
+                            id="floatingInitialVacationCredit" placeholder="1.25" value="1.25" required>
+                        <label for="floatingInitialVacationCredit">Initial Vacation Credit <span
+                                class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
-                        <input type="number" step="any" name="initialSickCredit" class="form-control" id="floatingInitialSickCredit"
-                            placeholder="1.25" value="1.25" required>
-                        <label for="floatingInitialSickCredit">Initial Sick Credit <span class="required-color">*</span></label>
+                        <input type="number" step="any" name="initialSickCredit" class="form-control"
+                            id="floatingInitialSickCredit" placeholder="1.25" value="1.25" required>
+                        <label for="floatingInitialSickCredit">Initial Sick Credit <span
+                                class="required-color">*</span></label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -388,10 +406,27 @@ if ($departmentlabel) {
                             placeholder="IT Personnel" required>
                         <label for="floatingEditJobPosition">Job Position <span class="required-color">*</span></label>
                     </div>
-                    <div class="form-floating mb-2">
-                        <input type="date" name="dateStarted" class="form-control" id="floatingEditDateStarted"
-                            placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
-                        <label for="floatingEditDateStarted">Date Started <span class="required-color">*</span></label>
+                    <div class="row g-2 mb-2">
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="dateStarted" class="form-control" id="floatingEditDateStarted"
+                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
+                                <label for="floatingEditDateStarted">Date Started <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <select name="status" class="form-select" id="floatingEditSelectStatus"
+                                    aria-label="Floating Status Selection" required>
+                                    <option value="Active" selected>Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Banned">Banned</option>
+                                </select>
+                                <label for="floatingEditSelectStatus">Status <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -501,7 +536,16 @@ if ($departmentlabel) {
                             placeholder="IT Personnel">
                         <label for="floatingEditMultipleJobPosition">Job Position</label>
                     </div>
-
+                    <div class="form-floating">
+                        <select name="status" class="form-select" id="floatingEditMultipleStatus"
+                            aria-label="Floating Multiple Status Selection" required>
+                            <option value="" selected></option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Banned">Banned</option>
+                        </select>
+                        <label for="floatingEditSelectStatus">Status <span class="required-color">*</span></label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -551,7 +595,9 @@ if ($departmentlabel) {
                                 <th>Name</th>
                                 <th>Department</th>
                                 <th>Sex</th>
+                                <th>Age</th>
                                 <th>Civil Status</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -585,7 +631,13 @@ if ($departmentlabel) {
                                             <?php echo $row['sex']; ?>
                                         </td>
                                         <td>
+                                            <?php echo identifyEmployeeAge($row['birthdate']); ?>
+                                        </td>
+                                        <td>
                                             <?php echo $row['civilStatus']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['status']; ?>
                                         </td>
                                         <td>
                                             <form method="POST" action="<?php echo $action_delete_employee; ?>">
@@ -611,7 +663,8 @@ if ($departmentlabel) {
                                                     data-birthdate="<?php echo $row['birthdate']; ?>"
                                                     data-department="<?php echo $row['department']; ?>"
                                                     data-job-position="<?php echo $row['jobPosition']; ?>"
-                                                    data-date-started="<?php echo $row['dateStarted']; ?>">
+                                                    data-date-started="<?php echo $row['dateStarted']; ?>"
+                                                    data-account-status="<?php echo $row['status']; ?>">
                                                     Edit
                                                 </button>
 
@@ -645,7 +698,11 @@ if ($departmentlabel) {
                         // },
                         // ordering: false,
                         columnDefs: [
-                            { targets: [3, 4], visible: false },
+                            {
+                                targets: [<?php if ($departmentlabel != "") {
+                                    echo "2,";
+                                } ?>3, 4, 5, 6], visible: false
+                            },
                             {
                                 'targets': 0,
                                 'orderable': false,
@@ -742,11 +799,11 @@ if ($departmentlabel) {
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

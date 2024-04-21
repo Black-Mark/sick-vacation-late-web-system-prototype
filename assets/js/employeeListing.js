@@ -84,6 +84,7 @@ $(document).ready(function () {
         var department = $(this).data('department');
         var jobPosition = $(this).data('job-position');
         var dateStarted = $(this).data('date-started');
+        var accountStatus = $(this).data('account-status');
 
         // Set form field values
         $('#floatingEditOldEmployeeId').val(employeeId);
@@ -101,6 +102,7 @@ $(document).ready(function () {
         $('#floatingEditDepartmentSelect').val(department);
         $('#floatingEditJobPosition').val(jobPosition);
         $('#floatingEditDateStarted').val(dateStarted);
+        $('#floatingEditSelectStatus').val(accountStatus);
 
         // Save the state
         editEmployeeState = {
@@ -117,7 +119,8 @@ $(document).ready(function () {
             birthdate: birthdate,
             department: department,
             jobPosition: jobPosition,
-            dateStarted: dateStarted
+            dateStarted: dateStarted,
+            accountStatus: accountStatus
         };
     });
 
@@ -140,6 +143,7 @@ $(document).ready(function () {
             $('#floatingEditDepartmentSelect').val(editEmployeeState.department);
             $('#floatingEditJobPosition').val(editEmployeeState.jobPosition);
             $('#floatingEditDateStarted').val(editEmployeeState.dateStarted);
+            $('#floatingEditSelectStatus').val(editEmployeeState.accountStatus);
         }
     }
 

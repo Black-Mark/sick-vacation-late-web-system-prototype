@@ -1,9 +1,9 @@
 <?php
-include("../../constants/routes.php");
-include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_employee);
-include($constants_variables);
+include ("../../constants/routes.php");
+include ($components_file_error_handler);
+include ($constants_file_dbconnect);
+include ($constants_file_session_employee);
+include ($constants_variables);
 
 $employeeData = [];
 $fetchLeaveData = [];
@@ -67,7 +67,7 @@ if (!empty($leaveData)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Employee Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -101,7 +101,7 @@ if (!empty($leaveData)) {
 
 <body class="webpage-background-cover">
     <div class="component-container">
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -156,7 +156,7 @@ if (!empty($leaveData)) {
                     </div>
 
                     <div class="overflow-auto custom-scrollbar">
-                        <table class="data-form-detail-table">
+                        <table id="adjustable-table" class="data-form-detail-table">
                             <thead>
                                 <tr>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
@@ -351,7 +351,7 @@ if (!empty($leaveData)) {
                         }
                         ?>
                     </div>
-                    <div style="width: 18rem;" class="text-center" >
+                    <div style="width: 18rem;" class="text-center">
                         <?php
                         for ($i = 0; $i < count($settingData); $i++) {
                             if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
@@ -371,13 +371,15 @@ if (!empty($leaveData)) {
         </div>
     </div>
 
+    <?php if ($hasYearRecord) { ?>
+        <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
+    <?php } ?>
+
     <div class="component-container">
-        <?php
-        include($components_file_footer);
-        ?>
+        <?php include ($components_file_footer); ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

@@ -1,9 +1,9 @@
 <?php
-include("../../../../constants/routes.php");
-include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ("../../../../constants/routes.php");
+include ($components_file_error_handler);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
@@ -80,7 +80,7 @@ if (!empty($leaveData)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -116,7 +116,7 @@ if (!empty($leaveData)) {
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <!-- Initialize Record -->
@@ -271,6 +271,7 @@ if (!empty($leaveData)) {
                             <option value="Sick Leave">Sick Leave</option>
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
+                            <option value="Forced Leave">Forced Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -373,6 +374,7 @@ if (!empty($leaveData)) {
                             <option value="Sick Leave">Sick Leave</option>
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
+                            <option value="Forced Leave">Forced Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -392,7 +394,8 @@ if (!empty($leaveData)) {
                             <div class="form-floating">
                                 <input type="number" min="0" max="3652" name="dayInput" class="form-control"
                                     id="floatingNewDayInput" placeholder="3" required>
-                                <label for="floatingNewDayInput">Work Day(s) <span class="required-color">*</span></label>
+                                <label for="floatingNewDayInput">Work Day(s) <span
+                                        class="required-color">*</span></label>
                             </div>
                         </div>
 
@@ -476,6 +479,7 @@ if (!empty($leaveData)) {
                             <option value="Sick Leave">Sick Leave</option>
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
+                            <option value="Forced Leave">Forced Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingEditParticularType">Type <span class="required-color">*</span></label>
@@ -536,11 +540,121 @@ if (!empty($leaveData)) {
         </div>
     </form>
 
+    <!-- Edit Initial Leave Record -->
+    <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade" id="editInitialRecord"
+        tabindex="-1" role="dialog" aria-labelledby="editInitialRecordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editInitialRecordModalLongTitle">Edit Initial Leave Record
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                    <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="period" class="form-control" id="floatingEditInitializePeriod"
+                                    placeholder="2020-12-31" required>
+                                <label for="floatingEditInitializePeriod">Start Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodEnd" class="form-control"
+                                    id="floatingEditInitializePeriodEnd" placeholder="2020-12-31" required>
+                                <label for="floatingEditInitializePeriodEnd">End Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="text" name="particularLabel" class="form-control" id="floatingEditInitialParticularLabel"
+                            placeholder="">
+                        <label for="floatingEditInitialParticularLabel">Label
+                            <!-- <span class="required-color">*</span> -->
+                        </label>
+                    </div>
+
+                    <div class="m-2">Vacation Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationBalance" class="form-control"
+                                    id="editVacationBalanceInput" value="0" required>
+                                <label for="editVacationBalanceInput">Balance <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationUnderWOPay" class="form-control"
+                                    id="editVacationUnderWOPayInput" value="0" required>
+                                <label for="editVacationUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="m-2">Sick Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickBalance" class="form-control"
+                                    id="editSickBalanceInput" value="0" required>
+                                <label for="editSickBalanceInput">Balance <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickUnderWOPay" class="form-control"
+                                    id="editSickUnderWOPayInput" value="0" required>
+                                <label for="editSickUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="date" name="dateOfAction" class="form-control" id="floatingEditInitializeDateOfAction"
+                            placeholder="2020-12-31" required>
+                        <label for="floatingEditInitializeDateOfAction">Date of Action <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary resetEditInitialRecord">Reset</button>
+                    <input type="submit" name="editInitialLeaveDataRecord" value="Save Initial Record"
+                        class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="page-container">
         <div class="page-content">
 
             <div class="component-container">
-                <?php include($components_file_navpanel); ?>
+                <?php include ($components_file_navpanel); ?>
             </div>
 
             <div class='box-container'>
@@ -734,10 +848,10 @@ if (!empty($leaveData)) {
                                                     }
                                                     ?>
                                                     <?php
-                                                    if($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit"){
-                                                        echo '('.formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']).')';
+                                                    if ($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit") {
+                                                        echo '(' . formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']) . ')';
                                                     }
-                                                ?>
+                                                    ?>
                                                 </td>
 
                                                 <td class="table-item-base">
@@ -788,7 +902,7 @@ if (!empty($leaveData)) {
                                                                 Add New Leave Record
                                                             </button>
                                                             <?php
-                                                            if ($ldata['recordType'] != "Initial Record") {
+                                                            if ($ldata['recordType'] != "Initial Record" && $ldata['recordType'] != "Break Monthly Credit") {
                                                                 ?>
                                                                 <button type="button" class="editLeaveDataRecord custom-regular-button"
                                                                     data-toggle="modal" data-target="#editLeaveDataRecord"
@@ -803,19 +917,35 @@ if (!empty($leaveData)) {
                                                                     data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                                     Edit Leave Record
                                                                 </button>
+                                                                <form action="<?php echo $action_delete_leaverecorddata; ?>"
+                                                                    method="post">
+                                                                    <input type="hidden" name="leavedataformId"
+                                                                        value="<?php echo $ldata['leavedataform_id']; ?>" />
+                                                                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                                                    <input type="hidden" name="selectedYear"
+                                                                        value="<?php echo $selectedYear; ?>" />
+                                                                    <input type="submit" name="deleteLeaveData"
+                                                                        value="Delete Leave Record" class="custom-regular-button" />
+                                                                </form>
                                                                 <?php
                                                             }
                                                             ?>
-                                                            <form action="<?php echo $action_delete_leaverecorddata; ?>"
-                                                                method="post">
-                                                                <input type="hidden" name="leavedataformId"
-                                                                    value="<?php echo $ldata['leavedataform_id']; ?>" />
-                                                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                                                <input type="hidden" name="selectedYear"
-                                                                    value="<?php echo $selectedYear; ?>" />
-                                                                <input type="submit" name="deleteLeaveData"
-                                                                    value="Delete Leave Record" class="custom-regular-button" />
-                                                            </form>
+                                                            <?php
+                                                            if ($ldata['recordType'] == "Initial Record") {
+                                                                ?>
+                                                                <button type="button" class="editInitialRecord custom-regular-button"
+                                                                    data-toggle="modal" data-target="#editInitialRecord"
+                                                                    data-period-start="<?php echo $ldata['period']; ?>"
+                                                                    data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                                    data-particular-label="<?php echo $ldata['particularLabel']; ?>"
+                                                                    data-vacation-earned="<?php echo $ldata['vacationLeaveEarned']; ?>"
+                                                                    data-sick-earned="<?php echo $ldata['sickLeaveEarned']; ?>"
+                                                                    data-vacation-withoutpay="<?php echo $ldata['vacationLeaveAbsUndWOP	']; ?>"
+                                                                    data-sick-withoutpay="<?php echo $ldata['sickLeaveAbsUndWOP	']; ?>"
+                                                                    data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
+                                                                    Edit Initial Leave Record
+                                                                </button>
+                                                            <?php } ?>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -901,13 +1031,15 @@ if (!empty($leaveData)) {
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
-    <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
+    <?php if ($hasYearRecord) { ?>
+        <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
+    <?php } ?>
 
 </body>
 

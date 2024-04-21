@@ -21,6 +21,7 @@ if (isset($_POST['addEmployee'])) {
     $department = strip_tags(mysqli_real_escape_string($database, $_POST["department"]));
     $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST["jobPosition"]));
     $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST["dateStarted"]));
+    $accountStatus = strip_tags(mysqli_real_escape_string($database, $_POST["status"]));
     $initialVacationCredit = strip_tags(mysqli_real_escape_string($database, $_POST["initialVacationCredit"]));
     $initialSickCredit = strip_tags(mysqli_real_escape_string($database, $_POST["initialSickCredit"]));
 
@@ -47,11 +48,11 @@ if (isset($_POST['addEmployee'])) {
 
     try {
         $query = "INSERT INTO tbl_useraccounts 
-                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, sex, civilStatus, birthdate, department, jobPosition, dateStarted, dateCreated) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, sex, civilStatus, birthdate, department, jobPosition, dateStarted, status , dateCreated) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = mysqli_prepare($database, $query);
-        mysqli_stmt_bind_param($stmt, "ssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted);
+        mysqli_stmt_bind_param($stmt, "sssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "New Employee Successfully Created";

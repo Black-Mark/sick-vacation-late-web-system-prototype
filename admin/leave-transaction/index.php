@@ -1,9 +1,9 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $leaveAppDataList = [];
 $minStartYear = date("Y");
@@ -101,7 +101,7 @@ if ($selectedYear && $selectedYear != 'All') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -133,7 +133,7 @@ if ($selectedYear && $selectedYear != 'All') {
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav); ?>
+        <?php include ($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
@@ -197,7 +197,13 @@ if ($selectedYear && $selectedYear != 'All') {
                                         <?php echo $ldata['dateLastModified']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['userLastName'] . ' ' . $ldata['userFirstName']; ?>
+                                        <?php
+                                        if (empty($ldata['userLastName']) && empty($ldata['userFirstName'])) {
+                                            echo $ldata['lastName'] . ' ' . $ldata['firstName'];
+                                        } else {
+                                            echo $ldata['userLastName'] . ' ' . $ldata['userFirstName'];
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
@@ -338,11 +344,11 @@ if ($selectedYear && $selectedYear != 'All') {
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 
