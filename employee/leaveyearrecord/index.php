@@ -1,35 +1,17 @@
 <?php
-include("../constants/routes.php");
+include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
 include($constants_file_session_employee);
 include($constants_variables);
 
 $employeeData = [];
-$leaveData = [];
-
-$availableSickLeave = "?";
-$availableVacationLeave = "?";
-$leaveWithoutPay = "?";
-
-$availableSickLeaveTime = "?";
-$availableVacationLeaveTime = "?";
-$leaveWithoutPayTime = "?";
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
-    $leaveData = getIncentiveLeaveComputation($employeeId);
-    
-    if (count($leaveData) > 0) {
-        $availableSickLeave = number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2);
-        $availableVacationLeave = number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2);
-        $leaveWithoutPay = number_format(($leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP'] + $leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP']), 2);
-        $availableSickLeaveTime = computeExactTime($leaveData[count($leaveData) - 1]['sickLeaveBalance']);
-        $availableVacationLeaveTime = computeExactTime($leaveData[count($leaveData) - 1]['vacationLeaveBalance']);
-        $leaveWithoutPayTime = computeExactTime(($leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP'] + $leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP']));
-    }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -72,37 +54,25 @@ if (isset($_SESSION['employeeId'])) {
 </head>
 
 <body class="webpage-background-cover">
-    <div>
-        <?php include($components_file_topnav) ?>
+    <div class="component-container">
+        <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
-            <div class="card-container">
 
-                <div class="card">
-                    <h1>Available Vacation Leave:</h1>
-                    <h2 title="<?php echo $availableVacationLeaveTime; ?>"><?php echo $availableVacationLeave; ?></h2>
-                </div>
-
-                <div class="card">
-                    <h1>Available Sick Leave:</h1>
-                    <h2 title="<?php echo $availableSickLeaveTime; ?>"><?php echo $availableSickLeave; ?></h2>
-                </div>
-                
-                <div class="card">
-                    <h1>Leave Under W/O Pay:</h1>
-                    <h2 title="<?php echo $leaveWithoutPayTime; ?>"><?php echo $leaveWithoutPay; ?></h2>
-                </div>
+            <div class="box-container">
+                <h3 class="title-text">Leave Year Record</h3>
 
             </div>
+
         </div>
     </div>
 
-    <div>
+    <div class="component-container">
         <?php
-        include($components_file_footer)
-            ?>
+        include($components_file_footer);
+        ?>
     </div>
 
     <?php include($components_file_toastify); ?>
