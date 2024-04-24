@@ -108,7 +108,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         ?>
                     </form>
 
-                    <form action="<?php echo $action_update_system_setting; ?>" method="post"
+                    <!-- <form action="<?php echo $action_update_system_setting; ?>" method="post"
                         class="d-flex flex-row gap-2 align-items-center">
                         <div class="w-25 font-weight-bold text-truncate">Municipal Mayor:</div>
                         <?php
@@ -142,7 +142,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                             }
                         }
                         ?>
-                    </form>
+                    </form> -->
 
                     <h5 class="mt-4 mb-2 text-uppercase font-weight-bold"><a
                             href="<?php echo $location_admin_datamanagement_archive; ?>">Archive Data(s):</a></h5>

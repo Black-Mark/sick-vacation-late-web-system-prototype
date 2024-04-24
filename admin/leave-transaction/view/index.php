@@ -619,11 +619,12 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
 
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input class="leave-app-form-input" disabled /> -->
-                                        <div class="leave-app-form-signature-context">
-                                            <?php echo $leaveAppFormData['hrName']; ?>
+                                        <div class="leave-app-form-signature-context mt-4">
+                                            <!-- <?php echo $leaveAppFormData['hrName']; ?> -->
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
-                                            <?php echo $leaveAppFormData['hrPosition']; ?>
+                                            <!-- <?php echo $leaveAppFormData['hrPosition']; ?> -->
+                                            (Authorized Officer)
                                         </div>
                                     </div>
 
@@ -665,14 +666,16 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
 
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input class="leave-app-form-input" disabled /> -->
-                                        <div
+                                        <!-- <div
                                             class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' ? 'mt-4' : ''; ?>">
                                             <?php
                                                 echo $leaveAppFormData['deptHeadName'];
                                                 ?>
-                                        </div>
+                                        </div> -->
+                                        <div class="leave-app-form-signature-context mt-4"></div>
                                         <div class='leave-app-form-signature-subject'>
-                                            Department Head
+                                            <!-- Department Head -->
+                                            (Authorized Officer)
                                         </div>
                                     </div>
                                 </div>
@@ -730,11 +733,12 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                             <!-- Municipal Mayor Signature -->
                             <div class="leave-app-form-seventh-row">
                                 <div class="leave-app-form-mayorsignature-container">
-                                    <div class="leave-app-form-signature-context">
-                                        <?php echo $leaveAppFormData['mayorName']; ?>
+                                    <div class="leave-app-form-signature-context mt-4">
+                                        <!-- <?php echo $leaveAppFormData['mayorName']; ?> -->
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
-                                        <?php echo $leaveAppFormData['mayorPosition']; ?>
+                                        <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->
+                                        (Authorized Official)
                                     </div>
                                 </div>
                             </div>

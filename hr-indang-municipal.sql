@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 01, 2024 at 11:43 AM
+-- Generation Time: Apr 24, 2024 at 12:46 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -101,6 +101,13 @@ CREATE TABLE `tbl_leaveappform` (
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Dumping data for table `tbl_leaveappform`
+--
+
+INSERT INTO `tbl_leaveappform` (`leaveappform_id`, `dateLastModified`, `dateCreated`, `employee_id`, `departmentName`, `lastName`, `firstName`, `middleName`, `dateFiling`, `position`, `salary`, `typeOfLeave`, `typeOfSpecifiedOtherLeave`, `typeOfVacationLeave`, `typeOfVacationLeaveWithin`, `typeOfVacationLeaveAbroad`, `typeOfSickLeave`, `typeOfSickLeaveInHospital`, `typeOfSickLeaveOutPatient`, `typeOfSpecialLeaveForWomen`, `typeOfStudyLeave`, `typeOfOtherLeave`, `workingDays`, `inclusiveDateStart`, `inclusiveDateEnd`, `commutation`, `asOfDate`, `vacationLeaveTotalEarned`, `sickLeaveTotalEarned`, `vacationLeaveLess`, `sickLeaveLess`, `vacationLeaveBalance`, `sickLeaveBalance`, `recommendation`, `recommendMessage`, `dayWithPay`, `dayWithoutPay`, `otherDayPay`, `otherDaySpecify`, `disapprovedMessage`, `hrName`, `hrPosition`, `deptHeadName`, `mayorName`, `mayorPosition`, `hrmanager_id`, `depthead_id`, `mayor_id`, `status`, `archive`) VALUES
+('d3a6686aeaf02f2e5b90a84ec5f9fb714ad70374ce4ec52ac8', '2024-04-19 11:49:48', '2024-04-19 11:49:48', 'REG001', 'Pending', 'Account', 'Regular', '', '2024-04-19', 'Content Creator ', '', 'Vacation Leave', '', 'Within the Philippines', 'Palengke', '', '', '', ' ', ' ', '', '0', 1, '2024-04-19', '2024-04-19', 'Requested', '2024-04-19', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', 'Nina Mae L. Payad', 'Content Creator ', '', 'Rene Antonio C. Dimabogte Jr.', 'Grim Reaper', '201910776', '', '201915197', 'Submitted', '');
+
 -- --------------------------------------------------------
 
 --
@@ -110,6 +117,7 @@ CREATE TABLE `tbl_leaveappform` (
 CREATE TABLE `tbl_leavedataform` (
   `leavedataform_id` int(255) NOT NULL,
   `employee_id` varchar(255) NOT NULL,
+  `foreignKeyId` varchar(255) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `recordType` varchar(255) NOT NULL,
   `period` date NOT NULL,
@@ -129,8 +137,22 @@ CREATE TABLE `tbl_leavedataform` (
   `sickLeaveAbsUndWOP` decimal(10,4) NOT NULL,
   `dateOfAction` date NOT NULL,
   `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `leaveform_connectionId` varchar(100) NOT NULL,
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_leavedataform`
+--
+
+INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `foreignKeyId`, `dateCreated`, `recordType`, `period`, `periodEnd`, `particular`, `particularLabel`, `days`, `hours`, `minutes`, `vacationLeaveEarned`, `vacationLeaveAbsUndWP`, `vacationLeaveBalance`, `vacationLeaveAbsUndWOP`, `sickLeaveEarned`, `sickLeaveAbsUndWP`, `sickLeaveBalance`, `sickLeaveAbsUndWOP`, `dateOfAction`, `dateLastModified`, `leaveform_connectionId`, `archive`) VALUES
+(277, 'REG001', '', '2024-04-19 10:55:51', 'Initial Record', '2024-04-19', '2024-04-19', 'Initial Record', '0', 0, 0, 0, 5.0000, 0.0000, 5.0000, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-04-19', '2024-04-20 14:18:05', '', ''),
+(278, 'SHADOW', '', '2024-04-19 12:34:27', 'Initial Record', '2024-04-19', '2024-04-19', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-04-19', '2024-04-19 12:34:27', '', ''),
+(279, 'REG001', '', '2024-04-20 11:15:18', 'Deduction Type', '2024-04-19', '2024-04-19', 'Sick Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-19', '2024-04-20 11:15:18', '', ''),
+(280, 'REG001', '', '2024-04-20 13:34:48', 'Deduction Type', '2024-04-20', '2024-04-20', 'Forced Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-20', '2024-04-20 13:37:20', '', 'deleted'),
+(281, 'REG001', '', '2024-04-20 13:37:29', 'Deduction Type', '2024-04-20', '2024-04-20', 'Late', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-20', '2024-04-20 13:37:29', '', ''),
+(282, 'REG001', '', '2024-04-20 13:37:42', 'Deduction Type', '2024-04-20', '2024-04-20', 'Forced Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-20', '2024-04-20 13:37:42', '', ''),
+(283, 'SHADOW', '', '2024-04-23 05:12:45', 'Deduction Type', '2024-04-23', '2024-04-23', 'Late', '', 0, 1, 59, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-23', '2024-04-23 05:58:06', '', '');
 
 -- --------------------------------------------------------
 
@@ -150,6 +172,13 @@ CREATE TABLE `tbl_notifications` (
   `status` varchar(255) NOT NULL,
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_notifications`
+--
+
+INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, `empIdTo`, `subject`, `message`, `subjectKey`, `link`, `status`, `archive`) VALUES
+(69, '2024-04-19 11:49:48', 'REG001', '@Admin', 'Employee Submission of Leave Form', 'Account Regular is Applying For Vacation Leave', 'd3a6686aeaf02f2e5b90a84ec5f9fb714ad70374ce4ec52ac8', '', 'read', '');
 
 -- --------------------------------------------------------
 
@@ -178,6 +207,7 @@ CREATE TABLE `tbl_systemsettings` (
   `settingType` varchar(255) NOT NULL,
   `settingSubject` varchar(255) NOT NULL,
   `settingKey` varchar(255) NOT NULL,
+  `settingInCharge` varchar(255) NOT NULL,
   `dateModified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -185,9 +215,9 @@ CREATE TABLE `tbl_systemsettings` (
 -- Dumping data for table `tbl_systemsettings`
 --
 
-INSERT INTO `tbl_systemsettings` (`setting_id`, `settingType`, `settingSubject`, `settingKey`, `dateModified`) VALUES
-(1, 'Authorized User', 'Human Resources Manager', '201910776', '2023-12-13 14:36:19'),
-(2, 'Authorized User', 'Municipal Mayor', '201915197', '2023-12-12 11:52:07');
+INSERT INTO `tbl_systemsettings` (`setting_id`, `settingType`, `settingSubject`, `settingKey`, `settingInCharge`, `dateModified`) VALUES
+(1, 'Authorized User', 'Human Resources Manager', '201910776', '', '2024-04-03 01:44:33'),
+(2, 'Authorized User', 'Municipal Mayor', '201915197', '', '2023-12-12 11:52:07');
 
 -- --------------------------------------------------------
 
@@ -206,11 +236,12 @@ CREATE TABLE `tbl_useraccounts` (
   `middleName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
   `suffix` varchar(255) NOT NULL,
-  `age` int(4) NOT NULL,
+  `birthdate` date NOT NULL,
   `sex` varchar(255) NOT NULL,
   `civilStatus` varchar(255) NOT NULL,
   `department` varchar(255) NOT NULL,
   `jobPosition` varchar(255) NOT NULL,
+  `status` varchar(50) NOT NULL,
   `dateStarted` date NOT NULL DEFAULT current_timestamp(),
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `archive` varchar(50) NOT NULL
@@ -220,12 +251,13 @@ CREATE TABLE `tbl_useraccounts` (
 -- Dumping data for table `tbl_useraccounts`
 --
 
-INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `age`, `sex`, `civilStatus`, `department`, `jobPosition`, `dateStarted`, `dateCreated`, `archive`) VALUES
-(78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte', 'Jr.', 24, 'Male', 'Single', '9', 'Grim Reaper', '2023-11-24', '2023-11-24 01:56:11', ''),
-(83, 'SHADOW', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Shadow', '', 'Account', '', 5, 'Male', 'Single', '8', 'Eminence in Shadow', '2020-04-08', '2023-12-08 12:57:45', ''),
-(84, '201910776', 'Employee', 'maepayad000@gmail.com', 'password', '', 'Nina Mae', 'Lontoc', 'Payad', '', 21, 'Female', 'Divorced', '7', 'Content Creator ', '2023-12-10', '2023-12-10 08:05:08', ''),
-(91, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin Special Strike', '', 'Account', '', 20, 'Prefer Not To Say', 'Single', '7', 'Web Developer VII', '2023-12-13', '2023-12-13 12:47:22', ''),
-(93, 'LIGHT', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Light', '', 'Account', '', 5, 'Male', 'Single', '7', 'Content Creator ', '2023-12-15', '2023-12-15 03:34:21', '');
+INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `birthdate`, `sex`, `civilStatus`, `department`, `jobPosition`, `status`, `dateStarted`, `dateCreated`, `archive`) VALUES
+(78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte', 'Jr.', '2021-01-01', 'Male', 'Single', '9', 'Grim Reaper', 'Active', '2023-11-24', '2023-11-24 01:56:11', ''),
+(84, '201910776', 'Employee', 'maepayad000@gmail.com', 'password', '', 'Nina Mae', 'Lontoc', 'Payad', '', '2024-04-17', 'Female', 'Married', '7', 'Content Creator ', 'Active', '2023-12-10', '2023-12-10 08:05:08', ''),
+(91, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin Special Strike', '', 'Account', '', '0000-00-00', 'Prefer Not To Say', 'Single', '7', 'Web Developer VII', '', '2023-12-13', '2023-12-13 12:47:22', ''),
+(101, 'TEMP001', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Jeshua Mark', 'Sarmiento', 'Bay', '', '2001-07-02', 'Male', 'Single', '7', 'Web Developer V', 'Active', '2024-04-14', '2024-04-14 04:40:09', ''),
+(102, 'REG001', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Regular', '', 'Account', '', '2001-07-02', 'Male', 'Single', 'Pending', 'Content Creator ', 'Banned', '2024-04-19', '2024-04-19 10:55:51', ''),
+(103, 'SHADOW', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Shadow', '', 'Account', '', '2001-01-01', 'Male', 'Single', '9', 'Content Creator ', 'Active', '2024-04-19', '2024-04-19 12:34:26', '');
 
 --
 -- Indexes for dumped tables
@@ -284,25 +316,25 @@ ALTER TABLE `tbl_useraccounts`
 -- AUTO_INCREMENT for table `tbl_departments`
 --
 ALTER TABLE `tbl_departments`
-  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=263;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=284;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
 --
 ALTER TABLE `tbl_passwordreset_tokens`
-  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `tbl_systemsettings`
@@ -314,7 +346,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
