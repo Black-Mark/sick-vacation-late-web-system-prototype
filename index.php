@@ -20,8 +20,8 @@ include($constants_variables);
     include($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
-    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="./assets/images/logo192.png">
 
     <link rel="stylesheet" href="<?php echo $assets_bootstrap_vcss; ?>">
     <link rel="stylesheet" href="<?php echo $assets_bootstrap_css; ?>">
@@ -35,7 +35,8 @@ include($constants_variables);
     <script src="<?php echo $assets_toastify_js; ?>"></script>
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
-    <script src="manifest.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <script src="index.js"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
