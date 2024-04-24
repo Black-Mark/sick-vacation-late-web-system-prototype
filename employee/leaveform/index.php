@@ -533,8 +533,9 @@ $settingData = getAuthorizedUser();
 
                                             <div class="leave-app-form-signature-container">
                                                 <!-- <input class="leave-app-form-input" readonly /> -->
-                                                <div class="leave-app-form-signature-context">
+                                                <div class="leave-app-form-signature-context mt-4">
                                                     <?php
+                                                    /*
                                                     if (count($settingData) > 0) {
                                                         for ($i = 0; $i < count($settingData); $i++) {
                                                             if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
@@ -544,10 +545,13 @@ $settingData = getAuthorizedUser();
                                                     } else {
                                                         echo ' ';
                                                     }
+                                                    */
                                                     ?>
                                                 </div>
                                                 <div class='leave-app-form-signature-subject'>
+                                                    (Authorized Officer)
                                                     <?php
+                                                    /*
                                                     if (count($settingData) > 0) {
                                                         for ($i = 0; $i < count($settingData); $i++) {
                                                             if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
@@ -561,6 +565,7 @@ $settingData = getAuthorizedUser();
                                                     } else {
                                                         echo "Human Resources Manager";
                                                     }
+                                                    */
                                                     ?>
                                                 </div>
                                             </div>
@@ -601,16 +606,19 @@ $settingData = getAuthorizedUser();
 
                                             <div class="leave-app-form-signature-container">
                                                 <!-- <input class="leave-app-form-input" readonly /> -->
-                                                <div
+                                                <div class="leave-app-form-signature-context mt-4"></div>
+                                                <!-- <div
                                                     class="leave-app-form-signature-context <?php echo empty($departmentHeadData) ? 'mt-4' : ''; ?>">
                                                     <?php
+                                                    /*
                                                     if (!empty($departmentHeadData)) {
                                                         echo organizeFullName($departmentHeadData['firstName'], $departmentHeadData['middleName'], $departmentHeadData['lastName'], $departmentHeadData['suffix']);
                                                     }
+                                                    */
                                                     ?>
-                                                </div>
+                                                </div> -->
                                                 <div class='leave-app-form-signature-subject'>
-                                                    Department Head
+                                                    (Authorized Officer)
                                                 </div>
                                             </div>
                                         </div>
@@ -664,8 +672,9 @@ $settingData = getAuthorizedUser();
                                     <!-- Municipal Mayor Signature -->
                                     <div class="leave-app-form-seventh-row">
                                         <div class="leave-app-form-mayorsignature-container">
-                                            <div class="leave-app-form-signature-context">
+                                            <div class="leave-app-form-signature-context mt-4">
                                                 <?php
+                                                /*
                                                 if (count($settingData) > 0) {
                                                     for ($i = 0; $i < count($settingData); $i++) {
                                                         if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
@@ -675,10 +684,13 @@ $settingData = getAuthorizedUser();
                                                 } else {
                                                     echo ' ';
                                                 }
+                                                */
                                                 ?>
                                             </div>
                                             <div class='leave-app-form-signature-subject'>
+                                                (Authorized Official)
                                                 <?php
+                                                /*
                                                 if (count($settingData) > 0) {
                                                     for ($i = 0; $i < count($settingData); $i++) {
                                                         if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
@@ -692,6 +704,7 @@ $settingData = getAuthorizedUser();
                                                 } else {
                                                     echo "Municipal Mayor";
                                                 }
+                                                */
                                                 ?>
                                             </div>
                                         </div>
