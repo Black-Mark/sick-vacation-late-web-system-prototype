@@ -2,8 +2,14 @@
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_authorized);
 include ($constants_variables);
+
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['validateLeaveAppForm'])) {
     // POST AND SESSION GET DATA FETCH
@@ -336,22 +342,47 @@ if (isset($_POST['validateLeaveAppForm'])) {
                 }
             }
             mysqli_stmt_close($checkstmt);
-            header("Location: " . $location_admin_leaveapplist);
+
+            if ($accountRole == "admin") {
+                header("Location: " . $location_admin_leaveapplist);
+            } else if ($accountRole == "staff") {
+                header("Location: " . $location_staff_leaveapplist);
+            } else {
+                header("Location: " . $location_login);
+            }
             exit();
         } catch (Exception $e) {
             $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
             $_SESSION['alert_type'] = $error_color;
             echo $e;
-            header("Location: " . $location_admin_leaveapplist);
+            if ($accountRole == "admin") {
+                header("Location: " . $location_admin_leaveapplist);
+            } else if ($accountRole == "staff") {
+                header("Location: " . $location_staff_leaveapplist);
+            } else {
+                header("Location: " . $location_login);
+            }
             exit();
         }
     } else {
-        header("Location: " . $location_admin_leaveapplist_view . '/' . $leaveappformId . '/');
+        if ($accountRole == "admin") {
+            header("Location: " . $location_admin_leaveapplist_view . '/' . $leaveappformId . '/');
+        } else if ($accountRole == "staff") {
+            header("Location: " . $location_staff_leaveapplist_view . '/' . $leaveappformId . '/');
+        } else {
+            header("Location: " . $location_login);
+        }
         exit();
     }
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
-    header("Location: " . $location_admin_leaveapplist);
+    if ($accountRole == "admin") {
+        header("Location: " . $location_admin_leaveapplist);
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff_leaveapplist);
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 }
 ?>

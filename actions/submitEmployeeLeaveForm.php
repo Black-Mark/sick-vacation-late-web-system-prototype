@@ -2,8 +2,14 @@
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_employee);
+include ($constants_file_session_client);
 include ($constants_variables);
+
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     // POST AND SESSION GET DATA FETCH
@@ -48,34 +54,71 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
         $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";
         $_SESSION['alert_type'] = $warning_color;
-        header("Location: " . $location_employee_leave_form);
+
+        if ($accountRole == "employee") {
+            header("Location: " . $location_employee_leave_form);
+        } else if ($accountRole == "staff") {
+            header("Location: " . $location_staff_leave_form);
+        } else {
+            header("Location: " . $location_login);
+        }
         exit();
     } else {
         try {
             if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && empty($typeOfVacationLeaveWithin) && empty($typeOfVacationLeaveAbroad)) {
                 $_SESSION['alert_message'] = "Please select either 'Within the Philippines' or 'Abroad' for Vacation Leave";
                 $_SESSION['alert_type'] = $warning_color;
-                header("Location: " . $location_employee_leave_form);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && empty($typeOfSickLeaveInHospital) && empty($typeOfSickLeaveOutPatient)) {
                 $_SESSION['alert_message'] = "Please select either 'In Hospital' or 'Out Patient' for Sick Leave";
                 $_SESSION['alert_type'] = $warning_color;
-                header("Location: " . $location_employee_leave_form);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
                 $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
                 $_SESSION['alert_type'] = $warning_color;
-                header("Location: " . $location_employee_leave_form);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             } else if ($typeOfLeave === 'Study Leave' && empty($typeOfStudyLeave)) {
                 $_SESSION['alert_message'] = "Please select either 'Completion of Master's Degree or Bar / Board Examination Review' Incase for Study Leave";
                 $_SESSION['alert_type'] = $warning_color;
-                header("Location: " . $location_employee_leave_form);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             } else if ($typeOfLeave === 'Others' && empty($typeOfOtherLeave)) {
                 $_SESSION['alert_message'] = "Please select either 'Monetization of Leave Credit or Terminal Leave' Incase for Others";
                 $_SESSION['alert_type'] = $warning_color;
-                header("Location: " . $location_employee_leave_form);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             }
 
@@ -279,7 +322,13 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
 
                 mysqli_stmt_execute($stmtNotif);
 
-                header("Location: " . $location_employee_leave_form_record);
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form_record);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form_record);
+                } else {
+                    header("Location: " . $location_login);
+                }
                 exit();
             } else {
                 $_SESSION['alert_message'] = "Error submitting Leave Application Form: " . mysqli_stmt_error($stmt);
@@ -289,13 +338,25 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             $_SESSION['alert_message'] = "An error occurred: " . $e->getMessage();
             $_SESSION['alert_type'] = $error_color;
             echo $e;
-            header("Location: " . $location_employee_leave_form);
+            if ($accountRole == "employee") {
+                header("Location: " . $location_employee_leave_form);
+            } else if ($accountRole == "staff") {
+                header("Location: " . $location_staff_leave_form);
+            } else {
+                header("Location: " . $location_login);
+            }
             exit();
         }
     }
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
-    header("Location: " . $location_employee_leave_form);
+    if ($accountRole == "employee") {
+        header("Location: " . $location_employee_leave_form);
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff_leave_form);
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 }
 ?>

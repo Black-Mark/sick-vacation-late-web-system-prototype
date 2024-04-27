@@ -98,6 +98,20 @@ function getEmployeeData($employee_id)
     return $employeeData;
 }
 
+function getAccountRole($employeeId) {
+    global $database;
+
+    $employeeId = mysqli_real_escape_string($database, strip_tags($employeeId));
+    $query = "SELECT role FROM tbl_useraccounts WHERE employee_id = '$employeeId'";
+    $result = mysqli_query($database, $query);
+
+    if (!$result || mysqli_num_rows($result) == 0) {
+        return "User not found";
+    }
+    
+    return mysqli_fetch_assoc($result)['role'];
+}
+
 function getAllDepartments()
 {
     global $database;

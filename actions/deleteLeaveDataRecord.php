@@ -1,9 +1,15 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_authorized);
+include ($constants_variables);
+
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
     // Only Update the Archive to Deleted
@@ -25,7 +31,7 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
 
             $foreignKeyId = '';
             $count = 0;
-            
+
             $getForeignKeyQuery = "SELECT foreignKeyId FROM tbl_leavedataform WHERE leavedataform_id = ?";
             $getForeignKeyStatement = $database->prepare($getForeignKeyQuery);
             $getForeignKeyStatement->bind_param("i", $leaveDataFormId);
@@ -73,10 +79,26 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    if ($empId) {
-        header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
-        exit();
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_admin_departments_employee);
+            exit();
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_staff_departments_employee);
+            exit();
+        }
+    } else {
+        header("Location: " . $location_login);
     }
+    exit();
 } else if (isset($_POST['absoluteDeleteLeaveData']) && isset($_POST['leavedataformId'])) {
     $leaveDataFormId = strip_tags(mysqli_real_escape_string($database, $_POST['leavedataformId']));
     $empId = strip_tags(mysqli_real_escape_string($database, $_POST['empId']));
@@ -106,16 +128,48 @@ if (isset($_POST['deleteLeaveData']) && isset($_POST['leavedataformId'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    if ($empId) {
-        header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_admin_departments_employee);
+            exit();
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_staff_departments_employee);
+            exit();
+        }
     } else {
-        header("Location: " . $location_admin_datamanagement_archive_leavedata);
+        header("Location: " . $location_login);
     }
-
     exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
-    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_admin_departments_employee);
+            exit();
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_staff_departments_employee);
+            exit();
+        }
+    } else {
+        header("Location: " . $location_login);
+    }
+    exit();
 }
 
 ?>

@@ -45,6 +45,7 @@ $constants_file_dbconnect = $webhostpath . '/constants/dbconnect.php';
 $constants_file_session_login = $webhostpath . '/constants/loginSession.php';
 $constants_file_session_admin = $webhostpath . '/constants/adminSession.php';
 $constants_file_session_staff = $webhostpath . '/constants/staffSession.php';
+$constants_file_session_client = $webhostpath . '/constants/clientSession.php';
 $constants_file_session_authorized = $webhostpath . '/constants/authorizedSession.php';
 $constants_file_session_employee = $webhostpath . '/constants/employeeSession.php';
 $constants_file_role_menu = $webhostpath . '/constants/roleMenu.php';

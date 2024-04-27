@@ -2,10 +2,14 @@
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_authorized);
 include ($constants_variables);
 
-// Function to apply strip_tags and mysqli_real_escape_string
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['editLeaveDataRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
@@ -68,7 +72,17 @@ if (isset($_POST['editLeaveDataRecord'])) {
         // Something
     }
 
-    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+        header("Location: $redirect_location");
+        exit();
+    } else if ($accountRole == "staff") {
+        $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+        header("Location: $redirect_location");
+        exit();
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 } else if (isset($_POST['editInitialLeaveDataRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
@@ -139,12 +153,26 @@ if (isset($_POST['editLeaveDataRecord'])) {
         $_SESSION['alert_type'] = $warning_color;
     }
 
-    $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
-    header("Location: $redirect_location");
+    if ($accountRole == "admin") {
+        $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+        header("Location: $redirect_location");
+        exit();
+    } else if ($accountRole == "staff") {
+        $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+        header("Location: $redirect_location");
+        exit();
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 } else {
-    $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
-    header("Location: $redirect_location");
+    if ($accountRole == "admin") {
+        header("Location: " . $location_admin);
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff);
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 }
 ?>

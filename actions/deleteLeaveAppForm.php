@@ -2,8 +2,14 @@
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_authorized);
 include ($constants_variables);
+
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['deleteLeaveAppForm'])) {
     // Only Update the Archive to Deleted
@@ -59,10 +65,20 @@ if (isset($_POST['deleteLeaveAppForm'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    if ($empId) {
-        header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
+        } else {
+            header("Location: " . $location_admin_leaveapplist);
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leaveappform . '/' . $empId . '/');
+        } else {
+            header("Location: " . $location_staff_leaveapplist);
+        }
     } else {
-        header("Location: " . $location_admin_leaveapplist);
+        header("Location: " . $location_login);
     }
     exit();
 } else if (isset($_POST['absoluteDeleteLeaveAppForm'])) {
@@ -96,16 +112,32 @@ if (isset($_POST['deleteLeaveAppForm'])) {
 
     mysqli_stmt_close($stmt);
 
-    if ($empId) {
-        header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
+        } else {
+            header("Location: " . $location_admin_leaveapplist);
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leaveappform . '/' . $empId . '/');
+        } else {
+            header("Location: " . $location_staff_leaveapplist);
+        }
     } else {
-        header("Location: " . $location_admin_datamanagement_archive_leaveform);
+        header("Location: " . $location_login);
     }
     exit();
 } else {
     // $_SESSION['alert_message'] = "Not Yet Available!";
     // $_SESSION['alert_type'] = $warning_color;
-    header("Location: " . $location_admin_leaveapplist);
+    if ($accountRole == "admin") {
+        header("Location: " . $location_admin_leaveapplist);
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff_leaveapplist);
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 }
 ?>
