@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userData = getEmployeeData($empId);
 
         if (!empty($userData)) {
-            if (strcasecmp($userData['role'], "Admin") == 0) {
+            if (strcasecmp($userData['role'], "Admin") == 0 || strcasecmp($userData['role'], "Staff") == 0) {
                 // Your existing code to fetch unread notifications
                 $queryUnreadNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo = '@Admin' AND status = 'unseen' ORDER BY dateCreated DESC LIMIT 5";
                 $resultUnreadNotifications = mysqli_query($database, $queryUnreadNotifications);

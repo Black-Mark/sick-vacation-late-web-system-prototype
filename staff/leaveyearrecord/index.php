@@ -1,28 +1,15 @@
 <?php
-include("../constants/routes.php");
+include("../../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
-include($constants_file_session_admin);
+include($constants_file_session_staff);
 include($constants_variables);
 
-// Counts the Total Number of Department
-$departmentCount = 0;
-$departmentCountQuery = "SELECT COUNT(*) AS departmentCount FROM tbl_departments WHERE UPPER(archive) != 'DELETED'";
-$departmentCountResult = $database->query($departmentCountQuery);
+$employeeData = [];
 
-if ($departmentCountResult) {
-    $row = $departmentCountResult->fetch_assoc();
-    $departmentCount = $row['departmentCount'];
-}
-
-// Counts the Total Number of the Employees Only
-$employeeCount = 0;
-$employeeCountQuery = "SELECT COUNT(*) AS employeeCount FROM tbl_useraccounts WHERE UPPER(role) != 'ADMIN' AND UPPER(archive) != 'DELETED'";
-$employeeCountResult = $database->query($employeeCountQuery);
-
-if ($employeeCountResult) {
-    $row = $employeeCountResult->fetch_assoc();
-    $employeeCount = $row['employeeCount'];
+if (isset($_SESSION['employeeId'])) {
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
 }
 
 ?>
@@ -32,9 +19,9 @@ if ($employeeCountResult) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include($constants_file_html_credits);
     ?>
@@ -66,30 +53,23 @@ if ($employeeCountResult) {
     ?>"></script> -->
 </head>
 
-<body class="webpage-background-cover-admin">
-    <div>
-        <?php include($components_file_topnav) ?>
+<body class="webpage-background-cover">
+    <div class="component-container">
+        <?php include($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
-            <div class="card-container">
 
-                <div class="card">
-                    <h1>Total No. of Employees</h1>
-                    <h2><?php echo $employeeCount; ?></h2>
-                </div>
-
-                <div class="card">
-                    <h1>Total No. of Departments</h1>
-                    <h2><?php echo $departmentCount; ?></h2>
-                </div>
+            <div class="box-container">
+                <h3 class="title-text">Leave Year Record</h3>
 
             </div>
+
         </div>
     </div>
 
-    <div>
+    <div class="component-container">
         <?php
         include($components_file_footer);
         ?>

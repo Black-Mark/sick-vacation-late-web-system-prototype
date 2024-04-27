@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['validateLeaveAppForm'])) {
     // POST AND SESSION GET DATA FETCH
@@ -12,6 +12,23 @@ if (isset($_POST['validateLeaveAppForm'])) {
 
     $completeField = false;
     $completeVerification = false;
+
+    $employeeData = [];
+
+    if (isset($_SESSION['employeeId'])) {
+        $employeeId = sanitizeInput($_SESSION['employeeId']);
+        $employeeData = getEmployeeData($employeeId);
+    }
+
+    $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix']) ?? "";
+    $hrName = $fullName;
+    $hrPosition = "Authorized Officer";
+    $deptHeadName = $fullName;
+    $mayorName = $fullName;
+    $mayorPosition = "Authorized Official";
+    $hrmanager_id = $employeeData['employee_id'] ?? "";
+    $depthead_id = $employeeData['employee_id'] ?? "";
+    $mayor_id = $employeeData['employee_id'] ?? "";
 
     $leaveappformId = strip_tags(mysqli_real_escape_string($database, $_POST['leaveappformId']));
     $ownerOfForm = strip_tags(mysqli_real_escape_string($database, $_POST['ownerOfForm']));
@@ -60,6 +77,12 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $disapprovedMessageOne = isset($_POST['disapprovedMessageOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageOne'])) : '';
     $disapprovedMessageTwo = isset($_POST['disapprovedMessageTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageTwo'])) : '';
     $status = 'Validated';
+
+    if (strtolower($recommendation) == strtolower("For Disapproved Due to")) {
+        $status = "Disapproved";
+    } else if (strtolower($recommendation) == strtolower("For Approval")) {
+        $status = "Approved";
+    }
 
     // Checks the Input of the Leave Application Form
     if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
@@ -131,6 +154,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
             mysqli_stmt_execute($checkstmt);
             $result = mysqli_stmt_get_result($checkstmt);
             if (mysqli_num_rows($result) > 0) {
+
                 // Updating the Data to the Database
                 $query = "  UPDATE tbl_leaveappform
                             SET departmentName = ?, lastName = ?, firstName = ?, middleName = ?,
@@ -144,12 +168,13 @@ if (isset($_POST['validateLeaveAppForm'])) {
                             vacationLeaveLess = ?, sickLeaveLess = ?, vacationLeaveBalance = ?, sickLeaveBalance = ?,
                             recommendation = ?, recommendMessage = ?,
                             dayWithPay = ?, dayWithoutPay = ?, otherDayPay = ?, otherDaySpecify = ?, disapprovedMessage = ?,
-                            status = ?
+                            status = ?, hrName = ?, hrPosition = ?, deptHeadName = ?, mayorName = ?, mayorPosition = ?,
+                            hrmanager_id = ?, depthead_id = ?, mayor_id = ?
                             WHERE leaveappform_id = ?";
                 $stmt = mysqli_prepare($database, $query);
                 mysqli_stmt_bind_param(
                     $stmt,
-                    "ssssssssssssssssssissssddddddssiiissss",
+                    "ssssssssssssssssssissssddddddssiiissssssssiiis",
                     $departmentName,
                     $lastName,
                     $firstName,
@@ -187,6 +212,14 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $otherDaySpecify,
                     $disapprovedMessage,
                     $status,
+                    $hrName,
+                    $hrPosition,
+                    $deptHeadName,
+                    $mayorName,
+                    $mayorPosition,
+                    $hrmanager_id,
+                    $depthead_id,
+                    $mayor_id,
                     $leaveappformId
                 );
 
@@ -226,36 +259,59 @@ if (isset($_POST['validateLeaveAppForm'])) {
 
                     if ($count > 0) {
                         // If record exists, perform update
-                        $updateQuery = "UPDATE tbl_leavedataform SET employee_id = ?, recordType = ?, period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? WHERE foreignKeyId = ?";
-                        $stmtUpdateRecord = $database->prepare($updateQuery);
-                        $stmtUpdateRecord->bind_param('ssssssiiiss', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveappformId);
-                        $stmtUpdateRecord->execute();
+                        if ($status == "Approved") {
+                            $updateQuery = "UPDATE tbl_leavedataform SET employee_id = ?, recordType = ?, period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? WHERE foreignKeyId = ?";
+                            $stmtUpdateRecord = $database->prepare($updateQuery);
+                            $stmtUpdateRecord->bind_param('ssssssiiiss', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveappformId);
+                            $stmtUpdateRecord->execute();
 
-                        if ($stmtUpdateRecord->error) {
-                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Updation Failed!: " . $stmtUpdateRecord->error;
-                            $_SESSION['alert_type'] = $warning_color;
-                        } else {
-                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Updated!";
-                            $_SESSION['alert_type'] = $success_color;
+                            if ($stmtUpdateRecord->error) {
+                                $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Updation Failed!: " . $stmtUpdateRecord->error;
+                                $_SESSION['alert_type'] = $warning_color;
+                            } else {
+                                $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Updated!";
+                                $_SESSION['alert_type'] = $success_color;
+                            }
+
+                            $stmtUpdateRecord->close();
+                        } else if ($status == "Disapproved") {
+                            // Delete the record
+                            $deleteQuery = "DELETE FROM tbl_leavedataform WHERE foreignKeyId = ?";
+                            $stmtDeleteRecord = $database->prepare($deleteQuery);
+                            $stmtDeleteRecord->bind_param('s', $leaveappformId);
+                            $stmtDeleteRecord->execute();
+
+                            if ($stmtDeleteRecord->error) {
+                                $_SESSION['alert_message'] = "Failed to delete the leave record: " . $stmtDeleteRecord->error;
+                                $_SESSION['alert_type'] = $error_color;
+                            } else {
+                                $_SESSION['alert_message'] = "Leave Application Form Disapproved and Leave Record Successfully Deleted!";
+                                $_SESSION['alert_type'] = $success_color;
+                            }
+
+                            $stmtDeleteRecord->close();
                         }
-
-                        $stmtUpdateRecord->close();
                     } else {
-                        // If record doesn't exist, perform insert
-                        $insertQuery = "INSERT INTO tbl_leavedataform (employee_id, foreignKeyId, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        $stmtInsertRecord = $database->prepare($insertQuery);
-                        $stmtInsertRecord->bind_param('sssssssiiis', $ownerOfForm, $leaveappformId, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
-                        $stmtInsertRecord->execute();
+                        if ($status == "Approved") {
+                            // If record doesn't exist, perform insert
+                            $insertQuery = "INSERT INTO tbl_leavedataform (employee_id, foreignKeyId, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            $stmtInsertRecord = $database->prepare($insertQuery);
+                            $stmtInsertRecord->bind_param('sssssssiiis', $ownerOfForm, $leaveappformId, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+                            $stmtInsertRecord->execute();
 
-                        if ($stmtInsertRecord->error) {
-                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Failed: " . $stmtInsertRecord->error;
-                            $_SESSION['alert_type'] = $warning_color;
+                            if ($stmtInsertRecord->error) {
+                                $_SESSION['alert_message'] = "Leave Application Form Successfully Validated but Leave Record Failed: " . $stmtInsertRecord->error;
+                                $_SESSION['alert_type'] = $warning_color;
+                            } else {
+                                $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Added!";
+                                $_SESSION['alert_type'] = $success_color;
+                            }
+
+                            $stmtInsertRecord->close();
                         } else {
-                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated and Leave Record Successfully Added!";
+                            $_SESSION['alert_message'] = "Leave Application Form Successfully Validated!";
                             $_SESSION['alert_type'] = $success_color;
                         }
-
-                        $stmtInsertRecord->close();
                     }
 
                     // Notification
@@ -263,7 +319,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $notifEmpIdTo = $ownerOfForm;
                     $notifSubject = 'Validation of Leave Form';
 
-                    $notifMessage = 'Your Leave Application Form has been Validated';
+                    $notifMessage = 'Your Leave Application Form has been ' . $status;
                     $notifLink = "";
                     // $notifLink = $location_admin_leaveapplist . '/view/' . $leaveappformId;
                     $notifStatus = 'unseen';

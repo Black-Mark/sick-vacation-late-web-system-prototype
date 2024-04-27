@@ -39,10 +39,13 @@ $components_file_topnav = $webhostpath . '/components/topnavigation.php';
 $components_file_footer = $webhostpath . '/components/footer.php';
 $components_file_toastify = $webhostpath . '/components/toastifyAlert.php';
 $components_file_navpanel = $webhostpath . '/components/navPanel.php';
+$components_file_navpanelstaff = $webhostpath . '/components/navPanelStaff.php';
 
 $constants_file_dbconnect = $webhostpath . '/constants/dbconnect.php';
 $constants_file_session_login = $webhostpath . '/constants/loginSession.php';
 $constants_file_session_admin = $webhostpath . '/constants/adminSession.php';
+$constants_file_session_staff = $webhostpath . '/constants/staffSession.php';
+$constants_file_session_authorized = $webhostpath . '/constants/authorizedSession.php';
 $constants_file_session_employee = $webhostpath . '/constants/employeeSession.php';
 $constants_file_role_menu = $webhostpath . '/constants/roleMenu.php';
 $constants_file_html_credits = $webhostpath . '/constants/htmlHead.php';
@@ -111,5 +114,23 @@ $location_employee_leave_form_record = $webhostpage . '/employee/leaveformrecord
 $location_employee_leave_form_record_view = $webhostpage . '/employee/leaveformrecord/view';
 $location_employee_leave_form_record_edit = $webhostpage . '/employee/leaveformrecord/edit';
 $location_employee_leave_data_form = $webhostpage . '/employee/leavedataform';
+
+$location_staff = $webhostpage . '/staff';
+$location_staff_profile = $webhostpage . '/staff/profile';
+$location_staff_departments = $webhostpage . '/staff/departments';
+$location_staff_leaveapplist = $webhostpage . '/staff/leave-transaction';
+$location_staff_leaveapplist_view = $webhostpage . '/staff/leave-transaction/view';
+$location_staff_departments_office = $webhostpage . '/staff/departments/employee-list';
+
+$location_staff_departments_employee = $webhostpage . '/staff/departments/employee-list/user-info';
+$location_staff_departments_employee_leaveappform = $webhostpage . '/staff/departments/employee-list/leave-app-record';
+$location_staff_departments_employee_leaveappform_view = $webhostpage . '/staff/departments/employee-list/leave-app-record/view';
+$location_staff_departments_employee_leavedataform = $webhostpage . '/staff/departments/employee-list/leave-data-form';
+
+$location_staff_leave_form = $webhostpage . '/staff/leaveform';
+$location_staff_leave_form_record = $webhostpage . '/staff/leaveformrecord';
+$location_staff_leave_form_record_view = $webhostpage . '/staff/leaveformrecord/view';
+$location_staff_leave_form_record_edit = $webhostpage . '/staff/leaveformrecord/edit';
+$location_staff_leave_data_form = $webhostpage . '/staff/leavedataform';
 
 ?>

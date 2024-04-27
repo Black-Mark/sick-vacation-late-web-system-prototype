@@ -2,7 +2,7 @@
 include ("../../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_staff);
 include ($constants_variables);
 
 $leaveAppDataList = [];
@@ -97,9 +97,9 @@ if ($selectedYear && $selectedYear != 'All') {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include ($constants_file_html_credits);
     ?>
@@ -227,7 +227,7 @@ if ($selectedYear && $selectedYear != 'All') {
                                     <td>
                                         <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
                                             <a
-                                                href="<?php echo $location_admin_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                                href="<?php echo $location_staff_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
                                                 <button type="button" class="custom-regular-button">
                                                     View
                                                 </button>

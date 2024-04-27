@@ -1,23 +1,29 @@
 <?php
-include("../../../constants/routes.php");
+include("../../../../../constants/routes.php");
 include($components_file_error_handler);
 include($constants_file_dbconnect);
-include($constants_file_session_employee);
+include($constants_file_session_staff);
 include($constants_variables);
 
 $leaveAppFormData = [];
 
-$empId = isset($_SESSION['employeeId']) ? $database->real_escape_string(filter_var($_SESSION['employeeId'], FILTER_SANITIZE_STRING)) : null;
+$empId = isset($_SESSION['post_empId']) ? $database->real_escape_string(filter_var($_SESSION['post_empId'], FILTER_SANITIZE_STRING)) : null;
 $leaveAppFormId = isset($_GET['leaveappid']) ? $database->real_escape_string(filter_var($_GET['leaveappid'], FILTER_SANITIZE_STRING)) : null;
 
 if ($empId && $leaveAppFormId) {
     $empId = sanitizeInput($empId);
     $leaveAppFormId = sanitizeInput($leaveAppFormId);
     $leaveAppFormData = getEmployeeLeaveAppFormData($empId, $leaveAppFormId);
+} else if ($leaveAppFormId) {
+    $fetchLeaveAppFormDataQuery = " SELECT * FROM tbl_leaveappform WHERE leaveappform_id = ?";
+    $fetchLeaveAppFormDataStatement = $database->prepare($fetchLeaveAppFormDataQuery);
+    $fetchLeaveAppFormDataStatement->bind_param("s", $leaveAppFormID);
+    $fetchLeaveAppFormDataStatement->execute();
 
-    if(!empty($leaveAppFormData)){
-        $notifUpdateQuery = "UPDATE tbl_notifications SET status = 'read' WHERE subjectKey = '$leaveAppFormId' AND empIdTo = '$empId'";
-        mysqli_query($database, $notifUpdateQuery);
+    $fetchLeaveAppFormDataResult = $fetchLeaveAppFormDataStatement->get_result();
+
+    if ($fetchLeaveAppFormDataResult->num_rows > 0) {
+        $leaveAppFormData = $fetchLeaveAppFormDataResult->fetch_assoc();
     }
 }
 
@@ -28,9 +34,9 @@ if ($empId && $leaveAppFormId) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include($constants_file_html_credits);
     ?>
@@ -86,8 +92,8 @@ if ($empId && $leaveAppFormId) {
 
                 <div>
                     <div class="button-container component-container mb-2">
-                        <a href="<?php echo $location_employee_leave_form_record; ?>"><button type="button"
-                                class="custom-regular-button">Back</button></a>
+                        <a href="<?php echo $location_staff_departments_employee_leaveappform.'/'.$empId.'/'; ?>"><button
+                                type="button" class="custom-regular-button">Back</button></a>
                         <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                     </div>
 
@@ -451,11 +457,11 @@ if ($empId && $leaveAppFormId) {
                                             Inclusive Dates
                                         </label>
                                         <div class="leave-app-form-inclusivedate-input-container">
-                                            <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                            <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
                                                 class='leave-app-form-input-plain'
                                                 value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
                                             <span class="inclusive-date-text">to</span>
-                                            <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
+                                            <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
                                                 class='leave-app-form-input-plain'
                                                 value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
                                         </div>
@@ -554,7 +560,11 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input disabled class="leave-app-form-input" disabled /> -->
                                         <div class="leave-app-form-signature-context mt-2">
-                                            <?php echo $leaveAppFormData['hrName'] ?? ""; ?>
+                                        <?php 
+                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                                echo $leaveAppFormData['hrName'] ?? "";
+                                            }
+                                            ?>
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- <?php echo $leaveAppFormData['hrPosition']; ?> -->
@@ -609,7 +619,7 @@ if ($empId && $leaveAppFormId) {
                                         <div
                                             class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' ? 'mt-4' : ''; ?>">
                                             <?php
-                                            echo $leaveAppFormData['deptHeadName'] ?? "";
+                                            echo $leaveAppFormData['deptHeadName'];
                                             ?>
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
@@ -674,9 +684,13 @@ if ($empId && $leaveAppFormId) {
                             </div>
                             <!-- Municipal Mayor Signature -->
                             <div class="leave-app-form-seventh-row">
-                                <div class="leave-app-form-mayorsignature-container mt-2">
-                                    <div class="leave-app-form-signature-context">
-                                        <?php echo $leaveAppFormData['mayorName'] ?? ""; ?>
+                                <div class="leave-app-form-mayorsignature-container">
+                                    <div class="leave-app-form-signature-context mt-2">
+                                    <?php 
+                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                                echo $leaveAppFormData['mayorName'] ?? "";
+                                            }
+                                            ?>
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
                                         <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->

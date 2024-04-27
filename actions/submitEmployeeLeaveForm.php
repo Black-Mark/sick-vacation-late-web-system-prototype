@@ -176,6 +176,15 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 }
             }
 
+            $hrName = "";
+            $hrPosition = "";
+            $hrmanager_id = "";
+            $deptHeadName = "";
+            $depthead_id = "";
+            $mayorName = "";
+            $mayorPosition = "";
+            $mayor_id = "";
+
             // Adding the Data to the Database
             $query = "INSERT INTO tbl_leaveappform
             (leaveappform_id, employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
@@ -256,7 +265,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 // Notification
                 $notifEmpIdFrom = $_SESSION['employeeId'];
                 $notifEmpIdTo = '@Admin';
-                $notifSubject = $_SESSION['role'] . ' Submission of Leave Form';
+                $notifSubject = $_SESSION['role'] . ' Leave Form Request';
 
                 $notifMessage = $lastName . " " . $firstName . ' is Applying For ' . $typeOfLeave;
                 $notifLink = "";

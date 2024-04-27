@@ -24,11 +24,9 @@ if (isset($_SESSION['employeeId'])) {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            if (strcasecmp($row['role'], "Admin") != 0) {
+            if (strcasecmp($row['role'], "Admin") != 0 && strcasecmp($row['role'], "Staff") != 0) {
                 if (strcasecmp($row['role'], "Employee") == 0) {
                     header("location: " . $location_employee);
-                } else if (strcasecmp($row['role'], "Staff") == 0) {
-                    header("location: " . $location_staff);
                 } else {
                     header("Location: " . $location_login);
                     ?>

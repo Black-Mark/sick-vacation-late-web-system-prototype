@@ -30,12 +30,14 @@ if ($_SESSION) {
                         header("location: " . $location_admin);
                     } else if (strcasecmp($row['role'], "Employee") == 0) {
                         header("location: " . $location_employee);
+                    } else if (strcasecmp($row['role'], "Staff") == 0) {
+                        header("location: " . $location_staff);
                     } else {
                         header("Location: " . $location_login);
                         ?>
-                            <script>
-                                alert("Error: There is no such role!");
-                            </script>
+                                <script>
+                                    alert("Error: There is no such role!");
+                                </script>
                             <?php
                             session_unset();
                             session_destroy();

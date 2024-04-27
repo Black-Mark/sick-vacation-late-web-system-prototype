@@ -149,7 +149,7 @@ if ($departmentlabel) {
                                 <select name="role" class="form-select" id="floatingSelectRole"
                                     aria-label="Floating Role Selection" required>
                                     <option value="Employee" selected>Employee</option>
-                                    <option value="Admin">Admin</option>
+                                    <option value="Staff">Staff</option>
                                 </select>
                                 <label for="floatingSelectRole">Account Role <span
                                         class="required-color">*</span></label>
@@ -313,7 +313,7 @@ if ($departmentlabel) {
                                 <select name="role" class="form-select" id="floatingEditSelectRole"
                                     aria-label="Floating Role Selection" required>
                                     <option value="Employee" selected>Employee</option>
-                                    <option value="Admin">Admin</option>
+                                    <option value="Staff">Staff</option>
                                 </select>
                                 <label for="floatingEditSelectRole">Account Role <span
                                         class="required-color">*</span></label>
@@ -460,7 +460,7 @@ if ($departmentlabel) {
                                     aria-label="Floating Role Selection">
                                     <option value="" selected></option>
                                     <option value="Employee">Employee</option>
-                                    <option value="Admin">Admin</option>
+                                    <option value="Staff">Staff</option>
                                 </select>
                                 <label for="floatingEditMultipleSelectRole">Account Role</label>
                             </div>

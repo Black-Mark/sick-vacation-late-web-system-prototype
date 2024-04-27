@@ -2,7 +2,7 @@
 include("../../../constants/routes.php");
 include($components_file_error_handler);
 include($constants_file_dbconnect);
-include($constants_file_session_employee);
+include($constants_file_session_staff);
 include($constants_variables);
 
 $leaveAppFormData = [];
@@ -28,9 +28,9 @@ if ($empId && $leaveAppFormId) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include($constants_file_html_credits);
     ?>
@@ -86,7 +86,7 @@ if ($empId && $leaveAppFormId) {
 
                 <div>
                     <div class="button-container component-container mb-2">
-                        <a href="<?php echo $location_employee_leave_form_record; ?>"><button type="button"
+                        <a href="<?php echo $location_staff_leave_form_record; ?>"><button type="button"
                                 class="custom-regular-button">Back</button></a>
                         <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
                     </div>

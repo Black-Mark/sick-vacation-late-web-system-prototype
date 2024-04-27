@@ -5,6 +5,15 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
+$employeeData = [];
+
+if (isset($_SESSION['employeeId'])) {
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);   
+}
+
+$fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix']) ?? "";
+
 $settingData = getAuthorizedUser();
 
 $leaveAppFormID = isset($_GET['leaveappid']) ? filter_var($_GET['leaveappid'], FILTER_SANITIZE_STRING) : null;
@@ -619,11 +628,19 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
 
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input class="leave-app-form-input" disabled /> -->
-                                        <div class="leave-app-form-signature-context">
-                                            <?php echo $leaveAppFormData['hrName']; ?>
+                                        <div class="leave-app-form-signature-context mt-2">
+                                            <!-- <?php echo $leaveAppFormData['hrName']; ?> -->
+                                            <?php 
+                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                                echo $leaveAppFormData['hrName'] ?? "";
+                                            }else{
+                                                echo $fullName;
+                                            }
+                                            ?>
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
-                                            <?php echo $leaveAppFormData['hrPosition']; ?>
+                                            <!-- <?php echo $leaveAppFormData['hrPosition']; ?> -->
+                                            (Authorized Officer)
                                         </div>
                                     </div>
 
@@ -665,14 +682,23 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
 
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input class="leave-app-form-input" disabled /> -->
-                                        <div
+                                        <!-- <div
                                             class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' ? 'mt-4' : ''; ?>">
                                             <?php
                                                 echo $leaveAppFormData['deptHeadName'];
                                                 ?>
-                                        </div>
+                                        </div> -->
+                                        <?php 
+                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                                echo $leaveAppFormData['deptHeadName'] ?? "";
+                                            }else{
+                                                echo $fullName;
+                                            }
+                                            ?>
+                                        <div class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' && $fullName == "" ? 'mt-4' : ''; ?>"></div>
                                         <div class='leave-app-form-signature-subject'>
-                                            Department Head
+                                            <!-- Department Head -->
+                                            (Authorized Officer)
                                         </div>
                                     </div>
                                 </div>
@@ -730,11 +756,19 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                             <!-- Municipal Mayor Signature -->
                             <div class="leave-app-form-seventh-row">
                                 <div class="leave-app-form-mayorsignature-container">
-                                    <div class="leave-app-form-signature-context">
-                                        <?php echo $leaveAppFormData['mayorName']; ?>
+                                    <div class="leave-app-form-signature-context mt-4">
+                                        <!-- <?php echo $leaveAppFormData['mayorName']; ?> -->
+                                        <?php 
+                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                                echo $leaveAppFormData['mayorName'] ?? "";
+                                            }else{
+                                                echo $fullName;
+                                            }
+                                            ?>
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
-                                        <?php echo $leaveAppFormData['mayorPosition']; ?>
+                                        <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->
+                                        (Authorized Official)
                                     </div>
                                 </div>
                             </div>

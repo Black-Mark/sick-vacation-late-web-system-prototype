@@ -5,6 +5,8 @@ include($constants_file_dbconnect);
 include($constants_file_session_admin);
 include($constants_variables);
 
+header("Location: " . $location_admin_datamanagement_archive);
+
 $settingData = getAllSettingData();
 $employeesNameAndId = getAllEmployeesNameAndID();
 
@@ -58,6 +60,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <div class="page-container">
         <div class="page-content">
 
+        <!--
             <div class="box-container">
 
                 <div class="p-2">
@@ -161,6 +164,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </ul>
                 </div>
             </div>
+        -->
 
         </div>
     </div>

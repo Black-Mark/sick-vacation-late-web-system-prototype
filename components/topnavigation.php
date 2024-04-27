@@ -1,5 +1,5 @@
 <?php
-include($constants_file_role_menu);
+include ($constants_file_role_menu);
 
 $selectedMenu = [];
 
@@ -8,6 +8,8 @@ if (isset($_SESSION) && isset($_SESSION["role"])) {
         $selectedMenu = $employeeMenu;
     } else if (strcasecmp($_SESSION['role'], "Admin") == 0) {
         $selectedMenu = $adminMenu;
+    } else if (strcasecmp($_SESSION['role'], "Staff") == 0) {
+        $selectedMenu = $staffMenu;
     }
 }
 
@@ -89,6 +91,8 @@ if (isset($_REQUEST['logout'])) {
                     <?php
                     if ($_SESSION["role"] == 'Admin') {
                         echo "Admin";
+                    } else if ($_SESSION["role"] == 'Staff') {
+                        echo "Staff";
                     } else {
                         echo "Employee";
                     }
@@ -156,5 +160,5 @@ if (isset($_REQUEST['logout'])) {
 <script src="<?php echo $assets_script_topnav; ?>"></script>
 
 <?php
-include($constants_file_dbconnect);
+include ($constants_file_dbconnect);
 ?>

@@ -232,7 +232,9 @@ body.webpage-background-cover {
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
     box-shadow: 0 1px 8px 2px rgba(23, 37, 84, 0.3);
     padding: 16px;
-    margin: 20px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
     background-color: white;
     opacity: 90%;
     z-index: 1;

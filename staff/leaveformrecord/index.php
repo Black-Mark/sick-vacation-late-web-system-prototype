@@ -2,91 +2,66 @@
 include ("../../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_staff);
 include ($constants_variables);
 
 $leaveAppDataList = [];
+$fullName = "";
 $minStartYear = date("Y");
 $minEndYear = date("Y");
 $mostMinimalYear = date("Y");
 
-try {
-    // Determining Minimum Year
-    $minYearQuery = "   SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
-                        FROM tbl_leaveappform
-                        WHERE UPPER(archive) != 'DELETED'";
-    $minYearStatement = $database->prepare($minYearQuery);
-    $minYearStatement->execute();
-
-    $result = $minYearStatement->get_result();
-
-    if ($result) {
-        $minYears = $result->fetch_assoc();
-        $minStartYear = $minYears['minStartYear'] ?? date("Y");
-        $minEndYear = $minYears['minEndYear'] ?? date("Y");
-
-        if (isset($minStartYear, $minEndYear)) {
-            $mostMinimalYear = min($minStartYear, $minEndYear);
-        }
-    } else {
-        throw new Exception("Error fetching data");
+if (isset($_SESSION['employeeId'])) {
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
+    if (!empty($employeeData)) {
+        $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
     }
 
-    $minYearStatement->close();
-} catch (Exception $e) {
-    echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
-}
+    try {
+        $minYearQuery = "SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
+                 FROM tbl_leaveappform
+                 WHERE UPPER(archive) != 'DELETED' AND employee_id = ?";
+        $minYearStatement = $database->prepare($minYearQuery);
+        $minYearStatement->bind_param("s", $employeeId);
+        $minYearStatement->execute();
 
-$selectedYear = date("Y");
-if (isset($_POST['leaveTransactionYear'])) {
-    $selectedYear = sanitizeInput($_POST['selectedYear']);
-    $_SESSION['post_transactionyear'] = $selectedYear;
-} else if (isset($_SESSION['post_transactionyear'])) {
-    $selectedYear = sanitizeInput($_SESSION['post_transactionyear']);
-} else {
+        $result = $minYearStatement->get_result();
+
+        if ($result) {
+            $minYears = $result->fetch_assoc();
+            $minStartYear = $minYears['minStartYear'] ?? date("Y");
+            $minEndYear = $minYears['minEndYear'] ?? date("Y");
+
+            if (isset($minStartYear, $minEndYear)) {
+                $mostMinimalYear = min($minStartYear, $minEndYear);
+            }
+        } else {
+            throw new Exception("Error fetching data");
+        }
+
+        $minYearStatement->close();
+    } catch (Exception $e) {
+        echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
+    }
+
     $selectedYear = date("Y");
-    if (isset($_SESSION['post_transactionyear'])) {
-        unset($_SESSION['post_transactionyear']);
-    }
-}
-
-if ($selectedYear && $selectedYear != 'All') {
-    $leavelistsql = "SELECT leaveapp.*, users.firstName AS userFirstName, users.lastName AS userLastName
-                FROM tbl_leaveappform leaveapp
-                LEFT JOIN tbl_useraccounts users ON users.employee_id = leaveapp.employee_id
-                WHERE (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) AND UPPER(leaveapp.archive) != 'DELETED'
-                ORDER BY dateCreated DESC";
-
-    $leavelist_statement = $database->prepare($leavelistsql);
-    $leavelist_statement->bind_param("ss", $selectedYear, $selectedYear);
-    $leavelist_statement->execute();
-
-    $result = $leavelist_statement->get_result();
-
-    if ($result->num_rows > 0) {
-        while ($leaveform = $result->fetch_assoc()) {
-            $leaveAppDataList[] = $leaveform;
+    if (isset($_POST['leaveFormYear'])) {
+        $selectedYear = sanitizeInput($_POST['selectedYear']);
+        $_SESSION['post_leaveformyear'] = $selectedYear;
+    } else if (isset($_SESSION['post_leaveformyear'])) {
+        $selectedYear = sanitizeInput($_SESSION['post_leaveformyear']);
+    } else {
+        $selectedYear = date("Y");
+        if (isset($_SESSION['post_leaveformyear'])) {
+            unset($_SESSION['post_leaveformyear']);
         }
     }
 
-    $leavelist_statement->close();
-
-} else if ($selectedYear == 'All') {
-    $leavelistsql = "   SELECT leaveapp.*,
-                        users.firstName AS userFirstName,
-                        users.lastName AS userLastName
-                    FROM tbl_leaveappform leaveapp
-                    LEFT JOIN tbl_useraccounts users
-                    ON users.employee_id = leaveapp.employee_id
-                    WHERE UPPER(leaveapp.archive) != 'DELETED'
-                    ORDER BY dateCreated DESC";
-
-    $leavelist_result = $database->query($leavelistsql);
-
-    if ($leavelist_result->num_rows > 0) {
-        while ($leaveform = $leavelist_result->fetch_assoc()) {
-            $leaveAppDataList[] = $leaveform;
-        }
+    if ($selectedYear && $selectedYear != 'All') {
+        $leaveAppDataList = getLeaveAppFormRecordBasedYear($employeeId, $selectedYear);
+    } else if ($selectedYear == 'All') {
+        $leaveAppDataList = getLeaveAppFormRecord($employeeId);
     }
 }
 
@@ -97,9 +72,9 @@ if ($selectedYear && $selectedYear != 'All') {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include ($constants_file_html_credits);
     ?>
@@ -140,7 +115,7 @@ if ($selectedYear && $selectedYear != 'All') {
         <div class="page-content">
 
             <div class="box-container">
-                <h3 class="title-text">Leave Application Transaction</h3>
+                <h3 class="title-text">Leave Application Record</h3>
 
                 <div class="button-container component-container mb-2">
                     <form action="" method="post">
@@ -149,8 +124,9 @@ if ($selectedYear && $selectedYear != 'All') {
                             aria-label="Year Selection">
                             <?php
                             $currentYear = date("Y");
+                            $start_date = $mostMinimalYear;
 
-                            $start_year = $mostMinimalYear;
+                            $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
 
                             if (!$start_year || $start_year <= 1924) {
                                 $start_year = $currentYear;
@@ -165,7 +141,7 @@ if ($selectedYear && $selectedYear != 'All') {
                             }
                             ?>
                         </select>
-                        <input type="submit" name="leaveTransactionYear" value="Load Year Record"
+                        <input type="submit" name="leaveFormYear" value="Load Year Record"
                             class="custom-regular-button">
                     </form>
                 </div>
@@ -174,9 +150,6 @@ if ($selectedYear && $selectedYear != 'All') {
                     style="width:100%">
                     <thead>
                         <tr>
-                            <th>Select</th>
-                            <th>Date</th>
-                            <th>Name</th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
                             <th>Status</th>
@@ -189,22 +162,6 @@ if ($selectedYear && $selectedYear != 'All') {
                             foreach ($leaveAppDataList as $ldata) {
                                 ?>
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" name="selectedLeaveForm[]"
-                                            value="<?php echo $ldata['dateLastModified']; ?>" />
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['dateLastModified']; ?>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        if (empty($ldata['userLastName']) && empty($ldata['userFirstName'])) {
-                                            echo $ldata['lastName'] . ' ' . $ldata['firstName'];
-                                        } else {
-                                            echo $ldata['userLastName'] . ' ' . $ldata['userFirstName'];
-                                        }
-                                        ?>
-                                    </td>
                                     <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
@@ -225,18 +182,12 @@ if ($selectedYear && $selectedYear != 'All') {
                                         ?>
                                     </td>
                                     <td>
-                                        <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
-                                            <a
-                                                href="<?php echo $location_admin_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    View
-                                                </button>
-                                            </a>
-                                            <input type="hidden" name="recordId"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
-                                        </form>
+                                        <a
+                                            href="<?php echo $location_staff_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                            <button type="button" class="custom-regular-button">
+                                                View
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
@@ -261,22 +212,23 @@ if ($selectedYear && $selectedYear != 'All') {
             //     'style': 'multi',
             // },
             // ordering: false,
-            columnDefs: [{
-                'targets': 0,
-                'orderable': false,
-                // 'checkboxes': {
-                //     'selectRow': true,
-                //     // 'page': 'current',
-                // }
-            },
-            {
-                'targets': -1,
-                'orderable': false,
-                // 'checkboxes': {
-                //     'selectRow': true,
-                //     // 'page': 'current',
-                // }
-            },
+            columnDefs: [
+                // {
+                //     'targets': 0,
+                //     'orderable': false,
+                //     'checkboxes': {
+                //         'selectRow': true,
+                //         // 'page': 'current',
+                //     }
+                // },
+                {
+                    'targets': -1,
+                    'orderable': false,
+                    // 'checkboxes': {
+                    //     'selectRow': true,
+                    //     // 'page': 'current',
+                    // }
+                },
                 // {
                 //     targets: [0],
                 //     orderData: [0, 1]
@@ -307,32 +259,32 @@ if ($selectedYear && $selectedYear != 'All') {
             },
             {
                 extend: 'excel',
-                title: 'List of Leave Application Form Transaction',
-                filename: 'List of Leave Application Form Transaction',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: 'List of Leave Application Form Transaction',
-                filename: 'List of Leave Application Form Transaction',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: 'List of Leave Application Form Transaction',
-                filename: 'List of Leave Application Form Transaction',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: 'List of Leave Application Form Transaction',
-                filename: 'List of Leave Application Form Transaction',
+                title: '<?php echo $fullName . ' - Leave Application Record List' ?>',
+                filename: '<?php echo $fullName . ' - Leave Application Record List' ?>',
                 message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',

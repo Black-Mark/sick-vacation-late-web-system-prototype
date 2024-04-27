@@ -2,8 +2,34 @@
 include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
-include($constants_file_session_admin);
+include($constants_file_session_staff);
 include($constants_variables);
+
+$employeeData = [];
+$leaveData = [];
+
+$availableSickLeave = "?";
+$availableVacationLeave = "?";
+$leaveWithoutPay = "?";
+
+$availableSickLeaveTime = "?";
+$availableVacationLeaveTime = "?";
+$leaveWithoutPayTime = "?";
+
+if (isset($_SESSION['employeeId'])) {
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
+    $leaveData = getIncentiveLeaveComputation($employeeId);
+    
+    if (count($leaveData) > 0) {
+        $availableSickLeave = number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2);
+        $availableVacationLeave = number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2);
+        $leaveWithoutPay = number_format(($leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP'] + $leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP']), 2);
+        $availableSickLeaveTime = computeExactTime($leaveData[count($leaveData) - 1]['sickLeaveBalance']);
+        $availableVacationLeaveTime = computeExactTime($leaveData[count($leaveData) - 1]['vacationLeaveBalance']);
+        $leaveWithoutPayTime = computeExactTime(($leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP'] + $leaveData[count($leaveData) - 1]['vacationLeaveAbsUndWOP']));
+    }
+}
 
 // Counts the Total Number of Department
 $departmentCount = 0;
@@ -32,9 +58,9 @@ if ($employeeCountResult) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include($constants_file_html_credits);
     ?>
@@ -83,6 +109,21 @@ if ($employeeCountResult) {
                 <div class="card">
                     <h1>Total No. of Departments</h1>
                     <h2><?php echo $departmentCount; ?></h2>
+                </div>
+
+                <div class="card">
+                    <h1>Available Vacation Leave:</h1>
+                    <h2 title="<?php echo $availableVacationLeaveTime; ?>"><?php echo $availableVacationLeave; ?></h2>
+                </div>
+
+                <div class="card">
+                    <h1>Available Sick Leave:</h1>
+                    <h2 title="<?php echo $availableSickLeaveTime; ?>"><?php echo $availableSickLeave; ?></h2>
+                </div>
+                
+                <div class="card">
+                    <h1>Leave Under W/O Pay:</h1>
+                    <h2 title="<?php echo $leaveWithoutPayTime; ?>"><?php echo $leaveWithoutPay; ?></h2>
                 </div>
 
             </div>
