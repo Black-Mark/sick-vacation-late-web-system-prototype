@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['editEmployee'])) {
     $oldEmployeeID = strip_tags(mysqli_real_escape_string($database, $_POST['oldEmployeeId']));
@@ -23,6 +23,12 @@ if (isset($_POST['editEmployee'])) {
     $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST['jobPosition']));
     $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST['dateStarted']));
     $accountStatus = strip_tags(mysqli_real_escape_string($database, $_POST['status']));
+
+    $accountRole = "";
+    $accountRole = getAccountRole($employeeId);
+    if (strcasecmp($accountRole, "Admin") == 0) {
+        $role = "Admin";
+    }
 
     $query = "UPDATE tbl_useraccounts SET
               employee_id = ?,
@@ -67,7 +73,7 @@ if (isset($_POST['editEmployee'])) {
         header("Location: " . $location_admin_departments_office);
     }
     exit();
-    
+
 } else if (isset($_POST['editMultipleEmployee']) && isset($_POST['selectedEmpID'])) {
     try {
         $selectedEmpID = $_POST['selectedEmpID'];
