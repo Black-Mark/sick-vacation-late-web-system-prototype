@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_close($database);
             }else if (strcasecmp($userData['role'], "Staff") == 0) {
                 // Counts the unread notifications
-                $countQuery = "SELECT COUNT(*) as count FROM tbl_notifications WHERE empIdTo = '@Admin' AND status = 'unseen'";
+                $countQuery = "SELECT COUNT(*) as count FROM tbl_notifications WHERE empIdTo IN ('$empId', '@Admin') AND status = 'unseen'";
                 $countResult = mysqli_query($database, $countQuery);
                 $countRow = mysqli_fetch_assoc($countResult);
                 $unreadCount = $countRow['count'];
