@@ -110,7 +110,6 @@ if ($departmentlabel) {
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
-    <script src="<?php echo $assets_file_employeeListing; ?>"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -768,6 +767,7 @@ if ($departmentlabel) {
                                 extend: 'pdf',
                                 title: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 filename: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
+                                message: 'Produced and Prepared by the Human Resources System',
                                 exportOptions: {
                                     columns: ':visible:not(:eq(0)):not(:eq(-1))',
                                 }
@@ -789,7 +789,6 @@ if ($departmentlabel) {
                         ],
                         // responsive: true,
                     });
-
                 </script>
 
                 <!-- <button onclick="printSelectedValues()">Print Selected Values</button> -->
@@ -797,6 +796,8 @@ if ($departmentlabel) {
         </div>
     </div>
 
+    <script src="<?php echo $assets_file_employeeListing; ?>"></script>
+    
     <div>
         <?php
         include ($components_file_footer);

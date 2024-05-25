@@ -56,8 +56,8 @@ include($constants_variables);
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
-                            class="custom-regular-button">Back</button></a>
+                    <!-- <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                            class="custom-regular-button">Back</button></a> -->
                     <div class="title-text">Archive Data(s)</div>
                 </div>
                 <div class="item-detail-container mb-2">

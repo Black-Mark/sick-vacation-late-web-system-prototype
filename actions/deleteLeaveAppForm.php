@@ -116,7 +116,7 @@ if (isset($_POST['deleteLeaveAppForm'])) {
         if ($empId) {
             header("Location: " . $location_admin_departments_employee_leaveappform . '/' . $empId . '/');
         } else {
-            header("Location: " . $location_admin_leaveapplist);
+            header("Location: " . $location_admin_datamanagement_archive_leaveform);
         }
     } else if ($accountRole == "staff") {
         if ($empId) {

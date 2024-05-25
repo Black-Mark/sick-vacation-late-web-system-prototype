@@ -1,11 +1,11 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
-header("Location: " . $location_admin_datamanagement_archive);
+header("Location: ".$location_admin_datamanagement_archive);
 
 $settingData = getAllSettingData();
 $employeesNameAndId = getAllEmployeesNameAndID();
@@ -21,7 +21,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -54,13 +54,12 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav); ?>
+        <?php include ($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
         <div class="page-content">
 
-        <!--
             <div class="box-container">
 
                 <div class="p-2">
@@ -68,7 +67,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         Data Management
                     </h3>
 
-                    <h5 class="mt-4 mb-2 text-uppercase font-weight-bold">Authorized Person:</h5>
+                    <!-- <h5 class="mt-4 mb-2 text-uppercase font-weight-bold">Authorized Person:</h5>
 
                     <form action="<?php echo $action_update_system_setting; ?>" method="post"
                         class="d-flex flex-row gap-2 align-items-center mb-2">
@@ -145,37 +144,35 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                             }
                         }
                         ?>
-                    </form>
+                    </form> -->
 
-                    <h5 class="mt-4 mb-2 text-uppercase font-weight-bold"><a
-                            href="<?php echo $location_admin_datamanagement_archive; ?>">Archive Data(s):</a></h5>
-                    <ul>
-                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
-                                href="<?php echo $location_admin_datamanagement_archive_employee; ?>">Employee</a></li>
-                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
-                                href="<?php echo $location_admin_datamanagement_archive_department; ?>">Department</a>
-                        </li>
-                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
-                                href="<?php echo $location_admin_datamanagement_archive_leaveform; ?>">Leave Form</a>
-                        </li>
-                        <li class="w-25 font-weight-bold text-truncate mb-2"><a
-                                href="<?php echo $location_admin_datamanagement_archive_leavedata; ?>">Leave Data</a>
-                        </li>
-                    </ul>
+                    <div class="item-detail-container mb-2">
+                        <a href="<?php echo $location_admin; ?>"
+                            class="item-detail-container-summary">
+                            Leave Types
+                        </a>
+                    </div>
+
+                    <div class="item-detail-container mb-2">
+                        <a href="<?php echo $location_admin_datamanagement_archive; ?>"
+                            class="item-detail-container-summary">
+                            Archive
+                        </a>
+                    </div>
+
                 </div>
             </div>
-        -->
 
         </div>
     </div>
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

@@ -11,6 +11,7 @@ $fullName = "";
 $fetchLeaveDataWithMontly = [];
 $leaveData = [];
 $settingData = getAuthorizedUser();
+$allow_op = false;
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
@@ -26,6 +27,9 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
     if (!empty($employeeData)) {
         $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
+        if (strtoupper($employeeData['role']) == "EMPLOYEE") {
+            $allow_op = true;
+        }
     }
 }
 
@@ -700,7 +704,7 @@ if (!empty($leaveData)) {
                             class="custom-regular-button">
                     </form>
                     <?php
-                    if ($hasInitialRecord) {
+                    if ($hasInitialRecord && $allow_op) {
                         ?>
                         <button type="button" class="addLeaveDataRecordButton custom-regular-button" data-toggle="modal"
                             data-target="#addLeaveDataRecord">
@@ -885,7 +889,7 @@ if (!empty($leaveData)) {
                                                 </td>
                                             </tr>
                                             <?php
-                                            if ($ldata['recordType'] != "Monthly Credit") {
+                                            if ($ldata['recordType'] != "Monthly Credit" && $allow_op) {
                                                 ?>
                                                 <tr id="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>"
                                                     class="component-container accordion-collapse collapse"

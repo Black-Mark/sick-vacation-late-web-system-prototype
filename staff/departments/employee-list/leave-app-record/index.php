@@ -10,6 +10,7 @@ $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRI
 $leaveAppDataList = [];
 $employeeData = [];
 $fullName = "";
+$allow_op = false;
 
 if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     $_SESSION['post_empId'] = $empId;
@@ -19,6 +20,9 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     $employeeData = getEmployeeData($empId);
     if (!empty($employeeData)) {
         $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
+        if (strtoupper($employeeData['role']) == "EMPLOYEE") {
+            $allow_op = true;
+        }
     }
 
     $selectedYear = date("Y");
@@ -181,11 +185,13 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                                                     View
                                                 </button>
                                             </a>
-                                            <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                            <input type="hidden" name="recordId"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
+                                            <?php if ($allow_op) { ?>
+                                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                                <input type="hidden" name="recordId"
+                                                    value="<?php echo $ldata['leaveappform_id']; ?>" />
+                                                <input type="submit" name="deleteLeaveAppForm" value="Delete"
+                                                    class="custom-regular-button" />
+                                            <?php } ?>
                                         </form>
                                     </td>
                                 </tr>

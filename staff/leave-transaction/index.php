@@ -12,9 +12,18 @@ $mostMinimalYear = date("Y");
 
 try {
     // Determining Minimum Year
-    $minYearQuery = "   SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
-                        FROM tbl_leaveappform
-                        WHERE UPPER(archive) != 'DELETED'";
+    $minYearQuery = "SELECT 
+                        MIN(YEAR(leaveapp.inclusiveDateStart)) AS minStartYear, 
+                        MIN(YEAR(leaveapp.inclusiveDateEnd)) AS minEndYear
+                    FROM 
+                        tbl_leaveappform leaveapp
+                    LEFT JOIN 
+                        tbl_useraccounts users 
+                    ON 
+                        users.employee_id = leaveapp.employee_id
+                    WHERE 
+                        UPPER(leaveapp.archive) != 'DELETED'
+                        AND UPPER(users.role) = 'EMPLOYEE'";
     $minYearStatement = $database->prepare($minYearQuery);
     $minYearStatement->execute();
 
@@ -51,11 +60,23 @@ if (isset($_POST['leaveTransactionYear'])) {
 }
 
 if ($selectedYear && $selectedYear != 'All') {
-    $leavelistsql = "SELECT leaveapp.*, users.firstName AS userFirstName, users.lastName AS userLastName
-                FROM tbl_leaveappform leaveapp
-                LEFT JOIN tbl_useraccounts users ON users.employee_id = leaveapp.employee_id
-                WHERE (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) AND UPPER(leaveapp.archive) != 'DELETED'
-                ORDER BY dateCreated DESC";
+    $leavelistsql = "SELECT 
+                        leaveapp.*, 
+                        users.firstName AS userFirstName, 
+                        users.lastName AS userLastName 
+                    FROM 
+                        tbl_leaveappform leaveapp
+                    LEFT JOIN 
+                        tbl_useraccounts users 
+                    ON 
+                        users.employee_id = leaveapp.employee_id
+                    WHERE 
+                        (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) 
+                        AND UPPER(leaveapp.archive) != 'DELETED'
+                        AND UPPER(users.role) = 'EMPLOYEE'
+                    ORDER BY 
+                        dateCreated DESC
+                    ";
 
     $leavelist_statement = $database->prepare($leavelistsql);
     $leavelist_statement->bind_param("ss", $selectedYear, $selectedYear);
@@ -72,14 +93,20 @@ if ($selectedYear && $selectedYear != 'All') {
     $leavelist_statement->close();
 
 } else if ($selectedYear == 'All') {
-    $leavelistsql = "   SELECT leaveapp.*,
+    $leavelistsql = "SELECT leaveapp.*,
                         users.firstName AS userFirstName,
                         users.lastName AS userLastName
-                    FROM tbl_leaveappform leaveapp
-                    LEFT JOIN tbl_useraccounts users
-                    ON users.employee_id = leaveapp.employee_id
-                    WHERE UPPER(leaveapp.archive) != 'DELETED'
-                    ORDER BY dateCreated DESC";
+                    FROM 
+                        tbl_leaveappform leaveapp
+                    LEFT JOIN
+                        tbl_useraccounts users
+                    ON
+                        users.employee_id = leaveapp.employee_id
+                    WHERE
+                        UPPER(leaveapp.archive) != 'DELETED'
+                        AND UPPER(users.role) = 'EMPLOYEE'
+                    ORDER BY
+                        dateCreated DESC";
 
     $leavelist_result = $database->query($leavelistsql);
 

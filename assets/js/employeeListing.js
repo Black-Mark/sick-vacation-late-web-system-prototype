@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
 var editEmployeeState = null;
 
 $(document).ready(function () {
-    $('.editEmployeeButton').click(function () {
+    // Use event delegation to handle click events on dynamically created elements
+    $('#employees').on('click', '.editEmployeeButton', function () {
         // Get data from the button
         var employeeId = $(this).data('employee-id');
         var role = $(this).data('role');

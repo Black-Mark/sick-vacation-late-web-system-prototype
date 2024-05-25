@@ -25,7 +25,19 @@ if ($leaveAppFormID === 'index.php' || $leaveAppFormID === 'index.html' || $leav
 } else {
     $leaveAppFormID = sanitizeInput($leaveAppFormID);
 
-    $fetchLeaveAppFormDataQuery = " SELECT * FROM tbl_leaveappform WHERE leaveappform_id = ? AND UPPER(archive) != 'DELETED'";
+    $fetchLeaveAppFormDataQuery = "SELECT
+                                        leaveapp.*,
+                                        users.role
+                                    FROM 
+                                        tbl_leaveappform leaveapp
+                                    LEFT JOIN 
+                                        tbl_useraccounts users 
+                                    ON 
+                                        users.employee_id = leaveapp.employee_id
+                                    WHERE 
+                                        leaveapp.leaveappform_id = ? 
+                                        AND UPPER(leaveapp.archive) != 'DELETED'
+                                        AND UPPER(users.role) = 'EMPLOYEE'";
 
     $fetchLeaveAppFormDataStatement = $database->prepare($fetchLeaveAppFormDataQuery);
     $fetchLeaveAppFormDataStatement->bind_param("s", $leaveAppFormID);
@@ -136,6 +148,8 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                 <div class="text-center font-weight-bold text-uppercase title-text component-container">
                     Leave Application Form
                 </div>
+
+                <!-- <?php echo $_SESSION['alert_message']; ?> -->
 
                 <?php
                 if (!empty($leaveAppFormData)) {
