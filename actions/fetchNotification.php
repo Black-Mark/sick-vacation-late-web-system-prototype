@@ -123,7 +123,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_close($database);
             } else if (strcasecmp($userData['role'], "Staff") == 0) {
                 // Your existing code to fetch unread notifications
-                $queryUnreadNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo IN ('$empId', '@Admin') AND status = 'unseen' ORDER BY dateCreated DESC LIMIT 5";
+                $queryUnreadNotifications = "SELECT 
+                                                notif.* 
+                                            FROM 
+                                                tbl_notifications notif
+                                            LEFT JOIN 
+                                                tbl_useraccounts users 
+                                            ON 
+                                                users.employee_id = notif.empIdFrom
+                                            WHERE 
+                                                notif.empIdTo IN ('$empId', '@Admin') 
+                                                AND notif.status != 'unseen'
+                                                AND (
+                                                    UPPER(users.role) = 'EMPLOYEE' 
+                                                    OR ((UPPER(users.role) = 'ADMIN' OR notif.empIdFrom = '@Admin') AND notif.empIdTo = '$empId')
+                                                )
+                                            ORDER BY 
+                                                notif.dateCreated DESC 
+                                            LIMIT 5
+                                        ";
                 $resultUnreadNotifications = mysqli_query($database, $queryUnreadNotifications);
 
                 // Fetch up to 5 unread notifications
@@ -135,7 +153,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // If the count of unread notifications is less than 5, fetch additional seen notifications
                 $remainingLimit = 5 - count($unreadNotifications);
                 if ($remainingLimit > 0) {
-                    $querySeenNotifications = "SELECT * FROM tbl_notifications WHERE empIdTo IN ('$empId', '@Admin') AND status != 'unseen' ORDER BY dateCreated DESC LIMIT $remainingLimit";
+                    $querySeenNotifications = "SELECT 
+                                                    notif.* 
+                                                FROM 
+                                                    tbl_notifications notif
+                                                LEFT JOIN 
+                                                    tbl_useraccounts users 
+                                                ON 
+                                                    users.employee_id = notif.empIdFrom
+                                                WHERE 
+                                                    notif.empIdTo IN ('$empId', '@Admin') 
+                                                    AND notif.status != 'unseen'
+                                                    AND (
+                                                        UPPER(users.role) = 'EMPLOYEE' 
+                                                        OR ((UPPER(users.role) = 'ADMIN' OR notif.empIdFrom = '@Admin') AND notif.empIdTo = '$empId')
+                                                    )
+                                                ORDER BY 
+                                                    notif.dateCreated DESC 
+                                                LIMIT $remainingLimit
+                                            ";
                     $resultSeenNotifications = mysqli_query($database, $querySeenNotifications);
 
                     // Fetch remaining seen notifications

@@ -995,6 +995,7 @@ if (!empty($leaveData)) {
                         </table>
                     </div>
 
+                    <!--
                     <div class="px-2 py-4">
                         <div>Prepared by:</div>
                         <div style="width: 18rem;" class="mt-3 text-center underline-input">
@@ -1022,6 +1023,7 @@ if (!empty($leaveData)) {
                             ?>
                         </div>
                     </div>
+                        -->
                 </div>
 
             </div>

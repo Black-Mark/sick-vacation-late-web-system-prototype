@@ -338,6 +338,7 @@ if (!empty($leaveData)) {
                     </div>
                 </div>
 
+                <!--
                 <div class="px-2 py-4">
                     <?php
                     ?>
@@ -365,6 +366,7 @@ if (!empty($leaveData)) {
                         ?>
                     </div>
                 </div>
+                    -->
 
             </div>
 
