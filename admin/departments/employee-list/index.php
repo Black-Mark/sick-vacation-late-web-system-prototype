@@ -25,11 +25,22 @@ if ($departmentlabel) {
     if (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) {
         $departmentName = "Pending and Unassigned";
 
-        $empsql = "SELECT u.*, d.departmentName
-           FROM tbl_useraccounts u
-           LEFT JOIN tbl_departments d ON u.department = d.department_id
-           WHERE (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') AND UPPER(u.archive) != 'DELETED'
-           ORDER BY u.lastName ASC";
+        $empsql = " SELECT 
+                        u.*, 
+                        CASE 
+                            WHEN UPPER(d.archive) = 'DELETED' THEN '' 
+                            ELSE d.departmentName 
+                        END AS departmentName
+                    FROM 
+                        tbl_useraccounts u
+                    LEFT JOIN 
+                        tbl_departments d ON u.department = d.department_id
+                    WHERE 
+                        (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') 
+                        AND UPPER(u.archive) != 'DELETED'
+                    ORDER BY 
+                        u.lastName ASC";
+
         $employees = $database->query($empsql);
 
     } else {
@@ -48,7 +59,7 @@ if ($departmentlabel) {
                     LEFT JOIN
                         tbl_departments d ON ua.department = d.department_id
                     WHERE
-                        ua.department = ? AND UPPER(ua.archive) != 'DELETED'
+                        ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED'
                     ORDER BY
                         ua.lastName ASC";
 
@@ -62,16 +73,21 @@ if ($departmentlabel) {
 
 } else {
     $departmentName = "All Employees";
-    $empsql = "SELECT
-                ua.*,
-                d.departmentName
-            FROM
-                tbl_useraccounts ua
-            LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id
-            WHERE
-                UPPER(ua.archive) != 'DELETED'
-            ORDER BY ua.lastName ASC";
+    $empsql = " SELECT
+                    ua.*,
+                    CASE
+                        WHEN UPPER(d.archive) = 'DELETED' THEN ''
+                        ELSE d.departmentName
+                    END AS departmentName
+                FROM
+                    tbl_useraccounts ua
+                LEFT JOIN
+                    tbl_departments d ON ua.department = d.department_id
+                WHERE
+                    UPPER(ua.archive) != 'DELETED'
+                ORDER BY
+                    ua.lastName ASC";
+
     $employees = $database->query($empsql);
 }
 

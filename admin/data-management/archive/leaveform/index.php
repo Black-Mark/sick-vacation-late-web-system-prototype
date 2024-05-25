@@ -1,9 +1,9 @@
 <?php
-include("../../../../constants/routes.php");
+include ("../../../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $leaveforms = [];
 $leavelistsql = "SELECT leaveapp.*,
@@ -30,7 +30,7 @@ $leaveforms = $database->query($leavelistsql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -63,7 +63,7 @@ $leaveforms = $database->query($leavelistsql);
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -110,7 +110,13 @@ $leaveforms = $database->query($leavelistsql);
                                             <?php echo $row['dateLastModified']; ?>
                                         </td>
                                         <td>
-                                            <?php echo $row['userLastName'] . ' ' . $row['userFirstName']; ?>
+                                            <?php
+                                            if (empty($row['userLastName']) && empty($row['userFirstName'])) {
+                                                echo $row['lastName'] . ' ' . $row['firstName'];
+                                            } else {
+                                                echo $row['userLastName'] . ' ' . $row['userFirstName'];
+                                            }
+                                            ?>
                                         </td>
                                         <td>
                                             <?php echo $row['typeOfLeave']; ?>
@@ -122,20 +128,20 @@ $leaveforms = $database->query($leavelistsql);
                                             <?php echo $row['status']; ?>
                                         </td>
                                         <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <form method="POST" action="<?php echo $action_retrieve_leaveappform; ?>">
-                                                <input type="hidden" name="leaveFormNum"
-                                                    value="<?php echo $row['leaveappform_id']; ?>" />
-                                                <input type="submit" name="retrieveLeaveForm" value="Retrieve"
-                                                    class="custom-regular-button" />
-                                            </form>
-                                            <form method="POST" action="<?php echo $action_delete_leaveappform; ?>">
-                                                <input type="hidden" name="recordId"
-                                                    value="<?php echo $row['leaveappform_id']; ?>" />
-                                                <input type="submit" name="absoluteDeleteLeaveAppForm" value="Delete"
-                                                    class="custom-regular-button" />
-                                            </form>
-                                        </div>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <form method="POST" action="<?php echo $action_retrieve_leaveappform; ?>">
+                                                    <input type="hidden" name="leaveFormNum"
+                                                        value="<?php echo $row['leaveappform_id']; ?>" />
+                                                    <input type="submit" name="retrieveLeaveForm" value="Retrieve"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                                <form method="POST" action="<?php echo $action_delete_leaveappform; ?>">
+                                                    <input type="hidden" name="recordId"
+                                                        value="<?php echo $row['leaveappform_id']; ?>" />
+                                                    <input type="submit" name="absoluteDeleteLeaveAppForm" value="Delete"
+                                                        class="custom-regular-button" />
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php
@@ -256,11 +262,11 @@ $leaveforms = $database->query($leavelistsql);
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

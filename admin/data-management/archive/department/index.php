@@ -7,11 +7,32 @@ include ($constants_variables);
 
 $departments = [];
 
-$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.middleName AS headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
-                   FROM tbl_departments d
-                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id 
-                   WHERE d.archive COLLATE latin1_general_ci = 'deleted' 
-                   ORDER BY d.departmentName";
+$sql_department = " SELECT 
+                        d.*, 
+                        CASE 
+                            WHEN UPPER(u.archive) = 'DELETED' THEN '' 
+                            ELSE u.firstName 
+                        END AS headFirstName,
+                        CASE 
+                            WHEN UPPER(u.archive) = 'DELETED' THEN '' 
+                            ELSE u.middleName 
+                        END AS headMiddleName,
+                        CASE 
+                            WHEN UPPER(u.archive) = 'DELETED' THEN '' 
+                            ELSE u.lastName 
+                        END AS headLastName,
+                        CASE 
+                            WHEN UPPER(u.archive) = 'DELETED' THEN '' 
+                            ELSE u.suffix 
+                        END AS headSuffix
+                    FROM 
+                        tbl_departments d
+                    LEFT JOIN 
+                        tbl_useraccounts u ON d.departmentHead = u.employee_id 
+                    WHERE 
+                        UPPER(d.archive) = 'DELETED'
+                    ORDER BY 
+                        d.departmentName";
 
 $departments = $database->query($sql_department);
 

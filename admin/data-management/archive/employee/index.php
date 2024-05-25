@@ -8,13 +8,16 @@ include ($constants_variables);
 $employees = [];
 $empsql = "SELECT
                 ua.*,
-                d.departmentName
+                CASE 
+                    WHEN UPPER(d.archive) = 'DELETED' THEN '' 
+                    ELSE d.departmentName 
+                END AS departmentName
             FROM
                 tbl_useraccounts ua
             LEFT JOIN
                 tbl_departments d ON ua.department = d.department_id
             WHERE
-                ua.archive COLLATE latin1_general_ci = 'deleted'
+                UPPER(ua.archive) = 'DELETED'
             ORDER BY
                 ua.lastName ASC";
 $employees = $database->query($empsql);
