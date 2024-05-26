@@ -560,11 +560,11 @@ if ($empId && $leaveAppFormId) {
                                     <div class="leave-app-form-signature-container">
                                         <!-- <input disabled class="leave-app-form-input" disabled /> -->
                                         <div class="leave-app-form-signature-context mt-2">
-                                        <?php 
+                                        <!-- <?php 
                                             if(strtolower($leaveAppFormData['status']) != "submitted"){
                                                 echo $leaveAppFormData['hrName'] ?? "";
                                             }
-                                            ?>
+                                            ?> -->
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- <?php echo $leaveAppFormData['hrPosition']; ?> -->
@@ -618,9 +618,9 @@ if ($empId && $leaveAppFormId) {
                                         <!-- <input disabled class="leave-app-form-input" disabled /> -->
                                         <div
                                             class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' ? 'mt-4' : ''; ?>">
-                                            <?php
+                                            <!-- <?php
                                             echo $leaveAppFormData['deptHeadName'];
-                                            ?>
+                                            ?> -->
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- Department Head -->
@@ -686,11 +686,11 @@ if ($empId && $leaveAppFormId) {
                             <div class="leave-app-form-seventh-row">
                                 <div class="leave-app-form-mayorsignature-container">
                                     <div class="leave-app-form-signature-context mt-2">
-                                    <?php 
+                                    <!-- <?php 
                                             if(strtolower($leaveAppFormData['status']) != "submitted"){
                                                 echo $leaveAppFormData['mayorName'] ?? "";
                                             }
-                                            ?>
+                                            ?> -->
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
                                         <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->

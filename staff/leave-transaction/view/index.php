@@ -643,13 +643,13 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <!-- <input class="leave-app-form-input" disabled /> -->
                                         <div class="leave-app-form-signature-context mt-2">
                                             <!-- <?php echo $leaveAppFormData['hrName']; ?> -->
-                                            <?php 
+                                            <!-- <?php 
                                             if(strtolower($leaveAppFormData['status']) != "submitted"){
                                                 echo $leaveAppFormData['hrName'] ?? "";
                                             }else{
                                                 echo $fullName;
                                             }
-                                            ?>
+                                            ?> -->
                                         </div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- <?php echo $leaveAppFormData['hrPosition']; ?> -->
@@ -701,13 +701,13 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                                 echo $leaveAppFormData['deptHeadName'];
                                                 ?>
                                         </div> -->
-                                        <?php 
+                                        <!-- <?php 
                                             if(strtolower($leaveAppFormData['status']) != "submitted"){
                                                 echo $leaveAppFormData['deptHeadName'] ?? "";
                                             }else{
                                                 echo $fullName;
                                             }
-                                            ?>
+                                            ?> -->
                                         <div class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' && $fullName == "" ? 'mt-4' : ''; ?>"></div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- Department Head -->
@@ -771,13 +771,13 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                 <div class="leave-app-form-mayorsignature-container">
                                     <div class="leave-app-form-signature-context mt-4">
                                         <!-- <?php echo $leaveAppFormData['mayorName']; ?> -->
-                                        <?php 
+                                        <!-- <?php 
                                             if(strtolower($leaveAppFormData['status']) != "submitted"){
                                                 echo $leaveAppFormData['mayorName'] ?? "";
                                             }else{
                                                 echo $fullName;
                                             }
-                                            ?>
+                                            ?> -->
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
                                         <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->
