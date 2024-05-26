@@ -56,9 +56,9 @@ if (isset($leaveAppFormData['typeOfLeave'])) {
 
 $vacationLeaveTotalEarned = !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2) : number_format(0, 2);
 $sickLeaveTotalEarned = !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2) : number_format(0, 2);
-$vacationLeaveLess = $typeOfLeave === "Vacation Leave" ? number_format($workingDays, 2) : number_format(0, 2);
+$vacationLeaveLess = $typeOfLeave === "Vacation Leave" || $typeOfLeave == "Forced Leave" ? number_format($workingDays, 2) : number_format(0, 2);
 $sickLeaveLess = $typeOfLeave === "Sick Leave" ? number_format($workingDays, 2) : number_format(0, 2);
-$vacationLeaveBalance = $typeOfLeave == "Vacation Leave" ? number_format($vacationLeaveTotalEarned - $workingDays, 2) : number_format($vacationLeaveTotalEarned, 2);
+$vacationLeaveBalance = $typeOfLeave == "Vacation Leave" || $typeOfLeave == "Forced Leave" ? number_format($vacationLeaveTotalEarned - $workingDays, 2) : number_format($vacationLeaveTotalEarned, 2);
 $sickLeaveBalance = $typeOfLeave == "Sick Leave" ? number_format($sickLeaveTotalEarned - $workingDays, 2) : number_format($sickLeaveTotalEarned, 2);
 
 $daysWithPay = 0;

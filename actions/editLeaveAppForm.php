@@ -237,7 +237,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $particularType = "";
                     $particularLabel = "";
                     if ($typeOfLeave != '') {
-                        if ($typeOfLeave == "Vacation Leave" || $typeOfLeave == "Sick Leave") {
+                        if ($typeOfLeave == "Vacation Leave" || $typeOfLeave == "Sick Leave" || $typeOfLeave == "Forced Leave") {
                             $particularType = $typeOfLeave;
                         } else {
                             $particularType = "Other";

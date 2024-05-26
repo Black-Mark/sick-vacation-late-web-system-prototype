@@ -687,8 +687,10 @@ if ($departmentlabel) {
                                                     value="<?php echo $row['employee_id']; ?>" />
                                                 <input type="hidden" value="<?php echo $departmentlabel; ?>"
                                                     name="departmentlabel" />
-                                                <input type="submit" name="deleteEmployee" value="Delete"
-                                                    class="custom-regular-button" />
+                                                <?php if ($row['employee_id'] != $_SESSION['employeeId']) { ?>
+                                                    <input type="submit" name="deleteEmployee" value="Delete"
+                                                        class="custom-regular-button" />
+                                                <?php } ?>
                                             </form>
                                         </td>
                                     </tr>
@@ -811,7 +813,6 @@ if ($departmentlabel) {
             </div>
         </div>
     </div>
-
     <script src="<?php echo $assets_file_employeeListing; ?>"></script>
     
     <div>
