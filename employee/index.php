@@ -19,7 +19,7 @@ $leaveWithoutPayTime = "?";
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
-    $leaveData = getIncentiveLeaveComputation($employeeId);
+    $leaveData = getIncentiveLeaveComputationToday($employeeId);
     
     if (count($leaveData) > 0) {
         $availableSickLeave = number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2);
