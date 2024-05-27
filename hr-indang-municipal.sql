@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2024 at 10:57 AM
+-- Generation Time: May 27, 2024 at 02:11 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `tbl_departments` (
   `department_id` int(10) NOT NULL,
   `departmentName` varchar(255) NOT NULL,
+  `departmentDescription` varchar(500) NOT NULL,
   `departmentHead` varchar(255) NOT NULL,
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -38,9 +39,31 @@ CREATE TABLE `tbl_departments` (
 -- Dumping data for table `tbl_departments`
 --
 
-INSERT INTO `tbl_departments` (`department_id`, `departmentName`, `departmentHead`, `archive`) VALUES
-(7, 'Department of Human Resources', '201910776', ''),
-(9, 'Municipal Office', '201915197', '');
+INSERT INTO `tbl_departments` (`department_id`, `departmentName`, `departmentDescription`, `departmentHead`, `archive`) VALUES
+(1, 'Department of Human Resources Office', 'The Department of Human Resources Office serves as the administrative hub for managing personnel-related matters within an organization. It oversees recruitment, hiring, training, benefits administration, employee relations, and compliance with labor laws and regulations. Additionally, it plays a crucial role in promoting a positive work environment, fostering professional development, and ensuring fair and equitable treatment of all employees.', 'PRO001', ''),
+(2, 'Municipal Office', ' A municipal office is the administrative hub of local government, responsible for managing public services, issuing permits, overseeing infrastructure projects, and fostering community engagement within a specific municipality.', '201915197', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_designations`
+--
+
+CREATE TABLE `tbl_designations` (
+  `designation_id` int(255) NOT NULL,
+  `designationName` varchar(150) NOT NULL,
+  `designationDescription` varchar(255) NOT NULL,
+  `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp(),
+  `dateCreated` date NOT NULL,
+  `archive` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_designations`
+--
+
+INSERT INTO `tbl_designations` (`designation_id`, `designationName`, `designationDescription`, `dateLastModified`, `dateCreated`, `archive`) VALUES
+(1, 'HR Staff', 'HR staff oversee all aspects of personnel management, from recruitment to employee relations, ensuring a positive work environment.', '2024-05-27 11:35:05', '2024-05-27', '');
 
 -- --------------------------------------------------------
 
@@ -134,16 +157,6 @@ CREATE TABLE `tbl_leavedataform` (
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `tbl_leavedataform`
---
-
-INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `foreignKeyId`, `dateCreated`, `recordType`, `period`, `periodEnd`, `particular`, `particularLabel`, `days`, `hours`, `minutes`, `vacationLeaveEarned`, `vacationLeaveAbsUndWP`, `vacationLeaveBalance`, `vacationLeaveAbsUndWOP`, `sickLeaveEarned`, `sickLeaveAbsUndWP`, `sickLeaveBalance`, `sickLeaveAbsUndWOP`, `dateOfAction`, `dateLastModified`, `leaveform_connectionId`, `archive`) VALUES
-(290, 'PRO001', '', '2024-04-27 08:45:12', 'Initial Record', '2023-12-13', '2023-12-13', 'Initial Record', '', 0, 0, 0, 25.0000, 0.0000, 25.0000, 0.0000, 25.0000, 0.0000, 25.0000, 0.0000, '2024-04-27', '2024-04-27 08:45:12', '', ''),
-(291, '201915197', '', '2024-04-27 08:45:58', 'Initial Record', '2023-11-24', '2024-03-27', 'Initial Record', '', 0, 0, 0, 7.0000, 0.0000, 7.0000, 0.0000, 11.0000, 0.0000, 11.0000, 0.0000, '2024-04-27', '2024-04-27 08:45:58', '', ''),
-(292, '201910776', '', '2024-04-27 08:46:15', 'Initial Record', '2023-12-10', '2024-04-27', 'Initial Record', '', 0, 0, 0, 4.0000, 0.0000, 4.0000, 0.0000, 3.0000, 0.0000, 3.0000, 0.0000, '2024-04-27', '2024-04-27 08:46:15', '', ''),
-(293, 'STAFF', '', '2024-04-27 08:52:14', 'Initial Record', '2024-04-27', '2024-04-27', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-04-27', '2024-04-27 08:52:14', '', '');
-
 -- --------------------------------------------------------
 
 --
@@ -235,10 +248,7 @@ CREATE TABLE `tbl_useraccounts` (
 --
 
 INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `birthdate`, `sex`, `civilStatus`, `department`, `jobPosition`, `status`, `dateStarted`, `dateCreated`, `archive`) VALUES
-(78, '201915197', 'Employee', 'reneantonio.dimabogte@cvsu.edu.ph', 'capacio2020', '', 'Rene Antonio', 'Capacio', 'Dimabogte', 'Jr.', '2021-01-01', 'Male', 'Single', '9', 'Grim Reaper', 'Active', '2023-11-24', '2023-11-24 01:56:11', ''),
-(84, '201910776', 'Employee', 'maepayad000@gmail.com', 'password', '', 'Nina Mae', 'Lontoc', 'Payad', '', '2024-04-17', 'Female', 'Married', '7', 'Content Creator ', 'Active', '2023-12-10', '2023-12-10 08:05:08', ''),
-(91, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', '2000-01-01', 'Prefer Not To Say', 'Single', '7', 'Administrator', 'Active', '2023-12-13', '2023-12-13 12:47:22', ''),
-(105, 'STAFF', 'Employee', 'staff@gmail.com', 'Password', '', 'Staff', '', 'Account', '', '2024-04-27', 'Prefer Not To Say', 'Single', '7', 'Staff', 'Active', '2024-04-27', '2024-04-27 08:52:13', '');
+(1, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-12-13', '2023-12-13 12:47:22', '');
 
 --
 -- Indexes for dumped tables
@@ -250,6 +260,13 @@ INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `p
 ALTER TABLE `tbl_departments`
   ADD PRIMARY KEY (`department_id`),
   ADD UNIQUE KEY `departmentName` (`departmentName`);
+
+--
+-- Indexes for table `tbl_designations`
+--
+ALTER TABLE `tbl_designations`
+  ADD PRIMARY KEY (`designation_id`),
+  ADD UNIQUE KEY `designationName` (`designationName`);
 
 --
 -- Indexes for table `tbl_leaveappform`
@@ -297,25 +314,31 @@ ALTER TABLE `tbl_useraccounts`
 -- AUTO_INCREMENT for table `tbl_departments`
 --
 ALTER TABLE `tbl_departments`
-  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `department_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tbl_designations`
+--
+ALTER TABLE `tbl_designations`
+  MODIFY `designation_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=294;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
 --
 ALTER TABLE `tbl_passwordreset_tokens`
-  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `token_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_systemsettings`
@@ -327,7 +350,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
