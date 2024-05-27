@@ -208,7 +208,6 @@ if ($departmentlabel) {
                                     <option value="" selected></option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                                    <option value="Prefer Not To Say">Prefer Not To Say</option>
                                 </select>
                                 <label for="floatingSex">Sex <span class="required-color">*</span></label>
                             </div>
@@ -372,7 +371,6 @@ if ($departmentlabel) {
                                     <option value="" selected></option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                                    <option value="Prefer Not To Say">Prefer Not To Say</option>
                                 </select>
                                 <label for="floatingEditSex">Sex <span class="required-color">*</span></label>
                             </div>
@@ -601,7 +599,7 @@ if ($departmentlabel) {
                         -->
                         <!-- Multiple Delete -->
                         <input type="submit" name="deleteMultipleEmployee" id="deleteMultipleEmployeeBTN"
-                            value="Multiple Delete" class="custom-regular-button" />
+                            value="Delete" class="custom-regular-button" />
                     </div>
 
                     <table id="employees" class="text-center hover table-striped cell-border order-column"
@@ -657,7 +655,7 @@ if ($departmentlabel) {
                                             <?php echo $row['status']; ?>
                                         </td>
                                         <td>
-                                            <form method="POST" action="<?php echo $action_delete_employee; ?>">
+                                            <!-- <form method="POST" action="<?php echo $action_delete_employee; ?>"> -->
                                                 <a
                                                     href="<?php echo $location_admin_departments_employee . '/' . $row['employee_id'] . '/'; ?>">
                                                     <button type="button" class="custom-regular-button">
@@ -685,15 +683,15 @@ if ($departmentlabel) {
                                                     Edit
                                                 </button>
 
-                                                <input type="hidden" name="employeeNum"
+                                                <!-- <input type="hidden" name="employeeNum"
                                                     value="<?php echo $row['employee_id']; ?>" />
                                                 <input type="hidden" value="<?php echo $departmentlabel; ?>"
                                                     name="departmentlabel" />
                                                 <?php if ($row['employee_id'] != $_SESSION['employeeId']) { ?>
                                                     <input type="submit" name="deleteEmployee" value="Delete"
                                                         class="custom-regular-button" />
-                                                <?php } ?>
-                                            </form>
+                                                <?php } ?> -->
+                                            <!-- </form> -->
                                         </td>
                                     </tr>
                                     <?php
@@ -720,7 +718,7 @@ if ($departmentlabel) {
                             {
                                 targets: [<?php if ($departmentlabel != "") {
                                     echo "2,";
-                                } ?>3, 4, 5, 6], visible: false
+                                } ?>4, 6], visible: false
                             },
                             {
                                 'targets': 0,

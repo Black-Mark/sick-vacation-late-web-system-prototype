@@ -237,7 +237,7 @@ if ($departmentlabel) {
                             {
                                 targets: [<?php if ($departmentlabel != "") {
                                     echo "2,";
-                                } ?>3, 4, 5, 6], visible: false
+                                } ?>4, 6], visible: false
                             },
                             {
                                 'targets': 0,

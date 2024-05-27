@@ -38,7 +38,7 @@ function printSelectedValues() {
 document.addEventListener('DOMContentLoaded', function () {
     var checkboxes = document.getElementsByName('selectedEmployee[]');
     var deleteEmployeesButton = document.getElementById('deleteMultipleEmployeeBTN');
-    var editEmployeesButton = document.getElementById('editMultipleEmployeeBTN');
+    // var editEmployeesButton = document.getElementById('editMultipleEmployeeBTN');
     var selectedEmpIDInput = document.getElementById('selectedEmpID');
 
     // Add event listener to checkboxes
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update the state of the delete button
     function updateDeleteEmployeesButtonState() {
         var selectedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
-        deleteEmployeesButton.disabled = selectedValues.length <= 1;
-        editEmployeesButton.disabled = selectedValues.length <= 1;
+        deleteEmployeesButton.disabled = selectedValues.length <= 0;
+        // editEmployeesButton.disabled = selectedValues.length <= 0;
 
         // Convert the array to JSON and update the value of the hidden input
         selectedEmpIDInput.value = JSON.stringify(selectedValues);

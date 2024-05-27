@@ -28,6 +28,11 @@ $action_edit_leaveappform = $webhostpage . '/actions/editLeaveAppForm.php';
 $action_delete_leaveappform = $webhostpage . '/actions/deleteLeaveAppForm.php';
 $action_retrieve_leaveappform = $webhostpage . '/actions/retrieveLeaveAppForm.php';
 
+$action_add_designation = $webhostpage . '/actions/addDesignation.php';
+$action_edit_designation = $webhostpage . '/actions/editDesignation.php';
+$action_delete_designation = $webhostpage . '/actions/deleteDesignation.php';
+$action_retrieve_designation = $webhostpage . '/actions/retrieveDesignation.php';
+
 $action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.php';
 $action_resetpassword = $webhostpage . '/actions/resetPassword.php';
 
@@ -102,6 +107,8 @@ $location_admin_departments_employee_leaveappform_view = $webhostpage . '/admin/
 $location_admin_departments_employee_leavedataform = $webhostpage . '/admin/departments/employee-list/leave-data-form';
 
 $location_admin_datamanagement = $webhostpage . '/admin/data-management';
+$location_admin_datamanagement_designation = $webhostpage . '/admin/data-management/designation';
+$location_admin_datamanagement_leavetype = $webhostpage . '/admin/data-management/leave-types';
 $location_admin_datamanagement_archive = $webhostpage . '/admin/data-management/archive';
 $location_admin_datamanagement_archive_employee = $webhostpage . '/admin/data-management/archive/employee';
 $location_admin_datamanagement_archive_department = $webhostpage . '/admin/data-management/archive/department';

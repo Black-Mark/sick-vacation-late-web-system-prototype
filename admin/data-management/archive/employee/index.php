@@ -74,7 +74,7 @@ $employees = $database->query($empsql);
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                    <a href="<?php echo $location_admin_datamanagement_archive; ?>"><button
                             class="custom-regular-button">Back</button></a>
                     <div class="title-text text-truncate">Archive Employee(s)</div>
                 </div>

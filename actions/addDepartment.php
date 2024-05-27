@@ -8,6 +8,7 @@ include ($constants_variables);
 if (isset($_POST['addDepartment'])) {
     $departmentName = strip_tags(mysqli_real_escape_string($database, $_POST['departmentName']));
     $departmentHead = strip_tags(mysqli_real_escape_string($database, $_POST["departmentHead"]));
+    $departmentDescription = strip_tags(mysqli_real_escape_string($database, $_POST["departmentDescription"]));
 
     try {
         // Check if the department already exists
@@ -21,21 +22,31 @@ if (isset($_POST['addDepartment'])) {
         if ($existingDepartment) {
             // Department exists, check archive status
             if (strtolower($existingDepartment['archive']) == "deleted") {
-                $updateQuery = "UPDATE tbl_departments SET archive = '' WHERE LOWER(departmentName) = LOWER(?)";
-                $updateStmt = mysqli_prepare($database, $updateQuery);
-                mysqli_stmt_bind_param($updateStmt, "s", $departmentName);
-                mysqli_stmt_execute($updateStmt);
 
-                $_SESSION['alert_message'] = "Department was on archive and retrieved.";
+                if (trim($departmentDescription) != "") {
+                    $updateQuery = "UPDATE tbl_departments SET archive = '', departmentDescription = ? WHERE LOWER(departmentName) = LOWER(?)";
+                    $updateStmt = mysqli_prepare($database, $updateQuery);
+                    mysqli_stmt_bind_param($updateStmt, "ss", $departmentDescription, $departmentName);
+                    mysqli_stmt_execute($updateStmt);
+
+                    $_SESSION['alert_message'] = "Department was on archive and update when retrieved.";
+                } else {
+                    $updateQuery = "UPDATE tbl_departments SET archive = '' WHERE LOWER(departmentName) = LOWER(?)";
+                    $updateStmt = mysqli_prepare($database, $updateQuery);
+                    mysqli_stmt_bind_param($updateStmt, "s", $departmentName);
+                    mysqli_stmt_execute($updateStmt);
+
+                    $_SESSION['alert_message'] = "Department was on archive and retrieved.";
+                }
             } else {
                 $_SESSION['alert_message'] = "Department already exists.";
             }
             $_SESSION['alert_type'] = $info_color;
         } else {
             // Department doesn't exist, add it
-            $insertQuery = "INSERT INTO tbl_departments (departmentName, departmentHead) VALUES (?, ?)";
+            $insertQuery = "INSERT INTO tbl_departments (departmentName, departmentDescription, departmentHead) VALUES (?, ?, ?)";
             $insertStmt = mysqli_prepare($database, $insertQuery);
-            mysqli_stmt_bind_param($insertStmt, "ss", $departmentName, $departmentHead);
+            mysqli_stmt_bind_param($insertStmt, "sss", $departmentName, $departmentDescription, $departmentHead);
             mysqli_stmt_execute($insertStmt);
 
             $_SESSION['alert_message'] = "New Department Successfully Created";

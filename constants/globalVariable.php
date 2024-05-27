@@ -151,6 +151,25 @@ function getAllEmployeesNameAndID()
     return $employeesNameAndId;
 }
 
+function getAllDesignations()
+{
+    global $database;
+
+    $designations = [];
+
+    $fetchAllDesignationsQuery = "SELECT * FROM tbl_designations WHERE UPPER(archive) != 'DELETED' ORDER BY designationName";
+
+    $fetchAllDesignationsResult = $database->query($fetchAllDesignationsQuery);
+
+    if ($fetchAllDesignationsResult->num_rows > 0) {
+        while ($designationData = $fetchAllDesignationsResult->fetch_assoc()) {
+            $designations[] = $designationData;
+        }
+    }
+
+    return $designations;
+}
+
 function getAllSettingData()
 {
     global $database;

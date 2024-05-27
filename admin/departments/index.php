@@ -1,9 +1,9 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $sql_department = "SELECT
                         d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
@@ -30,7 +30,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -62,7 +62,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -87,6 +87,13 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                         id="floatingDepartmentName" placeholder="Department of Human Resources"
                                         required>
                                     <label for="floatingDepartmentName">Department Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="departmentDescription" class="form-control"
+                                        id="floatingDepartmentDescription" placeholder="Enter Description ..." required>
+                                    <label for="floatingDepartmentDescription">Description <span
                                             class="required-color">*</span></label>
                                 </div>
 
@@ -138,6 +145,14 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                         id="floatingEditDepartmentName" placeholder="Department of Human Resources"
                                         required>
                                     <label for="floatingEditDepartmentName">Department Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="departmentDescription" class="form-control"
+                                        id="floatingEditDepartmentDescription"
+                                        placeholder="Enter to Edit Description ..." required>
+                                    <label for="floatingEditDepartmentDescription">Description <span
                                             class="required-color">*</span></label>
                                 </div>
 
@@ -194,7 +209,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         ?>
                         <details class="item-detail-container">
                             <summary class="item-detail-container-summary">
-                                <div>
+                                <div title="<?php echo $department['departmentDescription'] ?>">
                                     <?php echo $department['departmentName']; ?>
                                 </div>
                             </summary>
@@ -203,6 +218,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                 <?php
                                 echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
                                 ?>
+                                <!-- <div><?php echo $department['departmentDescription']; ?></div> -->
                                 <div class="button-container m-2 justify-content-center">
                                     <a
                                         href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
@@ -213,6 +229,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                         data-target="#editDepartment"
                                         data-department-id="<?php echo $department['department_id']; ?>"
                                         data-department-name="<?php echo $department['departmentName']; ?>"
+                                        data-department-description="<?php echo $department['departmentDescription']; ?>"
                                         data-department-head="<?php echo $department['departmentHead']; ?>">
                                         Edit
                                     </button>
@@ -248,11 +265,11 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
     <!-- Edit Modal Fetch and Reset -->
     <script>
@@ -265,17 +282,20 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                 var departmentId = $(this).data('department-id');
                 var departmentName = $(this).data('department-name');
                 var departmentHead = $(this).data('department-head');
+                var departmentDescription = $(this).data('department-description');
 
                 // Set form field values
                 $('#floatingEditDepartmentId').val(departmentId);
                 $('#floatingEditDepartmentName').val(departmentName);
                 $('#floatingEditDepartmentHead').val(departmentHead);
+                $('#floatingEditDepartmentDescription').val(departmentDescription);
 
                 // Save the state
                 editDepartmentState = {
                     departmentId: departmentId,
                     departmentName: departmentName,
                     departmentHead: departmentHead,
+                    departmentDescription: departmentDescription,
                 };
             });
 
@@ -286,6 +306,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     $('#floatingEditDepartmentId').val(editDepartmentState.departmentId);
                     $('#floatingEditDepartmentName').val(editDepartmentState.departmentName);
                     $('#floatingEditDepartmentHead').val(editDepartmentState.departmentHead);
+                    $('#floatingEditDepartmentDescription').val(editDepartmentState.departmentDescription);
                 }
             }
 

@@ -88,7 +88,7 @@ $departments = $database->query($sql_department);
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                    <a href="<?php echo $location_admin_datamanagement_archive; ?>"><button
                             class="custom-regular-button">Back</button></a>
                     <div class="title-text text-truncate">Archive Department(s)</div>
                 </div>
@@ -120,7 +120,7 @@ $departments = $database->query($sql_department);
                                             <input type="checkbox" name="selectedDepartment[]"
                                                 value="<?php echo $row['department_id']; ?>" />
                                         </td>
-                                        <td>
+                                        <td title="<?php echo $row['departmentDescription']; ?>">
                                             <?php echo $row['departmentName']; ?>
                                         </td>
                                         <td>

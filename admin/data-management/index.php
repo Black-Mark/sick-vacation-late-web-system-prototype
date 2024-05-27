@@ -5,7 +5,7 @@ include ($constants_file_dbconnect);
 include ($constants_file_session_admin);
 include ($constants_variables);
 
-header("Location: ".$location_admin_datamanagement_archive);
+// header("Location: ".$location_admin_datamanagement_archive);
 
 $settingData = getAllSettingData();
 $employeesNameAndId = getAllEmployeesNameAndID();
@@ -63,14 +63,15 @@ $employeesNameAndId = getAllEmployeesNameAndID();
             <div class="box-container">
 
                 <div class="p-2">
-                    <h3 class="title-text">
+                    <h3 class="title-text mb-2">
                         Data Management
                     </h3>
 
-                    <!-- <h5 class="mt-4 mb-2 text-uppercase font-weight-bold">Authorized Person:</h5>
+                    <!-- <h5 class="mt-4 mb-2 text-uppercase font-weight-bold">Authorized Person:</h5> -->
 
+                    <!--
                     <form action="<?php echo $action_update_system_setting; ?>" method="post"
-                        class="d-flex flex-row gap-2 align-items-center mb-2">
+                        class="d-flex flex-row gap-2 px-2 mt-4 align-items-center mb-2">
                         <div class="w-25 font-weight-bold text-truncate">Human Resources Manager:</div>
                         <?php
                         for ($i = 0; $i < count($settingData); $i++) {
@@ -109,7 +110,9 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         }
                         ?>
                     </form>
+                    -->
 
+                    <!--
                     <form action="<?php echo $action_update_system_setting; ?>" method="post"
                         class="d-flex flex-row gap-2 align-items-center">
                         <div class="w-25 font-weight-bold text-truncate">Municipal Mayor:</div>
@@ -147,18 +150,24 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </form> -->
 
                     <div class="item-detail-container mb-2">
-                        <a href="<?php echo $location_admin; ?>"
+                        <a href="<?php echo $location_admin_datamanagement_archive; ?>"
                             class="item-detail-container-summary">
-                            Leave Types
+                            Archive Records
                         </a>
                     </div>
 
                     <div class="item-detail-container mb-2">
-                        <a href="<?php echo $location_admin_datamanagement_archive; ?>"
-                            class="item-detail-container-summary">
-                            Archive
+                        <a href="<?php echo $location_admin_datamanagement_designation; ?>" class="item-detail-container-summary">
+                            Work Designations
                         </a>
                     </div>
+
+                    <!-- <div class="item-detail-container mb-2">
+                        <a href="<?php echo $location_admin; ?>"
+                            class="item-detail-container-summary">
+                            Leave Types
+                        </a>
+                    </div> -->
 
                 </div>
             </div>
