@@ -593,10 +593,12 @@ if ($departmentlabel) {
                             Add Employee
                         </button>
                         <!-- Multiple Edit Button Modal -->
+                        <!--
                         <button type="button" class="custom-regular-button" id="editMultipleEmployeeBTN"
                             data-toggle="modal" data-target="#editMultipleEmployee">
                             Multiple Edit
                         </button>
+                        -->
                         <!-- Multiple Delete -->
                         <input type="submit" name="deleteMultipleEmployee" id="deleteMultipleEmployeeBTN"
                             value="Multiple Delete" class="custom-regular-button" />

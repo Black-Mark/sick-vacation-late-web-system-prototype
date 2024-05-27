@@ -126,13 +126,13 @@ if (isset($_SESSION['employeeId'])) {
                             $currentYear = date("Y");
                             $start_date = $mostMinimalYear;
 
-                            $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
+                            // $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
 
-                            if (!$start_year || $start_year <= 1924) {
-                                $start_year = $currentYear;
+                            if (!$start_date || $start_date <= 1924) {
+                                $start_date = $currentYear;
                             }
 
-                            for ($year = $currentYear; $year >= $start_year; $year--) {
+                            for ($year = $currentYear; $year >= $start_date; $year--) {
                                 ?>
                                 <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
                                     <?php echo $year; ?>
