@@ -267,6 +267,31 @@ if ($department_result->num_rows > 0) {
                     </div>
                 </form>
 
+                <form action="<?php echo $action_upload_leave_record; ?>" method="post" class="modal fade" id="uploadLeaveRecord"
+                      tabindex="-1" role="dialog" aria-labelledby="uploadLeaveRecordTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmployeeModalLongTitle">Upload Leave Record (Late)</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating mb-2">
+                                    <input type="file" name="file" class="form-control" id="file" autocomplete="off" required>
+                                    <label for="file">CSV File <span
+                                                class="required-color">*</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="upload" value="Upload" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <!-- Edit Modal -->
                 <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade" id="editEmployee"
                     tabindex="-1" role="dialog" aria-labelledby="editEmployeeTitle" aria-hidden="true">
@@ -535,6 +560,10 @@ if ($department_result->num_rows > 0) {
                         <button type="button" class="custom-regular-button" data-toggle="modal"
                             data-target="#addEmployee">
                             Add Employee
+                        </button>
+                        <button type="button" class="custom-regular-button" data-toggle="modal"
+                                data-target="#uploadLeaveRecord">
+                            Upload Leave Record (Late)
                         </button>
                         <!-- Multiple Edit Button Modal -->
                         <button type="button" class="custom-regular-button" id="editMultipleEmployeeBTN"
