@@ -9,10 +9,19 @@ $employeeData = [];
 $departmentHeadData = [];
 // $isLoginEmployeeIsHead = true;
 $leaveData = [];
+$ownerFormGender = "";
+$ownerFormCivilStatus = "";
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
     $employeeData = getEmployeeData($employeeId);
+
+    if (isset($employeeData['sex'])) {
+        $ownerFormGender = $employeeData['sex'];
+    }
+    if (isset($employeeData['civilStatus'])) {
+        $ownerFormCivilStatus = $employeeData['civilStatus'];
+    }
 
     if (isset($employeeData['departmentHead']) && $employeeData['departmentHead'] !== "") {
         $departmentHeadData = getEmployeeData($employeeData['departmentHead']);
@@ -86,6 +95,10 @@ $settingData = getAuthorizedUser();
                 </div>
 
                 <?php if (strcasecmp($employeeData['status'], 'Active') == 0) { ?>
+
+                    <?php
+                    include ($components_file_formModal);
+                    ?>
 
                     <form action="<?php echo $action_employee_submit_leaveform; ?>" method="post">
                         <div class="button-container component-container mb-2">
@@ -181,14 +194,17 @@ $settingData = getAuthorizedUser();
                                 <div class="leave-app-form-third-row">
                                     <div class="leave-app-form-leavetype-container">
                                         <div class='leave-app-form-third-row-head'>6.A Type of Leave to be Availed Of</div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="vacationLeave" name="typeOfLeave" value="Vacation Leave"
                                                 class="custom-checkbox-input" />
                                             <label for="vacationLeave" class='leave-app-form-detail-subject'>Vacation
                                                 Leave</label>
-                                            <span class="leave-app-form-leavetype-detail-context">(Sec. 51, Rule XVI,
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#vacationLeaveModal">(Sec. 51, Rule XVI,
                                                 Omnibus Rules Implementing E.O. No. 292)</span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
                                                 class="custom-checkbox-input" />
@@ -196,116 +212,139 @@ $settingData = getAuthorizedUser();
                                                 Mandatory / Forced
                                                 Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#forcedLeaveModal">
                                                 (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
                                                 class="custom-checkbox-input" />
                                             <label for="sickLeave" class='leave-app-form-detail-subject'> Sick
                                                 Leave </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#sickLeaveModal">
                                                 (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="maternityLeave" name="typeOfLeave"
-                                                value="Maternity Leave" class="custom-checkbox-input" />
+                                                value="Maternity Leave" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
                                             <label for="maternityLeave" class='leave-app-form-detail-subject'>
                                                 Maternity Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#maternityLeaveModal">
                                                 (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="paternityLeave" name="typeOfLeave"
-                                                value="Paternity Leave" class="custom-checkbox-input" />
+                                                value="Paternity Leave" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'MALE' ? '' : 'disabled'; ?> />
                                             <label for="paternityLeave" class='leave-app-form-detail-subject'>
                                                 Paternity Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#paternityLeaveModal">
                                                 (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="special" name="typeOfLeave"
                                                 value="Special Privilege Leave" class="custom-checkbox-input" />
                                             <label for="special" class='leave-app-form-detail-subject'>
                                                 Special Privilege Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#specialLeaveModal">
                                                 (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="soloParent" name="typeOfLeave" value="Solo Parent Leave"
                                                 class="custom-checkbox-input" />
                                             <label for="soloParent" class='leave-app-form-detail-subject'>
                                                 Solo Parent Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#soloParentLeaveModal">
                                                 (RA No. 8972 / CSC MC No. 8, s. 2004)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
                                                 class="custom-checkbox-input" />
                                             <label for="studyLeave" class='leave-app-form-detail-subject-small'>
                                                 Doctorate Degree / Study Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context-small">
+                                            <span class="leave-app-form-leavetype-detail-context-small clickable-element"
+                                                data-toggle="modal" data-target="#studyLeaveModal">
                                                 (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="vawcLeave" name="typeOfLeave" value="10-Day VAWC Leave"
-                                                class="custom-checkbox-input" />
+                                                class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
                                             <label for="vawcLeave" class='leave-app-form-detail-subject'>
                                                 10-Day VAWC Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#VAWCLeaveModal">
                                                 (RA No. 9262 / CSC MC No. 15, s. 2005)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="rehabilitation" name="typeOfLeave"
                                                 value="Rehabilitation Privilege" class="custom-checkbox-input" />
                                             <label for="rehabilitation" class='leave-app-form-detail-subject'>
                                                 Rehabilitation Privilege
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#rehabLeaveModal">
                                                 (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="specialLeave" name="typeOfLeave"
-                                                value="Special Leave Benefits for Women" class="custom-checkbox-input" />
+                                                value="Special Leave Benefits for Women" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
                                             <label for="specialLeave" class='leave-app-form-detail-subject'>
                                                 Special Leave Benefits for Women
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#specialWomanLeaveModal">
                                                 (RA No. 9710 / CSC MC No. 25, s. 2010)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="emergencyLeave" name="typeOfLeave"
                                                 value="Special Emergency (Calamity) Leave" class="custom-checkbox-input" />
                                             <label for="emergencyLeave" class='leave-app-form-detail-subject'>
                                                 Special Emergency (Calamity) Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#emergencyLeaveModal">
                                                 (CSC MC No. 2, s. 2012, as amended)
                                             </span>
                                         </div>
+
                                         <div class="leave-app-form-leavetype-detail-container">
                                             <input type='radio' id="adoptionLeave" name="typeOfLeave" value="Adoption Leave"
                                                 class="custom-checkbox-input" />
                                             <label for="adoptionLeave" class='leave-app-form-detail-subject'>
                                                 Adoption Leave
                                             </label>
-                                            <span class="leave-app-form-leavetype-detail-context">
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#adoptionLeaveModal">
                                                 (R.A. No. 8552)
                                             </span>
                                         </div>
@@ -316,7 +355,9 @@ $settingData = getAuthorizedUser();
                                             <input type="text" id="otherTypeOfLeave" name="otherTypeOfLeave"
                                                 class="leave-app-form-input-custom-width" />
                                         </div>
+
                                     </div>
+
                                     <div class="leave-app-form-leaveclass-container">
                                         <div class='leave-app-form-third-row-head'>6.B Details of Leave</div>
                                         <div
@@ -681,31 +722,31 @@ $settingData = getAuthorizedUser();
                                                 ?>
                                             </div> -->
                                             <div class="leave-app-form-signature-context mt-2">
-                                            <div class='leave-app-form-signature-subject'>
-                                                <!-- <?php
-                                                if (count($settingData) > 0) {
-                                                    for ($i = 0; $i < count($settingData); $i++) {
-                                                        if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
-                                                            if ($settingData[$i]['jobPosition'] != "") {
-                                                                echo $settingData[$i]['jobPosition'];
-                                                            } else {
-                                                                echo "Municipal Mayor";
+                                                <div class='leave-app-form-signature-subject'>
+                                                    <!-- <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                                if ($settingData[$i]['jobPosition'] != "") {
+                                                                    echo $settingData[$i]['jobPosition'];
+                                                                } else {
+                                                                    echo "Municipal Mayor";
+                                                                }
                                                             }
                                                         }
+                                                    } else {
+                                                        echo "Municipal Mayor";
                                                     }
-                                                } else {
-                                                    echo "Municipal Mayor";
-                                                }
-                                                ?> -->
-                                                (Authorized Official)
+                                                    ?> -->
+                                                    (Authorized Official)
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <?php
+                                        <?php
                                 }
                                 ?>
+                                </div>
                             </div>
-                        </div>
 
                     </form>
 

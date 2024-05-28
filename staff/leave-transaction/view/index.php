@@ -19,6 +19,9 @@ $settingData = getAuthorizedUser();
 $leaveAppFormID = isset($_GET['leaveappid']) ? filter_var($_GET['leaveappid'], FILTER_SANITIZE_STRING) : null;
 $leaveAppFormData = [];
 $leaveData = [];
+$leaveFormEmpData = [];
+$ownerFormGender = "";
+$ownerFormCivilStatus = "";
 
 if ($leaveAppFormID === 'index.php' || $leaveAppFormID === 'index.html' || $leaveAppFormID === null) {
     $leaveAppFormID = null;
@@ -48,6 +51,13 @@ if ($leaveAppFormID === 'index.php' || $leaveAppFormID === 'index.html' || $leav
     if ($fetchLeaveAppFormDataResult->num_rows > 0) {
         $leaveAppFormData = $fetchLeaveAppFormDataResult->fetch_assoc();
         $leaveData = getIncentiveLeaveComputation($leaveAppFormData['employee_id']);
+        $leaveFormEmpData = getEmployeeData($leaveAppFormData['employee_id']);
+        if (isset($leaveFormEmpData['sex'])) {
+            $ownerFormGender = $leaveFormEmpData['sex'];
+        }
+        if (isset($leaveFormEmpData['civilStatus'])) {
+            $ownerFormCivilStatus = $leaveFormEmpData['civilStatus'];
+        }
 
         $notifUpdateQuery = "UPDATE tbl_notifications SET status = 'read' WHERE subjectKey = '$leaveAppFormID' AND empIdTo = '@Admin'";
         mysqli_query($database, $notifUpdateQuery);
@@ -76,17 +86,17 @@ $sickLeaveBalance = $typeOfLeave == "Sick Leave" ? number_format($sickLeaveTotal
 $daysWithPay = 0;
 $daysWithoutPay = 0;
 
-if($vacationLeaveTotalEarned < $vacationLeaveLess){
+if ($vacationLeaveTotalEarned < $vacationLeaveLess) {
     $daysWithPay = $vacationLeaveTotalEarned;
     $daysWithoutPay = $vacationLeaveLess - $vacationLeaveTotalEarned;
-}else if($vacationLeaveTotalEarned >= $vacationLeaveLess){
+} else if ($vacationLeaveTotalEarned >= $vacationLeaveLess) {
     $daysWithPay = $vacationLeaveLess;
 }
 
-if($sickLeaveTotalEarned < $sickLeaveLess){
+if ($sickLeaveTotalEarned < $sickLeaveLess) {
     $daysWithPay += $sickLeaveTotalEarned;
     $daysWithoutPay += $sickLeaveLess - $sickLeaveTotalEarned;
-}else if($sickLeaveTotalEarned >= $sickLeaveLess){
+} else if ($sickLeaveTotalEarned >= $sickLeaveLess) {
     $daysWithPay += $sickLeaveLess;
 }
 
@@ -154,13 +164,16 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                 <?php
                 if (!empty($leaveAppFormData)) {
                     ?>
-<a href="<?php echo $location_staff_leaveapplist; ?>"><button
-                                class="custom-regular-button">Back</button></a>
-                <form action="<?php echo $action_edit_leaveappform; ?>" method="post">
-                    <div class="button-container component-container mb-2">
-                        <input type="hidden" name="leaveappformId" value="<?php echo $leaveAppFormID; ?>" />
-                        <input type="hidden" name="ownerOfForm"
-                            value="<?php echo $leaveAppFormData['employee_id']; ?>" />
+                
+                    <?php
+                    include ($components_file_formModal);
+                    ?>
+                
+                    <a href="<?php echo $location_staff_leaveapplist; ?>"><button class="custom-regular-button">Back</button></a>
+                    <form action="<?php echo $action_edit_leaveappform; ?>" method="post">
+                        <div class="button-container component-container mb-2">
+                            <input type="hidden" name="leaveappformId" value="<?php echo $leaveAppFormID; ?>" />
+                            <input type="hidden" name="ownerOfForm" value="<?php echo $leaveAppFormData['employee_id']; ?>" />
                         <input type="submit" name="validateLeaveAppForm" class="custom-regular-button"
                             value="Submit Leave Form" />
                         <button type="button" class="custom-regular-button" onclick="window.print()">Print</button>
@@ -238,18 +251,20 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                             </div>
                             <!-- Type of Leaves and Classification -->
                             <div class="leave-app-form-third-row">
-                                <div class="leave-app-form-leavetype-container">
+                            <div class="leave-app-form-leavetype-container">
                                     <div class='leave-app-form-third-row-head'>6.A Type of Leave to be Availed Of</div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="vacationLeave" name="typeOfLeave" value="Vacation Leave"
-                                            class="custom-checkbox-input"
-                                            <?php echo $leaveAppFormData['typeOfLeave'] === 'Vacation Leave' ? 'checked' : ''; ?>
-                                            readonly />
-                                        <label for="vacationLeave" class='leave-app-form-detail-subject'>Vacation
-                                            Leave</label>
-                                        <span class="leave-app-form-leavetype-detail-context">(Sec. 51, Rule XVI,
-                                            Omnibus Rules Implementing E.O. No. 292)</span>
+                                                class="custom-checkbox-input"
+                                                <?php echo $leaveAppFormData['typeOfLeave'] === 'Vacation Leave' ? 'checked' : ''; ?> readonly />
+                                        <label for="vacationLeave" class='leave-app-form-detail-subject'>Vacation Leave</label>
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal"
+                                            data-target="#vacationLeaveModal">
+                                            (Sec. 51, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                        </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
                                             class="custom-checkbox-input"
@@ -259,10 +274,11 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                             Mandatory / Forced
                                             Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#forcedLeaveModal">
                                             (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
                                             class="custom-checkbox-input"
@@ -270,34 +286,37 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                             readonly />
                                         <label for="sickLeave" class='leave-app-form-detail-subject'> Sick
                                             Leave </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#sickLeaveModal">
                                             (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="maternityLeave" name="typeOfLeave"
                                             value="Maternity Leave" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfLeave'] === 'Maternity Leave' ? 'checked' : ''; ?>
-                                            readonly />
+                                            <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? 'readonly' : 'disabled'; ?> />
                                         <label for="maternityLeave" class='leave-app-form-detail-subject'>
                                             Maternity Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#maternityLeaveModal">
                                             (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="paternityLeave" name="typeOfLeave"
                                             value="Paternity Leave" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfLeave'] === 'Paternity Leave' ? 'checked' : ''; ?>
-                                            readonly />
+                                            <?php echo strtoupper($ownerFormGender) === 'MALE' ? 'readonly' : 'disabled'; ?> />
                                         <label for="paternityLeave" class='leave-app-form-detail-subject'>
                                             Paternity Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#paternityLeaveModal">
                                             (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="special" name="typeOfLeave"
                                             value="Special Privilege Leave" class="custom-checkbox-input"
@@ -306,10 +325,11 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="special" class='leave-app-form-detail-subject'>
                                             Special Privilege Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#specialLeaveModal">
                                             (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="soloParent" name="typeOfLeave" value="Solo Parent Leave"
                                             class="custom-checkbox-input"
@@ -318,10 +338,11 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="soloParent" class='leave-app-form-detail-subject'>
                                             Solo Parent Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#soloParentLeaveModal">
                                             (RA No. 8972 / CSC MC No. 8, s. 2004)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
                                             class="custom-checkbox-input"
@@ -330,22 +351,24 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="studyLeave" class='leave-app-form-detail-subject-small'>
                                             Doctorate Degree / Study Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context-small">
+                                        <span class="leave-app-form-leavetype-detail-context-small clickable-element" data-toggle="modal" data-target="#studyLeaveModal">
                                             (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="vawcLeave" name="typeOfLeave" value="10-Day VAWC Leave"
                                             class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfLeave'] === '10-Day VAWC Leave' ? 'checked' : ''; ?>
-                                            readonly />
+                                            <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? 'readonly' : 'disabled'; ?> />
                                         <label for="vawcLeave" class='leave-app-form-detail-subject'>
                                             10-Day VAWC Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#VAWCLeaveModal">
                                             (RA No. 9262 / CSC MC No. 15, s. 2005)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="rehabilitation" name="typeOfLeave"
                                             value="Rehabilitation Privilege" class="custom-checkbox-input"
@@ -354,22 +377,24 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="rehabilitation" class='leave-app-form-detail-subject'>
                                             Rehabilitation Privilege
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#rehabLeaveModal">
                                             (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="specialLeave" name="typeOfLeave"
                                             value="Special Leave Benefits for Women" class="custom-checkbox-input"
                                             <?php echo $leaveAppFormData['typeOfLeave'] === 'Special Leave Benefits for Women' ? 'checked' : ''; ?>
-                                            readonly />
+                                            <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? 'readonly' : 'disabled'; ?> />
                                         <label for="specialLeave" class='leave-app-form-detail-subject'>
                                             Special Leave Benefits for Women
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#specialWomanLeaveModal">
                                             (RA No. 9710 / CSC MC No. 25, s. 2010)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="emergencyLeave" name="typeOfLeave"
                                             value="Special Emergency (Calamity) Leave" class="custom-checkbox-input"
@@ -378,10 +403,11 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="emergencyLeave" class='leave-app-form-detail-subject'>
                                             Special Emergency (Calamity) Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#emergencyLeaveModal">
                                             (CSC MC No. 2, s. 2012, as amended)
                                         </span>
                                     </div>
+
                                     <div class="leave-app-form-leavetype-detail-container">
                                         <input type='radio' id="adoptionLeave" name="typeOfLeave" value="Adoption Leave"
                                             class="custom-checkbox-input"
@@ -390,7 +416,7 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <label for="adoptionLeave" class='leave-app-form-detail-subject'>
                                             Adoption Leave
                                         </label>
-                                        <span class="leave-app-form-leavetype-detail-context">
+                                        <span class="leave-app-form-leavetype-detail-context clickable-element" data-toggle="modal" data-target="#adoptionLeaveModal">
                                             (R.A. No. 8552)
                                         </span>
                                     </div>
@@ -643,10 +669,10 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <!-- <input class="leave-app-form-input" disabled /> -->
                                         <div class="leave-app-form-signature-context mt-2">
                                             <!-- <?php echo $leaveAppFormData['hrName']; ?> -->
-                                            <!-- <?php 
-                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
+                                            <!-- <?php
+                                            if (strtolower($leaveAppFormData['status']) != "submitted") {
                                                 echo $leaveAppFormData['hrName'] ?? "";
-                                            }else{
+                                            } else {
                                                 echo $fullName;
                                             }
                                             ?> -->
@@ -698,16 +724,16 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                         <!-- <div
                                             class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' ? 'mt-4' : ''; ?>">
                                             <?php
-                                                echo $leaveAppFormData['deptHeadName'];
-                                                ?>
+                                            echo $leaveAppFormData['deptHeadName'];
+                                            ?>
                                         </div> -->
-                                        <!-- <?php 
-                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
-                                                echo $leaveAppFormData['deptHeadName'] ?? "";
-                                            }else{
-                                                echo $fullName;
-                                            }
-                                            ?> -->
+                                        <!-- <?php
+                                        if (strtolower($leaveAppFormData['status']) != "submitted") {
+                                            echo $leaveAppFormData['deptHeadName'] ?? "";
+                                        } else {
+                                            echo $fullName;
+                                        }
+                                        ?> -->
                                         <div class="leave-app-form-signature-context <?php echo $leaveAppFormData['deptHeadName'] == '' && $fullName == "" ? 'mt-4' : ''; ?>"></div>
                                         <div class='leave-app-form-signature-subject'>
                                             <!-- Department Head -->
@@ -771,13 +797,13 @@ if($sickLeaveTotalEarned < $sickLeaveLess){
                                 <div class="leave-app-form-mayorsignature-container">
                                     <div class="leave-app-form-signature-context mt-4">
                                         <!-- <?php echo $leaveAppFormData['mayorName']; ?> -->
-                                        <!-- <?php 
-                                            if(strtolower($leaveAppFormData['status']) != "submitted"){
-                                                echo $leaveAppFormData['mayorName'] ?? "";
-                                            }else{
-                                                echo $fullName;
-                                            }
-                                            ?> -->
+                                        <!-- <?php
+                                        if (strtolower($leaveAppFormData['status']) != "submitted") {
+                                            echo $leaveAppFormData['mayorName'] ?? "";
+                                        } else {
+                                            echo $fullName;
+                                        }
+                                        ?> -->
                                     </div>
                                     <div class='leave-app-form-signature-subject'>
                                         <!-- <?php echo $leaveAppFormData['mayorPosition']; ?> -->

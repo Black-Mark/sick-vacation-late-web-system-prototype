@@ -45,6 +45,7 @@ $components_file_footer = $webhostpath . '/components/footer.php';
 $components_file_toastify = $webhostpath . '/components/toastifyAlert.php';
 $components_file_navpanel = $webhostpath . '/components/navPanel.php';
 $components_file_navpanelstaff = $webhostpath . '/components/navPanelStaff.php';
+$components_file_formModal = $webhostpath . '/components/formModal.php';
 
 $constants_file_dbconnect = $webhostpath . '/constants/dbconnect.php';
 $constants_file_session_login = $webhostpath . '/constants/loginSession.php';
