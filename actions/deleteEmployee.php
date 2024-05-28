@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])) {
     // Only Update the Archive to Deleted (Single)
@@ -12,25 +12,27 @@ if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])
     $errorMessages = [];
 
     foreach ($selectedEmployees as $employeeId) {
-        $employeeId = strip_tags(mysqli_real_escape_string($database, $employeeId));
+        if ($employeeId != $_SESSION['employee_id']) {
+            $employeeId = strip_tags(mysqli_real_escape_string($database, $employeeId));
 
-        $query = "UPDATE tbl_useraccounts SET archive = 'deleted' WHERE employee_id = ?";
-        $stmt = mysqli_prepare($database, $query);
+            $query = "UPDATE tbl_useraccounts SET archive = 'deleted' WHERE employee_id = ?";
+            $stmt = mysqli_prepare($database, $query);
 
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "s", $employeeId);
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "s", $employeeId);
 
-            if (mysqli_stmt_execute($stmt)) {
-                // Deletion successful
+                if (mysqli_stmt_execute($stmt)) {
+                    // Deletion successful
+                } else {
+                    // Capture error message for later display
+                    $errorMessages[] = "Error deleting employee with ID $employeeId: " . mysqli_stmt_error($stmt);
+                }
+
+                mysqli_stmt_close($stmt);
             } else {
                 // Capture error message for later display
-                $errorMessages[] = "Error deleting employee with ID $employeeId: " . mysqli_stmt_error($stmt);
+                $errorMessages[] = "Error preparing delete statement: " . mysqli_error($database);
             }
-
-            mysqli_stmt_close($stmt);
-        } else {
-            // Capture error message for later display
-            $errorMessages[] = "Error preparing delete statement: " . mysqli_error($database);
         }
     }
 
@@ -59,23 +61,25 @@ if (isset($_POST['deleteMultipleEmployee']) && isset($_POST['selectedEmployee'])
     foreach ($selectedEmployees as $employeeId) {
         $employeeId = strip_tags(mysqli_real_escape_string($database, $employeeId));
 
-        $query = "DELETE FROM tbl_useraccounts WHERE employee_id = ?";
-        $stmt = mysqli_prepare($database, $query);
+        if ($employeeId != $_SESSION['employee_id']) {
+            $query = "DELETE FROM tbl_useraccounts WHERE employee_id = ?";
+            $stmt = mysqli_prepare($database, $query);
 
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "s", $employeeId);
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "s", $employeeId);
 
-            if (mysqli_stmt_execute($stmt)) {
-                // Deletion successful
+                if (mysqli_stmt_execute($stmt)) {
+                    // Deletion successful
+                } else {
+                    // Capture error message for later display
+                    $errorMessages[] = "Error deleting employee with ID $employeeId: " . mysqli_stmt_error($stmt);
+                }
+
+                mysqli_stmt_close($stmt);
             } else {
                 // Capture error message for later display
-                $errorMessages[] = "Error deleting employee with ID $employeeId: " . mysqli_stmt_error($stmt);
+                $errorMessages[] = "Error preparing delete statement: " . mysqli_error($database);
             }
-
-            mysqli_stmt_close($stmt);
-        } else {
-            // Capture error message for later display
-            $errorMessages[] = "Error preparing delete statement: " . mysqli_error($database);
         }
     }
 

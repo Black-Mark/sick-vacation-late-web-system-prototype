@@ -1,4 +1,9 @@
 <?php
+
+// This is USED for employee Submission and staff Submission of leave form
+
+// USE EDIT LEAVE APP FORM .php for Validating Leave Request Approval or Disapproval
+
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
@@ -158,7 +163,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             $firstName = $employeeData['firstName'];
             $middleName = $employeeData['middleName'];
             $dateFiling = date("Y-m-d");
-            $position = $employeeData['jobPosition'];
+            $position = $employeeData['designationName'];
             $status = 'Submitted';
             // Automatic Generation Based on the Data
             $asOfDate = $employeeData['dateStarted'];

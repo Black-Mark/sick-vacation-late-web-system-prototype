@@ -166,7 +166,7 @@ $settingData = getAuthorizedUser();
                                         <label for="positionInput" class="leave-app-form-label">4. Position</label>
                                         <input type="text" id="positionInput" name="position"
                                             class="leave-app-form-input-grow"
-                                            value="<?php echo $employeeData['jobPosition']; ?>" readonly />
+                                            value="<?php echo $employeeData['designationName']; ?>" readonly />
                                     </div>
                                     <div class="leave-app-form-salary-container">
                                         <label for="salaryInput" class="leave-app-form-label">5. Salary</label>

@@ -1,20 +1,28 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_staff);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_staff);
+include ($constants_variables);
 
 $sql_department = "SELECT
-                        d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
-                   FROM
+                        d.*,
+                        u.firstName AS headFirstName,
+                        u.middleName AS headMiddleName,
+                        u.lastName AS headLastName,
+                        u.suffix AS headSuffix,
+                        COUNT(CASE WHEN UPPER(u.archive) != 'DELETED' THEN u.employee_id END) AS departmentCount
+                    FROM
                         tbl_departments d
-                   LEFT JOIN
-                        tbl_useraccounts u ON d.departmentHead = u.employee_id
+                    LEFT JOIN
+                        tbl_useraccounts u ON d.department_id = u.department
                     WHERE 
                         UPPER(d.archive) != 'DELETED'
+                    GROUP BY
+                        d.department_id
                     ORDER BY 
-                        departmentName";
+                        departmentName
+                ";
 $departments = $database->query($sql_department);
 
 $employeesNameAndId = getAllEmployeesNameAndID();
@@ -30,7 +38,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -62,7 +70,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -82,15 +90,23 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         ?>
                         <details class="item-detail-container">
                             <summary class="item-detail-container-summary">
-                                <div>
+                                <div title="<?php echo $department['departmentDescription'] ?>">
                                     <?php echo $department['departmentName']; ?>
                                 </div>
                             </summary>
                             <div class="item-detail-content">
-                                <span class="font-weight-bold">Department Head Name: </span>
-                                <?php
-                                echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
-                                ?>
+                                <div>
+                                    <span class="font-weight-bold">Department Head Name: </span>
+                                    <?php
+                                    echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
+                                    ?>
+                                </div>
+                                <div>
+                                    <span class="font-weight-bold">Employee Count: </span>
+                                    <?php
+                                    echo $department['departmentCount'];
+                                    ?>
+                                </div>
                                 <div class="button-container m-2 justify-content-center">
                                     <a
                                         href="<?php echo $location_staff_departments_office . '/' . $department['department_id'] . '/'; ?>">
@@ -122,54 +138,11 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
-
-    <!-- Edit Modal Fetch and Reset -->
-    <script>
-        // Variable to store the state
-        var editDepartmentState = null;
-
-        $(document).ready(function () {
-            $('.editDepartmentButton').click(function () {
-                // Get data from the button
-                var departmentId = $(this).data('department-id');
-                var departmentName = $(this).data('department-name');
-                var departmentHead = $(this).data('department-head');
-
-                // Set form field values
-                $('#floatingEditDepartmentId').val(departmentId);
-                $('#floatingEditDepartmentName').val(departmentName);
-                $('#floatingEditDepartmentHead').val(departmentHead);
-
-                // Save the state
-                editDepartmentState = {
-                    departmentId: departmentId,
-                    departmentName: departmentName,
-                    departmentHead: departmentHead,
-                };
-            });
-
-            // Function to set data based on the saved state
-            function setDataFromState() {
-                if (editDepartmentState) {
-                    // Set form field values based on the saved state
-                    $('#floatingEditDepartmentId').val(editDepartmentState.departmentId);
-                    $('#floatingEditDepartmentName').val(editDepartmentState.departmentName);
-                    $('#floatingEditDepartmentHead').val(editDepartmentState.departmentHead);
-                }
-            }
-
-            // Add click event handler for the Reset button
-            $('#resetEditDepartmentInputs').click(function () {
-                // Reset form fields to their initial values
-                setDataFromState();
-            });
-        });
-    </script>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

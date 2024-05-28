@@ -1,4 +1,9 @@
 <?php
+
+// This is USED for Validating Leave Request Approval or Disapproval
+
+// USE THE SUBMIT EMPLOYEE LEAVE FORM . php for employee submission and staff submission
+
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);

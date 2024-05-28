@@ -216,7 +216,7 @@ if (isset($_SESSION['employeeId'])) {
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Job Position:</span>
                         <span class="account-profile-context">
-                            <?php echo $employeeData['jobPosition']; ?>
+                            <?php echo $employeeData['designationName']; ?>
                         </span>
                     </div>
 

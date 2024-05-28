@@ -7,7 +7,7 @@ include($constants_variables);
 
 if (isset($_POST['deleteDepartment'])) {
     // Only Update the Archive to Deleted
-    $departmentId = strip_tags(mysqli_real_escape_string($database, $_POST['departmentId']));
+    $departmentId = strip_tags(mysqli_real_escape_string($database, $_POST['deptId']));
 
     $archiveDepartmentQuery = "UPDATE tbl_departments SET archive = 'deleted' WHERE department_id = ?";
     $archiveDepartmentStatement = mysqli_prepare($database, $archiveDepartmentQuery);

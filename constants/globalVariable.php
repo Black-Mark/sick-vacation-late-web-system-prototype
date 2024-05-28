@@ -1,4 +1,5 @@
 <?php
+// This file is a function for all roles but if it is for Admin it should only be in the Admin Page
 // For Notification
 $success_color = "#03ab00";
 $warning_color = "#fca100";
@@ -9,7 +10,7 @@ $error_color = "#730000";
 
 // For Leave Data Form
 $monthReset = true;
-$idGeneration = "12345678901234567890";
+$idGeneration = "12345678901234567890"; // Prompts but dont delete
 $vacationLeaveMonthlyCredit = 1.25;
 $sickLeaveMonthlyCredit = 1.25;
 
@@ -72,12 +73,24 @@ function getEmployeeData($employee_id)
 
     $fetchEmployeeQuery = "SELECT
                 ua.*,
-                d.departmentName,
-                d.departmentHead
+                CASE
+                    WHEN UPPER(d.archive) = 'DELETED' THEN ''
+                    ELSE d.departmentName
+                END AS departmentName,
+                CASE
+                    WHEN UPPER(d.archive) = 'DELETED' THEN ''
+                    ELSE d.departmentHead
+                END AS departmentHead,
+                CASE
+                    WHEN UPPER(desig.archive) = 'DELETED' THEN ''
+                    ELSE desig.designationName
+                END AS designationName
             FROM
                 tbl_useraccounts ua
             LEFT JOIN
                 tbl_departments d ON ua.department = d.department_id
+            LEFT JOIN
+                tbl_designations desig ON ua.jobPosition = desig.designation_id
             WHERE
                 ua.employee_id = ? AND UPPER(ua.archive) != 'DELETED'";
 

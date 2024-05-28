@@ -1,4 +1,15 @@
 <?php
+
+
+
+// Note that this is not used for submitting. (EMPLOYEE AND STAFF LEAVE FORM PAGE submission)
+// USE THE SUBMIT EMPLOYEE LEAVE FORM . php for employee submission and staff submission
+// USE EDIT LEAVE APP FORM .php for Validating Leave Request Approval or Disapproval
+
+
+
+// This page are meant for the Admin For Adding Leave App Form
+
 include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);

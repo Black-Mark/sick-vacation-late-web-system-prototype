@@ -6,15 +6,23 @@ include ($constants_file_session_admin);
 include ($constants_variables);
 
 $sql_department = "SELECT
-                        d.*, u.firstName AS headFirstName, u.middleName as headMiddleName, u.lastName AS headLastName, u.suffix AS headSuffix
-                   FROM
+                        d.*,
+                        u.firstName AS headFirstName,
+                        u.middleName AS headMiddleName,
+                        u.lastName AS headLastName,
+                        u.suffix AS headSuffix,
+                        COUNT(CASE WHEN UPPER(u.archive) != 'DELETED' THEN u.employee_id END) AS departmentCount
+                    FROM
                         tbl_departments d
-                   LEFT JOIN
-                        tbl_useraccounts u ON d.departmentHead = u.employee_id
+                    LEFT JOIN
+                        tbl_useraccounts u ON d.department_id = u.department
                     WHERE 
                         UPPER(d.archive) != 'DELETED'
+                    GROUP BY
+                        d.department_id
                     ORDER BY 
-                        departmentName";
+                        departmentName
+                ";
 $departments = $database->query($sql_department);
 
 $employeesNameAndId = getAllEmployeesNameAndID();
@@ -54,6 +62,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+    <script src="<?php echo $assets_departmentlist_js; ?>"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -92,9 +101,8 @@ $employeesNameAndId = getAllEmployeesNameAndID();
 
                                 <div class="form-floating mb-2">
                                     <input type="text" name="departmentDescription" class="form-control"
-                                        id="floatingDepartmentDescription" placeholder="Enter Description ..." required>
-                                    <label for="floatingDepartmentDescription">Description <span
-                                            class="required-color">*</span></label>
+                                        id="floatingDepartmentDescription" placeholder="Enter Description ...">
+                                    <label for="floatingDepartmentDescription">Description</label>
                                 </div>
 
                                 <div class="form-floating">
@@ -151,9 +159,8 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                 <div class="form-floating mb-2">
                                     <input type="text" name="departmentDescription" class="form-control"
                                         id="floatingEditDepartmentDescription"
-                                        placeholder="Enter to Edit Description ..." required>
-                                    <label for="floatingEditDepartmentDescription">Description <span
-                                            class="required-color">*</span></label>
+                                        placeholder="Enter to Edit Description ...">
+                                    <label for="floatingEditDepartmentDescription">Description</label>
                                 </div>
 
                                 <div class="form-floating">
@@ -187,6 +194,38 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </div>
                 </form>
 
+                <!-- Delete Modal -->
+                <form action="<?php echo $action_delete_department; ?>" method="post" class="modal fade"
+                    id="deleteDepartment" tabindex="-1" role="dialog" aria-labelledby="deleteDepartmentTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteDepartmentModalLongTitle">Confirm Department Removal
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="deptId" id="floatingDeleteDeptId" />
+                                <input type="hidden" name="deptHead" id="floatingDeleteDeptHead" />
+                                <input type="hidden" name="deptDescription" id="floatingDeleteDeptDescription" />
+
+                                <div class="text-center alert alert-warning" role="alert">
+                                    Are you sure you want to remove <span class="font-weight-bold text-uppercase" id="floatingDeleteDeptName"></span> in the
+                                    list? It has <span class="font-weight-bold text-uppercase" id="floatingDeleteDeptCount"></span> employee(s) under it. Upon
+                                    Delete, employees will be unassigned.
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <input type="submit" name="deleteDepartment" value="Yes" class="btn btn-primary" />
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="button-container mb-2">
 
                     <!-- Add Button Modal -->
@@ -214,16 +253,19 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                 </div>
                             </summary>
                             <div class="item-detail-content">
-                                <span class="font-weight-bold">Department Head Name: </span>
-                                <?php
-                                echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
-                                ?>
-                                <!-- <div><?php echo $department['departmentDescription']; ?></div> -->
+                                <div>
+                                    <span class="font-weight-bold">Department Head Name: </span>
+                                    <?php
+                                    echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
+                                    ?>
+                                </div>
+                                <div>
+                                    <span class="font-weight-bold">Employee Count: </span>
+                                    <?php
+                                    echo $department['departmentCount'];
+                                    ?>
+                                </div>
                                 <div class="button-container m-2 justify-content-center">
-                                    <a
-                                        href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
-                                        <button class="custom-regular-button text-truncate">View</button>
-                                    </a>
                                     <!-- Edit Department Modal -->
                                     <button type="button" class="custom-regular-button editDepartmentButton" data-toggle="modal"
                                         data-target="#editDepartment"
@@ -233,12 +275,30 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                         data-department-head="<?php echo $department['departmentHead']; ?>">
                                         Edit
                                     </button>
-                                    <form action="<?php echo $action_delete_department; ?>" method="post">
-                                        <input type="hidden" name="departmentId"
-                                            value="<?php echo $department['department_id']; ?>" />
-                                        <input type="submit" name="deleteDepartment" value="Delete"
-                                            class="custom-regular-button" />
-                                    </form>
+                                    <a
+                                        href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
+                                        <button class="custom-regular-button text-truncate">View</button>
+                                    </a>
+
+                                    <?php if ($department['departmentCount'] > 0) { ?>
+                                        <!-- Delete Department Modal -->
+                                        <button type="button" class="custom-regular-button deleteDepartmentButton"
+                                            data-toggle="modal" data-target="#deleteDepartment"
+                                            data-dept-id="<?php echo $department['department_id']; ?>"
+                                            data-dept-name="<?php echo $department['departmentName']; ?>"
+                                            data-dept-description="<?php echo $department['departmentDescription']; ?>"
+                                            data-dept-count="<?php echo $department['departmentCount']; ?>"
+                                            data-dept-head="<?php echo $department['departmentHead']; ?>">
+                                            Delete
+                                        </button>
+                                    <?php } else { ?>
+                                        <form action="<?php echo $action_delete_department; ?>" method="post">
+                                            <input type="hidden" name="deptId"
+                                                value="<?php echo $department['department_id']; ?>" />
+                                            <input type="submit" name="deleteDepartment" value="Delete"
+                                                class="custom-regular-button" />
+                                        </form>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </details>
@@ -270,53 +330,6 @@ $employeesNameAndId = getAllEmployeesNameAndID();
     </div>
 
     <?php include ($components_file_toastify); ?>
-
-    <!-- Edit Modal Fetch and Reset -->
-    <script>
-        // Variable to store the state
-        var editDepartmentState = null;
-
-        $(document).ready(function () {
-            $('.editDepartmentButton').click(function () {
-                // Get data from the button
-                var departmentId = $(this).data('department-id');
-                var departmentName = $(this).data('department-name');
-                var departmentHead = $(this).data('department-head');
-                var departmentDescription = $(this).data('department-description');
-
-                // Set form field values
-                $('#floatingEditDepartmentId').val(departmentId);
-                $('#floatingEditDepartmentName').val(departmentName);
-                $('#floatingEditDepartmentHead').val(departmentHead);
-                $('#floatingEditDepartmentDescription').val(departmentDescription);
-
-                // Save the state
-                editDepartmentState = {
-                    departmentId: departmentId,
-                    departmentName: departmentName,
-                    departmentHead: departmentHead,
-                    departmentDescription: departmentDescription,
-                };
-            });
-
-            // Function to set data based on the saved state
-            function setDataFromState() {
-                if (editDepartmentState) {
-                    // Set form field values based on the saved state
-                    $('#floatingEditDepartmentId').val(editDepartmentState.departmentId);
-                    $('#floatingEditDepartmentName').val(editDepartmentState.departmentName);
-                    $('#floatingEditDepartmentHead').val(editDepartmentState.departmentHead);
-                    $('#floatingEditDepartmentDescription').val(editDepartmentState.departmentDescription);
-                }
-            }
-
-            // Add click event handler for the Reset button
-            $('#resetEditDepartmentInputs').click(function () {
-                // Reset form fields to their initial values
-                setDataFromState();
-            });
-        });
-    </script>
 
 </body>
 

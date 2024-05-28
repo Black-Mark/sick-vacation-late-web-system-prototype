@@ -8,6 +8,7 @@ include ($constants_variables);
 $departmentlabel = "";
 $departmentName = "";
 $departments = getAllDepartments();
+$designations = getAllDesignations();
 
 $generatedEmpId = bin2hex(random_bytes(4));
 
@@ -25,16 +26,22 @@ if ($departmentlabel) {
     if (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) {
         $departmentName = "Pending and Unassigned";
 
-        $empsql = " SELECT 
+        $empsql = "SELECT 
                         u.*, 
                         CASE 
                             WHEN UPPER(d.archive) = 'DELETED' THEN '' 
                             ELSE d.departmentName 
-                        END AS departmentName
+                        END AS departmentName,
+                        CASE 
+                            WHEN UPPER(desig.archive) = 'DELETED' THEN '' 
+                            ELSE desig.designationName 
+                        END AS designationName
                     FROM 
                         tbl_useraccounts u
                     LEFT JOIN 
                         tbl_departments d ON u.department = d.department_id
+                    LEFT JOIN 
+                        tbl_designations desig ON u.jobPosition = desig.designation_id
                     WHERE 
                         (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') 
                         AND UPPER(u.archive) != 'DELETED'
@@ -53,11 +60,17 @@ if ($departmentlabel) {
 
         $empsql = "SELECT
                         ua.*,
-                        d.departmentName
+                        d.departmentName,
+                        CASE 
+                            WHEN UPPER(desig.archive) = 'DELETED' THEN '' 
+                            ELSE desig.designationName 
+                        END AS designationName
                     FROM
                         tbl_useraccounts ua
                     LEFT JOIN
                         tbl_departments d ON ua.department = d.department_id
+                    LEFT JOIN
+                        tbl_designations desig ON ua.jobPosition = desig.designation_id
                     WHERE
                         ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED'
                     ORDER BY
@@ -78,15 +91,22 @@ if ($departmentlabel) {
                     CASE
                         WHEN UPPER(d.archive) = 'DELETED' THEN ''
                         ELSE d.departmentName
-                    END AS departmentName
+                    END AS departmentName,
+                    CASE
+                        WHEN UPPER(desig.archive) = 'DELETED' THEN ''
+                        ELSE desig.designationName
+                    END AS designationName
                 FROM
                     tbl_useraccounts ua
                 LEFT JOIN
                     tbl_departments d ON ua.department = d.department_id
+                LEFT JOIN
+                    tbl_designations desig ON ua.jobPosition = desig.designation_id
                 WHERE
                     UPPER(ua.archive) != 'DELETED'
                 ORDER BY
-                    ua.lastName ASC";
+                    ua.lastName ASC;
+                ";
 
     $employees = $database->query($empsql);
 }
@@ -251,9 +271,22 @@ if ($departmentlabel) {
                         <label for="floatingDepartmentSelect">Department <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
-                        <input type="text" name="jobPosition" class="form-control" id="floatingJobPosition"
-                            placeholder="IT Personnel" required>
-                        <label for="floatingJobPosition">Job Position <span class="required-color">*</span></label>
+                        <select name="jobPosition" class="form-select" id="floatingJobPosition"
+                            aria-label="Floating Designation Selection" required>
+                            <option value="" selected></option>
+                            <?php
+                            if (!empty($designations)) {
+                                foreach ($designations as $designation) {
+                                    ?>
+                                    <option title="<?php echo $designation['designationDescription']; ?>" value="<?php echo $designation['designation_id']; ?>">
+                                        <?php echo $designation['designationName']; ?>
+                                    </option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                        <label for="floatingJobPosition">Job Title <span class="required-color">*</span></label>
                     </div>
                     <div class="row g-2 mb-2">
                         <div class="col-md">
@@ -415,9 +448,22 @@ if ($departmentlabel) {
                                 class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
-                        <input type="text" name="jobPosition" class="form-control" id="floatingEditJobPosition"
-                            placeholder="IT Personnel" required>
-                        <label for="floatingEditJobPosition">Job Position <span class="required-color">*</span></label>
+                        <select name="jobPosition" class="form-select" id="floatingEditJobPosition"
+                            aria-label="Floating Designation Selection" required>
+                            <option value="" selected></option>
+                            <?php
+                            if (!empty($designations)) {
+                                foreach ($designations as $designation) {
+                                    ?>
+                                    <option title="<?php echo $designation['designationDescription']; ?>" value="<?php echo $designation['designation_id']; ?>">
+                                        <?php echo $designation['designationName']; ?>
+                                    </option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                        <label for="floatingEditJobPosition">Job Title <span class="required-color">*</span></label>
                     </div>
                     <div class="row g-2 mb-2">
                         <div class="col-md">
@@ -452,7 +498,7 @@ if ($departmentlabel) {
     </form>
 
     <!-- Multiple Edit Modal -->
-    <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade" id="editMultipleEmployee"
+    <!-- <form action="<?php echo $action_edit_employee; ?>" method="post" class="modal fade" id="editMultipleEmployee"
         tabindex="-1" role="dialog" aria-labelledby="editMultipleEmployeeTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -566,7 +612,7 @@ if ($departmentlabel) {
                 </div>
             </div>
         </div>
-    </form>
+    </form> -->
 
     <div class="page-container">
         <div class="page-content">
@@ -598,8 +644,8 @@ if ($departmentlabel) {
                         </button>
                         -->
                         <!-- Multiple Delete -->
-                        <input type="submit" name="deleteMultipleEmployee" id="deleteMultipleEmployeeBTN"
-                            value="Delete" class="custom-regular-button" />
+                        <input type="submit" name="deleteMultipleEmployee" id="deleteMultipleEmployeeBTN" value="Delete"
+                            class="custom-regular-button" />
                     </div>
 
                     <table id="employees" class="text-center hover table-striped cell-border order-column"
@@ -609,6 +655,7 @@ if ($departmentlabel) {
                                 <th>Select</th>
                                 <th>Name</th>
                                 <th>Department</th>
+                                <th>Job Title</th>
                                 <th>Sex</th>
                                 <th>Age</th>
                                 <th>Civil Status</th>
@@ -623,8 +670,13 @@ if ($departmentlabel) {
                                     ?>
                                     <tr>
                                         <td>
-                                            <input type="checkbox" name="selectedEmployee[]"
-                                                value="<?php echo $row['employee_id']; ?>" />
+                                            <?php if (strtoupper($row['role']) != "ADMIN") { ?>
+                                                <input type="checkbox" name="selectedEmployee[]"
+                                                    value="<?php echo $row['employee_id']; ?>" />
+                                            <?php } else { ?>
+                                                <input type="checkbox" name="disabledones"
+                                                    value="<?php echo $row['employee_id']; ?>" disabled />
+                                            <?php } ?>
                                         </td>
                                         <td>
                                             <?php
@@ -637,6 +689,15 @@ if ($departmentlabel) {
                                                 echo $row['departmentName'];
                                             } else if (strcasecmp($row['department'], "Pending") == 0) {
                                                 echo "Pending";
+                                            } else {
+                                                echo "Unassigned";
+                                            }
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            if ($row['designationName']) {
+                                                echo $row['designationName'];
                                             } else {
                                                 echo "Unassigned";
                                             }
@@ -656,34 +717,34 @@ if ($departmentlabel) {
                                         </td>
                                         <td>
                                             <!-- <form method="POST" action="<?php echo $action_delete_employee; ?>"> -->
-                                                <a
-                                                    href="<?php echo $location_admin_departments_employee . '/' . $row['employee_id'] . '/'; ?>">
-                                                    <button type="button" class="custom-regular-button">
-                                                        View
-                                                    </button>
-                                                </a>
-                                                <!-- data-photo-url="<?php //echo $row['photoURL']; ?>" -->
-                                                <button type="button" class="custom-regular-button editEmployeeButton"
-                                                    data-toggle="modal" data-target="#editEmployee"
-                                                    data-employee-id="<?php echo $row['employee_id']; ?>"
-                                                    data-role="<?php echo $row['role']; ?>"
-                                                    data-email="<?php echo $row['email']; ?>"
-                                                    data-password="<?php echo $row['password']; ?>"
-                                                    data-first-name="<?php echo $row['firstName']; ?>"
-                                                    data-middle-name="<?php echo $row['middleName']; ?>"
-                                                    data-last-name="<?php echo $row['lastName']; ?>"
-                                                    data-suffix="<?php echo $row['suffix']; ?>"
-                                                    data-sex="<?php echo $row['sex']; ?>"
-                                                    data-civil-status="<?php echo $row['civilStatus']; ?>"
-                                                    data-birthdate="<?php echo $row['birthdate']; ?>"
-                                                    data-department="<?php echo $row['department']; ?>"
-                                                    data-job-position="<?php echo $row['jobPosition']; ?>"
-                                                    data-date-started="<?php echo $row['dateStarted']; ?>"
-                                                    data-account-status="<?php echo $row['status']; ?>">
-                                                    Edit
+                                            <a
+                                                href="<?php echo $location_admin_departments_employee . '/' . $row['employee_id'] . '/'; ?>">
+                                                <button type="button" class="custom-regular-button">
+                                                    View
                                                 </button>
+                                            </a>
+                                            <!-- data-photo-url="<?php //echo $row['photoURL']; ?>" -->
+                                            <button type="button" class="custom-regular-button editEmployeeButton"
+                                                data-toggle="modal" data-target="#editEmployee"
+                                                data-employee-id="<?php echo $row['employee_id']; ?>"
+                                                data-role="<?php echo $row['role']; ?>"
+                                                data-email="<?php echo $row['email']; ?>"
+                                                data-password="<?php echo $row['password']; ?>"
+                                                data-first-name="<?php echo $row['firstName']; ?>"
+                                                data-middle-name="<?php echo $row['middleName']; ?>"
+                                                data-last-name="<?php echo $row['lastName']; ?>"
+                                                data-suffix="<?php echo $row['suffix']; ?>"
+                                                data-sex="<?php echo $row['sex']; ?>"
+                                                data-civil-status="<?php echo $row['civilStatus']; ?>"
+                                                data-birthdate="<?php echo $row['birthdate']; ?>"
+                                                data-department="<?php echo $row['department']; ?>"
+                                                data-job-position="<?php echo $row['jobPosition']; ?>"
+                                                data-date-started="<?php echo $row['dateStarted']; ?>"
+                                                data-account-status="<?php echo $row['status']; ?>">
+                                                Edit
+                                            </button>
 
-                                                <!-- <input type="hidden" name="employeeNum"
+                                            <!-- <input type="hidden" name="employeeNum"
                                                     value="<?php echo $row['employee_id']; ?>" />
                                                 <input type="hidden" value="<?php echo $departmentlabel; ?>"
                                                     name="departmentlabel" />
@@ -718,7 +779,7 @@ if ($departmentlabel) {
                             {
                                 targets: [<?php if ($departmentlabel != "") {
                                     echo "2,";
-                                } ?>4, 6], visible: false
+                                } ?>5, 7], visible: false
                             },
                             {
                                 'targets': 0,
@@ -813,8 +874,8 @@ if ($departmentlabel) {
             </div>
         </div>
     </div>
+
     <script src="<?php echo $assets_file_employeeListing; ?>"></script>
-    
     <div>
         <?php
         include ($components_file_footer);

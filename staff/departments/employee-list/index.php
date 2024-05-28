@@ -25,16 +25,22 @@ if ($departmentlabel) {
     if (strcasecmp($departmentlabel, 'pending') == 0 || strcasecmp($departmentlabel, 'other') == 0 || strcasecmp($departmentlabel, 'others') == 0 || strcasecmp($departmentlabel, 'unassigned') == 0 || strcasecmp($departmentlabel, 'unassign') == 0) {
         $departmentName = "Pending and Unassigned";
 
-        $empsql = " SELECT 
+        $empsql = "SELECT 
                         u.*, 
                         CASE 
                             WHEN UPPER(d.archive) = 'DELETED' THEN '' 
                             ELSE d.departmentName 
-                        END AS departmentName
+                        END AS departmentName,
+                        CASE 
+                            WHEN UPPER(desig.archive) = 'DELETED' THEN '' 
+                            ELSE desig.designationName 
+                        END AS designationName
                     FROM 
                         tbl_useraccounts u
                     LEFT JOIN 
                         tbl_departments d ON u.department = d.department_id
+                    LEFT JOIN 
+                        tbl_designations desig ON u.jobPosition = desig.designation_id
                     WHERE 
                         (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') 
                         AND UPPER(u.archive) != 'DELETED'
@@ -52,11 +58,17 @@ if ($departmentlabel) {
 
         $empsql = "SELECT
                         ua.*,
-                        d.departmentName
+                        d.departmentName,
+                        CASE 
+                            WHEN UPPER(desig.archive) = 'DELETED' THEN '' 
+                            ELSE desig.designationName 
+                        END AS designationName
                     FROM
                         tbl_useraccounts ua
                     LEFT JOIN
                         tbl_departments d ON ua.department = d.department_id
+                    LEFT JOIN
+                        tbl_designations desig ON ua.jobPosition = desig.designation_id
                     WHERE
                         ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED'
                     ORDER BY
@@ -77,15 +89,22 @@ if ($departmentlabel) {
                     CASE
                         WHEN UPPER(d.archive) = 'DELETED' THEN ''
                         ELSE d.departmentName
-                    END AS departmentName
+                    END AS departmentName,
+                    CASE
+                        WHEN UPPER(desig.archive) = 'DELETED' THEN ''
+                        ELSE desig.designationName
+                    END AS designationName
                 FROM
                     tbl_useraccounts ua
                 LEFT JOIN
                     tbl_departments d ON ua.department = d.department_id
+                LEFT JOIN
+                    tbl_designations desig ON ua.jobPosition = desig.designation_id
                 WHERE
                     UPPER(ua.archive) != 'DELETED'
                 ORDER BY
-                    ua.lastName ASC";
+                    ua.lastName ASC;
+                ";
     $employees = $database->query($empsql);
 }
 
@@ -159,6 +178,7 @@ if ($departmentlabel) {
                                 <th>Select</th>
                                 <th>Name</th>
                                 <th>Department</th>
+                                <th>Job Title</th>
                                 <th>Sex</th>
                                 <th>Age</th>
                                 <th>Civil Status</th>
@@ -187,6 +207,15 @@ if ($departmentlabel) {
                                                 echo $row['departmentName'];
                                             } else if (strcasecmp($row['department'], "Pending") == 0) {
                                                 echo "Pending";
+                                            } else {
+                                                echo "Unassigned";
+                                            }
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            if ($row['designationName']) {
+                                                echo $row['designationName'];
                                             } else {
                                                 echo "Unassigned";
                                             }
@@ -237,7 +266,7 @@ if ($departmentlabel) {
                             {
                                 targets: [<?php if ($departmentlabel != "") {
                                     echo "2,";
-                                } ?>4, 6], visible: false
+                                } ?>5, 7], visible: false
                             },
                             {
                                 'targets': 0,
