@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             updateWorkDays();
         });
-        
+
     });
 });
 
@@ -156,6 +156,8 @@ function handleLeaveTypeChange() {
             resetInputs(['typeOfVacationLeaveWithin']);
         }
 
+        document.getElementById('requested').checked = true;
+
         // Resets Inputs
         resetInputs(['typeOfSickLeaveInHospital']);
         resetInputs(['typeOfSickLeaveOutPatient']);
@@ -187,6 +189,8 @@ function handleLeaveTypeChange() {
             resetInputs(['typeOfSickLeaveInHospital']);
         }
 
+        document.getElementById('notRequested').checked = true;
+
         // Resets Inputs
         resetInputs(['typeOfVacationLeaveWithin']);
         resetInputs(['typeOfVacationLeaveAbroad']);
@@ -207,6 +211,8 @@ function handleLeaveTypeChange() {
 
     } else if (typeOfLeave === 'Special Leave Benefits for Women') {
         enableInputs(['typeOfSpecialLeaveForWomen', 'typeOfSpecialLeaveForWomenOne']);
+
+        document.getElementById('requested').checked = true;
 
         // Resets Inputs
         resetInputs(['typeOfVacationLeaveWithin']);
@@ -233,6 +239,8 @@ function handleLeaveTypeChange() {
     } else if (typeOfLeave === 'Study Leave') {
         enableInputs(['typeOfStudyLeave']);
 
+        document.getElementById('requested').checked = true;
+
         // Resets Inputs
         resetInputs(['typeOfVacationLeaveWithin']);
         resetInputs(['typeOfVacationLeaveAbroad']);
@@ -254,6 +262,16 @@ function handleLeaveTypeChange() {
         //     input.checked = false;
         // });
     } else {
+
+        if (typeOfLeave == 'Forced Leave') {
+            document.getElementById('notRequested').checked = true;
+        } else if (typeOfLeave == '') {
+            document.getElementById('requested').checked = false;
+            document.getElementById('notRequested').checked = false;
+        } else {
+            document.getElementById('requested').checked = true;
+        }
+
         // Resets Inputs
         resetInputs(['typeOfVacationLeaveWithin']);
         resetInputs(['typeOfVacationLeaveAbroad']);
@@ -285,6 +303,9 @@ function handleLeaveTypeChange() {
         //     radio.checked = false;
         // });
         enableInputs(['typeOfOtherLeave']);
+    } else {
+        document.getElementById('monetizationLeave').checked = false;
+        document.getElementById('terminalLeave').checked = false;
     }
 
     function enableInputs(inputNames) {
