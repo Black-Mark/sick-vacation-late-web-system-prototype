@@ -272,6 +272,7 @@ if (!empty($leaveData)) {
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
+                            <option value="Inactive">Inactive</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -375,6 +376,7 @@ if (!empty($leaveData)) {
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
+                            <option value="Inactive">Inactive</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -480,6 +482,7 @@ if (!empty($leaveData)) {
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
+                            <option value="Inactive">Inactive</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingEditParticularType">Type <span class="required-color">*</span></label>

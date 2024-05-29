@@ -46,7 +46,7 @@ if (isset($_POST['editEmployee'])) {
         $noWarning = true;
     }
 
-    if(!$noWarning){
+    if (!$noWarning) {
         if ($departmentlabel) {
             header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
         } else {
@@ -57,9 +57,9 @@ if (isset($_POST['editEmployee'])) {
 
     $archive = "";
 
-    if(strtoupper($accountStatus) == "BANNED" || strtoupper($accountStatus) == "INACTIVE"){
+    if (strtoupper($accountStatus) == "BANNED" || strtoupper($accountStatus) == "INACTIVE") {
         $archive = "deleted";
-    }else{
+    } else {
         $reasonForStatus = "";
     }
 
@@ -97,6 +97,41 @@ if (isset($_POST['editEmployee'])) {
         }
 
         mysqli_stmt_close($stmt);
+
+        if ((strtoupper($accountStatus) == "INACTIVE" || strtoupper($accountStatus) == "BANNED")) {
+            $labelStatus = "Inactive";
+            $query = "INSERT INTO tbl_leavedataform 
+                      (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, dateOfAction) 
+                      VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?)";
+
+            $stmt = mysqli_prepare($database, $query);
+            if ($stmt) {
+                mysqli_stmt_bind_param(
+                    $stmt,
+                    "sssssss",
+                    $employeeId,
+                    $labelStatus,
+                    $today,
+                    $today,
+                    $labelStatus,
+                    $labelStatus,
+                    $today
+                );
+
+                if (mysqli_stmt_execute($stmt)) {
+                    $_SESSION['alert_message'] = "Employee, Initialization, Inactive Record Successfully Created";
+                    $_SESSION['alert_type'] = $success_color;
+                } else {
+                    $_SESSION['alert_message'] = "There was an error during initialization: " . mysqli_stmt_error($stmt);
+                    $_SESSION['alert_type'] = $error_color;
+                }
+
+                mysqli_stmt_close($stmt);
+            } else {
+                $_SESSION['alert_message'] = "Failed to prepare the statement: " . mysqli_error($database);
+                $_SESSION['alert_type'] = $error_color;
+            }
+        }
     } else {
         $_SESSION['alert_message'] = "Error preparing update statement: " . mysqli_error($database);
         $_SESSION['alert_type'] = $error_color;

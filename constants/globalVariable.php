@@ -14,6 +14,8 @@ $idGeneration = "12345678901234567890"; // Prompts but dont delete
 $vacationLeaveMonthlyCredit = 1.25;
 $sickLeaveMonthlyCredit = 1.25;
 
+$today = date("Y-m-d");
+
 // Limits
 $legalAge = 18;
 $loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // For Birthdate and DateStarted

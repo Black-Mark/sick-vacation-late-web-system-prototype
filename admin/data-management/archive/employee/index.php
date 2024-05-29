@@ -93,6 +93,8 @@ $employees = $database->query($empsql);
                                 <th>Select</th>
                                 <th>Full Name</th>
                                 <th>Department</th>
+                                <th>Status</th>
+                                <th>Reason</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -113,6 +115,12 @@ $employees = $database->query($empsql);
                                         </td>
                                         <td>
                                             <?php echo $row['departmentName']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['status']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $row['reasonForStatus']; ?>
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
