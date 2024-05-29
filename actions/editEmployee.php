@@ -30,8 +30,14 @@ if (isset($_POST['editEmployee'])) {
         $role = "Admin";
     }
 
-    if(identifyEmployeeAge($birthdate) < 18){
-    }else if (identifyEmployeeAge($dateStarted) < 18){
+    if (identifyEmployeeAge($birthdate) < 18) {
+        
+        if ($departmentlabel) {
+            header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+        } else {
+            header("Location: " . $location_admin_departments_office);
+        }
+        exit();
     }
 
     $query = "UPDATE tbl_useraccounts SET

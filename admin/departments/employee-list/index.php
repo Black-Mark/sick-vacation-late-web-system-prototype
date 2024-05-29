@@ -10,6 +10,10 @@ $departmentName = "";
 $departments = getAllDepartments();
 $designations = getAllDesignations();
 
+$eighteenYearsAgo = (new DateTime())->modify('-18 years')->format('Y-m-d');
+$firstDayNextMonth = (new DateTime('first day of next month'))->format('Y-m-d');
+$minDate = '1900-01-01';
+
 $generatedEmpId = bin2hex(random_bytes(4));
 
 if ($_GET['departmentlabel'] !== "index.php" && $_GET['departmentlabel'] !== "index.html") {
@@ -248,7 +252,8 @@ if ($departmentlabel) {
                     </div>
                     <div class="form-floating mb-2">
                         <input type="date" name="birthdate" class="form-control" id="floatingBirthdate"
-                            placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>" required>
+                            placeholder="01-01-2001" value="<?php // echo $eighteenYearsAgo; ?>"
+                            min="<?php echo $minDate; ?>" max="<?php echo $eighteenYearsAgo; ?>" required>
                         <label for="floatingBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
@@ -278,7 +283,8 @@ if ($departmentlabel) {
                             if (!empty($designations)) {
                                 foreach ($designations as $designation) {
                                     ?>
-                                    <option title="<?php echo $designation['designationDescription']; ?>" value="<?php echo $designation['designation_id']; ?>">
+                                    <option title="<?php echo $designation['designationDescription']; ?>"
+                                        value="<?php echo $designation['designation_id']; ?>">
                                         <?php echo $designation['designationName']; ?>
                                     </option>
                                     <?php
@@ -292,7 +298,8 @@ if ($departmentlabel) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
-                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
+                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>"
+                                    min="<?php echo $minDate; ?>" max="<?php echo $firstDayNextMonth; ?>" required>
                                 <label for="floatingDateStarted">Date Started <span
                                         class="required-color">*</span></label>
                             </div>
@@ -309,16 +316,23 @@ if ($departmentlabel) {
                             </div>
                         </div>
                     </div>
+                    <!-- Reason for Inactive and Banning -->
+                    <div class="form-floating mb-2">
+                        <input type="text" name="reasonForStatus" class="form-control"
+                            id="floatingReasonForStatus" placeholder="Enter Reason..." value="">
+                        <label for="floatingReasonForStatus">Reason for Status <span
+                                class="required-color">*</span></label>
+                    </div>
                     <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
                     <div class="form-floating mb-2">
                         <input type="number" step="any" name="initialVacationCredit" class="form-control"
-                            id="floatingInitialVacationCredit" placeholder="1.25" value="1.25" required>
+                            id="floatingInitialVacationCredit" placeholder="1.25" value="1.25" min="0" max="750" required>
                         <label for="floatingInitialVacationCredit">Initial Vacation Credit <span
                                 class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
                         <input type="number" step="any" name="initialSickCredit" class="form-control"
-                            id="floatingInitialSickCredit" placeholder="1.25" value="1.25" required>
+                            id="floatingInitialSickCredit" placeholder="1.25" value="1.25" max="750" required>
                         <label for="floatingInitialSickCredit">Initial Sick Credit <span
                                 class="required-color">*</span></label>
                     </div>
@@ -424,7 +438,8 @@ if ($departmentlabel) {
                     </div>
                     <div class="form-floating mb-2">
                         <input type="date" name="birthdate" class="form-control" id="floatingEditBirthdate"
-                            placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>" required>
+                            placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>"
+                            min="<?php echo $minDate; ?>" max="<?php echo $eighteenYearsAgo; ?>" required>
                         <label for="floatingEditBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
@@ -455,7 +470,8 @@ if ($departmentlabel) {
                             if (!empty($designations)) {
                                 foreach ($designations as $designation) {
                                     ?>
-                                    <option title="<?php echo $designation['designationDescription']; ?>" value="<?php echo $designation['designation_id']; ?>">
+                                    <option title="<?php echo $designation['designationDescription']; ?>"
+                                        value="<?php echo $designation['designation_id']; ?>">
                                         <?php echo $designation['designationName']; ?>
                                     </option>
                                     <?php
@@ -469,7 +485,8 @@ if ($departmentlabel) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="dateStarted" class="form-control" id="floatingEditDateStarted"
-                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>" required>
+                                    placeholder="12-31-2001" value="<?php echo date('Y-m-d'); ?>"
+                                    min="<?php echo $minDate; ?>" max="<?php echo $firstDayNextMonth; ?>" required>
                                 <label for="floatingEditDateStarted">Date Started <span
                                         class="required-color">*</span></label>
                             </div>
@@ -486,6 +503,13 @@ if ($departmentlabel) {
                                         class="required-color">*</span></label>
                             </div>
                         </div>
+                    </div>
+                    <!-- Reason for Inactive and Banning -->
+                    <div class="form-floating mb-2">
+                        <input type="text" name="reasonForStatus" class="form-control"
+                            id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="">
+                        <label for="floatingEditReasonForStatus">Reason for Status <span
+                                class="required-color">*</span></label>
                     </div>
                 </div>
                 <div class="modal-footer">
