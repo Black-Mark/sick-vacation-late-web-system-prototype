@@ -99,27 +99,26 @@ if (isset($_POST['editEmployee'])) {
         mysqli_stmt_close($stmt);
 
         if ((strtoupper($accountStatus) == "INACTIVE" || strtoupper($accountStatus) == "BANNED")) {
-            $labelStatus = "Inactive";
+            $labelStatus = "Break Monthly Record";
             $query = "INSERT INTO tbl_leavedataform 
-                      (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, dateOfAction) 
-                      VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?)";
+                      (employee_id, dateCreated, recordType, period, periodEnd, particular, dateOfAction) 
+                      VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?)";
 
             $stmt = mysqli_prepare($database, $query);
             if ($stmt) {
                 mysqli_stmt_bind_param(
                     $stmt,
-                    "sssssss",
+                    "ssssss",
                     $employeeId,
                     $labelStatus,
                     $today,
                     $today,
                     $labelStatus,
-                    $labelStatus,
                     $today
                 );
 
                 if (mysqli_stmt_execute($stmt)) {
-                    $_SESSION['alert_message'] = "Employee, Initialization, Inactive Record Successfully Created";
+                    $_SESSION['alert_message'] = "Account Successfully Update and Moved to Archive! Inactive Record Successfully Created!";
                     $_SESSION['alert_type'] = $success_color;
                 } else {
                     $_SESSION['alert_message'] = "There was an error during initialization: " . mysqli_stmt_error($stmt);

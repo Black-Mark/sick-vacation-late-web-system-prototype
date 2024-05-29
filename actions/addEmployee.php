@@ -198,21 +198,20 @@ if (isset($_POST['addEmployee'])) {
             }
 
             if ($proceedCreation && (strtoupper($accountStatus) == "INACTIVE" || strtoupper($accountStatus) == "BANNED")) {
-                $labelStatus = "Inactive";
+                $labelStatus = "Break Monthly Record";
                 $query = "INSERT INTO tbl_leavedataform 
-                          (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, dateOfAction) 
-                          VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?)";
+                          (employee_id, dateCreated, recordType, period, periodEnd, particular, dateOfAction) 
+                          VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?)";
             
                 $stmt = mysqli_prepare($database, $query);
                 if ($stmt) {
                     mysqli_stmt_bind_param(
                         $stmt,
-                        "sssssss",
+                        "ssssss",
                         $employeeId,
                         $labelStatus,
                         $today,
                         $today,
-                        $labelStatus,
                         $labelStatus,
                         $dateOfAction
                     );
