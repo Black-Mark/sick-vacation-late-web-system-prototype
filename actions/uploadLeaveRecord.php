@@ -27,7 +27,20 @@ if (isset($_POST['upload'])) {
             $employee_id = trim($csv[0]); //First column of csv
             $total_minutes = trim($csv[1]); //Second column of csv
 
+            $period_start = trim($csv[2]); //Third column of csv
+            $period_end = trim($csv[3]); //Fourth column of csv
 
+            $type = 'Late';
+
+            $formatted_duration = getFormattedDurationInMinutes($total_minutes);
+
+            $days = $formatted_duration['days'];
+            $hours = $formatted_duration['hours'];
+            $minutes = $formatted_duration['minutes'];
+
+            $date_of_action = date('Y-m-d');
+
+            //TODO Do the code logic here on adding leave data record
 
         }
 
@@ -35,4 +48,16 @@ if (isset($_POST['upload'])) {
         die($exception->getMessage());
     }
 }
-?>
+
+function getFormattedDurationInMinutes(int $totalMinutes): array
+{
+    $days = floor($totalMinutes / 1440); // 1440 minutes in a day
+    $hours = floor(($totalMinutes % 1440) / 60); // Remaining minutes divided by 60 to get hours
+    $minutes = $totalMinutes % 60; // Remaining minutes after accounting for days and hours
+
+    return [
+        'days' => $days,
+        'hours' => $hours,
+        'minutes' => $minutes,
+    ];
+}
