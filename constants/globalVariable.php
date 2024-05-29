@@ -14,6 +14,18 @@ $idGeneration = "12345678901234567890"; // Prompts but dont delete
 $vacationLeaveMonthlyCredit = 1.25;
 $sickLeaveMonthlyCredit = 1.25;
 
+// Limits
+$legalAge = 18;
+$loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // For Birthdate and DateStarted
+
+// $firstDayNextMonth = (new DateTime('first day of next month'))->format('Y-m-d'); // For Date Started
+$dummyDateForOrb = new DateTime('first day of next month');
+$firstDayNextMonth = $dummyDateForOrb->modify('+1 month')->format('Y-m-d');
+
+$minDate = '1900-01-01'; // for all
+// $generatedEmpId = bin2hex(random_bytes(4));
+$generatedEmpId = date('YmdHis');
+
 // Function to Apply strip_tags and mysqli_real_escape_string
 function sanitizeInput($input)
 {
@@ -911,6 +923,18 @@ function convertDateFormat($dateString, $currentFormat, $desiredFormat) {
     }
 
     return $date->format($desiredFormat);
+}
+
+function yearDifference($startDate, $endDate) {
+    // Convert dates to DateTime objects
+    $start = new DateTime($startDate);
+    $end = new DateTime($endDate);
+    
+    // Calculate the difference in years
+    $interval = $start->diff($end);
+    $years = $interval->y;
+    
+    return $years;
 }
 
 ?>

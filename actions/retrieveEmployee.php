@@ -8,7 +8,7 @@ include($constants_variables);
 if (isset($_POST['retrieveEmployee']) && isset($_POST['employeeNum'])) {
     $employeeNum = strip_tags(mysqli_real_escape_string($database, $_POST['employeeNum']));
 
-    $archiveEmployeeQuery = "UPDATE tbl_useraccounts SET archive = '' WHERE employee_id = ?";
+    $archiveEmployeeQuery = "UPDATE tbl_useraccounts SET archive = '', reasonForStatus = '', status = 'Active' WHERE employee_id = ?";
     $archiveEmployeeStatement = mysqli_prepare($database, $archiveEmployeeQuery);
 
     if ($archiveEmployeeStatement) {

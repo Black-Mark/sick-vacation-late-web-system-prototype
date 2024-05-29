@@ -1,36 +1,60 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['addEmployee'])) {
-    $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
-    $departmentlabel = strip_tags(mysqli_real_escape_string($database, $_POST['departmentlabel']));
-    $role = strip_tags(mysqli_real_escape_string($database, $_POST["role"]));
-    $email = strip_tags(mysqli_real_escape_string($database, $_POST["email"]));
-    $password = strip_tags(mysqli_real_escape_string($database, $_POST['password']));
-    $firstName = strip_tags(mysqli_real_escape_string($database, $_POST["firstName"]));
-    $middleName = strip_tags(mysqli_real_escape_string($database, $_POST["middleName"]));
-    $lastName = strip_tags(mysqli_real_escape_string($database, $_POST["lastName"]));
-    $suffix = strip_tags(mysqli_real_escape_string($database, $_POST["suffix"]));
-    $birthdate = strip_tags(mysqli_real_escape_string($database, $_POST["birthdate"]));
-    $sex = strip_tags(mysqli_real_escape_string($database, $_POST["sex"]));
-    $civilStatus = strip_tags(mysqli_real_escape_string($database, $_POST["civilStatus"]));
-    $department = strip_tags(mysqli_real_escape_string($database, $_POST["department"]));
-    $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST["jobPosition"]));
-    $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST["dateStarted"]));
-    $accountStatus = strip_tags(mysqli_real_escape_string($database, $_POST["status"]));
-    $initialVacationCredit = strip_tags(mysqli_real_escape_string($database, $_POST["initialVacationCredit"]));
-    $initialSickCredit = strip_tags(mysqli_real_escape_string($database, $_POST["initialSickCredit"]));
+    $employeeId = sanitizeInput($_POST['employeeId'] ?? null);
+    $departmentlabel = sanitizeInput($_POST['departmentlabel'] ?? '');
+    $role = sanitizeInput($_POST["role"] ?? '');
+    $email = sanitizeInput($_POST["email"] ?? 'default@example.com');
+    $password = sanitizeInput($_POST['password'] ?? 'default_password');
+    $firstName = sanitizeInput($_POST["firstName"] ?? '');
+    $middleName = sanitizeInput($_POST["middleName"] ?? '');
+    $lastName = sanitizeInput($_POST["lastName"] ?? '');
+    $suffix = sanitizeInput($_POST["suffix"] ?? '');
+    $birthdate = sanitizeInput($_POST["birthdate"] ?? '');
+    $sex = sanitizeInput($_POST["sex"] ?? '');
+    $civilStatus = sanitizeInput($_POST["civilStatus"] ?? '');
+    $department = sanitizeInput($_POST["department"] ?? '');
+    $jobPosition = sanitizeInput($_POST["jobPosition"] ?? '');
+    $dateStarted = sanitizeInput($_POST["dateStarted"] ?? date('Y-m-d'));
+    $accountStatus = sanitizeInput($_POST["status"] ?? '');
+    $reasonForStatus = sanitizeInput($_POST["reasonForStatus"] ?? '');
+    $initialVacationCredit = sanitizeInput($_POST["initialVacationCredit"] ?? 0);
+    $initialSickCredit = sanitizeInput($_POST["initialSickCredit"] ?? 0);
 
     // Variables that are required in conditioning of Automatic Initial Record
     $previousLeaveData = [];
     $today = date("Y-m-d");
 
     $proceedCreation = false;
+    $noWarning = false;
     $hasPreviousRecord = false;
+
+    if ($birthdate >= $dateStarted || $birthdate > date('Y-m-d')) {
+        $_SESSION['alert_message'] = "Invalid Birthdate!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else if (yearDifference($birthdate, $dateStarted) < $legalAge) {
+        $_SESSION['alert_message'] = "Does not meet the Legal Age!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else if ($dateStarted > $firstDayNextMonth || $dateStarted < $minDate) {
+        $_SESSION['alert_message'] = "Starting Date must be at least 1 month from now!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else {
+        $noWarning = true;
+    }
+
+    if(!$noWarning){
+        if ($departmentlabel) {
+            header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
+        } else {
+            header("Location: " . $location_admin_departments_office);
+        }
+        exit();
+    }
 
     $dataRecordType = "Initial Record";
     $initialDateStart = $dateStarted;
@@ -41,6 +65,13 @@ if (isset($_POST['addEmployee'])) {
     $sickBalance = $initialSickCredit;
     $sickUnderWOPay = 0;
     $dateOfAction = $today;
+    $archive = "";
+
+    if(strtoupper($accountStatus) == "BANNED" || strtoupper($accountStatus) == "INACTIVE"){
+        $archive = "deleted";
+    }else{
+        $reasonForStatus = "";
+    }
 
     // if ($departmentlabel) {
     //     $_SESSION['departmentlabel'] = $departmentlabel;
@@ -48,11 +79,11 @@ if (isset($_POST['addEmployee'])) {
 
     try {
         $query = "INSERT INTO tbl_useraccounts 
-                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, sex, civilStatus, birthdate, department, jobPosition, dateStarted, status , dateCreated) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                  (employee_id, role, email, password, firstName, middleName, lastName, suffix, sex, civilStatus, birthdate, department, jobPosition, dateStarted, status , reasonForStatus, archive, dateCreated) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = mysqli_prepare($database, $query);
-        mysqli_stmt_bind_param($stmt, "sssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus);
+        mysqli_stmt_bind_param($stmt, "sssssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus, $reasonForStatus, $archive);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "New Employee Successfully Created";
@@ -74,7 +105,7 @@ if (isset($_POST['addEmployee'])) {
                     $_SESSION['alert_message'] = "Employee Successfully Added But Initial Record Failed due to Date Started";
                     $_SESSION['alert_type'] = $warning_color;
                     $proceedCreation = false;
-                }else if($previousLeaveData['period'] >= $initialDateStart && $previousLeaveData['periodEnd'] <= $initialDateEnd){
+                } else if ($previousLeaveData['period'] >= $initialDateStart && $previousLeaveData['periodEnd'] <= $initialDateEnd) {
                     $initialDateEnd = $previousLeaveData['periodEnd'];
                     $hasPreviousRecord = true;
                     $proceedCreation = true;
@@ -82,11 +113,11 @@ if (isset($_POST['addEmployee'])) {
                 // $hasPreviousRecord = true;
                 // $_SESSION['alert_message'] = "Initialization is Set from ".$dateStarted." and Before: " . $previousLeaveData['period'];
                 // $_SESSION['alert_type'] = $warning_color;
-            }else{
+            } else {
                 $proceedCreation = true;
             }
 
-            if($proceedCreation) {
+            if ($proceedCreation) {
                 // Check if an Initial Record already exists for the specified employee and year
                 $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ?";
                 $checkStmt = mysqli_prepare($database, $checkQuery);
@@ -167,6 +198,10 @@ if (isset($_POST['addEmployee'])) {
                 }
             }
 
+            if(strtoupper($accountStatus) == ""){
+                
+            }
+
             if ($departmentlabel) {
                 header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
             } else {
@@ -194,6 +229,7 @@ if (isset($_POST['addEmployee'])) {
     } else {
         header("Location: " . $location_admin_departments_office);
     }
+    exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     if ($departmentlabel) {

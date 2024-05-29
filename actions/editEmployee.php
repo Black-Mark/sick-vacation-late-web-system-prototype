@@ -6,23 +6,24 @@ include ($constants_file_session_admin);
 include ($constants_variables);
 
 if (isset($_POST['editEmployee'])) {
-    $oldEmployeeID = strip_tags(mysqli_real_escape_string($database, $_POST['oldEmployeeId']));
-    $employeeId = strip_tags(mysqli_real_escape_string($database, $_POST['employeeId']));
-    $departmentlabel = strip_tags(mysqli_real_escape_string($database, $_POST['departmentlabel']));
-    $role = strip_tags(mysqli_real_escape_string($database, $_POST['role']));
-    $email = strip_tags(mysqli_real_escape_string($database, $_POST['email']));
-    $password = strip_tags(mysqli_real_escape_string($database, $_POST['password']));
-    $firstName = strip_tags(mysqli_real_escape_string($database, $_POST['firstName']));
-    $middleName = strip_tags(mysqli_real_escape_string($database, $_POST['middleName']));
-    $lastName = strip_tags(mysqli_real_escape_string($database, $_POST['lastName']));
-    $suffix = strip_tags(mysqli_real_escape_string($database, $_POST["suffix"]));
-    $birthdate = strip_tags(mysqli_real_escape_string($database, $_POST['birthdate']));
-    $sex = strip_tags(mysqli_real_escape_string($database, $_POST['sex']));
-    $civilStatus = strip_tags(mysqli_real_escape_string($database, $_POST['civilStatus']));
-    $department = strip_tags(mysqli_real_escape_string($database, $_POST['department']));
-    $jobPosition = strip_tags(mysqli_real_escape_string($database, $_POST['jobPosition']));
-    $dateStarted = strip_tags(mysqli_real_escape_string($database, $_POST['dateStarted']));
-    $accountStatus = strip_tags(mysqli_real_escape_string($database, $_POST['status']));
+    $oldEmployeeID = sanitizeInput($_POST['oldEmployeeId'] ?? null);
+    $employeeId = sanitizeInput($_POST['employeeId'] ?? null);
+    $departmentlabel = sanitizeInput($_POST['departmentlabel'] ?? '');
+    $role = sanitizeInput($_POST["role"] ?? '');
+    $email = sanitizeInput($_POST["email"] ?? 'default@example.com');
+    $password = sanitizeInput($_POST['password'] ?? 'default_password');
+    $firstName = sanitizeInput($_POST["firstName"] ?? '');
+    $middleName = sanitizeInput($_POST["middleName"] ?? '');
+    $lastName = sanitizeInput($_POST["lastName"] ?? '');
+    $suffix = sanitizeInput($_POST["suffix"] ?? '');
+    $birthdate = sanitizeInput($_POST["birthdate"] ?? '');
+    $sex = sanitizeInput($_POST["sex"] ?? '');
+    $civilStatus = sanitizeInput($_POST["civilStatus"] ?? '');
+    $department = sanitizeInput($_POST["department"] ?? '');
+    $jobPosition = sanitizeInput($_POST["jobPosition"] ?? '');
+    $dateStarted = sanitizeInput($_POST["dateStarted"] ?? date('Y-m-d'));
+    $accountStatus = sanitizeInput($_POST["status"] ?? '');
+    $reasonForStatus = sanitizeInput($_POST["reasonForStatus"] ?? '');
 
     $accountRole = "";
     $accountRole = getAccountRole($employeeId);
@@ -30,14 +31,36 @@ if (isset($_POST['editEmployee'])) {
         $role = "Admin";
     }
 
-    if (identifyEmployeeAge($birthdate) < 18) {
-        
+    $noWarning = false;
+
+    if ($birthdate >= $dateStarted || $birthdate > date('Y-m-d')) {
+        $_SESSION['alert_message'] = "Invalid Birthdate!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else if (yearDifference($birthdate, $dateStarted) < $legalAge) {
+        $_SESSION['alert_message'] = "Does not meet the Legal Age!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else if ($dateStarted > $firstDayNextMonth || $dateStarted < $minDate) {
+        $_SESSION['alert_message'] = "Starting Date must be at least 1 month from now!";
+        $_SESSION['alert_type'] = $warning_color;
+    } else {
+        $noWarning = true;
+    }
+
+    if(!$noWarning){
         if ($departmentlabel) {
             header("Location: " . $location_admin_departments_office . '/' . $departmentlabel . '/');
         } else {
             header("Location: " . $location_admin_departments_office);
         }
         exit();
+    }
+
+    $archive = "";
+
+    if(strtoupper($accountStatus) == "BANNED" || strtoupper($accountStatus) == "INACTIVE"){
+        $archive = "deleted";
+    }else{
+        $reasonForStatus = "";
     }
 
     $query = "UPDATE tbl_useraccounts SET
@@ -55,13 +78,15 @@ if (isset($_POST['editEmployee'])) {
               department = ?,
               jobPosition = ?,
               dateStarted = ?,
-              status = ?
+              status = ?,
+              reasonForStatus = ?,
+              archive = ?
               WHERE employee_id = ?";
 
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "ssssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus, $oldEmployeeID);
+        mysqli_stmt_bind_param($stmt, "ssssssssssssssssss", $employeeId, $role, $email, $password, $firstName, $middleName, $lastName, $suffix, $sex, $civilStatus, $birthdate, $department, $jobPosition, $dateStarted, $accountStatus, $reasonForStatus, $archive, $oldEmployeeID);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Employee with ID $employeeId successfully updated";
@@ -187,4 +212,5 @@ if (isset($_POST['editEmployee'])) {
     }
     exit();
 }
+
 ?>

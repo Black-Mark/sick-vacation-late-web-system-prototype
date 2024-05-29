@@ -10,12 +10,6 @@ $departmentName = "";
 $departments = getAllDepartments();
 $designations = getAllDesignations();
 
-$eighteenYearsAgo = (new DateTime())->modify('-18 years')->format('Y-m-d');
-$firstDayNextMonth = (new DateTime('first day of next month'))->format('Y-m-d');
-$minDate = '1900-01-01';
-
-$generatedEmpId = bin2hex(random_bytes(4));
-
 if ($_GET['departmentlabel'] !== "index.php" && $_GET['departmentlabel'] !== "index.html") {
     $departmentlabel = sanitizeInput($_GET['departmentlabel']);
     $_SESSION['departmentlabel'] = $departmentlabel;
@@ -252,8 +246,8 @@ if ($departmentlabel) {
                     </div>
                     <div class="form-floating mb-2">
                         <input type="date" name="birthdate" class="form-control" id="floatingBirthdate"
-                            placeholder="01-01-2001" value="<?php // echo $eighteenYearsAgo; ?>"
-                            min="<?php echo $minDate; ?>" max="<?php echo $eighteenYearsAgo; ?>" required>
+                            placeholder="01-01-2001" value="<?php // echo $loweredDateRange; ?>"
+                            min="<?php echo $minDate; ?>" max="<?php echo $loweredDateRange; ?>" required>
                         <label for="floatingBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
@@ -320,8 +314,7 @@ if ($departmentlabel) {
                     <div class="form-floating mb-2">
                         <input type="text" name="reasonForStatus" class="form-control"
                             id="floatingReasonForStatus" placeholder="Enter Reason..." value="">
-                        <label for="floatingReasonForStatus">Reason for Status <span
-                                class="required-color">*</span></label>
+                        <label for="floatingReasonForStatus">Reason for Status</label>
                     </div>
                     <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
                     <div class="form-floating mb-2">
@@ -439,7 +432,7 @@ if ($departmentlabel) {
                     <div class="form-floating mb-2">
                         <input type="date" name="birthdate" class="form-control" id="floatingEditBirthdate"
                             placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>"
-                            min="<?php echo $minDate; ?>" max="<?php echo $eighteenYearsAgo; ?>" required>
+                            min="<?php echo $minDate; ?>" max="<?php echo $loweredDateRange; ?>" required>
                         <label for="floatingEditBirthdate">Birthday <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
@@ -508,8 +501,7 @@ if ($departmentlabel) {
                     <div class="form-floating mb-2">
                         <input type="text" name="reasonForStatus" class="form-control"
                             id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="">
-                        <label for="floatingEditReasonForStatus">Reason for Status <span
-                                class="required-color">*</span></label>
+                        <label for="floatingEditReasonForStatus">Reason for Status</label>
                     </div>
                 </div>
                 <div class="modal-footer">
