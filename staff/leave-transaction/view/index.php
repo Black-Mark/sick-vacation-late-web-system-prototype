@@ -820,7 +820,7 @@ if ($sickLeaveTotalEarned < $sickLeaveLess) {
                 } else {
                     ?>
                 <div class="title-text-caption">
-                    (No Leave Data Found! It might be Deleted or Does Not Exist!)
+                    (No Leave Data Found! It might be Deleted, Restricted or Does Not Exist!)
                 </div>
                 <?php
                 }

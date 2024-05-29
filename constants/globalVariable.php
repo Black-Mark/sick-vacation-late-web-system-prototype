@@ -902,5 +902,16 @@ function formatExactTime($day, $hour, $minutes) {
     return $formattedTime;
 }
 
+function convertDateFormat($dateString, $currentFormat, $desiredFormat) {
+    // Create a DateTime object from the provided date string and current format
+    $date = DateTime::createFromFormat($currentFormat, $dateString);
+    
+    if (!$date) {
+        return false;
+    }
+
+    return $date->format($desiredFormat);
+}
+
 ?>
 <!-- -->

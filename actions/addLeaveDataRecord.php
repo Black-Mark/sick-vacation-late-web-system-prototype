@@ -27,8 +27,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
+    if ($days < 0 || $hours < 0 || $minutes < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
     //Checks if there is an existing Employee ID
-    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'";
     $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
 
     if ($stmtCheckEmployeeId) {
@@ -171,6 +188,23 @@ if (isset($_POST['addLeaveDataRecord'])) {
 
     if ($selectedYear) {
         $_SESSION['post_dataformyear'] = $selectedYear;
+    }
+
+    if ($vacationBalance < 0 || $sickBalance < 0 || $vacationUnderWOPay < 0 || $sickUnderWOPay < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
     }
 
     //Checks if there is an existing Employee ID

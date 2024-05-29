@@ -146,6 +146,34 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
 
             // Gets data from the database to process and will be passed as new data to the database.
             $employeeData = getEmployeeData($employeeId);
+
+            $typeOfLeaveLower = strtolower($typeOfLeave);
+            $employeeSexUpper = strtoupper($employeeData['sex']);
+            
+            if ((in_array($typeOfLeaveLower, ["maternity leave", "10-day vawc leave", "special leave benefits for women"]) && $employeeSexUpper != "FEMALE")) {
+                $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Female Character!";
+                $_SESSION['alert_type'] = $warning_color;
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
+                exit();
+            } else if ($typeOfLeaveLower == "paternity leave" && $employeeSexUpper != "MALE") {
+                $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Male Character!";
+                $_SESSION['alert_type'] = $warning_color;
+                if ($accountRole == "employee") {
+                    header("Location: " . $location_employee_leave_form);
+                } else if ($accountRole == "staff") {
+                    header("Location: " . $location_staff_leave_form);
+                } else {
+                    header("Location: " . $location_login);
+                }
+                exit();
+            }       
+
             if (isset($employeeData['departmentHead']) && $employeeData['departmentHead'] !== "") {
                 $departmentHeadData = getEmployeeData($employeeData['departmentHead']);
             }

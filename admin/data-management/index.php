@@ -162,12 +162,12 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                         </a>
                     </div>
 
-                    <!-- <div class="item-detail-container mb-2">
-                        <a href="<?php echo $location_admin; ?>"
+                    <div class="item-detail-container mb-2">
+                        <a href="<?php echo $location_admin_datamanagement_leavetype; ?>"
                             class="item-detail-container-summary">
-                            Leave Types
+                            Types of Leave
                         </a>
-                    </div> -->
+                    </div>
 
                 </div>
             </div>

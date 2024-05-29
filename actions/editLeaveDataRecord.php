@@ -28,10 +28,27 @@ if (isset($_POST['editLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
+    if ($days < 0 || $hours < 0 || $minutes < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
     $initial = "Initial Record";
     $initialRecordData = [];
 
-    $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? LIMIT 1";
+    $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? AND UPPER(archive) != 'DELETED' LIMIT 1";
     $stmtForInitialRecord = $database->prepare($getInitialRecordQuery);
 
     if ($stmtForInitialRecord) {
@@ -46,7 +63,7 @@ if (isset($_POST['editLeaveDataRecord'])) {
                 // Prepare the SQL query for update
                 $sql = "UPDATE tbl_leavedataform 
                         SET period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? 
-                        WHERE leavedataform_id = ? AND employee_id = ?";
+                        WHERE leavedataform_id = ? AND employee_id = ? AND UPPER(archive) != 'DELETED'";
 
                 // Prepare and bind the statement
                 $stmt = $database->prepare($sql);
@@ -100,7 +117,24 @@ if (isset($_POST['editLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
-    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    if ($vacationBalance < 0 || $sickBalance < 0 || $vacationUnderWOPay < 0 || $sickUnderWOPay < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
+    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'";
     $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
     $stmtCheckEmployeeId->bind_param("s", $empId);
     $stmtCheckEmployeeId->execute();
@@ -109,7 +143,7 @@ if (isset($_POST['editLeaveDataRecord'])) {
     if ($resultCheckEmployeeId->num_rows > 0) {
         $dataRecordType = "Initial Record";
 
-        $sqlFetchPreviousLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (period < ? OR periodEnd < ?) AND recordType != ? ORDER BY period DESC, dateCreated DESC LIMIT 1";
+        $sqlFetchPreviousLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND (period < ? OR periodEnd < ?) AND recordType != ? AND UPPER(archive) != 'DELETED' ORDER BY period DESC, dateCreated DESC LIMIT 1";
         $stmtFetchPreviousLeaveData = $database->prepare($sqlFetchPreviousLeaveData);
         $stmtFetchPreviousLeaveData->bind_param("ssss", $empId, $period, $periodEnd, $dataRecordType);
         $stmtFetchPreviousLeaveData->execute();
@@ -120,7 +154,7 @@ if (isset($_POST['editLeaveDataRecord'])) {
             $_SESSION['alert_message'] = "Initialization Should Be Earlier Than " . $previousLeaveData['period'];
             $_SESSION['alert_type'] = $warning_color;
         } else {
-            $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ?";
+            $checkQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? AND UPPER(archive) != 'DELETED'";
             $checkStmt = mysqli_prepare($database, $checkQuery);
             mysqli_stmt_bind_param($checkStmt, "ss", $empId, $dataRecordType);
             mysqli_stmt_execute($checkStmt);

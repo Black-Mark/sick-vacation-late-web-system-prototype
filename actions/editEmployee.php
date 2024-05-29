@@ -30,6 +30,10 @@ if (isset($_POST['editEmployee'])) {
         $role = "Admin";
     }
 
+    if(identifyEmployeeAge($birthdate) < 18){
+    }else if (identifyEmployeeAge($dateStarted) < 18){
+    }
+
     $query = "UPDATE tbl_useraccounts SET
               employee_id = ?,
               role = ?,
