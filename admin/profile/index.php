@@ -1,15 +1,15 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $employeeData = [];
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
-    $employeeData = getEmployeeData($employeeId);   
+    $employeeData = getEmployeeData($employeeId);
 }
 
 ?>
@@ -23,7 +23,7 @@ if (isset($_SESSION['employeeId'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -55,7 +55,7 @@ if (isset($_SESSION['employeeId'])) {
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav); ?>
+        <?php include ($components_file_topnav); ?>
     </div>
 
     <!-- Change Password -->
@@ -107,6 +107,10 @@ if (isset($_SESSION['employeeId'])) {
 
             <div class="box-container">
                 <h3 class="title-text">Account Profile Information</h3>
+                <div class="w-100">
+                    <span class="pl-2 clickable-element text-primary" data-toggle="modal"
+                        data-target="#changeUs">Change Password</span>
+                </div>
 
                 <div class="account-profile-container print-form-container">
                     <div class="d-flex flex-row gap-1 align-items-center">
@@ -236,11 +240,11 @@ if (isset($_SESSION['employeeId'])) {
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

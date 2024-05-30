@@ -43,7 +43,7 @@ if ($departmentlabel) {
                         tbl_designations desig ON u.jobPosition = desig.designation_id
                     WHERE 
                         (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') 
-                        AND UPPER(u.archive) != 'DELETED'
+                        AND UPPER(u.archive) != 'DELETED' AND UPPER(u.role) != 'ADMIN'
                     ORDER BY 
                         u.lastName ASC";
         $employees = $database->query($empsql);
@@ -70,7 +70,7 @@ if ($departmentlabel) {
                     LEFT JOIN
                         tbl_designations desig ON ua.jobPosition = desig.designation_id
                     WHERE
-                        ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED'
+                        ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED' AND UPPER(ua.role) != 'ADMIN'
                     ORDER BY
                         ua.lastName ASC";
 
@@ -101,7 +101,7 @@ if ($departmentlabel) {
                 LEFT JOIN
                     tbl_designations desig ON ua.jobPosition = desig.designation_id
                 WHERE
-                    UPPER(ua.archive) != 'DELETED'
+                    UPPER(ua.archive) != 'DELETED' AND UPPER(ua.role) != 'ADMIN'
                 ORDER BY
                     ua.lastName ASC;
                 ";

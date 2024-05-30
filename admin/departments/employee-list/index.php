@@ -42,7 +42,7 @@ if ($departmentlabel) {
                         tbl_designations desig ON u.jobPosition = desig.designation_id
                     WHERE 
                         (d.department_id IS NULL OR UPPER(d.archive) = 'DELETED') 
-                        AND UPPER(u.archive) != 'DELETED'
+                        AND UPPER(u.archive) != 'DELETED' AND UPPER(u.role) != 'ADMIN'
                     ORDER BY 
                         u.lastName ASC";
 
@@ -70,7 +70,7 @@ if ($departmentlabel) {
                     LEFT JOIN
                         tbl_designations desig ON ua.jobPosition = desig.designation_id
                     WHERE
-                        ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED'
+                        ua.department = ? AND UPPER(ua.archive) != 'DELETED' AND UPPER(d.archive) != 'DELETED' AND UPPER(ua.role) != 'ADMIN'
                     ORDER BY
                         ua.lastName ASC";
 
@@ -101,7 +101,7 @@ if ($departmentlabel) {
                 LEFT JOIN
                     tbl_designations desig ON ua.jobPosition = desig.designation_id
                 WHERE
-                    UPPER(ua.archive) != 'DELETED'
+                    UPPER(ua.archive) != 'DELETED' AND UPPER(ua.role) != 'ADMIN'
                 ORDER BY
                     ua.lastName ASC;
                 ";
@@ -248,7 +248,7 @@ if ($departmentlabel) {
                         <input type="date" name="birthdate" class="form-control" id="floatingBirthdate"
                             placeholder="01-01-2001" value="<?php // echo $loweredDateRange; ?>"
                             min="<?php echo $minDate; ?>" max="<?php echo $loweredDateRange; ?>" required>
-                        <label for="floatingBirthdate">Birthday <span class="required-color">*</span></label>
+                        <label for="floatingBirthdate">Date of Birth <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
                         <select name="department" class="form-select" id="floatingDepartmentSelect"
@@ -313,8 +313,9 @@ if ($departmentlabel) {
                     <!-- Reason for Inactive and Banning -->
                     <div class="form-floating mb-2" id="reasonForStatusContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
-                            id="floatingReasonForStatus" placeholder="Enter Reason..." value="">
-                        <label for="floatingReasonForStatus">Reason for Status</label>
+                            id="floatingReasonForStatus" placeholder="Enter Reason..." value="" required>
+                        <label for="floatingReasonForStatus">Reason for Status <span
+                                        class="required-color">*</span></label>
                     </div>
                     <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
                     <div class="form-floating mb-2">
@@ -433,7 +434,7 @@ if ($departmentlabel) {
                         <input type="date" name="birthdate" class="form-control" id="floatingEditBirthdate"
                             placeholder="01-01-2001" value="<?php // echo date('Y-m-d'); ?>"
                             min="<?php echo $minDate; ?>" max="<?php echo $loweredDateRange; ?>" required>
-                        <label for="floatingEditBirthdate">Birthday <span class="required-color">*</span></label>
+                        <label for="floatingEditBirthdate">Date of Birth <span class="required-color">*</span></label>
                     </div>
                     <div class="form-floating mb-2">
                         <select name="department" class="form-select" id="floatingEditDepartmentSelect"
@@ -500,8 +501,9 @@ if ($departmentlabel) {
                     <!-- Reason for Inactive and Banning -->
                     <div class="form-floating mb-2" id="reasonForStatusEditContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
-                            id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="">
-                        <label for="floatingEditReasonForStatus">Reason for Status</label>
+                            id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="" required>
+                        <label for="floatingEditReasonForStatus">Reason for Status <span
+                                        class="required-color">*</span></label>
                     </div>
                 </div>
                 <div class="modal-footer">

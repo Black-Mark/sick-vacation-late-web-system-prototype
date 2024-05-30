@@ -29,6 +29,9 @@ if (isset($_POST['editEmployee'])) {
     $accountRole = getAccountRole($employeeId);
     if (strcasecmp($accountRole, "Admin") == 0) {
         $role = "Admin";
+        $accountStatus = "Active";
+        $reasonForStatus = "";
+        $archive = "";
     }
 
     $noWarning = false;
