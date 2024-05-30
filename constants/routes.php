@@ -96,6 +96,7 @@ $assets_file_leaveappform = $webhostpage . '/assets/js/leaveappform.js';
 $assets_file_archive = $webhostpage . '/assets/js/archiveListing.js';
 $assets_file_incharge_change = $webhostpage . '/assets/js/inChargeChange.js';
 $assets_departmentlist_js = $webhostpage. '/assets/js/departmentList.js';
+$assets_designationlist_js = $webhostpage. '/assets/js/designationListing.js';
 $assets_adjustableTableCell_js = $webhostpage. '/assets/js/adjustableTableCell.js';
 
 // Web Host Page - Pages
