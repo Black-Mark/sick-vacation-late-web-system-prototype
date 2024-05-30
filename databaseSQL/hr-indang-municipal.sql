@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2024 at 05:34 AM
+-- Generation Time: May 30, 2024 at 03:25 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -66,6 +66,26 @@ CREATE TABLE `tbl_designations` (
 INSERT INTO `tbl_designations` (`designation_id`, `designationName`, `designationDescription`, `dateLastModified`, `dateCreated`, `archive`) VALUES
 (1, 'HR Staff', 'HR staff oversee all aspects of personnel management, from recruitment to employee relations, ensuring a positive work environment.', '2024-05-27 11:35:05', '2024-05-27', ''),
 (2, 'Clerk', 'A clerk manages administrative tasks like record-keeping and office organization, providing essential support for smooth operations.', '2024-05-28 02:36:38', '2024-05-28', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_laterecordfile`
+--
+
+CREATE TABLE `tbl_laterecordfile` (
+  `laterecordfile_id` int(255) NOT NULL,
+  `monthYearOfRecord` varchar(255) NOT NULL,
+  `fileOfRecord` varchar(255) NOT NULL,
+  `lastDateModified` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_laterecordfile`
+--
+
+INSERT INTO `tbl_laterecordfile` (`laterecordfile_id`, `monthYearOfRecord`, `fileOfRecord`, `lastDateModified`) VALUES
+(1, 'January 2024', '/uploads/laterecords/january 2024.csv', '2024-05-30 01:23:39');
 
 -- --------------------------------------------------------
 
@@ -181,9 +201,32 @@ INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `foreignKeyI
 (3, 'PRO001', '', '2024-05-28 03:30:45', 'Initial Record', '2023-12-13', '2024-05-28', 'Initial Record', '0', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-05-28', '2024-05-29 01:49:10', '', ''),
 (4, 'Regular', '', '2024-05-28 06:40:42', 'Initial Record', '2024-03-28', '2024-05-28', 'Initial Record', '', 0, 0, 0, 7.0000, 0.0000, 7.0000, 0.0000, 5.0000, 0.0000, 5.0000, 0.0000, '2024-05-28', '2024-05-28 06:40:42', '', ''),
 (5, 'Regular', 'e3abd9b9dfc34281743104d7194f69405e2bc7917392d16130', '2024-05-28 06:52:28', 'Deduction Type', '2024-05-28', '2024-05-28', 'Vacation Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-28', '2024-05-28 06:52:28', '', ''),
-(6, 'PRO001', '', '2024-05-28 09:33:14', 'Deduction Type', '2024-05-28', '2024-06-30', 'Late', '', 34, 24, 30, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-30', '2024-05-29 01:33:23', '', 'deleted'),
-(7, 'PRO001', '', '2024-05-28 09:42:58', 'Deduction Type', '2024-05-28', '2024-05-28', 'Late', '', 0, 1, 45, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-28', '2024-05-28 09:43:05', '', 'deleted'),
-(8, 'PRO001', '', '2024-05-29 01:34:32', 'Deduction Type', '2024-06-02', '2024-06-04', 'Sick Leave', '', 3, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-28', '2024-05-29 01:34:32', '', '');
+(6, 'PRO001', '', '2024-05-28 09:33:14', 'Deduction Type', '2024-05-28', '2024-06-30', 'Late', '', 34, 24, 30, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-30', '2024-05-29 08:05:49', '', ''),
+(7, 'PRO001', '', '2024-05-28 09:42:58', 'Deduction Type', '2024-05-28', '2024-05-28', 'Late', '', 0, 1, 45, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-28', '2024-05-29 08:05:51', '', ''),
+(8, 'PRO001', '', '2024-05-29 01:34:32', 'Deduction Type', '2024-06-02', '2024-06-04', 'Sick Leave', '', 3, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-28', '2024-05-29 01:34:32', '', ''),
+(12, '20240529094', '', '2024-05-29 09:03:54', 'Initial Record', '2024-05-29', '2024-05-29', 'Initial Record', '0', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-05-29', '2024-05-29 09:29:09', '', ''),
+(13, '20240529094', '', '2024-05-29 09:27:39', 'Inactive', '2024-05-29', '2024-05-29', 'Break Monthly Record', '', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-29', '2024-05-29 10:09:46', '', ''),
+(14, 'e67abedc', '', '2024-05-29 10:24:08', 'Break Monthly Record', '2024-05-29', '2024-05-29', 'Break Monthly Record', '', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-29', '2024-05-29 10:28:10', '', ''),
+(15, 'Regular', '', '2024-05-29 10:25:48', 'Break Monthly Record', '2024-05-29', '2024-05-29', 'Break Monthly Record', 'Break Monthly Record', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-29', '2024-05-29 10:25:48', '', ''),
+(16, 'STAFF', '', '2024-05-29 10:28:58', 'Break Monthly Record', '2024-05-29', '2024-05-29', 'Break Monthly Record', '', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-29', '2024-05-29 10:28:58', '', ''),
+(17, '20240529122858', '', '2024-05-29 10:29:50', 'Initial Record', '2024-05-29', '2024-05-29', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-05-29', '2024-05-29 10:29:50', '', ''),
+(18, '20240529122858', '', '2024-05-29 10:29:50', 'Break Monthly Record', '2024-05-29', '2024-05-29', 'Break Monthly Record', '', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-29', '2024-05-29 10:29:50', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_leaves`
+--
+
+CREATE TABLE `tbl_leaves` (
+  `leave_id` int(255) NOT NULL,
+  `leaveName` varchar(255) NOT NULL,
+  `leaveDescription` varchar(255) NOT NULL,
+  `leaveClass` varchar(255) NOT NULL,
+  `leaveTotalAmount` decimal(10,4) NOT NULL,
+  `leaveReset` varchar(25) NOT NULL,
+  `dateLastModified` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -265,7 +308,7 @@ INSERT INTO `tbl_systemsettings` (`setting_id`, `settingType`, `settingSubject`,
 
 CREATE TABLE `tbl_useraccounts` (
   `account_id` int(11) NOT NULL,
-  `employee_id` varchar(11) NOT NULL,
+  `employee_id` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -282,6 +325,7 @@ CREATE TABLE `tbl_useraccounts` (
   `status` varchar(50) NOT NULL,
   `dateStarted` date NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
+  `reasonForStatus` varchar(255) NOT NULL,
   `archive` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -289,11 +333,13 @@ CREATE TABLE `tbl_useraccounts` (
 -- Dumping data for table `tbl_useraccounts`
 --
 
-INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `birthdate`, `sex`, `civilStatus`, `department`, `jobPosition`, `status`, `dateStarted`, `dateCreated`, `archive`) VALUES
-(1, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-12-13', '2023-12-13 12:47:22', ''),
-(2, 'e67abedc', 'Employee', 'deletedaccount@gmail.com', 'Password', '', 'Deleted', '', 'Account', '', '2001-07-02', 'Male', 'Single', '2', '2', 'Active', '2024-05-28', '2024-05-28 02:00:31', ''),
-(3, 'STAFF', 'Staff', 'staff@gmail.com', 'Password', '', 'Staff', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-03-17', '2024-05-28 02:39:37', ''),
-(4, 'Regular', 'Employee', 'regular@gmail.com', 'Password', '', 'Regular', '', 'Account', '', '2001-06-01', 'Male', 'Single', '2', '2', 'Active', '2024-03-28', '2024-05-28 06:40:42', '');
+INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `password`, `photoURL`, `firstName`, `middleName`, `lastName`, `suffix`, `birthdate`, `sex`, `civilStatus`, `department`, `jobPosition`, `status`, `dateStarted`, `dateCreated`, `reasonForStatus`, `archive`) VALUES
+(1, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-12-13', '2023-12-13 12:47:22', '', ''),
+(2, 'e67abedc', 'Employee', 'deletedaccount@gmail.com', 'Password', '', 'Deleted', '', 'Account', '', '2001-07-02', 'Male', 'Single', '2', '2', 'Active', '2024-05-28', '2024-05-28 02:00:31', '', ''),
+(3, 'STAFF', 'Staff', 'staff@gmail.com', 'Password', '', 'Staff', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-03-17', '2024-05-28 02:39:37', '', ''),
+(4, 'Regular', 'Employee', 'regular@gmail.com', 'Password', '', 'Regular', '', 'Account', '', '2001-06-01', 'Male', 'Single', '2', '2', 'Active', '2024-03-28', '2024-05-28 06:40:42', '', ''),
+(5, '20240529094', 'Employee', 'special@gmail.com', 'Password', '', 'Special', '', 'Account', '', '2004-05-13', 'Female', 'Married', '2', '2', 'Active', '2024-05-29', '2024-05-29 07:49:55', '', ''),
+(6, '20240529122858', 'Employee', 'banned@gmail.com', 'Password', '', 'Banned', '', 'Account', '', '2001-01-01', 'Female', 'Married', '2', '2', 'Active', '2024-05-29', '2024-05-29 10:29:50', '', '');
 
 --
 -- Indexes for dumped tables
@@ -314,6 +360,13 @@ ALTER TABLE `tbl_designations`
   ADD UNIQUE KEY `designationName` (`designationName`);
 
 --
+-- Indexes for table `tbl_laterecordfile`
+--
+ALTER TABLE `tbl_laterecordfile`
+  ADD PRIMARY KEY (`laterecordfile_id`),
+  ADD UNIQUE KEY `monthYearOfRecord` (`monthYearOfRecord`);
+
+--
 -- Indexes for table `tbl_leaveappform`
 --
 ALTER TABLE `tbl_leaveappform`
@@ -324,6 +377,12 @@ ALTER TABLE `tbl_leaveappform`
 --
 ALTER TABLE `tbl_leavedataform`
   ADD PRIMARY KEY (`leavedataform_id`);
+
+--
+-- Indexes for table `tbl_leaves`
+--
+ALTER TABLE `tbl_leaves`
+  ADD PRIMARY KEY (`leave_id`);
 
 --
 -- Indexes for table `tbl_notifications`
@@ -368,10 +427,22 @@ ALTER TABLE `tbl_designations`
   MODIFY `designation_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `tbl_laterecordfile`
+--
+ALTER TABLE `tbl_laterecordfile`
+  MODIFY `laterecordfile_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `tbl_leaves`
+--
+ALTER TABLE `tbl_leaves`
+  MODIFY `leave_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_notifications`
@@ -395,7 +466,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -311,7 +311,7 @@ if ($departmentlabel) {
                         </div>
                     </div>
                     <!-- Reason for Inactive and Banning -->
-                    <div class="form-floating mb-2">
+                    <div class="form-floating mb-2" id="reasonForStatusContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
                             id="floatingReasonForStatus" placeholder="Enter Reason..." value="">
                         <label for="floatingReasonForStatus">Reason for Status</label>
@@ -498,7 +498,7 @@ if ($departmentlabel) {
                         </div>
                     </div>
                     <!-- Reason for Inactive and Banning -->
-                    <div class="form-floating mb-2">
+                    <div class="form-floating mb-2" id="reasonForStatusEditContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
                             id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="">
                         <label for="floatingEditReasonForStatus">Reason for Status</label>

@@ -145,6 +145,7 @@ $(document).ready(function () {
             $('#floatingEditJobPosition').val(editEmployeeState.jobPosition);
             $('#floatingEditDateStarted').val(editEmployeeState.dateStarted);
             $('#floatingEditSelectStatus').val(editEmployeeState.accountStatus);
+            $('#floatingEditReasonForStatus').val('');
         }
     }
 
@@ -153,4 +154,48 @@ $(document).ready(function () {
         // Reset form fields to their initial values
         setDataFromState();
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const statusSelect = document.getElementById("floatingSelectStatus");
+    const reasonInput = document.getElementById("reasonForStatusContainer");
+
+    // Function to toggle visibility of reason input based on status
+    function toggleReasonInput() {
+        const selectedStatus = statusSelect.value;
+        if (selectedStatus === "Active") {
+            reasonInput.style.display = "none";
+            document.getElementById("floatingReasonForStatus").value = ""; // Clear input value
+        } else {
+            reasonInput.style.display = "block";
+        }
+    }
+
+    // Initial call to set initial state
+    toggleReasonInput();
+
+    // Event listener for status change
+    statusSelect.addEventListener("change", toggleReasonInput);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const statusSelect = document.getElementById("floatingEditSelectStatus");
+    const reasonInput = document.getElementById("reasonForStatusEditContainer");
+
+    // Function to toggle visibility of reason input based on status
+    function toggleReasonInput() {
+        const selectedStatus = statusSelect.value;
+        if (selectedStatus === "Active") {
+            reasonInput.style.display = "none";
+            document.getElementById("floatingEditReasonForStatus").value = ""; // Clear input value
+        } else {
+            reasonInput.style.display = "block";
+        }
+    }
+
+    // Initial call to set initial state
+    toggleReasonInput();
+
+    // Event listener for status change
+    statusSelect.addEventListener("change", toggleReasonInput);
 });

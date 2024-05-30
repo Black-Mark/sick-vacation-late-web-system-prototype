@@ -15,7 +15,7 @@ $vacationLeaveMonthlyCredit = 1.25;
 $sickLeaveMonthlyCredit = 1.25;
 
 $today = date("Y-m-d");
-
+$systemStartDate = 2023;
 // Limits
 $legalAge = 18;
 $loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // For Birthdate and DateStarted
@@ -24,7 +24,7 @@ $loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // F
 $dummyDateForOrb = new DateTime('first day of next month');
 $firstDayNextMonth = $dummyDateForOrb->modify('+1 month')->format('Y-m-d');
 
-$minDate = '1900-01-01'; // for all
+$minDate = '1924-01-01'; // for all
 // $generatedEmpId = bin2hex(random_bytes(4));
 $generatedEmpId = date('YmdHis');
 

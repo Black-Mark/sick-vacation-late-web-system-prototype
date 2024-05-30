@@ -2,7 +2,7 @@
 include ("../../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_authorized);
 include ($constants_variables);
 
 // header("Location: ".$location_admin_datamanagement_archive);
@@ -150,9 +150,8 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </form> -->
 
                     <div class="item-detail-container mb-2">
-                        <a href="<?php echo $location_admin_datamanagement_archive; ?>"
-                            class="item-detail-container-summary">
-                            Archive Records
+                        <a href="<?php echo $location_admin_datamanagement_laterecords; ?>" class="item-detail-container-summary">
+                            Employee Late Record
                         </a>
                     </div>
 
@@ -163,11 +162,18 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </div>
 
                     <div class="item-detail-container mb-2">
+                        <a href="<?php echo $location_admin_datamanagement_archive; ?>"
+                            class="item-detail-container-summary">
+                            Archive Records
+                        </a>
+                    </div>
+
+                    <!-- <div class="item-detail-container mb-2">
                         <a href="<?php echo $location_admin_datamanagement_leavetype; ?>"
                             class="item-detail-container-summary">
                             Types of Leave
                         </a>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
