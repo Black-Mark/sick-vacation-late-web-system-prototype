@@ -99,10 +99,10 @@ if (isset($_POST['validateLeaveAppForm'])) {
     if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
         $_SESSION['alert_message'] = "Please Specify the Type Leave and Inclusive Dates";
         $_SESSION['alert_type'] = $warning_color;
-    } else if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && empty($typeOfVacationLeaveWithin) && empty($typeOfVacationLeaveAbroad)) {
+    } else if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && (empty($typeOfVacationLeaveWithin) || empty($typeOfVacationLeaveAbroad))) {
         $_SESSION['alert_message'] = "Please select and fill up either 'Within the Philippines' or 'Abroad' for Vacation Leave";
         $_SESSION['alert_type'] = $warning_color;
-    } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && empty($typeOfSickLeaveInHospital) && empty($typeOfSickLeaveOutPatient)) {
+    } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && (empty($typeOfSickLeaveInHospital) || empty($typeOfSickLeaveOutPatient))) {
         $_SESSION['alert_message'] = "Please select and fill up either 'In Hospital' or 'Out Patient' for Sick Leave";
         $_SESSION['alert_type'] = $warning_color;
     } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
@@ -330,7 +330,13 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $notifEmpIdTo = $ownerOfForm;
                     $notifSubject = 'Validation of Leave Form';
 
-                    $notifMessage = 'Your Leave Application Form has been ' . $status;
+                    $notifMessage = "Check this Leave Request Form";
+                    if ($status == "Approved") {
+                        // $notifMessage = 'Your Leave Application Form has been ' . $status.'.';
+                        $notifMessage = 'Your form is approved. Print it out and get it signed.';
+                    } else {
+                        $notifMessage = 'Your Leave Application Form has been ' . $status;
+                    }
                     $notifLink = "";
                     // $notifLink = $location_admin_leaveapplist . '/view/' . $leaveappformId;
                     $notifStatus = 'unseen';

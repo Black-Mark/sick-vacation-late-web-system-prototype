@@ -70,7 +70,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
         exit();
     } else {
         try {
-            if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && empty($typeOfVacationLeaveWithin) && empty($typeOfVacationLeaveAbroad)) {
+            if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && (empty($typeOfVacationLeaveWithin) || empty($typeOfVacationLeaveAbroad))) {
                 $_SESSION['alert_message'] = "Please select either 'Within the Philippines' or 'Abroad' for Vacation Leave";
                 $_SESSION['alert_type'] = $warning_color;
                 if ($accountRole == "employee") {
@@ -81,7 +81,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                     header("Location: " . $location_login);
                 }
                 exit();
-            } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && empty($typeOfSickLeaveInHospital) && empty($typeOfSickLeaveOutPatient)) {
+            } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && (empty($typeOfSickLeaveInHospital) || empty($typeOfSickLeaveOutPatient))) {
                 $_SESSION['alert_message'] = "Please select either 'In Hospital' or 'Out Patient' for Sick Leave";
                 $_SESSION['alert_type'] = $warning_color;
                 if ($accountRole == "employee") {

@@ -37,7 +37,7 @@ window.addEventListener('scroll', onScroll);
 
 // Notification
 
-var iphost = "http://192.168.137.1/www.indang-municipal-hr.com.ph";
+var iphost = "http://localhost/www.indang-municipal-hr.com.ph";
 $(document).ready(function () {
     function fetchNotifications() {
         $.ajax({

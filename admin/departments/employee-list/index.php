@@ -313,9 +313,9 @@ if ($departmentlabel) {
                     <!-- Reason for Inactive and Banning -->
                     <div class="form-floating mb-2" id="reasonForStatusContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
-                            id="floatingReasonForStatus" placeholder="Enter Reason..." value="" required>
+                            id="floatingReasonForStatus" placeholder="Enter Reason..." value="">
                         <label for="floatingReasonForStatus">Reason for Status <span
-                                        class="required-color">*</span></label>
+                                        class="required-color reasonStyle"></span></label>
                     </div>
                     <!-- Initialization if Date Started Month is Less Than the Month of Today  -->
                     <div class="form-floating mb-2">
@@ -501,9 +501,9 @@ if ($departmentlabel) {
                     <!-- Reason for Inactive and Banning -->
                     <div class="form-floating mb-2" id="reasonForStatusEditContainer">
                         <input type="text" name="reasonForStatus" class="form-control"
-                            id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="" required>
+                            id="floatingEditReasonForStatus" placeholder="Enter Reason..." value="">
                         <label for="floatingEditReasonForStatus">Reason for Status <span
-                                        class="required-color">*</span></label>
+                                        class="required-color reasonStyle"></span></label>
                     </div>
                 </div>
                 <div class="modal-footer">

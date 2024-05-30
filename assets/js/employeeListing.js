@@ -159,15 +159,21 @@ $(document).ready(function () {
 document.addEventListener("DOMContentLoaded", function () {
     const statusSelect = document.getElementById("floatingSelectStatus");
     const reasonInput = document.getElementById("reasonForStatusContainer");
+    const reasonField = document.getElementById("floatingReasonForStatus");
+    const reasonStyleElement = reasonInput.querySelector(".reasonStyle");
 
-    // Function to toggle visibility of reason input based on status
+    // Function to toggle visibility and requirement of reason input based on status
     function toggleReasonInput() {
         const selectedStatus = statusSelect.value;
         if (selectedStatus === "Active") {
             reasonInput.style.display = "none";
-            document.getElementById("floatingReasonForStatus").value = ""; // Clear input value
+            reasonField.value = ""; // Clear input value
+            reasonField.removeAttribute("required"); // Make it not required
+            reasonStyleElement.textContent = ""; // Clear reason style content
         } else {
             reasonInput.style.display = "block";
+            reasonField.setAttribute("required", "required"); // Make it required
+            reasonStyleElement.textContent = "*"; // Set reason style content to "*"
         }
     }
 
@@ -179,23 +185,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    const statusSelect = document.getElementById("floatingEditSelectStatus");
-    const reasonInput = document.getElementById("reasonForStatusEditContainer");
+    const editStatusSelect = document.getElementById("floatingEditSelectStatus");
+    const editReasonInput = document.getElementById("reasonForStatusEditContainer");
+    const editReasonField = document.getElementById("floatingEditReasonForStatus");
+    const editReasonStyleElement = editReasonInput.querySelector(".reasonStyle");
 
-    // Function to toggle visibility of reason input based on status
-    function toggleReasonInput() {
-        const selectedStatus = statusSelect.value;
+    // Function to toggle visibility and requirement of reason input based on status
+    function toggleEditReasonInput() {
+        const selectedStatus = editStatusSelect.value;
         if (selectedStatus === "Active") {
-            reasonInput.style.display = "none";
-            document.getElementById("floatingEditReasonForStatus").value = ""; // Clear input value
+            editReasonInput.style.display = "none";
+            editReasonField.value = ""; // Clear input value
+            editReasonField.removeAttribute("required"); // Make it not required
+            editReasonStyleElement.textContent = ""; // Clear reason style content
         } else {
-            reasonInput.style.display = "block";
+            editReasonInput.style.display = "block";
+            editReasonField.setAttribute("required", "required"); // Make it required
+            editReasonStyleElement.textContent = "*"; // Set reason style content to "*"
         }
     }
 
     // Initial call to set initial state
-    toggleReasonInput();
+    toggleEditReasonInput();
 
     // Event listener for status change
-    statusSelect.addEventListener("change", toggleReasonInput);
+    editStatusSelect.addEventListener("change", toggleEditReasonInput);
 });

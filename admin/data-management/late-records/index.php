@@ -1,8 +1,8 @@
 <?php
-include("../../../constants/routes.php");
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ("../../../constants/routes.php");
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 // Assuming $mostMinimalYear is set somewhere in your code
 $mostMinimalYear = $systemStartDate;
@@ -23,8 +23,18 @@ if ($result->num_rows > 0) {
 
 // Generate all months for the selected year
 $months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
 ];
 ?>
 
@@ -37,7 +47,7 @@ $months = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -69,7 +79,7 @@ $months = [
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -77,17 +87,46 @@ $months = [
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button class="custom-regular-button">Back</button></a>
+                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                            class="custom-regular-button">Back</button></a>
                     <div class="title-text">Employee Late Record</div>
                     <div class="title-text-caption">
                         <h6>Selected Year: <?php echo $selectedYear; ?></h6>
                     </div>
                 </div>
 
+                <form action="<?php echo $action_upload_leave_record; ?>" method="post" class="modal fade"
+                    id="uploadLeaveRecord" enctype="multipart/form-data" tabindex="-1" role="dialog"
+                    aria-labelledby="uploadLeaveRecordTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEmployeeModalLongTitle">Upload Leave Record (Late)</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group mb-3">
+                                    <input type="file" name="file" class="form-control" id="file" accept=".csv"
+                                        autocomplete="off" required>
+                                    <label for="file" class="input-group-text">.csv file &nbsp; <span
+                                            class="required-color"> *</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="upload" value="Upload" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="button-container component-container mb-2">
                     <form action="" method="post">
                         <label for="selectedYear">Select a Year:</label>
-                        <select name="selectedYear" id="selectedYear" class="custom-regular-button" aria-label="Year Selection">
+                        <select name="selectedYear" id="selectedYear" class="custom-regular-button"
+                            aria-label="Year Selection">
                             <?php
                             $currentYear = date("Y");
 
@@ -106,7 +145,8 @@ $months = [
                             }
                             ?>
                         </select>
-                        <input type="submit" name="leaveTransactionYear" value="Load Year Record" class="custom-regular-button">
+                        <input type="submit" name="leaveTransactionYear" value="Load Year Record"
+                            class="custom-regular-button">
                     </form>
                 </div>
 
@@ -115,6 +155,7 @@ $months = [
                         <thead>
                             <tr>
                                 <th>Month</th>
+                                <th>File</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -145,6 +186,12 @@ $months = [
                                         }
                                         ?>
                                     </td>
+                                    <td>
+                                        <button type="button" class="custom-regular-button" data-toggle="modal"
+                                            data-target="#uploadLeaveRecord">
+                                            Upload Late Record
+                                        </button>
+                                    </td>
                                 </tr>
                                 <?php
                             }
@@ -159,11 +206,11 @@ $months = [
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

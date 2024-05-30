@@ -26,7 +26,7 @@ $firstDayNextMonth = $dummyDateForOrb->modify('+1 month')->format('Y-m-d');
 
 $minDate = '1924-01-01'; // for all
 // $generatedEmpId = bin2hex(random_bytes(4));
-$generatedEmpId = date('YmdHis');
+$generatedEmpId = chr(rand(65, 90)).date('YmdHis').chr(rand(65, 90));
 
 // Function to Apply strip_tags and mysqli_real_escape_string
 function sanitizeInput($input)
