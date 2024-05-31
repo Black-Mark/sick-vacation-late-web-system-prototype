@@ -166,9 +166,9 @@ if (isset($_SESSION['employeeId'])) {
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDateStart'];
+                                        <?php echo convertDateFormat($ldata['inclusiveDateStart'], "Y-m-d", "m-d-Y");
                                         if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
-                                            echo ' to ' . $ldata['inclusiveDateEnd'];
+                                            echo ' to ' . convertDateFormat($ldata['inclusiveDateEnd'], "Y-m-d", "m-d-Y");
                                         }
                                         ?>
                                     </td>

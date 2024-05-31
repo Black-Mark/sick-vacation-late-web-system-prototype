@@ -192,7 +192,7 @@ if (isset($_SESSION['employeeId'])) {
                             if (empty($employeeData['birthdate']) || $employeeData['birthdate'] == '0000-00-00') {
                                 echo 'Not Specified';
                             } else {
-                                echo $employeeData['birthdate'];
+                                echo convertDateFormat($employeeData['birthdate'], "Y-m-d", "m-d-Y");
                             }
                             ?>
                         </span>
@@ -223,7 +223,7 @@ if (isset($_SESSION['employeeId'])) {
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Date Started:</span>
                         <span class="account-profile-context">
-                            <?php echo $employeeData['dateStarted']; ?>
+                            <?php echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y"); ?>
                         </span>
                     </div>
 

@@ -939,5 +939,17 @@ function yearDifference($startDate, $endDate) {
     return $years;
 }
 
+function dateDifference($currentDate, $days) {
+    $date = new DateTime($currentDate);
+    
+    if ($days >= 0) {
+        $date->modify("+$days days");
+    } else {
+        $date->modify("$days days");
+    }
+
+    return $date->format('F d, Y');
+}
+
 ?>
 <!-- -->
