@@ -92,7 +92,7 @@ $designations = getAllDesignations();
     </form>
 
     <!-- Edit Modal -->
-    <form action="<?php echo $action_edit_Designation; ?>" method="post" class="modal fade" id="editDesignation"
+    <form action="<?php echo $action_edit_designation; ?>" method="post" class="modal fade" id="editDesignation"
         tabindex="-1" role="dialog" aria-labelledby="editDesignationTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -112,7 +112,7 @@ $designations = getAllDesignations();
                     </div>
 
                     <div class="form-floating mb-2">
-                        <input type="text" name="DesignationDescription" class="form-control"
+                        <input type="text" name="designationDescription" class="form-control"
                             id="floatingEditDesignationDescription" placeholder="Enter to Edit Description ..."
                             required>
                         <label for="floatingEditDesignationDescription">Description <span
