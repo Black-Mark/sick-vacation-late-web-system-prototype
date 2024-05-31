@@ -12,6 +12,7 @@ $action_delete_employee = $webhostpage . '/actions/deleteEmployee.php';
 $action_retrieve_employee = $webhostpage . '/actions/retrieveEmployee.php';
 
 $action_add_employeeInfo = $webhostpage . '/actions/addEmployeeInfo.php';
+$action_update_admin = $webhostpage . '/actions/updateAdmin.php';
 
 $action_add_department = $webhostpage . '/actions/addDepartment.php';
 $action_edit_department = $webhostpage . '/actions/editDepartment.php';
@@ -37,7 +38,6 @@ $action_retrieve_designation = $webhostpage . '/actions/retrieveDesignation.php'
 
 $action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.php';
 $action_resetpassword = $webhostpage . '/actions/resetPassword.php';
-
 
 $action_download_noaoml = $webhostpage. "/actions/downloadNOAOML.php";
 

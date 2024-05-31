@@ -6,6 +6,8 @@ include ($constants_file_session_admin);
 include ($constants_variables);
 
 $employeeData = [];
+$departments = getAllDepartments();
+$designations = getAllDesignations();
 
 if (isset($_SESSION['employeeId'])) {
     $employeeId = sanitizeInput($_SESSION['employeeId']);
@@ -58,58 +60,202 @@ if (isset($_SESSION['employeeId'])) {
         <?php include ($components_file_topnav); ?>
     </div>
 
-    <!-- Change Password -->
-    <form action="<?php echo $action_update_password; ?>" method="post" class="modal fade"
-        id="changeUserProfilePassword" tabindex="-1" role="dialog" aria-labelledby="changeUserProfilePasswordTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changeUserProfilePasswordModalLongTitle">Change User Password
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="form-floating mb-2">
-                        <input type="password" name="currentPassword" class="form-control" id="floatingCurrentPassword"
-                            placeholder="Password" required>
-                        <label for="floatingCurrentPassword">Current Password: <span
-                                class="required-color">*</span></label>
-                    </div>
-
-                    <div class="form-floating mb-2">
-                        <input type="password" name="newPassword" class="form-control" id="floatingNewPassword"
-                            placeholder="New Password" required>
-                        <label for="floatingNewPassword">New Password: <span class="required-color">*</span></label>
-                    </div>
-
-                    <div class="form-floating mb-2">
-                        <input type="password" name="confirmPassword" class="form-control" id="floatingConfirmPassword"
-                            placeholder="Confirm Password" required>
-                        <label for="floatingConfirmPassword">Confirm Password: <span
-                                class="required-color">*</span></label>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" name="changeUserProfilePassword" value="Submit" class="btn btn-primary" />
-                </div>
-            </div>
-        </div>
-    </form>
-
     <div class="page-container">
         <div class="page-content">
 
             <div class="box-container">
+                <!-- Update Admin Account Profile -->
+                <form action="<?php echo $action_update_admin; ?>" method="post" class="modal fade"
+                    id="changeUserAccountInfo" tabindex="-1" role="dialog" aria-labelledby="changeUserAccountInfoTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="changeUserAccountInfoModalLongTitle">
+                                    Admin Profile Information
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-floating mb-2">
+                                    <input type="email" name="email" class="form-control" id="floatingEmail"
+                                        placeholder="admin@gmail.com" value="<?php echo $employeeData['email']; ?>"
+                                        required>
+                                    <label for="floatingEmail">Email Address: <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="firstName" class="form-control" id="floatingFirstName"
+                                        placeholder="Peter" value="<?php echo $employeeData['firstName']; ?>" required>
+                                    <label for="floatingFirstName">First Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="middleName" class="form-control" id="floatingMiddleName"
+                                        placeholder="Benjamin" value="<?php echo $employeeData['middleName']; ?>">
+                                    <label for="floatingMiddleName">Middle Name</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="lastName" class="form-control" id="floatingLastName"
+                                        placeholder="Parker" value="<?php echo $employeeData['lastName']; ?>" required>
+                                    <label for="floatingLastName">Last Name <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="suffix" class="form-control" id="floatingSuffix"
+                                        placeholder="Jr." value="<?php echo $employeeData['suffix']; ?>">
+                                    <label for="floatingSuffix">Suffix</label>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="sex" class="form-select" id="floatingSex"
+                                                aria-label="Floating Sex Selection" required>
+                                                <option value="" selected></option>
+                                                <option value="Male" <?php echo $employeeData['sex'] == "Male" ? 'selected' : ''; ?>>Male</option>
+                                                <option value="Female" <?php echo $employeeData['sex'] == "Female" ? 'selected' : ''; ?>>Female</option>
+                                            </select>
+                                            <label for="floatingSex">Sex <span class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <select name="civilStatus" class="form-select" id="floatingCivilStatus"
+                                                aria-label="Floating Civil Status Selection" required>
+                                                <option value="Single" selected>Single</option>
+                                                <option value="Married" <?php echo $employeeData['civilStatus'] == "Married" ? 'selected' : ''; ?>>Married
+                                                </option>
+                                                <option value="Widowed" <?php echo $employeeData['civilStatus'] == "Widowed" ? 'selected' : ''; ?>>Widowed
+                                                </option>
+                                                <option value="Divorced" <?php echo $employeeData['civilStatus'] == "Divorced" ? 'selected' : ''; ?>>
+                                                    Divorced</option>
+                                            </select>
+                                            <label for="floatingCivilStatus">Civil Status <span
+                                                    class="required-color">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="birthdate" class="form-control" id="floatingBirthdate"
+                                        placeholder="01-01-2001"
+                                        min="<?php echo $minDate; ?>" max="<?php echo $loweredDateRange; ?>" value="<?php echo $employeeData['birthdate']; ?>" required>
+                                    <label for="floatingBirthdate">Date of Birth <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <select name="department" class="form-select" id="floatingDepartmentSelect"
+                                        aria-label="Floating Department Selection" required>
+                                        <option value="" selected></option>
+                                        <?php
+                                        if (!empty($departments)) {
+                                            foreach ($departments as $department) {
+                                                ?>
+                                                <option value="<?php echo $department['department_id']; ?>" 
+                                                <?php echo $employeeData['department'] === $department['department_id'] ? 'selected': ''; ?> >
+                                                    <?php echo $department['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                        <option value="Pending">Pending
+                                        </option>
+                                    </select>
+                                    <label for="floatingDepartmentSelect">Department <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <select name="jobPosition" class="form-select" id="floatingJobPosition"
+                                        aria-label="Floating Designation Selection" required>
+                                        <option value="" selected></option>
+                                        <?php
+                                        if (!empty($designations)) {
+                                            foreach ($designations as $designation) {
+                                                ?>
+                                                <option title="<?php echo $designation['designationDescription']; ?>"
+                                                    value="<?php echo $designation['designation_id']; ?>" <?php echo $employeeData['jobPosition'] == $designation['designation_id'] ? 'selected' : ''; ?>>
+                                                    <?php echo $designation['designationName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="floatingJobPosition">Job Title <span
+                                            class="required-color">*</span></label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="date" name="dateStarted" class="form-control" id="floatingDateStarted"
+                                        placeholder="12-31-2001"
+                                        min="<?php echo $minDate; ?>" max="<?php echo $firstDayNextMonth; ?>"
+                                        value="<?php echo $employeeData['dateStarted']; ?>" required>
+                                    <label for="floatingDateStarted">Date Started <span
+                                            class="required-color">*</span></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="changeUserProfilePassword" value="Submit"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Change Password -->
+                <form action="<?php echo $action_update_password; ?>" method="post" class="modal fade"
+                    id="changeUserProfilePassword" tabindex="-1" role="dialog"
+                    aria-labelledby="changeUserProfilePasswordTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="changeUserProfilePasswordModalLongTitle">Change User
+                                    Password
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="currentPassword" class="form-control"
+                                        id="floatingCurrentPassword" placeholder="Password" required>
+                                    <label for="floatingCurrentPassword">Current Password: <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="newPassword" class="form-control"
+                                        id="floatingNewPassword" placeholder="New Password" required>
+                                    <label for="floatingNewPassword">New Password: <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <input type="password" name="confirmPassword" class="form-control"
+                                        id="floatingConfirmPassword" placeholder="Confirm Password" required>
+                                    <label for="floatingConfirmPassword">Confirm Password: <span
+                                            class="required-color">*</span></label>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" name="changeUserProfilePassword" value="Submit"
+                                    class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <h3 class="title-text">Account Profile Information</h3>
-                <div class="w-100">
-                    <span class="pl-2 clickable-element text-primary" data-toggle="modal"
-                        data-target="#changeUs">Change Password</span>
+                <div class="w-100 text-right">
+                    <span class="clickable-element text-primary mr-3" data-toggle="modal"
+                        data-target="#changeUserAccountInfo"><i class="fa fa-edit"></i>Edit</span>
                 </div>
 
                 <div class="account-profile-container print-form-container">
