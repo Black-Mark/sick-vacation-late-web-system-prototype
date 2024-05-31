@@ -313,22 +313,22 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             </summary>
                                             <div class="form-group mt-2">
                                                 <label for="houseNo">House/Block/Lot/No:</label>
-                                                <input type="text" class="form-control mb-2" id="houseNo"
+                                                <input type="text" name="houseNo" class="form-control mb-2" id="houseNo"
                                                     placeholder="Enter House/Block/Lot/No">
                                                 <label for="street">Street:</label>
-                                                <input type="text" class="form-control mb-2" id="street"
+                                                <input type="text" name="street" class="form-control mb-2" id="street"
                                                     placeholder="Enter Street" required>
                                                 <label for="subdivision">Subdivision/Village:</label>
-                                                <input type="text" class="form-control mb-2" id="subdivision"
-                                                    placeholder="Enter Subdivision/Village" required>
+                                                <input type="text" name="subdivision" class="form-control mb-2"
+                                                    id="subdivision" placeholder="Enter Subdivision/Village" required>
                                                 <label for="city">City/Municipality:</label>
-                                                <input type="text" class="form-control mb-2" id="city"
+                                                <input type="text" name="city" class="form-control mb-2" id="city"
                                                     placeholder="Enter City/Municipality" required>
                                                 <label for="province">Province:</label>
-                                                <input type="text" class="form-control mb-2" id="province"
-                                                    placeholder="Enter Province" required>
+                                                <input type="text" name="province" class="form-control mb-2"
+                                                    id="province" placeholder="Enter Province" required>
                                                 <label for="zipCode">Zip Code:</label>
-                                                <input type="text" class="form-control mb-2" id="zipCode"
+                                                <input type="text" name="zipCode" class="form-control mb-2" id="zipCode"
                                                     placeholder="Enter Zip Code" required>
                                             </div>
                                         </details>
@@ -336,9 +336,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                     <div class="form-floating mb-2">
                                         <input type="number" name="telephone" class="form-control"
-                                            id="floatingTelephone" placeholder="Enter Telephone NO." required>
-                                        <label for="floatingTelephone">Telephone NO. <span
-                                                class="required-color">*</span></label>
+                                            id="floatingTelephone" placeholder="Enter Telephone NO.">
+                                        <label for="floatingTelephone">Telephone NO.</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="mobile" class="form-control" id="floatingMobile"
@@ -346,65 +345,54 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                         <label for="floatingMobile">Mobile NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
-
                                 </div>
 
                                 <!-- Additional Basic Information Family Background -->
                                 <div class="tab-pane" id="familyBackground" role="tabpanel">
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseSurname" class="form-control"
-                                            id="floatingSpouseSurname" placeholder="Spouse Surname" required>
-                                        <label for="floatingSpouseSurname">Spouse's Surname <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseSurname" placeholder="Spouse Surname">
+                                        <label for="floatingSpouseSurname">Spouse's Surname</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseName" class="form-control"
-                                            id="floatingSpouseName" placeholder="Spouse Name" required>
-                                        <label for="floatingSpouseName">Spouse's Name <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseName" placeholder="Spouse Name">
+                                        <label for="floatingSpouseName">Spouse's Name</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseMiddlename" class="form-control"
-                                            id="floatingSpouseMiddlename" placeholder="Spouse Middlename" required>
-                                        <label for="floatingSpouseMiddlename">Spouse's Middlename <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseMiddlename" placeholder="Spouse Middlename">
+                                        <label for="floatingSpouseMiddlename">Spouse's Middlename</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseNameExtension" class="form-control"
-                                            id="floatingSpouseNameExtension" placeholder="Name extension (Jr, Sr)"
-                                            required>
-                                        <label for="floatingSpouseNameExtension">Name extension (Jr, Sr) <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseNameExtension" placeholder="Name extension (Jr, Sr)">
+                                        <label for="floatingSpouseNameExtension">Name extension (Jr, Sr)
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseOccupation" class="form-control"
-                                            id="floatingSpouseOccupation" placeholder="Spouse Occupation" required>
-                                        <label for="floatingSpouseOccupation">Spouse's Occupation <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseOccupation" placeholder="Spouse Occupation">
+                                        <label for="floatingSpouseOccupation">Spouse's Occupation</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseEmployer" class="form-control"
-                                            id="floatingSpouseEmployer" placeholder="Employer/Business Name" required>
-                                        <label for="floatingSpouseEmployer">Employer/Business Name <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseEmployer" placeholder="Employer/Business Name">
+                                        <label for="floatingSpouseEmployer">Employer/Business Name </label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseBusinessAddress" class="form-control"
-                                            id="floatingSpouseBusinessAddress" placeholder="Business Address" required>
-                                        <label for="floatingSpouseBusinessAddress">Business Address <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseBusinessAddress" placeholder="Business Address">
+                                        <label for="floatingSpouseBusinessAddress">Business Address
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseTelephone" class="form-control"
-                                            id="floatingSpouseTelephone" placeholder="Telephone No." required>
-                                        <label for="floatingSpouseTelephone">Telephone No. <span
-                                                class="required-color">*</span></label>
+                                            id="floatingSpouseTelephone" placeholder="Telephone No.">
+                                        <label for="floatingSpouseTelephone">Telephone No.
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="numberOfChildren" class="form-control"
                                             id="floatingNumberOfChildren" placeholder="Number of Children">
-                                        <label for="floatingNumberOfChildren">Name of Children (Write in fullname) <span
-                                                class="required-color">*</span></label>
+                                        <label for="floatingNumberOfChildren">Name of Children (Write in fullname)
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersSurname" class="form-control"
@@ -427,8 +415,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersnameExtension" class="form-control"
                                             id="floatingnameExtension" placeholder="Name Extension">
-                                        <label for="floatingnameExtension">Name extension (Jr, Sr) <span
-                                                class="required-color">*</span></label>
+                                        <label for="floatingnameExtension">Name extension (Jr, Sr)
                                     </div>
 
                                     <div class="container">
@@ -438,11 +425,14 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             </summary>
                                             <div class="form-group mt-2">
                                                 <label for="MSurname">Surname:</label>
-                                                <input type="text" class="form-control mb-2" id="MSurname" required>
+                                                <input type="text" name="MSurname" class="form-control mb-2"
+                                                    id="MSurname" required>
                                                 <label for="MName">Name:</label>
-                                                <input type="text" class="form-control mb-2" id="MName" required>
+                                                <input type="text" name="MName" class="form-control mb-2" id="MName"
+                                                    required>
                                                 <label for="MMName">Middle Name:</label>
-                                                <input type="text" class="form-control mb-2" id="MMName" required>
+                                                <input type="text" name="MMName" class="form-control mb-2" id="MMName"
+                                                    required>
                                             </div>
                                         </details>
                                     </div>
@@ -461,23 +451,27 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="container">
                                         <details>
                                             <summary class="form-floating mb-2">
-                                                Elementary <span class="required-color">*</span>
+                                                Elementary
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="SchoolName">Name of School (Write in full)</label>
-                                                <input type="text" class="form-control mb-2" id="SchoolName" required>
-                                                <label for="BasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="elemschoolName">Name of School (Write in full)</label>
+                                                <input type="text" name="elemschoolName" class="form-control mb-2"
+                                                    id="elemschoolName">
+                                                <label for="elembasicEducation">BasicEducation/Degree/Course (Write in
                                                     full)</label>
-                                                <input type="text" class="form-control mb-2" id="BasicEducation"
-                                                    required>
-                                                <label for="HighestLevel">Highest Level/Units Earned (if not
+                                                <input type="text" name="elembasicEducation" class="form-control mb-2"
+                                                    id="elembasicEducation">
+                                                <label for="elemhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
-                                                <input type="text" class="form-control mb-2" id="Highest Level"
-                                                    required>
-                                                <label for="YGraduated">Year Graduated</label>
-                                                <input type="text" class="form-control mb-2" id="YGraduated" required>
-                                                <label for="Scholarship">Scholarship/Academic Honors Received</label>
-                                                <input type="text" class="form-control mb-2" id="Scholarship" required>
+                                                <input type="text" name="elemhighestLevel" class="form-control mb-2"
+                                                    id="elemhighestLevel">
+                                                <label for="elemYGraduated">Year Graduated</label>
+                                                <input type="text" name="elemYGraduted" class="form-control mb-2"
+                                                    id="elemYGraduated">
+                                                <label for="elemScholarship">Scholarship/Academic Honors
+                                                    Received</label>
+                                                <input type="text" name="elemScholarship" class="form-control mb-2"
+                                                    id="elemScholarship">
 
                                                 <div class="row g-2 mb-2">
 
@@ -509,23 +503,27 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="container">
                                         <details>
                                             <summary class="form-floating mb-2">
-                                                Secondary <span class="required-color">*</span>
+                                                Secondary
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="SchoolName">Name of School (Write in full)</label>
-                                                <input type="text" class="form-control mb-2" id="SchoolName" required>
-                                                <label for="BasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="secondschoolName">Name of School (Write in full)</label>
+                                                <input type="text" name="secondschoolName" class="form-control mb-2"
+                                                    id="secondschoolName">
+                                                <label for="secondbasicEducation">BasicEducation/Degree/Course (Write in
                                                     full)</label>
-                                                <input type="text" class="form-control mb-2" id="BasicEducation"
-                                                    required>
-                                                <label for="HighestLevel">Highest Level/Units Earned (if not
+                                                <input type="text" name="secondbasicEducation" class="form-control mb-2"
+                                                    id="secondbasicEducation">
+                                                <label for="secondhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
-                                                <input type="text" class="form-control mb-2" id="Highest Level"
-                                                    required>
-                                                <label for="YGraduated">Year Graduated</label>
-                                                <input type="text" class="form-control mb-2" id="YGraduated" required>
-                                                <label for="Scholarship">Scholarship/Academic Honors Received</label>
-                                                <input type="text" class="form-control mb-2" id="Scholarship" required>
+                                                <input type="text" name="secondhighestLevel" class="form-control mb-2"
+                                                    id="secondhighestLevel">
+                                                <label for="secondYGraduated">Year Graduated</label>
+                                                <input type="text" name="secondYGraduated" class="form-control mb-2"
+                                                    id="secondYGraduated">
+                                                <label for="secondScholarship">Scholarship/Academic Honors
+                                                    Received</label>
+                                                <input type="text" name="secondScholarship" class="form-control mb-2"
+                                                    id="secondScholarship">
 
                                                 <div class="row g-2 mb-2">
 
@@ -557,23 +555,28 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="container">
                                         <details>
                                             <summary class="form-floating mb-2">
-                                                Vocational / Trade Course <span class="required-color">*</span>
+                                                Vocational / Trade Course
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="SchoolName">Name of School (Write in full)</label>
-                                                <input type="text" class="form-control mb-2" id="SchoolName" required>
-                                                <label for="BasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="vocationalschoolName">Name of School (Write in full)</label>
+                                                <input type="text" name="vocationalschoolName" class="form-control mb-2"
+                                                    id="vocationalschoolName">
+                                                <label for="vocationalbasicEducation">BasicEducation/Degree/Course
+                                                    (Write in
                                                     full)</label>
-                                                <input type="text" class="form-control mb-2" id="BasicEducation"
-                                                    required>
-                                                <label for="HighestLevel">Highest Level/Units Earned (if not
+                                                <input type="text" name="vocationalbasicEducation"
+                                                    class="form-control mb-2" id="vocationalbasicEducation">
+                                                <label for="vocationalhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
-                                                <input type="text" class="form-control mb-2" id="Highest Level"
-                                                    required>
-                                                <label for="YGraduated">Year Graduated</label>
-                                                <input type="text" class="form-control mb-2" id="YGraduated" required>
-                                                <label for="Scholarship">Scholarship/Academic Honors Received</label>
-                                                <input type="text" class="form-control mb-2" id="Scholarship" required>
+                                                <input type="text" name="vocationalhighestLevel"
+                                                    class="form-control mb-2" id="vocationalhighestLevel">
+                                                <label for="vocationalYGraduated">Year Graduated</label>
+                                                <input type="text" name="vocationalYGraduated" class="form-control mb-2"
+                                                    id="vocationYGraduated">
+                                                <label for="vocationalScholarship">Scholarship/Academic Honors
+                                                    Received</label>
+                                                <input type="text" name="vocationalScholarship"
+                                                    class="form-control mb-2" id="vocationalScholarship">
 
                                                 <div class="row g-2 mb-2">
 
@@ -606,23 +609,28 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="container">
                                         <details>
                                             <summary class="form-floating mb-2">
-                                                College <span class="required-color">*</span>
+                                                College
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="SchoolName">Name of School (Write in full)</label>
-                                                <input type="text" class="form-control mb-2" id="SchoolName" required>
-                                                <label for="BasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="collegeschoolName">Name of School (Write in full)</label>
+                                                <input type="text" name="collegeschoolName" class="form-control mb-2"
+                                                    id="collegeschoolName">
+                                                <label for="collegebasicEducation">BasicEducation/Degree/Course (Write
+                                                    in
                                                     full)</label>
-                                                <input type="text" class="form-control mb-2" id="BasicEducation"
-                                                    required>
-                                                <label for="HighestLevel">Highest Level/Units Earned (if not
+                                                <input type="text" name="collegebasicEducation"
+                                                    class="form-control mb-2" id="collegebasicEducation">
+                                                <label for="collegehighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
-                                                <input type="text" class="form-control mb-2" id="Highest Level"
-                                                    required>
-                                                <label for="YGraduated">Year Graduated</label>
-                                                <input type="text" class="form-control mb-2" id="YGraduated" required>
-                                                <label for="Scholarship">Scholarship/Academic Honors Received</label>
-                                                <input type="text" class="form-control mb-2" id="Scholarship" required>
+                                                <input type="text" name="collegehighestLevel" class="form-control mb-2"
+                                                    id="collegehighestLevel">
+                                                <label for="collegeYGraduated">Year Graduated</label>
+                                                <input type="text" name="collegeYGraduated" class="form-control mb-2"
+                                                    id="collegeYGraduated">
+                                                <label for="collegeScholarship">Scholarship/Academic Honors
+                                                    Received</label>
+                                                <input type="text" name="collegeScholarship" class="form-control mb-2"
+                                                    id="collegeScholarship">
 
                                                 <div class="row g-2 mb-2">
 

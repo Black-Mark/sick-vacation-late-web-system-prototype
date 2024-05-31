@@ -92,7 +92,7 @@ $designations = getAllDesignations();
     </form>
 
     <!-- Edit Modal -->
-    <form action="<?php echo $action_edit_Designation; ?>" method="post" class="modal fade" id="editDesignation"
+    <form action="<?php echo $action_edit_designation; ?>" method="post" class="modal fade" id="editDesignation"
         tabindex="-1" role="dialog" aria-labelledby="editDesignationTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -112,7 +112,7 @@ $designations = getAllDesignations();
                     </div>
 
                     <div class="form-floating mb-2">
-                        <input type="text" name="DesignationDescription" class="form-control"
+                        <input type="text" name="designationDescription" class="form-control"
                             id="floatingEditDesignationDescription" placeholder="Enter to Edit Description ..."
                             required>
                         <label for="floatingEditDesignationDescription">Description <span
@@ -161,32 +161,32 @@ $designations = getAllDesignations();
                             if (!empty($designations)) {
                                 foreach ($designations as $row) {
                                     ?>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="designationId"
-                                                value="<?php echo $row['designation_id']; ?>" />
-                                        </td>
-                                        <td title="<?php echo $row['designationDescription']; ?>">
-                                            <?php echo $row['designationName']; ?>
-                                        </td>
-                                        <td>
-                                            <form method="POST" action="<?php echo $action_delete_designation; ?>">
-                                                <button type="button" class="custom-regular-button editDesignationButton"
-                                                    data-toggle="modal" data-target="#editDesignation"
-                                                    data-designation-id="<?php echo $row['designation_id']; ?>"
-                                                    data-designation-name="<?php echo $row['designationName']; ?>"
-                                                    data-designation-description="<?php echo $row['designationDescription']; ?>">
-                                                    Edit
-                                                </button>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="designationId"
+                                        value="<?php echo $row['designation_id']; ?>" />
+                                </td>
+                                <td title="<?php echo $row['designationDescription']; ?>">
+                                    <?php echo $row['designationName']; ?>
+                                </td>
+                                <td>
+                                    <form method="POST" action="<?php echo $action_delete_designation; ?>">
+                                        <button type="button" class="custom-regular-button editDesignationButton"
+                                            data-toggle="modal" data-target="#editDesignation"
+                                            data-designation-id="<?php echo $row['designation_id']; ?>"
+                                            data-designation-name="<?php echo $row['designationName']; ?>"
+                                            data-designation-description="<?php echo $row['designationDescription']; ?>">
+                                            Edit
+                                        </button>
 
-                                                <input type="hidden" name="designationId"
-                                                    value="<?php echo $row['designation_id']; ?>" />
-                                                <input type="submit" name="deleteDesignation" value="Delete"
-                                                    class="custom-regular-button" />
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                        <input type="hidden" name="designationId"
+                                            value="<?php echo $row['designation_id']; ?>" />
+                                        <input type="submit" name="deleteDesignation" value="Delete"
+                                            class="custom-regular-button" />
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php
                                 }
                             }
                             ?>
@@ -198,103 +198,101 @@ $designations = getAllDesignations();
                 <!-- Data Table Configuration -->
 
                 <script>
-                    let table = new DataTable('#designations', {
-                        pagingType: 'full_numbers',
-                        scrollCollapse: true,
-                        scrollY: '100%',
-                        scrollX: true,
-                        // 'select': {
-                        //     'style': 'multi',
-                        // },
-                        // ordering: false,
-                        columnDefs: [
-                            {
-                                'targets': 0,
-                                'orderable': false,
-                                // 'checkboxes': {
-                                //     'selectRow': true,
-                                //     // 'page': 'current',
-                                // }
-                            },
-                            {
-                                'targets': -1,
-                                'orderable': false,
-                                // 'checkboxes': {
-                                //     'selectRow': true,
-                                //     // 'page': 'current',
-                                // }
-                            },
-                            // {
-                            //     targets: [0],
-                            //     orderData: [0, 1]
-                            // },
-                            // {
-                            //     targets: [1],
-                            //     orderData: [1, 0]
-                            // },
-                            // {
-                            //     targets: [4],
-                            //     orderData: [4, 0]
+                let table = new DataTable('#designations', {
+                    pagingType: 'full_numbers',
+                    scrollCollapse: true,
+                    scrollY: '100%',
+                    scrollX: true,
+                    // 'select': {
+                    //     'style': 'multi',
+                    // },
+                    // ordering: false,
+                    columnDefs: [{
+                            'targets': 0,
+                            'orderable': false,
+                            // 'checkboxes': {
+                            //     'selectRow': true,
+                            //     // 'page': 'current',
                             // }
-                        ],
-                        search: {
-                            return: true
                         },
-                        "dom": 'Blfrtip',
-                        lengthMenu: [
-                            [10, 25, 50, 100, -1],
-                            [10, 25, 50, 100, 'All']
-                        ],
-                        // "colReorder": true,
-                        "buttons": [
-                            {
-                                extend: 'copy',
-                                exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
-                                }
-                            },
-                            {
-                                extend: 'excel',
-                                title: 'List of Designation',
-                                filename: 'List of Designation',
-                                exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
-                                }
-                            },
-                            {
-                                extend: 'csv',
-                                title: 'List of Designation',
-                                filename: 'List of Designation',
-                                exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
-                                }
-                            },
-                            {
-                                extend: 'pdf',
-                                title: 'List of Designation',
-                                filename: 'List of Designation',
-                                message: 'Produced and Prepared by the Human Resources System',
-                                exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
-                                }
-                            },
-                            {
-                                extend: 'print',
-                                title: 'List of Designation',
-                                filename: 'List of Designation',
-                                message: 'Produced and Prepared by the Human Resources System',
-                                exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
-                                }
-                            },
-                            {
-                                "extend": "colvis",
-                                text: 'Column Visibility',
-                                columns: ':first,:gt(0),:last'
+                        {
+                            'targets': -1,
+                            'orderable': false,
+                            // 'checkboxes': {
+                            //     'selectRow': true,
+                            //     // 'page': 'current',
+                            // }
+                        },
+                        // {
+                        //     targets: [0],
+                        //     orderData: [0, 1]
+                        // },
+                        // {
+                        //     targets: [1],
+                        //     orderData: [1, 0]
+                        // },
+                        // {
+                        //     targets: [4],
+                        //     orderData: [4, 0]
+                        // }
+                    ],
+                    search: {
+                        return: true
+                    },
+                    "dom": 'Blfrtip',
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1],
+                        [10, 25, 50, 100, 'All']
+                    ],
+                    // "colReorder": true,
+                    "buttons": [{
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: ':visible:not(:eq(0)):not(:eq(-1))',
                             }
-                        ],
-                        // responsive: true,
-                    });
+                        },
+                        {
+                            extend: 'excel',
+                            title: 'List of Designation',
+                            filename: 'List of Designation',
+                            exportOptions: {
+                                columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            title: 'List of Designation',
+                            filename: 'List of Designation',
+                            exportOptions: {
+                                columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            title: 'List of Designation',
+                            filename: 'List of Designation',
+                            message: 'Produced and Prepared by the Human Resources System',
+                            exportOptions: {
+                                columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            title: 'List of Designation',
+                            filename: 'List of Designation',
+                            message: 'Produced and Prepared by the Human Resources System',
+                            exportOptions: {
+                                columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                            }
+                        },
+                        {
+                            "extend": "colvis",
+                            text: 'Column Visibility',
+                            columns: ':first,:gt(0),:last'
+                        }
+                    ],
+                    // responsive: true,
+                });
                 </script>
 
                 <!-- <button onclick="printSelectedValues()">Print Selected Values</button> -->
