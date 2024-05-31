@@ -132,6 +132,17 @@ function handleLeaveTypeChange() {
     var typeOfVacationLeave = document.querySelector('input[name="typeOfVacationLeave"]:checked') ? document.querySelector('input[name="typeOfVacationLeave"]:checked').value : '';
     var typeOfSickLeave = document.querySelector('input[name="typeOfSickLeave"]:checked') ? document.querySelector('input[name="typeOfSickLeave"]:checked').value : '';
 
+    var noaomlfLink = document.getElementById('noaomlfLink');
+    var noaomlfLinkBtnDummy = document.getElementById('noaomlfLinkBtnDummy');
+
+    if (typeOfLeave === 'Maternity Leave' || typeOfLeave === 'Paternity Leave') {
+        noaomlfLink.style.display = 'block';
+        noaomlfLinkBtnDummy.style.display = 'none';
+    } else {
+        noaomlfLink.style.display = 'none';
+        noaomlfLinkBtnDummy.style.display = 'block';
+    }
+
     // Disable all leaveclass inputs
     var leaveClassInputs = document.querySelectorAll('.leave-app-form-leaveclass-container input');
     leaveClassInputs.forEach(function (input) {

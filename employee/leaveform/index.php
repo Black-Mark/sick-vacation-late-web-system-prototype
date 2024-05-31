@@ -104,6 +104,12 @@ $settingData = getAuthorizedUser();
                         <div class="button-container component-container mb-2">
                             <input type="submit" name="submitLeaveAppForm" class="custom-regular-button"
                                 value="Submit Leave Form" />
+
+                                <button id="noaomlfLinkBtnDummy" class="custom-regular-button" disabled>Notice of Allocation Of Maternity Leave Form</button>
+
+                                <a id="noaomlfLink" href="<?php echo $action_download_noaoml; ?>">
+                                    <button id="noaomlfLinkBtn" class="custom-regular-button">Notice of Allocation Of Maternity Leave Form</button>
+                                </a>
                         </div>
 
                         <div class="print-form-container my-4">
