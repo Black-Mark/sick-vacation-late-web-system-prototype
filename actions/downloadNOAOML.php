@@ -1,5 +1,5 @@
 <?php
-$file = '/files/forms/NOAOML.pdf';
+$file = '../files/forms/NOAOML.pdf';
 
 if (file_exists($file)) {
     // Set headers for force download

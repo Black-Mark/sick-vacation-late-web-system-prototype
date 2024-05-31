@@ -302,6 +302,8 @@ $designations = getAllDesignations();
         </div>
     </div>
 
+    <script src="<?php echo $assets_designationlist_js; ?>"></script>
+
     <div>
         <?php
         include ($components_file_footer);

@@ -4,10 +4,8 @@ include ($constants_file_dbconnect);
 include ($constants_file_session_admin);
 include ($constants_variables);
 
-// Assuming $mostMinimalYear is set somewhere in your code
 $mostMinimalYear = $systemStartDate;
 
-// Handle form submission to get the selected year
 $selectedYear = $_POST['selectedYear'] ?? date("Y");
 
 // Fetch records for the selected year
@@ -21,7 +19,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Generate all months for the selected year
 $months = [
     "January",
     "February",
@@ -101,12 +98,15 @@ $months = [
                     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addEmployeeModalLongTitle">Upload Leave Record (Late)</h5>
+                                <h5 class="modal-title" id="addEmployeeModalLongTitle">Upload Employee Late Record</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <input type="hidden" name="monthYearName" id="floatingEditMonthlyLateRecord" value="" />
+                                <h5 id="monthYearModalLabel" class="w-100 text-center text-uppercase mb-2">
+                                </h5>
                                 <div class="input-group mb-3">
                                     <input type="file" name="file" class="form-control" id="file" accept=".csv"
                                         autocomplete="off" required>
@@ -159,50 +159,67 @@ $months = [
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php
-                            foreach ($months as $month) {
+                        <tbody><?php
+                        $currentYear = date("Y");
+                        $currentMonth = date("n"); // Get the current month as a number without leading zeros
+                        
+                        foreach ($months as $key => $month) {
+                            // Get the month number from the $months array
+                            $monthNumber = $key + 1;
+
+                            // Display months up to the current month for the current year
+                            if ($selectedYear == $currentYear && $monthNumber > $currentMonth) {
+                                continue;
+                            }
+
+                            // Display all months for previous years
+                            if ($selectedYear <= $currentYear) {
                                 $monthYear = "$month $selectedYear";
                                 ?>
-                                <tr>
-                                    <td><?php echo $month; ?></td>
-                                    <td>
-                                        <?php
-                                        if (isset($records[$monthYear])) {
-                                            $file = $records[$monthYear]['fileOfRecord'];
-                                            if (file_exists($file)) {
-                                                ?>
-                                                <a href="<?php echo $file; ?>" download>Download</a>
-                                                <?php
+                                    <tr>
+                                        <td><?php echo $month; ?></td>
+                                        <td>
+                                            <?php
+                                            if (isset($records[$monthYear])) {
+                                                $file = "../../../".$records[$monthYear]['fileOfRecord'];
+                                                if (file_exists($file)) {
+                                                    ?>
+                                                    <a href="<?php echo $file; ?>" download>Download</a>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    Missing file
+                                                    <?php
+                                                }
                                             } else {
                                                 ?>
-                                                Missing file
+                                                No record
                                                 <?php
                                             }
-                                        } else {
                                             ?>
-                                            No record
-                                            <?php
-                                        }
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="custom-regular-button" data-toggle="modal"
-                                            data-target="#uploadLeaveRecord">
-                                            Upload Late Record
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php
+                                        </td>
+                                        <td>
+                                            <button type="button" class="custom-regular-button uploadMonthlyLateRecord"
+                                                data-toggle="modal" data-target="#uploadLeaveRecord"
+                                                data-month-year="<?php echo $monthYear; ?>">
+                                                Upload Late Record
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php
                             }
-                            ?>
+                        }
+                        ?>
                         </tbody>
                     </table>
                 </div>
+
             </div>
 
         </div>
     </div>
+
+    <script src="<?php echo $assets_monthlylaterecordlist_js; ?>"></script>
 
     <div>
         <?php
@@ -214,4 +231,4 @@ $months = [
 
 </body>
 
-</html>
+</html>t
