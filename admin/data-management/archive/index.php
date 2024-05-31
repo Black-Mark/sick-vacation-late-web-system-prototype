@@ -78,10 +78,16 @@ include($constants_variables);
                         Leave Form
                     </a>
                 </div>
-                <div class="item-detail-container">
+                <div class="item-detail-container mb-2">
                     <a href="<?php echo $location_admin_datamanagement_archive_leavedata; ?>"
                         class="item-detail-container-summary">
                         Leave Data Form
+                    </a>
+                </div>
+                <div class="item-detail-container">
+                    <a href="<?php echo $location_admin_datamanagement_archive_designation; ?>"
+                        class="item-detail-container-summary">
+                        Work Designations
                     </a>
                 </div>
             </div>

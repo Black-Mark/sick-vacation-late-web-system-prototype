@@ -126,6 +126,7 @@ $location_admin_datamanagement_archive_employee = $webhostpage . '/admin/data-ma
 $location_admin_datamanagement_archive_department = $webhostpage . '/admin/data-management/archive/department';
 $location_admin_datamanagement_archive_leaveform = $webhostpage . '/admin/data-management/archive/leaveform';
 $location_admin_datamanagement_archive_leavedata = $webhostpage . '/admin/data-management/archive/leavedata';
+$location_admin_datamanagement_archive_designation = $webhostpage . '/admin/data-management/archive/job';
 
 $location_employee = $webhostpage . '/employee';
 $location_employee_profile = $webhostpage . '/employee/profile';

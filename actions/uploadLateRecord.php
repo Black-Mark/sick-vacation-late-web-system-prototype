@@ -79,7 +79,7 @@ if (isset($_POST['upload'])) {
                                 $date_of_action = date('Y-m-d');
 
                                 // Check if the employee exists
-                                $empStatement = $database->prepare("SELECT * FROM tbl_useraccounts WHERE employee_id = ?");
+                                $empStatement = $database->prepare("SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'");
                                 $empStatement->bind_param("s", $employee_id);
                                 $empStatement->execute();
                                 $empResult = $empStatement->get_result();

@@ -29,7 +29,7 @@ function setupMultipleSelectButton(checkboxes, button) {
         // Function to update the state of the button
         function updateButtonState() {
             var selectedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
-            button.disabled = selectedValues.length <= 1;
+            button.disabled = selectedValues.length < 1;
         }
 
         // Update button state initially
@@ -68,4 +68,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var leaveDataCheckboxes = document.getElementsByName('selectedLeaveData[]');
     var retrieveLeaveDataButton = document.getElementById('retrieveMultipleLeaveDataBTN');
     setupMultipleSelectButton(leaveDataCheckboxes, retrieveLeaveDataButton);
+});
+
+// <!-- Disable Multiple Select Button in Work Designations -->
+document.addEventListener('DOMContentLoaded', function () {
+    var workDesignationCheckboxes = document.getElementsByName('selectedDesignation[]');
+    var retrieveWorkDesignationButton = document.getElementById('retrieveMultipleDesignationBTN');
+    setupMultipleSelectButton(workDesignationCheckboxes, retrieveWorkDesignationButton);
 });
