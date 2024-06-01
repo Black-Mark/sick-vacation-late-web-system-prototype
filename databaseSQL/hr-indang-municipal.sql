@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2024 at 05:12 AM
+-- Generation Time: Jun 01, 2024 at 02:49 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -82,28 +82,39 @@ CREATE TABLE `tbl_educational_background` (
   `elemschoolName` varchar(100) NOT NULL,
   `elembasicEducation` varchar(100) NOT NULL,
   `elemhighestLevel` varchar(100) NOT NULL,
+  `elemYGraduated` int(11) NOT NULL,
   `elemScholarship` varchar(100) NOT NULL,
   `elemPeriod` date NOT NULL,
   `elemperiodEnd` date NOT NULL,
   `secondschoolName` varchar(100) NOT NULL,
   `secondbasicEducation` varchar(100) NOT NULL,
   `secondhighestLevel` varchar(100) NOT NULL,
+  `secondYGraduated` int(11) NOT NULL,
   `secondScholarship` varchar(100) NOT NULL,
   `secondPeriod` date NOT NULL,
   `secondperiodEnd` date NOT NULL,
   `vocationalschoolName` varchar(100) NOT NULL,
   `vocationalbasicEducation` varchar(100) NOT NULL,
   `vocationalhighestLevel` varchar(100) NOT NULL,
+  `vocationalYGraduated` int(11) NOT NULL,
   `vocationalScholarship` varchar(100) NOT NULL,
   `vocationalPeriod` date NOT NULL,
   `vocationalperiodEnd` date NOT NULL,
   `collegeschoolName` varchar(100) NOT NULL,
   `collegebasicEducation` varchar(100) NOT NULL,
   `collegehighestLevel` varchar(100) NOT NULL,
+  `collegeYGraduated` int(11) NOT NULL,
   `collegeScholarship` varchar(100) NOT NULL,
   `collegePeriod` date NOT NULL,
   `collegeperiodEnd` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_educational_background`
+--
+
+INSERT INTO `tbl_educational_background` (`education_id`, `employee_id`, `graduateStudies`, `elemschoolName`, `elembasicEducation`, `elemhighestLevel`, `elemYGraduated`, `elemScholarship`, `elemPeriod`, `elemperiodEnd`, `secondschoolName`, `secondbasicEducation`, `secondhighestLevel`, `secondYGraduated`, `secondScholarship`, `secondPeriod`, `secondperiodEnd`, `vocationalschoolName`, `vocationalbasicEducation`, `vocationalhighestLevel`, `vocationalYGraduated`, `vocationalScholarship`, `vocationalPeriod`, `vocationalperiodEnd`, `collegeschoolName`, `collegebasicEducation`, `collegehighestLevel`, `collegeYGraduated`, `collegeScholarship`, `collegePeriod`, `collegeperiodEnd`) VALUES
+(1, 'Regular', 'Top 1 Global Ling', 'Felipe Calderon Elementary School', 'Yi Sun Shin', 'Lancelot', 2011, 'Top 1 Mulawin Ling', '2005-08-22', '2011-08-22', 'Tanza National Comprehensive High School', 'Helcurt', 'Fanny', 2015, 'Top 1 Sanja Mayor Ling', '2011-08-22', '2015-08-22', 'Alternative Learning System', 'Bruno', 'Granger', 2016, 'Top 1 Tanza Ling', '2016-08-22', '2016-08-22', 'Cavite State University Main Campus', 'Layla', 'Miya', 2024, 'Top 1 Cavite Ling', '2019-04-25', '2024-08-22');
 
 -- --------------------------------------------------------
 
@@ -217,7 +228,9 @@ CREATE TABLE `tbl_leaveappform` (
 --
 
 INSERT INTO `tbl_leaveappform` (`leaveappform_id`, `dateLastModified`, `dateCreated`, `employee_id`, `departmentName`, `lastName`, `firstName`, `middleName`, `dateFiling`, `position`, `salary`, `typeOfLeave`, `typeOfSpecifiedOtherLeave`, `typeOfVacationLeave`, `typeOfVacationLeaveWithin`, `typeOfVacationLeaveAbroad`, `typeOfSickLeave`, `typeOfSickLeaveInHospital`, `typeOfSickLeaveOutPatient`, `typeOfSpecialLeaveForWomen`, `typeOfStudyLeave`, `typeOfOtherLeave`, `workingDays`, `inclusiveDateStart`, `inclusiveDateEnd`, `commutation`, `asOfDate`, `vacationLeaveTotalEarned`, `sickLeaveTotalEarned`, `vacationLeaveLess`, `sickLeaveLess`, `vacationLeaveBalance`, `sickLeaveBalance`, `recommendation`, `recommendMessage`, `dayWithPay`, `dayWithoutPay`, `otherDayPay`, `otherDaySpecify`, `disapprovedMessage`, `hrName`, `hrPosition`, `deptHeadName`, `mayorName`, `mayorPosition`, `hrmanager_id`, `depthead_id`, `mayor_id`, `status`, `archive`) VALUES
-('236d45f6e2fccf0d887aa6fe78278545cb20bf4386501d6c32', '2024-05-31 08:26:08', '2024-05-31 08:26:08', 'Regular', 'Municipal Office', 'Account', 'Regular', '', '2024-05-31', 'Clerk', '', 'Vacation Leave', '', 'Within the Philippines', 'Boracay', '', '', '', ' ', ' ', '', '0', 4, '2024-05-31', '2024-06-03', 'Requested', '2024-03-28', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', '');
+('1a972aa5f124295f29198fb1675928239f53ee4b85b093563b', '2024-06-01 11:38:24', '2024-06-01 11:38:24', 'Regular', 'Municipal Office', 'Account', 'Regular', '', '2024-06-01', 'Clerk', '', 'Rehabilitation Privilege', '', '', '', '', '', '', ' ', ' ', '', '0', 1, '2024-06-01', '2024-06-01', 'Requested', '2024-03-28', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
+('236d45f6e2fccf0d887aa6fe78278545cb20bf4386501d6c32', '2024-05-31 08:26:08', '2024-05-31 08:26:08', 'Regular', 'Municipal Office', 'Account', 'Regular', '', '2024-05-31', 'Clerk', '', 'Vacation Leave', '', 'Within the Philippines', 'Boracay', '', '', '', ' ', ' ', '', '0', 4, '2024-05-31', '2024-06-03', 'Requested', '2024-03-28', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
+('34daeb51ae5198388dfea7b23c03e06e2beb219d2337a32391', '2024-06-01 11:06:17', '2024-06-01 11:06:17', 'Regular', 'Municipal Office', 'Account', 'Regular', '', '2024-06-01', 'Clerk', '', 'Vacation Leave', '', 'Within the Philippines', 'Boracay', '', '', '', ' ', ' ', '', '0', 3, '2024-06-06', '2024-06-08', 'Requested', '2024-03-28', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', '');
 
 -- --------------------------------------------------------
 
@@ -263,7 +276,8 @@ INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `foreignKeyI
 (25, '20240530131', '', '2024-05-30 11:14:12', 'Initial Record', '2024-05-30', '2024-05-30', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-05-30', '2024-05-30 11:14:12', '', ''),
 (26, '20240530131', '', '2024-05-30 11:14:13', 'Break Monthly Record', '2024-05-30', '2024-05-30', 'Break Monthly Record', '', 0, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-30', '2024-05-30 11:14:13', '', ''),
 (34, 'Regular', '', '2024-05-31 05:10:55', '', '2024-05-30', '2024-05-31', 'Late', '', 0, 0, 12, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-31', '2024-05-31 14:19:22', '', ''),
-(35, 'STAFF', '', '2024-05-31 05:10:55', '', '2024-05-01', '2024-05-31', 'Late', '', 0, 0, 38, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-31', '2024-05-31 14:19:22', '', '');
+(35, 'STAFF', '', '2024-05-31 05:10:55', '', '2024-05-01', '2024-05-31', 'Late', '', 0, 0, 38, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-05-31', '2024-05-31 14:19:22', '', ''),
+(36, 'FemaleRen', '', '2024-06-01 11:53:07', 'Initial Record', '2024-06-01', '2024-06-01', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-06-01', '2024-06-01 11:53:07', '', '');
 
 -- --------------------------------------------------------
 
@@ -305,7 +319,9 @@ CREATE TABLE `tbl_notifications` (
 --
 
 INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, `empIdTo`, `subject`, `message`, `subjectKey`, `link`, `status`, `archive`) VALUES
-(12, '2024-05-31 08:26:08', 'Regular', '@Admin', 'Employee Leave Form Request', 'Account Regular is Applying For Vacation Leave', '236d45f6e2fccf0d887aa6fe78278545cb20bf4386501d6c32', '', 'unseen', '');
+(12, '2024-05-31 08:26:08', 'Regular', '@Admin', 'Employee Leave Form Request', 'Account Regular is Applying For Vacation Leave', '236d45f6e2fccf0d887aa6fe78278545cb20bf4386501d6c32', '', 'unseen', ''),
+(13, '2024-06-01 11:06:17', 'Regular', '@Admin', 'Employee Leave Form Request', 'Account Regular is Applying For Vacation Leave', '34daeb51ae5198388dfea7b23c03e06e2beb219d2337a32391', '', 'unseen', ''),
+(14, '2024-06-01 11:38:24', 'Regular', '@Admin', 'Employee Leave Form Request', 'Account Regular is Applying For Rehabilitation Privilege', '1a972aa5f124295f29198fb1675928239f53ee4b85b093563b', '', 'unseen', '');
 
 -- --------------------------------------------------------
 
@@ -420,7 +436,8 @@ INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `p
 (1, 'PRO001', 'Admin', 'admin@gmail.com', 'Password', '', 'Admin', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2020-01-01', '2024-05-30 09:07:02', '', ''),
 (3, 'STAFF', 'Staff', 'staff@gmail.com', 'Password', '', 'Staff', '', 'Account', '', '2000-01-01', 'Male', 'Single', '1', '1', 'Active', '2023-03-17', '2024-05-28 02:39:37', '', ''),
 (4, 'Regular', 'Employee', 'regular@gmail.com', 'Password', '', 'Regular', '', 'Account', '', '2001-06-01', 'Male', 'Single', '2', '2', 'Active', '2024-03-28', '2024-05-28 06:40:42', '', ''),
-(7, '20240530131', 'Employee', 'alpha@gmail.com', 'Password', '', 'Alpha', '', 'Account', '', '2001-01-01', 'Female', 'Single', '2', '2', 'Active', '2024-05-30', '2024-05-30 11:14:12', '', 'deleted');
+(7, '20240530131', 'Employee', 'alpha@gmail.com', 'Password', '', 'Alpha', '', 'Account', '', '2001-01-01', 'Female', 'Single', '2', '2', 'Active', '2024-05-30', '2024-05-30 11:14:12', '', 'deleted'),
+(8, 'FemaleRen', 'Employee', 'jeshuabay@gmail.com', 'Password', '', 'Rena', '', 'Antomae', '', '2001-01-01', 'Female', 'Single', '1', '2', 'Active', '2024-06-01', '2024-06-01 11:53:07', '', '');
 
 --
 -- Indexes for dumped tables
@@ -532,7 +549,7 @@ ALTER TABLE `tbl_designations`
 -- AUTO_INCREMENT for table `tbl_educational_background`
 --
 ALTER TABLE `tbl_educational_background`
-  MODIFY `education_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `education_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_family_background`
@@ -550,7 +567,7 @@ ALTER TABLE `tbl_laterecordfile`
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `tbl_leaves`
@@ -562,7 +579,7 @@ ALTER TABLE `tbl_leaves`
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
@@ -586,7 +603,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -61,13 +61,34 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        function dateDifference(currentDate, days) {
+            // Parse the current date
+            var date = new Date(currentDate);
+    
+            // Add or subtract the days
+            date.setDate(date.getDate() + days);
+    
+            // Format the new date as Y-m-d
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var day = String(date.getDate()).padStart(2, '0');
+            var formattedDate = `${year}-${month}-${day}`;
+    
+            return formattedDate;
+        }
+
         $('#inclusiveDateStart').on('change', function () {
             // Get the values of the two input fields
             var inclusiveDateStart = $('#inclusiveDateStart').val();
             var inclusiveDateEnd = $('#inclusiveDateEnd').val();
+            var typeOfLeave = document.querySelector('input[name="typeOfLeave"]:checked') ? document.querySelector('input[name="typeOfLeave"]:checked').value : '';
+
+            if(typeOfLeave === 'Maternity Leave'){
+                $('#inclusiveDateEnd').val(dateDifference(inclusiveDateStart, 105));
+            }
 
             // Compare the values
-            if (inclusiveDateStart > inclusiveDateEnd) {
+            if (inclusiveDateStart >= inclusiveDateEnd) {
                 $('#inclusiveDateEnd').val(inclusiveDateStart);
                 Toastify({
                     text: 'Inclusive Start Date should not be Greater Than the Inclusive End Date!',
@@ -344,6 +365,7 @@ function handleLeaveTypeChange() {
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
+        inclusiveDateEnd.readOnly = false;
     }else if (typeOfLeave == "Sick Leave") {
         inclusiveDateStart.min = dateDifference(today, -5);
         inclusiveDateStart.max = dateDifference(today, -1);
@@ -352,15 +374,16 @@ function handleLeaveTypeChange() {
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
+        inclusiveDateEnd.readOnly = false;
     }else if (typeOfLeave == "Maternity Leave") {
         inclusiveDateStart.min = dateDifference(today, 5);
         inclusiveDateStart.max = '';
-        inclusiveDateEnd.readOnly = true;
         inclusiveDateEnd.min = dateDifference(today, 5);
-        inclusiveDateEnd.max = dateDifference(today, 110);
+        inclusiveDateEnd.max = dateDifference(today, 125);
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
+        inclusiveDateEnd.readOnly = true;
     }else if (typeOfLeave == "Rehabilitation Privilege") {
         inclusiveDateStart.min = today;
         inclusiveDateStart.max = dateDifference(today, 7);
@@ -369,6 +392,7 @@ function handleLeaveTypeChange() {
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
+        inclusiveDateEnd.readOnly = true;
     }
 
     // console.log(today);
