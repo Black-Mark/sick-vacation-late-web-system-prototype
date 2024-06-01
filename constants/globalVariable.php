@@ -125,6 +125,10 @@ function getEmployeeData($employee_id)
     return $employeeData;
 }
 
+function getEmployeeInfo($employee_id){
+    //
+}
+
 function getAccountRole($employeeId) {
     global $database;
 

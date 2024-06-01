@@ -215,6 +215,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                             </button>
                         </div>
                         <div class="modal-body">
+                            <input type="hidden" name="employeeId" value="<?php echo $employeeData['employee_id']; ?>" />
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item">
@@ -241,7 +242,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                         name="departmentlabel" />
                                     <div class="form-floating mb-2">
                                         <input type="text" name="birthplace" class="form-control"
-                                            id="floatingBirthplace" placeholder="Enter place of birth" required>
+                                            id="floatingBirthplace" placeholder="Enter place of birth" >
                                         <label for="floatingBirthplace">Place of Birth <span
                                                 class="required-color">*</span></label>
                                     </div>
@@ -262,41 +263,41 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="gsis" class="form-control" id="floatingGSIS"
-                                            placeholder="Enter GSIS ID NO." required>
+                                            placeholder="Enter GSIS ID NO." >
                                         <label for="floatingGSIS">GSIS ID NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="pagibig" class="form-control" id="floatingPagibig"
-                                            placeholder="Enter PAGIBIG ID NO." required>
+                                            placeholder="Enter PAGIBIG ID NO." >
                                         <label for="floatingPagibig">PAGIBIG ID NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="philhealth" class="form-control"
-                                            id="floatingPhilHealth" placeholder="Enter PHILHEALTH NO." required>
+                                            id="floatingPhilHealth" placeholder="Enter PHILHEALTH NO." >
                                         <label for="floatingPhilHealth">PHILHEALTH NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="sss" class="form-control" id="floatingSSS"
-                                            placeholder="Enter SSS NO." required>
+                                            placeholder="Enter SSS NO." >
                                         <label for="floatingSSS">SSS NO. <span class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="tin" class="form-control" id="floatingTin"
-                                            placeholder="Enter TIN NO." required>
+                                            placeholder="Enter TIN NO." >
                                         <label for="floatingTin">TIN NO. <span class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="agency" class="form-control" id="floatingAgency"
-                                            placeholder="Enter Agency Employee No." required>
+                                            placeholder="Enter Agency Employee No." >
                                         <label for="floatingAgency">Agency Employee No. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
-                                        <select name="civilStatus" class="form-select" id="floatingCitizenship"
-                                            aria-label="Floating Citizenship Selection" required>
+                                        <select name="citizenship" class="form-select" id="floatingCitizenship"
+                                            aria-label="Floating Citizenship Selection" >
                                             <option value="Filipino" selected>Filipino</option>
                                             <option value="Dual Citizenship">Dual Citizenship</option>
                                             <option value="by birth">by birth</option>
@@ -309,7 +310,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="container">
                                         <details>
                                             <summary class="form-floating mb-2">
-                                                Residential Address <span class="required-color">*</span>
+                                                Residential Address
                                             </summary>
                                             <div class="form-group mt-2">
                                                 <label for="houseNo">House/Block/Lot/No:</label>
@@ -317,19 +318,19 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                     placeholder="Enter House/Block/Lot/No">
                                                 <label for="street">Street:</label>
                                                 <input type="text" name="street" class="form-control mb-2" id="street"
-                                                    placeholder="Enter Street" required>
+                                                    placeholder="Enter Street" >
                                                 <label for="subdivision">Subdivision/Village:</label>
                                                 <input type="text" name="subdivision" class="form-control mb-2"
-                                                    id="subdivision" placeholder="Enter Subdivision/Village" required>
+                                                    id="subdivision" placeholder="Enter Subdivision/Village" >
                                                 <label for="city">City/Municipality:</label>
                                                 <input type="text" name="city" class="form-control mb-2" id="city"
-                                                    placeholder="Enter City/Municipality" required>
+                                                    placeholder="Enter City/Municipality" >
                                                 <label for="province">Province:</label>
                                                 <input type="text" name="province" class="form-control mb-2"
-                                                    id="province" placeholder="Enter Province" required>
+                                                    id="province" placeholder="Enter Province" >
                                                 <label for="zipCode">Zip Code:</label>
                                                 <input type="text" name="zipCode" class="form-control mb-2" id="zipCode"
-                                                    placeholder="Enter Zip Code" required>
+                                                    placeholder="Enter Zip Code" >
                                             </div>
                                         </details>
                                     </div>
@@ -341,7 +342,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="mobile" class="form-control" id="floatingMobile"
-                                            placeholder="Enter Mobile NO." required>
+                                            placeholder="Enter Mobile NO." >
                                         <label for="floatingMobile">Mobile NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
@@ -426,13 +427,13 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="MSurname">Surname:</label>
                                                 <input type="text" name="MSurname" class="form-control mb-2"
-                                                    id="MSurname" required>
+                                                    id="MSurname" >
                                                 <label for="MName">Name:</label>
                                                 <input type="text" name="MName" class="form-control mb-2" id="MName"
-                                                    required>
+                                                    >
                                                 <label for="MMName">Middle Name:</label>
                                                 <input type="text" name="MMName" class="form-control mb-2" id="MMName"
-                                                    required>
+                                                    >
                                             </div>
                                         </details>
                                     </div>
@@ -479,7 +480,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="elemPeriod" class="form-control"
                                                                 id="floatingElemPeriod" placeholder="2020-12-31"
-                                                                required>
+                                                                >
                                                             <label for="floatingElemPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -489,7 +490,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="elemperiodEnd" class="form-control"
                                                                 id="floatingElemPeriodEnd" placeholder="2020-12-31"
-                                                                required>
+                                                                >
                                                             <label for="floatingElemPeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
@@ -531,7 +532,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="secondperiod" class="form-control"
                                                                 id="floatingSecondPeriod" placeholder="2020-12-31"
-                                                                required>
+                                                                >
                                                             <label for="floatingSecondPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -541,7 +542,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="secondperiodEnd"
                                                                 class="form-control" id="floatingSecondPeriodEnd"
-                                                                placeholder="2020-12-31" required>
+                                                                placeholder="2020-12-31" >
                                                             <label for="floatingSecondPeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
@@ -584,7 +585,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="vocationalperiod"
                                                                 class="form-control" id="floatingVocationalPeriod"
-                                                                placeholder="2020-12-31" required>
+                                                                placeholder="2020-12-31" >
                                                             <label for="floatingVocationalPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -594,7 +595,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="vocationalperiodEnd"
                                                                 class="form-control" id="floatingVocationalPeriodEnd"
-                                                                placeholder="2020-12-31" required>
+                                                                placeholder="2020-12-31" >
                                                             <label for="floatingVocationalPeriodEnd">Period of
                                                                 Attendance
                                                                 To<span class="required-color">*</span></label>
@@ -638,7 +639,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="collegeperiod" class="form-control"
                                                                 id="floatingCollegePeriod" placeholder="2020-12-31"
-                                                                required>
+                                                                >
                                                             <label for="floatingCollegePeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -648,7 +649,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="collegeperiodEnd"
                                                                 class="form-control" id="floatingCollegePeriodEnd"
-                                                                placeholder="2020-12-31" required>
+                                                                placeholder="2020-12-31" >
                                                             <label for="floatingCollegePeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>

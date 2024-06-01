@@ -6,6 +6,8 @@ include ($constants_file_session_admin);
 include ($constants_variables);
 
 if (isset($_POST['addEmployeeInfo'])) {
+    $employeeId = sanitizeInput($_POST['employeeId'] ?? '');
+    // tbl_personal_info
     $birthplace = sanitizeInput($_POST['birthplace'] ?? '');
     $height = sanitizeInput($_POST['height'] ?? '');
     $weight = sanitizeInput($_POST['weight'] ?? '');
@@ -16,7 +18,7 @@ if (isset($_POST['addEmployeeInfo'])) {
     $sss = sanitizeInput($_POST['sss'] ?? '');
     $tin = sanitizeInput($_POST['tin'] ?? '');
     $agency = sanitizeInput($_POST['agency'] ?? '');
-    $civilStatus = sanitizeInput($_POST['civilStatus'] ?? '');
+    $citizenship = sanitizeInput($_POST['citizenship'] ?? '');
     $houseNo = sanitizeInput($_POST['houseNo'] ?? '');
     $street = sanitizeInput($_POST['street'] ?? '');
     $subdivision = sanitizeInput($_POST['subdivision'] ?? '');
@@ -25,7 +27,7 @@ if (isset($_POST['addEmployeeInfo'])) {
     $zipCode = sanitizeInput($_POST['zipCode'] ?? '');
     $telephone = sanitizeInput($_POST['telephone'] ?? '');
     $mobile = sanitizeInput($_POST['mobile'] ?? '');
-
+    // tbl_family_background
     $spousesurname = sanitizeInput($_POST['spouseSurname'] ?? '');
     $spousename = sanitizeInput($_POST['spouseName'] ?? '');
     $spousemiddlename = sanitizeInput($_POST['spouseMiddleName'] ?? '');
@@ -42,7 +44,7 @@ if (isset($_POST['addEmployeeInfo'])) {
     $MSurname = sanitizeInput($_POST['MSurname'] ?? '');
     $MName = sanitizeInput($_POST['MName'] ?? '');
     $MMName = sanitizeInput($_POST['MMName'] ?? '');
-    
+    // tbl_educational_background
     $graduateStudies = sanitizeInput($_POST['graduateStudies'] ?? '');
     $elemschoolName = sanitizeInput($_POST['elemschoolName'] ?? '');
     $elembasicEducation = sanitizeInput($_POST['elembasicEducation'] ?? '');
@@ -69,66 +71,73 @@ if (isset($_POST['addEmployeeInfo'])) {
     $collegePeriod = sanitizeInput($_POST['collegePeriod'] ?? '');
     $collegeperiodEnd = sanitizeInput($_POST['collegeperiodEnd'] ?? '');
 
-    echo $birthplace;
-    echo $height;
-    echo $weight;
-    echo $bloodtype;
-    echo $gsis;
-    echo $pagibig;
-    echo $philhealth;
-    echo $sss;
-    echo $tin;
-    echo $agency;
-    echo $civilStatus;
-    echo $houseNo;
-    echo $street;
-    echo $subdivision;
-    echo $city;
-    echo $province;
-    echo $zipCode;
-    echo $telephone;
-    echo $mobile;
-    echo $spousesurname;
-    echo $spousename;
-    echo $spousemiddlename;
-    echo $spousenameExtension;
-    echo $spouseOccupation;
-    echo $spouseEmployer;
-    echo $spouseBusinessAddress;
-    echo $spouseTelephone;
-    echo $numberOfChildren;
-    echo $fathersSurname;
-    echo $fathersFirstname;
-    echo $fathersMiddlename;
-    echo $MSurname;
-    echo $MName;
-    echo $MMName;
-    echo $graduateStudies;
-    echo $elemschoolName;
-    echo $elembasicEducation;
-    echo $elemhighestLevel;
-    echo $elemScholarship;
-    echo $elemPeriod;
-    echo $elemperiodEnd;
-    echo $secondschoolName;
-    echo $secondbasicEducation;
-    echo $secondhighestLevel;
-    echo $secondScholarship;
-    echo $secondPeriod;
-    echo $secondperiodEnd;
-    echo $vocationalschoolName;
-    echo $vocationalbasicEducation;
-    echo $vocationalhighestLevel;
-    echo $vocationalScholarship;
-    echo $vocationalPeriod;
-    echo $vocationalperiodEnd;
-    echo $collegeschoolName;
-    echo $collegebasicEducation;
-    echo $collegehighestLevel;
-    echo $collegeScholarship;
-    echo $collegePeriod;
-    echo $collegeperiodEnd;
-}
+    if (!empty($employeeId) && trim($employeeId) != '') {
+        $personalsuccess = 0;
+        $familysuccess = 0;
+        $educationalsuccess = 0;
 
+        // tbl_personal_info
+        // check if has a record
+        $sql = "SELECT * FROM tbl_personal_info WHERE employee_id = ?";
+        $personalStmt = $database->prepare($sql);
+        $personalStmt->bind_param("s", $employeeId);
+        $personalStmt->execute();
+        $result = $personalStmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Update the existing record
+            $updateSql = "UPDATE tbl_personal_info SET birthplace=?, height=?, weight=?, bloodtype=?, gsis=?, pagibig=?, philhealth=?, sss=?, tin=?, agency=?, citizenship=?, houseNo=?, street=?, subdivision=?, city=?, province=?, zipCode=?, telephone=?, mobile=? WHERE employee_id=?";
+            $updatepersonalStmt = $database->prepare($updateSql);
+            $updatepersonalStmt->bind_param("siisiiiiisssssssiiss", $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile, $employeeId);
+            $updatepersonalStmt->execute();
+            // echo "Record updated successfully";
+        } else {
+            // Insert a new record
+            $insertSql = "INSERT INTO tbl_personal_info (employee_id, birthplace, height, weight, bloodtype, gsis, pagibig, philhealth, sss, tin, agency, citizenship, houseNo, street, subdivision, city, province, zipCode, telephone, mobile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertpersonalStmt = $database->prepare($insertSql);
+            $insertpersonalStmt->bind_param("ssiisiiiiisssssssiis", $employeeId, $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile);
+            $insertpersonalStmt->execute();
+            // echo "New record created successfully";
+        }
+
+        // tbl_personal_info
+        // check if has a record
+        $sql = "SELECT * FROM tbl_personal_info WHERE employee_id = ?";
+        $personalStmt = $database->prepare($sql);
+        $personalStmt->bind_param("s", $employeeId);
+        $personalStmt->execute();
+        $result = $personalStmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Update the existing record
+            $updateSql = "UPDATE tbl_personal_info SET birthplace=?, height=?, weight=?, bloodtype=?, gsis=?, pagibig=?, philhealth=?, sss=?, tin=?, agency=?, citizenship=?, houseNo=?, street=?, subdivision=?, city=?, province=?, zipCode=?, telephone=?, mobile=? WHERE employee_id=?";
+            $updatepersonalStmt = $database->prepare($updateSql);
+            $updatepersonalStmt->bind_param("siisiiiiisssssssiiss", $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile, $employeeId);
+            $updatepersonalStmt->execute();
+            // echo "Record updated successfully";
+        } else {
+            // Insert a new record
+            $insertSql = "INSERT INTO tbl_personal_info (employee_id, birthplace, height, weight, bloodtype, gsis, pagibig, philhealth, sss, tin, agency, citizenship, houseNo, street, subdivision, city, province, zipCode, telephone, mobile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertpersonalStmt = $database->prepare($insertSql);
+            $insertpersonalStmt->bind_param("ssiisiiiiisssssssiis", $employeeId, $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile);
+            $insertpersonalStmt->execute();
+            // echo "New record created successfully";
+        }
+
+
+        $personalStmt->close();
+
+    } else {
+        $_SESSION['alert_message'] = "There is no Employee Id Received!";
+        $_SESSION['alert_type'] = $warning_color;
+        $redirect_location = $empId ? $location_admin_departments_employee . "/" . $empId . "/" : $location_admin_departments_employee;
+        header("Location: $redirect_location");
+        exit();
+    }
+} else {
+    // echo '<script type="text/javascript">window.history.back();</script>';
+    header("Location: $location_admin_departments_employee");
+    exit();
+}
 
 ?>
