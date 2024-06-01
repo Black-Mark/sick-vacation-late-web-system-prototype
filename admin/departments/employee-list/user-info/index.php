@@ -7,6 +7,9 @@ include($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
+$personalData = [];
+$familyData = [];
+$educationalData = [];
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
@@ -16,6 +19,9 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 } else {
     $_SESSION['post_empId'] = sanitizeInput($empId);
     $employeeData = getEmployeeData($empId);
+    $personalData = getEmployeePersonalInfo($empId);
+    $familyData = getEmployeeFamilyBackground($empId);
+    $educationalData = getEmployeeEducationalBackground($empId);
 }
 
 ?>
@@ -215,7 +221,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="hidden" name="employeeId" value="<?php echo $employeeData['employee_id']; ?>" />
+                            <input type="hidden" name="employeeId"
+                                value="<?php echo $employeeData['employee_id']; ?>" />
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item">
@@ -242,66 +249,80 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                         name="departmentlabel" />
                                     <div class="form-floating mb-2">
                                         <input type="text" name="birthplace" class="form-control"
-                                            id="floatingBirthplace" placeholder="Enter place of birth" >
+                                            id="floatingBirthplace" value="<?php echo $personalData['birthplace']; ?>"
+                                            placeholder="Enter place of birth">
                                         <label for="floatingBirthplace">Place of Birth <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="height" class="form-control" id="floatingHeight"
+                                            value="<?php echo $personalData['height']; ?>"
                                             placeholder="Enter height in meters">
                                         <label for="floatingHeight">Height (m)</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="weight" class="form-control" id="floatingWeight"
+                                            value="<?php echo $personalData['weight']; ?>"
                                             placeholder="Enter weight in kg">
                                         <label for="floatingWeight">Weight (kg)</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="bloodtype" class="form-control" id="floatingBloodType"
+                                            value="<?php echo $personalData['bloodtype']; ?>"
                                             placeholder="Enter blood type">
                                         <label for="floatingBloodType">Blood type</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="gsis" class="form-control" id="floatingGSIS"
-                                            placeholder="Enter GSIS ID NO." >
+                                            value="<?php echo $personalData['gsis']; ?>"
+                                            placeholder="Enter GSIS ID NO.">
                                         <label for="floatingGSIS">GSIS ID NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="pagibig" class="form-control" id="floatingPagibig"
-                                            placeholder="Enter PAGIBIG ID NO." >
+                                            value="<?php echo $personalData['pagibig']; ?>"
+                                            placeholder="Enter PAGIBIG ID NO.">
                                         <label for="floatingPagibig">PAGIBIG ID NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="philhealth" class="form-control"
-                                            id="floatingPhilHealth" placeholder="Enter PHILHEALTH NO." >
+                                            id="floatingPhilHealth" value="<?php echo $personalData['philhealth']; ?>"
+                                            placeholder="Enter PHILHEALTH NO.">
                                         <label for="floatingPhilHealth">PHILHEALTH NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="sss" class="form-control" id="floatingSSS"
-                                            placeholder="Enter SSS NO." >
+                                            value="<?php echo $personalData['sss']; ?>" placeholder="Enter SSS NO.">
                                         <label for="floatingSSS">SSS NO. <span class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="tin" class="form-control" id="floatingTin"
-                                            placeholder="Enter TIN NO." >
+                                            value="<?php echo $personalData['tin']; ?>" placeholder="Enter TIN NO.">
                                         <label for="floatingTin">TIN NO. <span class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="agency" class="form-control" id="floatingAgency"
-                                            placeholder="Enter Agency Employee No." >
+                                            value="<?php echo $personalData['agency']; ?>"
+                                            placeholder="Enter Agency Employee No.">
                                         <label for="floatingAgency">Agency Employee No. <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <select name="citizenship" class="form-select" id="floatingCitizenship"
-                                            aria-label="Floating Citizenship Selection" >
+                                            aria-label="Floating Citizenship Selection">
                                             <option value="Filipino" selected>Filipino</option>
-                                            <option value="Dual Citizenship">Dual Citizenship</option>
-                                            <option value="by birth">by birth</option>
-                                            <option value="by naturalization">by naturalization</option>
+                                            <option value="Dual Citizenship"
+                                                <?php echo $personalData['citizenship']=='Dual Citizenship' ? 'selected' : ''; ?>>
+                                                Dual Citizenship</option>
+                                            <option value="by birth"
+                                                <?php echo $personalData['citizenship']=='by birth' ? 'selected' : ''; ?>>
+                                                by birth</option>
+                                            <option value="by naturalization"
+                                                <?php echo $personalData['citizenship']=='by naturalization' ? 'selected' : ''; ?>>
+                                                by naturalization</option>
                                         </select>
                                         <label for="floatingCitizenship">Citizenship <span
                                                 class="required-color">*</span></label>
@@ -315,34 +336,42 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="houseNo">House/Block/Lot/No:</label>
                                                 <input type="text" name="houseNo" class="form-control mb-2" id="houseNo"
+                                                    value="<?php echo $personalData['houseNo']; ?>"
                                                     placeholder="Enter House/Block/Lot/No">
                                                 <label for="street">Street:</label>
                                                 <input type="text" name="street" class="form-control mb-2" id="street"
-                                                    placeholder="Enter Street" >
+                                                    value="<?php echo $personalData['street']; ?>"
+                                                    placeholder="Enter Street">
                                                 <label for="subdivision">Subdivision/Village:</label>
                                                 <input type="text" name="subdivision" class="form-control mb-2"
-                                                    id="subdivision" placeholder="Enter Subdivision/Village" >
+                                                    id="subdivision" value="<?php echo $personalData['subdivision']; ?>"
+                                                    placeholder="Enter Subdivision/Village">
                                                 <label for="city">City/Municipality:</label>
                                                 <input type="text" name="city" class="form-control mb-2" id="city"
-                                                    placeholder="Enter City/Municipality" >
+                                                    value="<?php echo $personalData['city']; ?>"
+                                                    placeholder="Enter City/Municipality">
                                                 <label for="province">Province:</label>
                                                 <input type="text" name="province" class="form-control mb-2"
-                                                    id="province" placeholder="Enter Province" >
+                                                    id="province" value="<?php echo $personalData['province']; ?>"
+                                                    placeholder="Enter Province">
                                                 <label for="zipCode">Zip Code:</label>
                                                 <input type="text" name="zipCode" class="form-control mb-2" id="zipCode"
-                                                    placeholder="Enter Zip Code" >
+                                                    value="<?php echo $personalData['zipCode']; ?>"
+                                                    placeholder="Enter Zip Code">
                                             </div>
                                         </details>
                                     </div>
 
                                     <div class="form-floating mb-2">
                                         <input type="number" name="telephone" class="form-control"
-                                            id="floatingTelephone" placeholder="Enter Telephone NO.">
+                                            id="floatingTelephone" value="<?php echo $personalData['telephone']; ?>"
+                                            placeholder="Enter Telephone NO.">
                                         <label for="floatingTelephone">Telephone NO.</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="mobile" class="form-control" id="floatingMobile"
-                                            placeholder="Enter Mobile NO." >
+                                            value="<?php echo $personalData['mobile']; ?>"
+                                            placeholder="Enter Mobile NO.">
                                         <label for="floatingMobile">Mobile NO. <span
                                                 class="required-color">*</span></label>
                                     </div>
@@ -352,70 +381,95 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                 <div class="tab-pane" id="familyBackground" role="tabpanel">
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseSurname" class="form-control"
-                                            id="floatingSpouseSurname" placeholder="Spouse Surname">
+                                            id="floatingSpouseSurname"
+                                            value="<?php echo $familyData['spousesurname']; ?>"
+                                            placeholder="Spouse Surname">
                                         <label for="floatingSpouseSurname">Spouse's Surname</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseName" class="form-control"
-                                            id="floatingSpouseName" placeholder="Spouse Name">
+                                            id="floatingSpouseName" value="<?php echo $familyData['spousename']; ?>"
+                                            placeholder="Spouse Name">
                                         <label for="floatingSpouseName">Spouse's Name</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseMiddlename" class="form-control"
-                                            id="floatingSpouseMiddlename" placeholder="Spouse Middlename">
+                                            id="floatingSpouseMiddlename"
+                                            value="<?php echo $familyData['spousemiddlename']; ?>"
+                                            placeholder="Spouse Middlename">
                                         <label for="floatingSpouseMiddlename">Spouse's Middlename</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseNameExtension" class="form-control"
-                                            id="floatingSpouseNameExtension" placeholder="Name extension (Jr, Sr)">
+                                            id="floatingSpouseNameExtension"
+                                            value="<?php echo $familyData['spousenameExtension']; ?>"
+                                            placeholder="Name extension (Jr, Sr)">
                                         <label for="floatingSpouseNameExtension">Name extension (Jr, Sr)
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseOccupation" class="form-control"
-                                            id="floatingSpouseOccupation" placeholder="Spouse Occupation">
+                                            id="floatingSpouseOccupation"
+                                            value="<?php echo $familyData['spouseOccupation']; ?>"
+                                            placeholder="Spouse Occupation">
                                         <label for="floatingSpouseOccupation">Spouse's Occupation</label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseEmployer" class="form-control"
-                                            id="floatingSpouseEmployer" placeholder="Employer/Business Name">
+                                            id="floatingSpouseEmployer"
+                                            value="<?php echo $familyData['spouseEmployer']; ?>"
+                                            placeholder="Employer/Business Name">
                                         <label for="floatingSpouseEmployer">Employer/Business Name </label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseBusinessAddress" class="form-control"
-                                            id="floatingSpouseBusinessAddress" placeholder="Business Address">
+                                            id="floatingSpouseBusinessAddress"
+                                            value="<?php echo $familyData['spouseBusinessAddress']; ?>"
+                                            placeholder="Business Address">
                                         <label for="floatingSpouseBusinessAddress">Business Address
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="spouseTelephone" class="form-control"
-                                            id="floatingSpouseTelephone" placeholder="Telephone No.">
+                                            id="floatingSpouseTelephone"
+                                            value="<?php echo $familyData['spouseTelephone']; ?>"
+                                            placeholder="Telephone No.">
                                         <label for="floatingSpouseTelephone">Telephone No.
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="number" name="numberOfChildren" class="form-control"
-                                            id="floatingNumberOfChildren" placeholder="Number of Children">
+                                            id="floatingNumberOfChildren"
+                                            value="<?php echo $familyData['numberOfChildren']; ?>"
+                                            placeholder="Number of Children">
                                         <label for="floatingNumberOfChildren">Name of Children (Write in fullname)
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersSurname" class="form-control"
-                                            id="floatingfathersSurname" placeholder="Father's Surname">
+                                            id="floatingfathersSurname"
+                                            value="<?php echo $familyData['fathersSurname']; ?>"
+                                            placeholder="Father's Surname">
                                         <label for="floatingfathersSurname">Father's Surname <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersFirstname" class="form-control"
-                                            id="floatingfathersFirstname" placeholder="Father's Firstname">
+                                            id="floatingfathersFirstname"
+                                            value="<?php echo $familyData['fathersFirstname']; ?>"
+                                            placeholder="Father's Firstname">
                                         <label for="floatingfathersFirstname">Father's Firstname <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersMiddlename" class="form-control"
-                                            id="floatingfathersMiddlename" placeholder="Father's Middlename">
+                                            id="floatingfathersMiddlename"
+                                            value="<?php echo $familyData['fathersMiddleName']; ?>"
+                                            placeholder="Father's Middlename">
                                         <label for="floatingfathersMiddlename">Father's Middlename <span
                                                 class="required-color">*</span></label>
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersnameExtension" class="form-control"
-                                            id="floatingnameExtension" placeholder="Name Extension">
+                                            id="floatingnameExtension"
+                                            value="<?php echo $familyData['fathersnameExtension']; ?>"
+                                            placeholder="Name Extension">
                                         <label for="floatingnameExtension">Name extension (Jr, Sr)
                                     </div>
 
@@ -427,13 +481,13 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="MSurname">Surname:</label>
                                                 <input type="text" name="MSurname" class="form-control mb-2"
-                                                    id="MSurname" >
+                                                    id="MSurname" value="<?php echo $familyData['MSurname']; ?>">
                                                 <label for="MName">Name:</label>
                                                 <input type="text" name="MName" class="form-control mb-2" id="MName"
-                                                    >
+                                                    value="<?php echo $familyData['MName']; ?>">
                                                 <label for="MMName">Middle Name:</label>
                                                 <input type="text" name="MMName" class="form-control mb-2" id="MMName"
-                                                    >
+                                                    value="<?php echo $familyData['MMName']; ?>">
                                             </div>
                                         </details>
                                     </div>
@@ -445,6 +499,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                     <div class="form-floating mb-2">
                                         <input type="text" name="graduateStudies" class="form-control"
                                             id="floatinggraduateStudies"
+                                            value="<?php echo $educationalData['graduateStudies']; ?>"
                                             placeholder="Enter Graduate Studies (optional)">
                                         <label for="floatinggraduateStudies">Graduate Studies</label>
                                     </div>
@@ -457,30 +512,36 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="elemschoolName">Name of School (Write in full)</label>
                                                 <input type="text" name="elemschoolName" class="form-control mb-2"
-                                                    id="elemschoolName">
+                                                    id="elemschoolName"
+                                                    value="<?php echo $educationalData['elemschoolName']; ?>">
                                                 <label for="elembasicEducation">BasicEducation/Degree/Course (Write in
                                                     full)</label>
                                                 <input type="text" name="elembasicEducation" class="form-control mb-2"
-                                                    id="elembasicEducation">
+                                                    id="elembasicEducation"
+                                                    value="<?php echo $educationalData['elembasicEducation']; ?>">
                                                 <label for="elemhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
                                                 <input type="text" name="elemhighestLevel" class="form-control mb-2"
-                                                    id="elemhighestLevel">
+                                                    id="elemhighestLevel"
+                                                    value="<?php echo $educationalData['elemhighestLevel']; ?>">
                                                 <label for="elemYGraduated">Year Graduated</label>
-                                                <input type="text" name="elemYGraduted" class="form-control mb-2"
-                                                    id="elemYGraduated">
+                                                <input type="text" name="elemYGraduated" class="form-control mb-2"
+                                                    id="elemYGraduated"
+                                                    value="<?php echo $educationalData['elemYGraduated']; ?>">
                                                 <label for="elemScholarship">Scholarship/Academic Honors
                                                     Received</label>
                                                 <input type="text" name="elemScholarship" class="form-control mb-2"
-                                                    id="elemScholarship">
+                                                    id="elemScholarship"
+                                                    value="<?php echo $educationalData['elemScholarship']; ?>">
 
                                                 <div class="row g-2 mb-2">
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
                                                             <input type="date" name="elemPeriod" class="form-control"
-                                                                id="floatingElemPeriod" placeholder="2020-12-31"
-                                                                >
+                                                                id="floatingElemPeriod"
+                                                                value="<?php echo $educationalData['elemPeriod']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingElemPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -489,8 +550,9 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                     <div class="col-md">
                                                         <div class="form-floating">
                                                             <input type="date" name="elemperiodEnd" class="form-control"
-                                                                id="floatingElemPeriodEnd" placeholder="2020-12-31"
-                                                                >
+                                                                id="floatingElemPeriodEnd"
+                                                                value="<?php echo $educationalData['elemperiodEnd']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingElemPeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
@@ -509,30 +571,36 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="secondschoolName">Name of School (Write in full)</label>
                                                 <input type="text" name="secondschoolName" class="form-control mb-2"
-                                                    id="secondschoolName">
+                                                    id="secondschoolName"
+                                                    value="<?php echo $educationalData['secondschoolName']; ?>">
                                                 <label for="secondbasicEducation">BasicEducation/Degree/Course (Write in
                                                     full)</label>
                                                 <input type="text" name="secondbasicEducation" class="form-control mb-2"
-                                                    id="secondbasicEducation">
+                                                    id="secondbasicEducation"
+                                                    value="<?php echo $educationalData['secondbasicEducation']; ?>">
                                                 <label for="secondhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
                                                 <input type="text" name="secondhighestLevel" class="form-control mb-2"
-                                                    id="secondhighestLevel">
+                                                    id="secondhighestLevel"
+                                                    value="<?php echo $educationalData['secondhighestLevel']; ?>">
                                                 <label for="secondYGraduated">Year Graduated</label>
                                                 <input type="text" name="secondYGraduated" class="form-control mb-2"
-                                                    id="secondYGraduated">
+                                                    id="secondYGraduated"
+                                                    value="<?php echo $educationalData['secondYGraduated']; ?>">
                                                 <label for="secondScholarship">Scholarship/Academic Honors
                                                     Received</label>
                                                 <input type="text" name="secondScholarship" class="form-control mb-2"
-                                                    id="secondScholarship">
+                                                    id="secondScholarship"
+                                                    value="<?php echo $educationalData['secondScholarship']; ?>">
 
                                                 <div class="row g-2 mb-2">
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="secondperiod" class="form-control"
-                                                                id="floatingSecondPeriod" placeholder="2020-12-31"
-                                                                >
+                                                            <input type="date" name="secondPeriod" class="form-control"
+                                                                id="floatingSecondPeriod"
+                                                                value="<?php echo $educationalData['secondPeriod']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingSecondPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -542,7 +610,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="secondperiodEnd"
                                                                 class="form-control" id="floatingSecondPeriodEnd"
-                                                                placeholder="2020-12-31" >
+                                                                value="<?php echo $educationalData['secondperiodEnd']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingSecondPeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
@@ -561,31 +630,40 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="vocationalschoolName">Name of School (Write in full)</label>
                                                 <input type="text" name="vocationalschoolName" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['vocationalschoolName']; ?>"
                                                     id="vocationalschoolName">
                                                 <label for="vocationalbasicEducation">BasicEducation/Degree/Course
                                                     (Write in
                                                     full)</label>
                                                 <input type="text" name="vocationalbasicEducation"
-                                                    class="form-control mb-2" id="vocationalbasicEducation">
+                                                    class="form-control mb-2"
+                                                    value="<?php echo $educationalData['vocationalbasicEducation']; ?>"
+                                                    id="vocationalbasicEducation">
                                                 <label for="vocationalhighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
                                                 <input type="text" name="vocationalhighestLevel"
-                                                    class="form-control mb-2" id="vocationalhighestLevel">
+                                                    class="form-control mb-2"
+                                                    value="<?php echo $educationalData['vocationalhighestLevel']; ?>"
+                                                    id="vocationalhighestLevel">
                                                 <label for="vocationalYGraduated">Year Graduated</label>
                                                 <input type="text" name="vocationalYGraduated" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['vocationalYGraduated']; ?>"
                                                     id="vocationYGraduated">
                                                 <label for="vocationalScholarship">Scholarship/Academic Honors
                                                     Received</label>
                                                 <input type="text" name="vocationalScholarship"
-                                                    class="form-control mb-2" id="vocationalScholarship">
+                                                    class="form-control mb-2"
+                                                    value="<?php echo $educationalData['vocationalScholarship']; ?>"
+                                                    id="vocationalScholarship">
 
                                                 <div class="row g-2 mb-2">
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="vocationalperiod"
-                                                                class="form-control" id="floatingVocationalPeriod"
-                                                                placeholder="2020-12-31" >
+                                                            <input type="date" name="vocationalPeriod"
+                                                                class="form-control"
+                                                                value="<?php echo $educationalData['vocationalPeriod']; ?>"
+                                                                id="floatingVocationalPeriod" placeholder="2020-12-31">
                                                             <label for="floatingVocationalPeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -594,8 +672,10 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                     <div class="col-md">
                                                         <div class="form-floating">
                                                             <input type="date" name="vocationalperiodEnd"
-                                                                class="form-control" id="floatingVocationalPeriodEnd"
-                                                                placeholder="2020-12-31" >
+                                                                class="form-control"
+                                                                value="<?php echo $educationalData['vocationalperiodEnd']; ?>"
+                                                                id="floatingVocationalPeriodEnd"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingVocationalPeriodEnd">Period of
                                                                 Attendance
                                                                 To<span class="required-color">*</span></label>
@@ -615,31 +695,38 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                             <div class="form-group mt-2">
                                                 <label for="collegeschoolName">Name of School (Write in full)</label>
                                                 <input type="text" name="collegeschoolName" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['collegeschoolName']; ?>"
                                                     id="collegeschoolName">
                                                 <label for="collegebasicEducation">BasicEducation/Degree/Course (Write
                                                     in
                                                     full)</label>
                                                 <input type="text" name="collegebasicEducation"
-                                                    class="form-control mb-2" id="collegebasicEducation">
+                                                    class="form-control mb-2"
+                                                    value="<?php echo $educationalData['collegebasicEducation']; ?>"
+                                                    id="collegebasicEducation">
                                                 <label for="collegehighestLevel">Highest Level/Units Earned (if not
                                                     graduated)</label>
                                                 <input type="text" name="collegehighestLevel" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['collegehighestLevel']; ?>"
                                                     id="collegehighestLevel">
                                                 <label for="collegeYGraduated">Year Graduated</label>
                                                 <input type="text" name="collegeYGraduated" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['collegeYGraduated']; ?>"
                                                     id="collegeYGraduated">
                                                 <label for="collegeScholarship">Scholarship/Academic Honors
                                                     Received</label>
                                                 <input type="text" name="collegeScholarship" class="form-control mb-2"
+                                                    value="<?php echo $educationalData['collegeScholarship']; ?>"
                                                     id="collegeScholarship">
 
                                                 <div class="row g-2 mb-2">
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="collegeperiod" class="form-control"
-                                                                id="floatingCollegePeriod" placeholder="2020-12-31"
-                                                                >
+                                                            <input type="date" name="collegePeriod" class="form-control"
+                                                                id="floatingCollegePeriod"
+                                                                value="<?php echo $educationalData['collegePeriod']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingCollegePeriod">Period of Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
@@ -649,7 +736,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                         <div class="form-floating">
                                                             <input type="date" name="collegeperiodEnd"
                                                                 class="form-control" id="floatingCollegePeriodEnd"
-                                                                placeholder="2020-12-31" >
+                                                                value="<?php echo $educationalData['collegeperiodEnd']; ?>"
+                                                                placeholder="2020-12-31">
                                                             <label for="floatingCollegePeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
