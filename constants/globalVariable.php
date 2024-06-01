@@ -125,8 +125,76 @@ function getEmployeeData($employee_id)
     return $employeeData;
 }
 
-function getEmployeeInfo($employee_id){
-    //
+function getEmployeePersonalInfo($employee_id){
+    global $database;
+
+    $personalData = [];
+
+    $fetchPersonalInfoQuery = "SELECT p.* FROM tbl_personal_info p LEFT JOIN tbl_useraccounts ua ON ua.employee_id = p.employee_id WHERE p.employee_id = ? AND UPPER(ua.archive) != 'DELETED'";
+
+    $fetchPersonalStatement = $database->prepare($fetchPersonalInfoQuery);
+
+    if ($fetchPersonalStatement) {
+        $fetchPersonalStatement->bind_param("s", $employee_id);
+        $fetchPersonalStatement->execute();
+        $fetchPersonalResult = $fetchPersonalStatement->get_result();
+
+        if ($fetchPersonalResult->num_rows > 0) {
+            $personalData = $fetchPersonalResult->fetch_assoc();
+        }
+
+        $fetchPersonalStatement->close();
+    }
+
+    return $personalData;
+}
+
+function getEmployeeFamilyBackground($employee_id){
+    global $database;
+
+    $familyBackgroundData = [];
+
+    $fetchFamilyBackgroundQuery = "SELECT p.* FROM tbl_family_background p LEFT JOIN tbl_useraccounts ua ON ua.employee_id = p.employee_id WHERE p.employee_id = ? AND UPPER(ua.archive) != 'DELETED'";
+
+    $fetchFamilyStatement = $database->prepare($fetchFamilyBackgroundQuery);
+
+    if ($fetchFamilyStatement) {
+        $fetchFamilyStatement->bind_param("s", $employee_id);
+        $fetchFamilyStatement->execute();
+        $fetchFamilyResult = $fetchFamilyStatement->get_result();
+
+        if ($fetchFamilyResult->num_rows > 0) {
+            $familyBackgroundData = $fetchFamilyResult->fetch_assoc();
+        }
+
+        $fetchFamilyStatement->close();
+    }
+
+    return $familyBackgroundData;
+}
+
+function getEmployeeEducationalBackground($employee_id){
+    global $database;
+
+    $educationalBackgroundData = [];
+
+    $fetchEducationalBackgroundQuery = "SELECT p.* FROM tbl_educational_background p LEFT JOIN tbl_useraccounts ua ON ua.employee_id = p.employee_id WHERE p.employee_id = ? AND UPPER(ua.archive) != 'DELETED'";
+
+    $fetchEducationalStatement = $database->prepare($fetchEducationalBackgroundQuery);
+
+    if ($fetchEducationalStatement) {
+        $fetchEducationalStatement->bind_param("s", $employee_id);
+        $fetchEducationalStatement->execute();
+        $fetchEducationalResult = $fetchEducationalStatement->get_result();
+
+        if ($fetchEducationalResult->num_rows > 0) {
+            $educationalBackgroundData = $fetchEducationalResult->fetch_assoc();
+        }
+
+        $fetchEducationalStatement->close();
+    }
+
+    return $educationalBackgroundData;
 }
 
 function getAccountRole($employeeId) {

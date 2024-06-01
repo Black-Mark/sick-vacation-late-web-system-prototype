@@ -131,17 +131,20 @@ function handleLeaveTypeChange() {
     var typeOfLeave = document.querySelector('input[name="typeOfLeave"]:checked') ? document.querySelector('input[name="typeOfLeave"]:checked').value : '';
     var typeOfVacationLeave = document.querySelector('input[name="typeOfVacationLeave"]:checked') ? document.querySelector('input[name="typeOfVacationLeave"]:checked').value : '';
     var typeOfSickLeave = document.querySelector('input[name="typeOfSickLeave"]:checked') ? document.querySelector('input[name="typeOfSickLeave"]:checked').value : '';
+    var allLeave = document.getElementById('allLeave');
+    var splLeave = document.getElementById('splLeave');
+    var workingDays = document.getElementById('workingDays');
+
+    var inclusiveDateStart = document.getElementById('inclusiveDateStart');
+    var inclusiveDateEnd = document.getElementById('inclusiveDateEnd');
+
+    var inclusiveDateOne = document.getElementById('inclusiveDateSelectOne');
+    var inclusiveDateTwo = document.getElementById('inclusiveDateSelectTwo');
+    var inclusiveDateThree = document.getElementById('inclusiveDateSelectThree');
 
     var noaomlfLink = document.getElementById('noaomlfLink');
     var noaomlfLinkBtnDummy = document.getElementById('noaomlfLinkBtnDummy');
-
-    if (typeOfLeave === 'Maternity Leave' || typeOfLeave === 'Paternity Leave') {
-        noaomlfLink.style.display = 'block';
-        noaomlfLinkBtnDummy.style.display = 'none';
-    } else {
-        noaomlfLink.style.display = 'none';
-        noaomlfLinkBtnDummy.style.display = 'block';
-    }
+    var today = new Date().toISOString().split('T')[0];
 
     // Disable all leaveclass inputs
     var leaveClassInputs = document.querySelectorAll('.leave-app-form-leaveclass-container input');
@@ -309,6 +312,31 @@ function handleLeaveTypeChange() {
         // });
     }
 
+    if (typeOfLeave === 'Maternity Leave' || typeOfLeave === 'Paternity Leave') {
+        noaomlfLink.style.display = 'block';
+        noaomlfLinkBtnDummy.style.display = 'none';
+    } else {
+        noaomlfLink.style.display = 'none';
+        noaomlfLinkBtnDummy.style.display = 'block';
+    }
+
+    if (typeOfLeave === 'Special Privilege Leave') {
+        allLeave.style.display = 'none';
+        splLeave.style.display = 'block';
+        workingDays.value = 1;
+
+        inclusiveDateStart.value = today;
+        inclusiveDateEnd.value = today;
+    } else {
+        allLeave.style.display = 'block';
+        splLeave.style.display = 'none';
+        workingDays.value = 1;
+
+        inclusiveDateOne.value = today;
+        inclusiveDateTwo.value = today;
+        inclusiveDateThree.value = today;
+    }
+
     if (otherTypeOfLeaveInput.value.trim() !== '') {
         // leaveTypeRadios.forEach(function (radio) {
         //     radio.checked = false;
@@ -337,3 +365,39 @@ function handleLeaveTypeChange() {
         });
     }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Get the date input elements
+    const dateInputs = [
+        document.getElementById('inclusiveDateSelectOne'),
+        document.getElementById('inclusiveDateSelectTwo'),
+        document.getElementById('inclusiveDateSelectThree')
+    ];
+
+    // Get the workingDays input element
+    const workingDaysInput = document.getElementById('workingDays');
+
+    // Function to update working days based on date inputs
+    function updateWorkingDays() {
+        // Create a set to hold unique dates
+        const uniqueDates = new Set();
+
+        // Add non-empty dates to the set
+        dateInputs.forEach(input => {
+            if (input.value) {
+                uniqueDates.add(input.value);
+            }
+        });
+
+        // Update the workingDays input value based on the size of the set
+        workingDaysInput.value = uniqueDates.size;
+    }
+
+    // Add event listeners to update working days on date change
+    dateInputs.forEach(input => {
+        input.addEventListener('change', updateWorkingDays);
+    });
+
+    // Initialize the working days value on page load
+    updateWorkingDays();
+});
