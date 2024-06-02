@@ -145,6 +145,18 @@ body.webpage-background-cover {
     cursor: default;
 }
 
+.title-text-caption-small {
+    font-family: 'Times New Roman', serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px var(--webcolorlight);
+    color: var(--webcolor);
+    text-transform: uppercase;
+    padding: 0px;
+    margin: 0px;
+    cursor: pointer;
+}
+
 .underline-input {
     background-color: transparent;
     outline: none;
@@ -790,6 +802,10 @@ body::-webkit-scrollbar-thumb {
     cursor: default;
 } */
 
+.error-message {
+    color: red;
+    font-size: 0.875em;
+}
 
 
 /* Account Profile */
@@ -802,6 +818,22 @@ body::-webkit-scrollbar-thumb {
 
 .account-profile-subject {
     min-width: 120px;
+    margin-right: 10px;
+    margin: 0rem;
+    padding: 0rem;
+    font-weight: bold;
+}
+
+.account-profile-subject-click {
+    min-width: 200px;
+    margin-right: 10px;
+    margin: 0rem;
+    padding: 0rem;
+    font-weight: bold;
+}
+
+.account-profile-subject-educ {
+    min-width: 300px;
     margin-right: 10px;
     margin: 0rem;
     padding: 0rem;

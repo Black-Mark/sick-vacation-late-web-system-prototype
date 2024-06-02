@@ -34,6 +34,28 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     <title>Human Resources of Municipality of Indang - Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
+
+    <!-- <script>
+    function validateForm() {
+        var fromYearCol = document.getElementById('floatingCollegePeriod').value;
+        var toYearCol = document.getElementById('floatingCollegePeriodEnd').value;
+
+        fromYearCol = parseInt(fromYearCol, 10);
+        toYearCol = parseInt(toYearCol, 10);
+
+        var errorMessage = document.getElementById('error-message');
+
+        if (toYearCol <= fromYearCol) {
+            errorMessage.textContent = "Should be greater than Period of Attendance From";
+            return false;
+        } else {
+            errorMessage.textContent = "";
+        }
+
+        return true;
+    }
+    </script> -->
+
     <?php
     include($constants_file_html_credits);
     ?>
@@ -165,7 +187,7 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                             if (empty($employeeData['birthdate']) || $employeeData['birthdate'] == '0000-00-00') {
                                 echo 'Not Specified';
                             } else {
-                                echo $employeeData['birthdate'];
+                                echo convertDateFormat($employeeData['birthdate'], "Y-m-d", "m-d-Y");
                             }
                             ?>
                         </span>
@@ -196,26 +218,484 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                     <div class="d-flex flex-row gap-1 align-items-center">
                         <span class="account-profile-subject">Date Started:</span>
                         <span class="account-profile-context">
-                            <?php echo $employeeData['dateStarted']; ?>
+                            <?php echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y"); ?>
                         </span>
                     </div>
 
                 </div>
 
+                <div class="account-profile-container mt-5 print-form-container">
+                    <details>
+                        <summary class="form-floating mb-2 title-text-caption-small">
+                            Click for Personal Information
+                        </summary>
+                        <div class="form-group mt-2">
+                            <div>
+                                <h3 class="title-text">Personal Information</h3>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Place of Birth: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['birthplace']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Height (m): </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['height']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Weight (kg): </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['weight']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Blood Type: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['bloodtype']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">GSIS ID No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['gsis']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">PAG-IBIG ID No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['pagibig']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">PHILHEALTH No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['philhealth']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">SSS No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['sss']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">TIN No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['tin']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Agency Employee No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['agency']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Citizenship: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['citizenship']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                Permanent Address
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">House/Block/Lot No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['houseNo']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Street: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['street']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Subdivision/Village : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['subdivision']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Barangay : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['barangay']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">City/Municipality : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['city']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Province : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['province']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Zip Code: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['zipCode']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Telephone No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['telephone']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Mobile No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $personalData['mobile']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="account-profile-container print-form-container">
+                    <details>
+                        <summary class="form-floating mb-2 title-text-caption-small">
+                            Click for Family Background
+                        </summary>
+                        <div class="form-group mt-2">
+                            <div>
+                                <h3 class="title-text">Family Background</h3>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Spouse's Surname: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spousesurname']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Spouse's First Name: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spousename']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Spouse's Middle Name: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spousemiddlename']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Name Extension (Jr, Sr): </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spousenameExtension']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Spouse's Occupation : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spouseOccupation']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Employer/Business Name : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spouseEmployer']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Business Address : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spouseBusinessAddress']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Telephone No. : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['spouseTelephone']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Name of Children : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['nameOfChildren']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Father's Surname : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['fathersSurname']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">First Name: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['fathersFirstname']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Middle Name: </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['fathersMiddlename']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Name Extension (Jr, Sr): </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['fathersnameExtension']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                Mother's Maiden Name
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Surname : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['MSurname']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">First Name : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['MName']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-click">Middle Name : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $familyData['MMName']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="account-profile-container print-form-container">
+                    <details>
+                        <summary class="form-floating mb-2 title-text-caption-small">
+                            Click for Educational Background
+                        </summary>
+                        <div class="form-group mt-2">
+                            <div>
+                                <h3 class="title-text">Educational Background</h3>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Graduate Studies : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['graduateStudies']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                Elementary
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Name of School : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemschoolName']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Basic Education/Degree/Course : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elembasicEducation']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Highest Level/Unit Earned : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemhighestLevel']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Year Graduated : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemYGraduated']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Scholarship/Academic Honors Received :
+                                </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemScholarship']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance From : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemPeriod']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance To : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['elemperiodEnd']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                Secondary
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Name of School : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondschoolName']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Basic Education/Degree/Course : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondbasicEducation']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Highest Level/Unit Earned : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondhighestLevel']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Year Graduated : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondYGraduated']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Scholarship/Academic Honors Received :
+                                </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondScholarship']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance From : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondPeriod']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance To : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['secondperiodEnd']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                Vocational / Trade Course
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Name of School : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalschoolName']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Basic Education/Degree/Course : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalbasicEducation']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Highest Level/Unit Earned : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalhighestLevel']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Year Graduated : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalYGraduated']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Scholarship/Academic Honors Received :
+                                </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalScholarship']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance From : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalPeriod']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance To : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['vocationalperiodEnd']; ?>
+                                </span>
+                            </div>
+                            <div class="font-italic text-center">
+                                College
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Name of School : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegeschoolName']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Basic Education/Degree/Course : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegebasicEducation']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Highest Level/Unit Earned : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegehighestLevel']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Year Graduated : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegeYGraduated']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Scholarship/Academic Honors Received :
+                                </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegeScholarship']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance From : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegePeriod']; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-row mb-2 gap-1 align-items-center">
+                                <span class="account-profile-subject-educ">Period of Attendance To : </span>
+                                <span class="account-profile-context">
+                                    <?php echo $educationalData['collegeperiodEnd']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
                 <!--Button here for Personal Data Sheets -->
 
-                <button type="button" class="custom-regular-button" data-toggle="modal" data-target="#addEmployee">
-                    Add Employee Information
-                </button>
+
+                <div style="display: flex; justify-content: flex-end; width: 100%;">
+                    <button type="button" class="custom-regular-button"
+                        style="white-space: nowrap; padding: 5px 10px; width: auto; font-size: 12px;"
+                        data-toggle="modal" data-target="#addEmployee">
+                        Update Employee Information
+                    </button>
+                </div>
             </div>
 
             <!-- Add Modal -->
             <form action="<?php echo $action_add_employeeInfo; ?>" method="post" class="modal fade" id="addEmployee"
-                tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true">
+                tabindex="-1" role="dialog" aria-labelledby="addEmployeeTitle" aria-hidden="true"
+                onsubmit="return validateForm()">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addEmployeeModalLongTitle">Personal Employee Information</h5>
+                            <h5 class="modal-title" id="addEmployeeModalLongTitle">Personal Employee Information
+                            </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -231,7 +711,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                         Information</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#familyBackground" role="tab">II. Family
+                                    <a class="nav-link" data-toggle="tab" href="#familyBackground" role="tab">II.
+                                        Family
                                         Background</a>
                                 </li>
                                 <li class="nav-item">
@@ -346,6 +827,10 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                 <input type="text" name="subdivision" class="form-control mb-2"
                                                     id="subdivision" value="<?php echo $personalData['subdivision']; ?>"
                                                     placeholder="Enter Subdivision/Village">
+                                                <label for="barangay">Barangay:</label>
+                                                <input type="text" name="barangay" class="form-control mb-2"
+                                                    id="barangay" value="<?php echo $personalData['barangay']; ?>"
+                                                    placeholder="Enter Subdivision/Village">
                                                 <label for="city">City/Municipality:</label>
                                                 <input type="text" name="city" class="form-control mb-2" id="city"
                                                     value="<?php echo $personalData['city']; ?>"
@@ -435,11 +920,11 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                         <label for="floatingSpouseTelephone">Telephone No.
                                     </div>
                                     <div class="form-floating mb-2">
-                                        <input type="number" name="numberOfChildren" class="form-control"
-                                            id="floatingNumberOfChildren"
-                                            value="<?php echo $familyData['numberOfChildren']; ?>"
-                                            placeholder="Number of Children">
-                                        <label for="floatingNumberOfChildren">Name of Children (Write in fullname)
+                                        <input type="text" name="nameOfChildren" class="form-control"
+                                            id="floatingNameOfChildren"
+                                            value="<?php echo $familyData['nameOfChildren']; ?>"
+                                            placeholder="Name of Children">
+                                        <label for="floatingNameOfChildren">Name of Children (Write in fullname)
                                     </div>
                                     <div class="form-floating mb-2">
                                         <input type="text" name="fathersSurname" class="form-control"
@@ -514,7 +999,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                 <input type="text" name="elemschoolName" class="form-control mb-2"
                                                     id="elemschoolName"
                                                     value="<?php echo $educationalData['elemschoolName']; ?>">
-                                                <label for="elembasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="elembasicEducation">BasicEducation/Degree/Course (Write
+                                                    in
                                                     full)</label>
                                                 <input type="text" name="elembasicEducation" class="form-control mb-2"
                                                     id="elembasicEducation"
@@ -538,7 +1024,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="elemPeriod" class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="elemPeriod" class="form-control"
                                                                 id="floatingElemPeriod"
                                                                 value="<?php echo $educationalData['elemPeriod']; ?>"
                                                                 placeholder="2020-12-31">
@@ -549,7 +1036,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="elemperiodEnd" class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="elemperiodEnd" class="form-control"
                                                                 id="floatingElemPeriodEnd"
                                                                 value="<?php echo $educationalData['elemperiodEnd']; ?>"
                                                                 placeholder="2020-12-31">
@@ -573,7 +1061,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                 <input type="text" name="secondschoolName" class="form-control mb-2"
                                                     id="secondschoolName"
                                                     value="<?php echo $educationalData['secondschoolName']; ?>">
-                                                <label for="secondbasicEducation">BasicEducation/Degree/Course (Write in
+                                                <label for="secondbasicEducation">BasicEducation/Degree/Course
+                                                    (Write in
                                                     full)</label>
                                                 <input type="text" name="secondbasicEducation" class="form-control mb-2"
                                                     id="secondbasicEducation"
@@ -597,7 +1086,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="secondPeriod" class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="secondPeriod" class="form-control"
                                                                 id="floatingSecondPeriod"
                                                                 value="<?php echo $educationalData['secondPeriod']; ?>"
                                                                 placeholder="2020-12-31">
@@ -608,11 +1098,13 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="secondperiodEnd"
-                                                                class="form-control" id="floatingSecondPeriodEnd"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="secondperiodEnd" class="form-control"
+                                                                id="floatingSecondPeriodEnd"
                                                                 value="<?php echo $educationalData['secondperiodEnd']; ?>"
                                                                 placeholder="2020-12-31">
-                                                            <label for="floatingSecondPeriodEnd">Period of Attendance
+                                                            <label for="floatingSecondPeriodEnd">Period of
+                                                                Attendance
                                                                 To<span class="required-color">*</span></label>
                                                         </div>
                                                     </div>
@@ -628,7 +1120,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                 Vocational / Trade Course
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="vocationalschoolName">Name of School (Write in full)</label>
+                                                <label for="vocationalschoolName">Name of School (Write in
+                                                    full)</label>
                                                 <input type="text" name="vocationalschoolName" class="form-control mb-2"
                                                     value="<?php echo $educationalData['vocationalschoolName']; ?>"
                                                     id="vocationalschoolName">
@@ -639,7 +1132,8 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                     class="form-control mb-2"
                                                     value="<?php echo $educationalData['vocationalbasicEducation']; ?>"
                                                     id="vocationalbasicEducation">
-                                                <label for="vocationalhighestLevel">Highest Level/Units Earned (if not
+                                                <label for="vocationalhighestLevel">Highest Level/Units Earned (if
+                                                    not
                                                     graduated)</label>
                                                 <input type="text" name="vocationalhighestLevel"
                                                     class="form-control mb-2"
@@ -660,19 +1154,20 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="vocationalPeriod"
-                                                                class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="vocationalPeriod" class="form-control"
                                                                 value="<?php echo $educationalData['vocationalPeriod']; ?>"
                                                                 id="floatingVocationalPeriod" placeholder="2020-12-31">
-                                                            <label for="floatingVocationalPeriod">Period of Attendance
+                                                            <label for="floatingVocationalPeriod">Period of
+                                                                Attendance
                                                                 From<span class="required-color">*</span></label>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="vocationalperiodEnd"
-                                                                class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="vocationalperiodEnd" class="form-control"
                                                                 value="<?php echo $educationalData['vocationalperiodEnd']; ?>"
                                                                 id="floatingVocationalPeriodEnd"
                                                                 placeholder="2020-12-31">
@@ -693,11 +1188,13 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                 College
                                             </summary>
                                             <div class="form-group mt-2">
-                                                <label for="collegeschoolName">Name of School (Write in full)</label>
+                                                <label for="collegeschoolName">Name of School (Write in
+                                                    full)</label>
                                                 <input type="text" name="collegeschoolName" class="form-control mb-2"
                                                     value="<?php echo $educationalData['collegeschoolName']; ?>"
                                                     id="collegeschoolName">
-                                                <label for="collegebasicEducation">BasicEducation/Degree/Course (Write
+                                                <label for="collegebasicEducation">BasicEducation/Degree/Course
+                                                    (Write
                                                     in
                                                     full)</label>
                                                 <input type="text" name="collegebasicEducation"
@@ -720,10 +1217,10 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
                                                     id="collegeScholarship">
 
                                                 <div class="row g-2 mb-2">
-
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="collegePeriod" class="form-control"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="collegePeriod" class="form-control"
                                                                 id="floatingCollegePeriod"
                                                                 value="<?php echo $educationalData['collegePeriod']; ?>"
                                                                 placeholder="2020-12-31">
@@ -734,12 +1231,14 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
 
                                                     <div class="col-md">
                                                         <div class="form-floating">
-                                                            <input type="date" name="collegeperiodEnd"
-                                                                class="form-control" id="floatingCollegePeriodEnd"
+                                                            <input type="number" min="1924" max="3000" step="1"
+                                                                name="collegeperiodEnd" class="form-control"
+                                                                id="floatingCollegePeriodEnd"
                                                                 value="<?php echo $educationalData['collegeperiodEnd']; ?>"
-                                                                placeholder="2020-12-31">
+                                                                placeholder="2023">
                                                             <label for="floatingCollegePeriodEnd">Period of Attendance
                                                                 To<span class="required-color">*</span></label>
+                                                            <div id="error-message" class="error-message"></div>
                                                         </div>
                                                     </div>
                                                 </div>

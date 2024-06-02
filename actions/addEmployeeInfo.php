@@ -22,6 +22,7 @@ if (isset($_POST['addEmployeeInfo'])) {
     $houseNo = sanitizeInput($_POST['houseNo'] ?? '');
     $street = sanitizeInput($_POST['street'] ?? '');
     $subdivision = sanitizeInput($_POST['subdivision'] ?? '');
+    $barangay = sanitizeInput($_POST['barangay'] ?? '');
     $city = sanitizeInput($_POST['city'] ?? '');
     $province = sanitizeInput($_POST['province'] ?? '');
     $zipCode = sanitizeInput($_POST['zipCode'] ?? '');
@@ -36,7 +37,7 @@ if (isset($_POST['addEmployeeInfo'])) {
     $spouseEmployer = sanitizeInput($_POST['spouseEmployer'] ?? '');
     $spouseBusinessAddress = sanitizeInput($_POST['spouseBusinessAddress'] ?? '');
     $spouseTelephone = sanitizeInput($_POST['spouseTelephone'] ?? '');
-    $numberOfChildren = sanitizeInput($_POST['numberOfChildren'] ?? '');
+    $nameOfChildren = sanitizeInput($_POST['nameOfChildren'] ?? '');
     $fathersSurname = sanitizeInput($_POST['fathersSurname'] ?? '');
     $fathersFirstname = sanitizeInput($_POST['fathersFirstname'] ?? '');
     $fathersMiddlename = sanitizeInput($_POST['fathersMiddlename'] ?? '');
@@ -90,16 +91,16 @@ if (isset($_POST['addEmployeeInfo'])) {
 
         if ($result->num_rows > 0) {
             // Update the existing record
-            $updateSql = "UPDATE tbl_personal_info SET birthplace=?, height=?, weight=?, bloodtype=?, gsis=?, pagibig=?, philhealth=?, sss=?, tin=?, agency=?, citizenship=?, houseNo=?, street=?, subdivision=?, city=?, province=?, zipCode=?, telephone=?, mobile=? WHERE employee_id=?";
+            $updateSql = "UPDATE tbl_personal_info SET birthplace=?, height=?, weight=?, bloodtype=?, gsis=?, pagibig=?, philhealth=?, sss=?, tin=?, agency=?, citizenship=?, houseNo=?, street=?, subdivision=?, barangay=?, city=?, province=?, zipCode=?, telephone=?, mobile=? WHERE employee_id=?";
             $updatepersonalStmt = $database->prepare($updateSql);
-            $updatepersonalStmt->bind_param("siisiiiiisssssssiiss", $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile, $employeeId);
+            $updatepersonalStmt->bind_param("siisiiiiissssssssiiss", $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $barangay, $city, $province, $zipCode, $telephone, $mobile, $employeeId);
             $updatepersonalStmt->execute();
             // echo "Record updated successfully";
         } else {
             // Insert a new record
-            $insertSql = "INSERT INTO tbl_personal_info (employee_id, birthplace, height, weight, bloodtype, gsis, pagibig, philhealth, sss, tin, agency, citizenship, houseNo, street, subdivision, city, province, zipCode, telephone, mobile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertSql = "INSERT INTO tbl_personal_info (employee_id, birthplace, height, weight, bloodtype, gsis, pagibig, philhealth, sss, tin, agency, citizenship, houseNo, street, subdivision, barangay, city, province, zipCode, telephone, mobile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insertpersonalStmt = $database->prepare($insertSql);
-            $insertpersonalStmt->bind_param("ssiisiiiiisssssssiis", $employeeId, $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $city, $province, $zipCode, $telephone, $mobile);
+            $insertpersonalStmt->bind_param("ssiisiiiiissssssssiis", $employeeId, $birthplace, $height, $weight, $bloodtype, $gsis, $pagibig, $philhealth, $sss, $tin, $agency, $citizenship, $houseNo, $street, $subdivision, $barangay, $city, $province, $zipCode, $telephone, $mobile);
             $insertpersonalStmt->execute();
             // echo "New record created successfully";
         }
@@ -114,16 +115,16 @@ if (isset($_POST['addEmployeeInfo'])) {
 
         if ($result->num_rows > 0) {
             // Update the existing record
-            $updateSql = "UPDATE tbl_family_background SET spousesurname=?, spousename=?, spousemiddlename=?, spousenameExtension=?, spouseOccupation=?, spouseEmployer=?, spouseBusinessAddress=?, spouseTelephone=?, numberOfChildren=?, fathersSurname=?, fathersFirstname=?, fathersMiddlename=?, fathersnameExtension=?, MSurname=?, MName=?, MMName=? WHERE employee_id=?";
+            $updateSql = "UPDATE tbl_family_background SET spousesurname=?, spousename=?, spousemiddlename=?, spousenameExtension=?, spouseOccupation=?, spouseEmployer=?, spouseBusinessAddress=?, spouseTelephone=?, nameOfChildren=?, fathersSurname=?, fathersFirstname=?, fathersMiddlename=?, fathersnameExtension=?, MSurname=?, MName=?, MMName=? WHERE employee_id=?";
             $updatefamilyStmt = $database->prepare($updateSql);
-            $updatefamilyStmt->bind_param("sssssssiissssssss", $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $numberOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName, $employeeId);
+            $updatefamilyStmt->bind_param("sssssssisssssssss", $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $nameOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName, $employeeId);
             $updatefamilyStmt->execute();
             // echo "Record updated successfully";
         } else {
             // Insert a new record
-            $insertSql = "INSERT INTO tbl_family_background (employee_id, spousesurname, spousename, spousemiddlename, spousenameExtension, spouseOccupation, spouseEmployer, spouseBusinessAddress, spouseTelephone, numberOfChildren, fathersSurname, fathersFirstname, fathersMiddlename, fathersnameExtension, MSurname, MName, MMName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertSql = "INSERT INTO tbl_family_background (employee_id, spousesurname, spousename, spousemiddlename, spousenameExtension, spouseOccupation, spouseEmployer, spouseBusinessAddress, spouseTelephone, nameOfChildren, fathersSurname, fathersFirstname, fathersMiddlename, fathersnameExtension, MSurname, MName, MMName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insertfamilyStmt = $database->prepare($insertSql);
-            $insertfamilyStmt->bind_param("ssssssssiisssssss", $employeeId, $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $numberOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName);
+            $insertfamilyStmt->bind_param("ssssssssisssssss", $employeeId, $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $nameOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName);
             $insertfamilyStmt->execute();
             // echo "New record created successfully";
         }
