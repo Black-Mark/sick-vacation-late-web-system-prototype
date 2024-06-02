@@ -81,7 +81,7 @@ include($constants_variables);
                 <div class="item-detail-container mb-2">
                     <a href="<?php echo $location_admin_datamanagement_archive_leavedata; ?>"
                         class="item-detail-container-summary">
-                        Leave Data Form
+                        Leave Data
                     </a>
                 </div>
                 <div class="item-detail-container">

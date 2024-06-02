@@ -77,9 +77,8 @@ $designations = getAllDesignations();
 
                     <div class="form-floating mb-2">
                         <input type="text" name="DesignationDescription" class="form-control"
-                            id="floatingDesignationDescription" placeholder="Enter Description ..." required>
-                        <label for="floatingDesignationDescription">Description <span
-                                class="required-color">*</span></label>
+                            id="floatingDesignationDescription" placeholder="Enter Description ...">
+                        <label for="floatingDesignationDescription">Description</label>
                     </div>
 
                 </div>
@@ -113,10 +112,8 @@ $designations = getAllDesignations();
 
                     <div class="form-floating mb-2">
                         <input type="text" name="designationDescription" class="form-control"
-                            id="floatingEditDesignationDescription" placeholder="Enter to Edit Description ..."
-                            required>
-                        <label for="floatingEditDesignationDescription">Description <span
-                                class="required-color">*</span></label>
+                            id="floatingEditDesignationDescription" placeholder="Enter to Edit Description ...">
+                        <label for="floatingEditDesignationDescription">Description</label>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -9,7 +9,43 @@ document.addEventListener("DOMContentLoaded", function () {
     var currentYear = new Date().getFullYear();
     var addPeriod = null;
     var addPeriodEnd = null;
+    var addPeriodOne = null;
+    var addPeriodTwo = null;
+    var addPeriodThree = null;
     var addDateOfAction = null;
+
+    function initialAddLeaveData() {
+        var particularType = document.getElementById('floatingParticularType');
+        var allLeave = document.getElementById('allLeave');
+        var splLeave = document.getElementById('splLeave');
+        if (allLeave && splLeave) {
+            if (particularType.value == 'Special Privilege Leave') {
+                allLeave.style.display = 'none';
+                splLeave.style.display = 'block';
+            } else {
+                allLeave.style.display = 'block';
+                splLeave.style.display = 'none';
+            }
+        }
+    }
+
+    function initialEditLeaveData() {
+        var particularType = document.getElementById('floatingEditParticularType');
+        var allLeave = document.getElementById('allLeaveEdit');
+        var splLeave = document.getElementById('splLeaveEdit');
+        if (allLeave && splLeave) {
+            if (particularType.value == 'Special Privilege Leave') {
+                allLeave.style.display = 'none';
+                splLeave.style.display = 'block';
+            } else {
+                allLeave.style.display = 'block';
+                splLeave.style.display = 'none';
+            }
+        }
+    }
+
+    initialAddLeaveData();
+    initialEditLeaveData();
 
     $(document).ready(function () {
         function formatDate(date) {
@@ -18,8 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-
-
 
         // Computation of Days
 
@@ -44,6 +78,50 @@ document.addEventListener("DOMContentLoaded", function () {
                 $('#floatingDayInput').val(days);
             }
         }
+
+        $('#floatingParticularType').on('change', function () {
+            var particularType = document.getElementById('floatingParticularType');
+            var period = document.getElementById('floatingPeriod');
+            var periodEnd = document.getElementById('floatingPeriodEnd');
+            var periodOne = document.getElementById('floatingPeriodOne');
+            var periodTwo = document.getElementById('floatingPeriodTwo');
+            var periodThree = document.getElementById('floatingPeriodThree');
+            var allLeave = document.getElementById('allLeave');
+            var splLeave = document.getElementById('splLeave');
+            if (allLeave && splLeave) {
+                if (particularType.value == 'Special Privilege Leave') {
+                    updateWorkingDays();
+                    allLeave.style.display = 'none';
+                    splLeave.style.display = 'block';
+                } else {
+                    updateDays();
+                    allLeave.style.display = 'block';
+                    splLeave.style.display = 'none';
+                }
+            }
+        });
+
+        $('#floatingEditParticularType').on('change', function () {
+            var particularType = document.getElementById('floatingEditParticularType');
+            // var period = document.getElementById('floatingPeriod');
+            // var periodEnd = document.getElementById('floatingPeriodEnd');
+            // var periodOne = document.getElementById('floatingPeriodOne');
+            // var periodTwo = document.getElementById('floatingPeriodTwo');
+            // var periodThree = document.getElementById('floatingPeriodThree');
+            var allLeave = document.getElementById('allLeaveEdit');
+            var splLeave = document.getElementById('splLeaveEdit');
+            if (allLeave && splLeave) {
+                if (particularType.value == 'Special Privilege Leave') {
+                    updateEditWorkingDays();
+                    allLeave.style.display = 'none';
+                    splLeave.style.display = 'block';
+                } else {
+                    updateEditDays();
+                    allLeave.style.display = 'block';
+                    splLeave.style.display = 'none';
+                }
+            }
+        });
 
         $('#floatingPeriod').on('change', function () {
             // Get the values of the two input fields
@@ -311,24 +389,35 @@ document.addEventListener("DOMContentLoaded", function () {
             if (selectedYear == currentYear) {
                 addPeriod = formatDate(new Date());
                 addPeriodEnd = formatDate(new Date());
+                addPeriodOne = formatDate(new Date());
+                addPeriodTwo = formatDate(new Date());
+                addPeriodThree = formatDate(new Date());
                 addDateOfAction = formatDate(new Date());
             } else {
                 // If not the current year, set values to January 01, selectedYear
-                addPeriod = addPeriodEnd = formatDate(new Date(selectedYear, 0, 1));
+                addPeriod = addPeriodEnd = addPeriodOne = addPeriodTwo = addPeriodThree = formatDate(new Date(selectedYear, 0, 1));
                 addDateOfAction = formatDate(new Date(selectedYear, 0, 1));
             }
 
             // Set form field values
             $('#floatingPeriod').val(addPeriod);
             $('#floatingPeriodEnd').val(addPeriodEnd);
+            $('#floatingPeriodOne').val(addPeriodOne);
+            $('#floatingPeriodTwo').val(addPeriodTwo);
+            $('#floatingPeriodThree').val(addPeriodThree);
             $('#floatingDateOfAction').val(addDateOfAction);
 
             // Save the state
             addLeaveDataRecordState = {
                 period: addPeriod,
                 periodEnd: addPeriodEnd,
+                periodOne: addPeriodOne,
+                periodTwo: addPeriodTwo,
+                periodThree: addPeriodThree,
                 dateOfAction: addDateOfAction,
             };
+
+            initialAddLeaveData();
         });
 
         $('.addNewLeaveDataRecord').click(function () {
@@ -357,6 +446,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var editLeaveDataId = $(this).data('leavedata-id');
             var editPeriodStart = $(this).data('period-start');
             var editPeriodEnd = $(this).data('period-end');
+            var editPeriodOne = $(this).data('period-one');
+            var editPeriodTwo = $(this).data('period-two');
+            var editPeriodThree = $(this).data('period-three');
             var editParticularType = $(this).data('particular-type');
             var editParticularLabel = $(this).data('particular-label');
             var editInputDay = $(this).data('input-day');
@@ -368,6 +460,9 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#floatingEditLeaveDataFormId').val(editLeaveDataId);
             $('#floatingEditPeriod').val(editPeriodStart);
             $('#floatingEditPeriodEnd').val(editPeriodEnd);
+            $('#floatingEditPeriodOne').val(editPeriodOne);
+            $('#floatingEditPeriodTwo').val(editPeriodTwo);
+            $('#floatingEditPeriodThree').val(editPeriodThree);
             $('#floatingEditParticularType').val(editParticularType);
             $('#floatingEditParticularLabel').val(editParticularLabel);
             $('#floatingEditDayInput').val(editInputDay);
@@ -380,6 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 leaveDataId: editLeaveDataId,
                 periodStart: editPeriodStart,
                 periodEnd: editPeriodEnd,
+                periodOne: editPeriodOne,
+                periodTwo: editPeriodTwo,
+                periodThree: editPeriodThree,
                 particularType: editParticularType,
                 particularLabel: editParticularLabel,
                 inputDay: editInputDay,
@@ -387,12 +485,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 inputMinute: editInputMinute,
                 dateOfAction: editDateOfAction,
             };
+            initialEditLeaveData();
         });
 
         function setEditDataFromState() {
             // Set form field values from the editLeaveDataRecordState object
             $('#floatingEditPeriod').val(editLeaveDataRecordState.periodStart);
             $('#floatingEditPeriodEnd').val(editLeaveDataRecordState.periodEnd);
+            $('#floatingEditPeriodOne').val(editLeaveDataRecordState.periodOne);
+            $('#floatingEditPeriodTwo').val(editLeaveDataRecordState.periodTwo);
+            $('#floatingEditPeriodThree').val(editLeaveDataRecordState.periodThree);
             $('#floatingEditParticularType').val(editLeaveDataRecordState.particularType);
             $('#floatingEditParticularLabel').val(editLeaveDataRecordState.particularLabel);
             $('#floatingEditDayInput').val(editLeaveDataRecordState.inputDay);
@@ -414,6 +516,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Set form field values based on the saved state
                 $('#floatingPeriod').val(addLeaveDataRecordState.period);
                 $('#floatingPeriodEnd').val(addLeaveDataRecordState.periodEnd);
+                $('#floatingPeriodOne').val(addLeaveDataRecordState.periodOne);
+                $('#floatingPeriodTwo').val(addLeaveDataRecordState.periodTwo);
+                $('#floatingPeriodThree').val(addLeaveDataRecordState.periodThree);
                 $('#floatingDateOfAction').val(addLeaveDataRecordState.dateOfAction);
                 $('#floatingNewPeriod').val(addLeaveDataRecordState.period);
                 $('#floatingNewPeriodEnd').val(addLeaveDataRecordState.periodEnd);
@@ -515,5 +620,73 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     });
+
+    // Get the date input elements
+    const dateInputs = [
+        document.getElementById('floatingPeriodOne'),
+        document.getElementById('floatingPeriodTwo'),
+        document.getElementById('floatingPeriodThree')
+    ];
+
+    // Get the workingDays input element
+    const workingDaysInput = document.getElementById('floatingDayInput');
+
+    // Function to update working days based on date inputs
+    function updateWorkingDays() {
+        // Create a set to hold unique dates
+        const uniqueDates = new Set();
+
+        // Add non-empty dates to the set
+        dateInputs.forEach(input => {
+            if (input.value) {
+                uniqueDates.add(input.value);
+            }
+        });
+
+        // Update the workingDays input value based on the size of the set
+        workingDaysInput.value = uniqueDates.size;
+    }
+
+    // Add event listeners to update working days on date change
+    dateInputs.forEach(input => {
+        input.addEventListener('change', updateWorkingDays);
+    });
+
+    // Initialize the working days value on page load
+    // updateWorkingDays();
+
+    // Get the date input elements
+    const dateEditInputs = [
+        document.getElementById('floatingEditPeriodOne'),
+        document.getElementById('floatingEditPeriodTwo'),
+        document.getElementById('floatingEditPeriodThree')
+    ];
+
+    // Get the workingDays input element
+    const workingDaysEditInput = document.getElementById('floatingEditDayInput');
+
+    // Function to update working days based on date inputs
+    function updateEditWorkingDays() {
+        // Create a set to hold unique dates
+        const uniqueEditDates = new Set();
+
+        // Add non-empty dates to the set
+        dateEditInputs.forEach(input => {
+            if (input.value) {
+                uniqueEditDates.add(input.value);
+            }
+        });
+
+        // Update the workingDays input value based on the size of the set
+        workingDaysEditInput.value = uniqueEditDates.size;
+    }
+
+    // Add event listeners to update working days on date change
+    dateEditInputs.forEach(input => {
+        input.addEventListener('change', updateEditWorkingDays);
+    });
+
+    // Initialize the working days value on page load
+    // updateWorkingDays();
 
 });

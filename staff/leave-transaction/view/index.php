@@ -196,6 +196,14 @@ if (strtolower($leaveAppFormData['status']) == "submitted") {
                     include ($components_file_formModal);
                     ?>
 
+<input type="hidden" id="typeOfLeaveOrig" name="typeOfLeaveOrig" value="<?php echo $leaveAppFormData['typeOfLeave']; ?>" />
+                    <input type="hidden" id="workingDaysOrig" name="workingDaysOrig" value="<?php echo $leaveAppFormData['workingDays']; ?>" />
+                    <input type="hidden" id="inclusiveDateStartOrig" name="inclusiveDateStartOrig" value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
+                    <input type="hidden" id="inclusiveDateEndOrig" name="inclusiveDateEndOrig" value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
+                    <input type="hidden" id="inclusiveDateOneOrig" name="inclusiveDateOneOrig" value="<?php echo $leaveAppFormData['inclusiveDateOne']; ?>" />
+                    <input type="hidden" id="inclusiveDateTwoOrig" name="inclusiveDateTwoOrig" value="<?php echo $leaveAppFormData['inclusiveDateTwo']; ?>" />
+                    <input type="hidden" id="inclusiveDateThreeOrig" name="inclusiveDateThreeOrig" value="<?php echo $leaveAppFormData['inclusiveDateThree']; ?>" />
+
                     <?php if ($notAvailable) { ?>
                         <div>
                         <a href="<?php echo $location_staff_leaveapplist; ?>"><button

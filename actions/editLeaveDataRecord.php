@@ -15,8 +15,11 @@ if (isset($_POST['editLeaveDataRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
     $leaveDataFormId = isset($_POST['leavedataformId']) ? sanitizeInput($_POST['leavedataformId']) : null;
     $selectedYear = isset($_POST['selectedYear']) ? sanitizeInput($_POST['selectedYear']) : null;
-    $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : null;
-    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : null;
+    $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : $today;
+    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : $today;
+    $periodOne = isset($_POST['periodOne']) ? sanitizeInput($_POST['periodOne']) : $today;
+    $periodTwo = isset($_POST['periodTwo']) ? sanitizeInput($_POST['periodTwo']) : $today;
+    $periodThree = isset($_POST['periodThree']) ? sanitizeInput($_POST['periodThree']) : $today;
     $particularType = isset($_POST['particularType']) ? sanitizeInput($_POST['particularType']) : null;
     $particularLabel = isset($_POST['particularLabel']) ? sanitizeInput($_POST['particularLabel']) : null;
     $days = isset($_POST['dayInput']) ? sanitizeInput($_POST['dayInput']) : null;
@@ -31,6 +34,43 @@ if (isset($_POST['editLeaveDataRecord'])) {
     if ($days < 0 || $hours < 0 || $minutes < 0) {
         $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
         $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
+    if ($particularType === "Special Privilege Leave") {
+        $period = $today;
+        $periodEnd = $today;
+        if (empty($periodOne) || empty($periodTwo) || empty($periodThree)) {
+            $_SESSION['alert_message'] = "Enter List of Inclusive Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+            // echo $inclusiveDateOne;
+            // echo $inclusiveDateTwo;
+            // echo $inclusiveDateThree;
+        }
+    } else {
+        $periodOne = $today;
+        $periodTwo = $today;
+        $periodThree = $today;
+        if (empty($period) || empty($periodEnd)) {
+            $_SESSION['alert_message'] = "Enter Inclusive Start and End Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+        }
+    }
+
+    if (!$noError) {
         if ($accountRole == "admin") {
             $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
             header("Location: $redirect_location");
@@ -62,12 +102,12 @@ if (isset($_POST['editLeaveDataRecord'])) {
             if ($period >= $initialRecordData['periodEnd'] && $periodEnd >= $initialRecordData['periodEnd']) {
                 // Prepare the SQL query for update
                 $sql = "UPDATE tbl_leavedataform 
-                        SET period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? 
+                        SET period = ?, periodEnd = ?, periodOne = ?, periodTwo = ?, periodThree = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? 
                         WHERE leavedataform_id = ? AND employee_id = ? AND UPPER(archive) != 'DELETED'";
 
                 // Prepare and bind the statement
                 $stmt = $database->prepare($sql);
-                $stmt->bind_param('ssssiiisis', $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveDataFormId, $empId);
+                $stmt->bind_param('sssssssiiisis', $period, $periodEnd, $periodOne, $periodTwo, $periodThree, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveDataFormId, $empId);
 
                 $stmt->execute();
 
