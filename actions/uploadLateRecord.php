@@ -1,10 +1,16 @@
 <?php
 include ("../constants/routes.php");
 include ($constants_file_dbconnect);
-include ($constants_file_session_admin);
+include ($constants_file_session_authorized);
 include ($constants_variables);
 
 $upload_directory = "../files/upload/laterecords/";
+
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
+}
 
 if (isset($_POST['upload'])) {
     // Check if monthYearName is provided
@@ -241,13 +247,13 @@ if (isset($_POST['upload'])) {
                         } else if ($uploadSuccess == 2) {
                             $_SESSION['alert_message'] = "File Has Successfully Updated!";
                             $_SESSION['alert_type'] = "";
-                        }else if ($uploadSuccess == -1) {
+                        } else if ($uploadSuccess == -1) {
                             $_SESSION['alert_message'] = "File Does Not Uploaded!";
                             $_SESSION['alert_type'] = $error_color;
-                        }else if ($uploadSuccess == -2) {
+                        } else if ($uploadSuccess == -2) {
                             $_SESSION['alert_message'] = "File Has Failed to Update!";
                             $_SESSION['alert_type'] = $error_color;
-                        }else{
+                        } else {
 
                         }
                     } catch (Exception $exception) {
@@ -259,11 +265,26 @@ if (isset($_POST['upload'])) {
         }
     }
 
-    header("Location: " . $location_admin_datamanagement_laterecords);
-    exit();
+    if ($accountRole == "admin") {
+        header("Location: " . $location_admin_datamanagement_laterecords);
+        exit();
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff_laterecords);
+        exit();
+    } else {
+        header("Location: " . $location_login);
+        exit();
+    }
 } else {
-    header("Location: " . $location_admin_datamanagement_laterecords);
-    exit();
+    if ($accountRole == "admin") {
+        header("Location: " . $location_admin_datamanagement_laterecords);
+        exit();
+    } else if ($accountRole == "staff") {
+        header("Location: " . $location_staff_laterecords);
+        exit();
+    } else {
+        header("Location: " . $location_login);
+    }
 }
 
 function getFormattedDurationInMinutes(int $totalMinutes): array

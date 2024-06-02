@@ -1425,7 +1425,7 @@ if (isset($_SESSION['employeeId'])) {
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" id="clearAddEmployeeInputs">Clear</button>
-                            <input type="submit" name="addEmployeeInfo" value="Add Employee" class="btn btn-primary" />
+                            <input type="submit" name="addAdminInfo" value="Add Employee" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>

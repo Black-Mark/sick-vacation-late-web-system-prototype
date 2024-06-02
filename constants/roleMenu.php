@@ -16,6 +16,7 @@ $staffMenu = array(
     "Leave App Form" => array("icon" => "fa fa-file-text", "link" => $location_staff_leave_form),
     "Leave App Record" => array("icon" => "fa fa-history", "link" => $location_staff_leave_form_record),
     "Leave Data Form" => array("icon" => "fa fa-list-ul", "link" => $location_staff_leave_data_form),
+    "Employee Late Record" => array("icon" => "fa fa-archive", "link" => $location_staff_laterecords),
 );
 
 $employeeMenu = array(

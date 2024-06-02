@@ -154,4 +154,6 @@ $location_staff_leave_form_record_view = $webhostpage . '/staff/leaveformrecord/
 $location_staff_leave_form_record_edit = $webhostpage . '/staff/leaveformrecord/edit';
 $location_staff_leave_data_form = $webhostpage . '/staff/leavedataform';
 
+$location_staff_laterecords = $webhostpage . '/staff/late-records';
+
 ?>

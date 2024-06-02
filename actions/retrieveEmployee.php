@@ -27,6 +27,8 @@ if (isset($_POST['retrieveEmployee']) && isset($_POST['employeeNum'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
+    // SELECT * FROM tbl_leavedataform WHERE employee_id = $employeeNum AND recordType = "Break Monthly Record"
+
     header("Location: " . $location_admin_datamanagement_archive_employee);
     exit();
 

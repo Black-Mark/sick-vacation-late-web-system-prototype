@@ -5,7 +5,7 @@ include ($constants_file_dbconnect);
 include ($constants_file_session_admin);
 include ($constants_variables);
 
-if (isset($_POST['addEmployeeInfo'])) {
+if (isset($_POST['addEmployeeInfo']) || isset($_POST['addAdminInfo'])) {
     $employeeId = sanitizeInput($_POST['employeeId'] ?? '');
     // tbl_personal_info
     $birthplace = sanitizeInput($_POST['birthplace'] ?? '');
@@ -105,6 +105,8 @@ if (isset($_POST['addEmployeeInfo'])) {
             // echo "New record created successfully";
         }
 
+        $personalStmt->close();
+
         // tbl_family_background
         // check if has a record
         $sql = "SELECT * FROM tbl_family_background WHERE employee_id = ?";
@@ -124,10 +126,12 @@ if (isset($_POST['addEmployeeInfo'])) {
             // Insert a new record
             $insertSql = "INSERT INTO tbl_family_background (employee_id, spousesurname, spousename, spousemiddlename, spousenameExtension, spouseOccupation, spouseEmployer, spouseBusinessAddress, spouseTelephone, nameOfChildren, fathersSurname, fathersFirstname, fathersMiddlename, fathersnameExtension, MSurname, MName, MMName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insertfamilyStmt = $database->prepare($insertSql);
-            $insertfamilyStmt->bind_param("ssssssssisssssss", $employeeId, $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $nameOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName);
+            $insertfamilyStmt->bind_param("sssssssssisssssss", $employeeId, $spousesurname, $spousename, $spousemiddlename, $spousenameExtension, $spouseOccupation, $spouseEmployer, $spouseBusinessAddress, $spouseTelephone, $nameOfChildren, $fathersSurname, $fathersFirstname, $fathersMiddlename, $fathersnameExtension, $MSurname, $MName, $MMName);
             $insertfamilyStmt->execute();
             // echo "New record created successfully";
         }
+
+        $familyStmt->close();
 
         // tbl_educational_background
         // check if has a record
@@ -153,20 +157,21 @@ if (isset($_POST['addEmployeeInfo'])) {
             // echo "New record created successfully";
         }
 
-        $personalStmt->close();
+        $educationalStmt->close();
+
         $_SESSION['alert_message'] = "Personal Data Successfully Added/Update!";
         $_SESSION['alert_type'] = $success_color;
-        $redirect_location = $employeeId ? $location_admin_departments_employee . "/" . $employeeId . "/" : $location_admin_departments_employee;
-        header("Location: $redirect_location");
-        exit();
-        
     } else {
         $_SESSION['alert_message'] = "There is no Employee Id Received!";
         $_SESSION['alert_type'] = $warning_color;
-        $redirect_location = $employeeId ? $location_admin_departments_employee . "/" . $employeeId . "/" : $location_admin_departments_employee;
-        header("Location: $redirect_location");
-        exit();
     }
+
+    $redirect_location = $employeeId ? $location_admin_departments_employee . "/" . $employeeId . "/" : $location_admin_departments_employee;
+    if(isset($_POST['addAdminInfo'])){
+        $redirect_location = $location_admin_profile;
+    }
+    header("Location: $redirect_location");
+    exit();
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     header("Location: $location_admin_departments_employee");

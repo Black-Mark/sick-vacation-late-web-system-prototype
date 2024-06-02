@@ -870,7 +870,7 @@ if (!empty($leaveData)) {
                                                         ?>
                                                     <?php } else { ?>
                                                         <?php echo convertDateFormat($ldata['period'], "Y-m-d", "m-d-Y");
-                                                        if ($ldata['periodEnd'] && $ldata['periodStart'] < $ldata['periodEnd']) {
+                                                        if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
                                                             echo ' to ' . convertDateFormat($ldata['periodEnd'], "Y-m-d", "m-d-Y");
                                                         }
                                                         ?>
