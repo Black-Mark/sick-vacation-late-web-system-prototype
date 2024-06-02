@@ -555,10 +555,10 @@ if ($sickLeaveTotalEarned < $sickLeaveLess) {
                                             <div class="leave-app-form-inclusivedate-input-container">
                                                 <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
                                                     class='leave-app-form-input-plain'
-                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                    value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
                                             <span class="inclusive-date-text">to</span>
                                             <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd" class='leave-app-form-input-plain'
-                                                value="<?php echo date('Y-m-d'); ?>" />
+                                                value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
                                         </div>
                                     
                                     </div>
@@ -570,11 +570,11 @@ if ($sickLeaveTotalEarned < $sickLeaveLess) {
                                         </label>
                                         <div class="leave-app-form-inclusivedate-input-container">
                                             <input type="date" id="inclusiveDateSelectOne" name="inclusiveDateSelectOne" class='leave-app-form-input-plain'
-                                                value="<?php echo date('Y-m-d'); ?>" />
+                                                value="<?php $leaveAppFormData['inclusiveDateOne']; ?>" />
                                             <input type="date" id="inclusiveDateSelectTwo" name="inclusiveDateSelectTwo" class='leave-app-form-input-plain'
-                                                value="<?php echo date('Y-m-d'); ?>" />
+                                                value="<?php echo $leaveAppFormData['inclusiveDateTwo']; ?>" />
                                             <input type="date" id="inclusiveDateSelectThree" name="inclusiveDateSelectThree"
-                                                class='leave-app-form-input-plain' value="<?php echo date('Y-m-d'); ?>" />
+                                                class='leave-app-form-input-plain' value="<?php echo $leaveAppFormData['inclusiveDateThree']; ?>" />
                                         </div>
                                     
                                     </div>

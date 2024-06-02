@@ -1002,7 +1002,7 @@ if (isset($_SESSION['employeeId'])) {
                                                 <label for="barangay">Barangay:</label>
                                                 <input type="text" name="barangay" class="form-control mb-2"
                                                     id="barangay" value="<?php echo $personalData['barangay']; ?>"
-                                                    placeholder="Enter Subdivision/Village">
+                                                    placeholder="Enter Barangay">
                                                 <label for="city">City/Municipality:</label>
                                                 <input type="text" name="city" class="form-control mb-2" id="city"
                                                     value="<?php echo $personalData['city']; ?>"

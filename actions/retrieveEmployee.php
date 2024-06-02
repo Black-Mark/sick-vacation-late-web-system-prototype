@@ -1,9 +1,9 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 if (isset($_POST['retrieveEmployee']) && isset($_POST['employeeNum'])) {
     $employeeNum = strip_tags(mysqli_real_escape_string($database, $_POST['employeeNum']));
@@ -27,7 +27,32 @@ if (isset($_POST['retrieveEmployee']) && isset($_POST['employeeNum'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 
-    // SELECT * FROM tbl_leavedataform WHERE employee_id = $employeeNum AND recordType = "Break Monthly Record"
+    $sqlBreak = "   SELECT * FROM tbl_leavedataform 
+                    WHERE employee_id = ? AND recordType = 'Break Monthly Record'
+                    ORDER BY periodEnd DESC LIMIT 1";
+    $stmt = $database->prepare($sqlBreak);
+    $stmt->bind_param("s", $employeeNum);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if there are any records
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if ($row['periodEnd'] == $row['period']) {
+            // Delete the record
+            $deleteSql = "DELETE FROM tbl_leavedataform WHERE id = ?";
+            $deleteStmt = $database->prepare($deleteSql);
+            $deleteStmt->bind_param("s", $row['id']);
+            $deleteStmt->execute();
+        } else {
+            // Update the periodEnd to current date
+            $updateSql = "UPDATE tbl_leavedataform SET periodEnd = ? WHERE id = ?";
+            $updateStmt = $database->prepare($updateSql);
+            $updateStmt->bind_param("ss", $currentDate, $row['leavedataform_id']);
+            $updateStmt->execute();
+        }
+    }
+    $stmt->close();
 
     header("Location: " . $location_admin_datamanagement_archive_employee);
     exit();
