@@ -111,14 +111,14 @@ if (strtolower($leaveAppFormData['status']) == "submitted") {
 
     if (dateDifference($leaveAppFormData['dateFiling'], $limitDayOfExpiry) <= $today) {
         $availabilityMessage = "This Leave Form Request has been Expired!";
-        $editAvailable = true;
+        $notAvailable = true;
     }
 } else if (strtolower($leaveAppFormData['status']) == "approved") {
     $availabilityMessage = "This Leave Form Request has already been Approved!";
-    $editAvailable = true;
+    $notAvailable = true;
 } else if (strtolower($leaveAppFormData['status']) == "disapproved") {
     $availabilityMessage = "This Leave Form Request was Disapproved!";
-    $editAvailable = true;
+    $notAvailable = true;
 }
 
 // $notAvailable = true;

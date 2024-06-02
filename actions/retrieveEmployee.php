@@ -40,13 +40,13 @@ if (isset($_POST['retrieveEmployee']) && isset($_POST['employeeNum'])) {
         $row = $result->fetch_assoc();
         if ($row['periodEnd'] == $row['period']) {
             // Delete the record
-            $deleteSql = "DELETE FROM tbl_leavedataform WHERE id = ?";
+            $deleteSql = "DELETE FROM tbl_leavedataform WHERE leavedataform_id = ?";
             $deleteStmt = $database->prepare($deleteSql);
-            $deleteStmt->bind_param("s", $row['id']);
+            $deleteStmt->bind_param("s", $row['leavedataform_id']);
             $deleteStmt->execute();
         } else {
             // Update the periodEnd to current date
-            $updateSql = "UPDATE tbl_leavedataform SET periodEnd = ? WHERE id = ?";
+            $updateSql = "UPDATE tbl_leavedataform SET periodEnd = ? WHERE leavedataform_id = ?";
             $updateStmt = $database->prepare($updateSql);
             $updateStmt->bind_param("ss", $currentDate, $row['leavedataform_id']);
             $updateStmt->execute();

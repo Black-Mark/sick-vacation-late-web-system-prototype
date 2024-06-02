@@ -343,9 +343,9 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     } else {
                         if ($status == "Approved") {
                             // If record doesn't exist, perform insert
-                            $insertQuery = "INSERT INTO tbl_leavedataform (employee_id, foreignKeyId, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            $insertQuery = "INSERT INTO tbl_leavedataform (employee_id, foreignKeyId, dateCreated, recordType, period, periodEnd, periodOne, periodTwo, periodThree, particular, particularLabel, days, hours, minutes, dateOfAction) VALUES (?, ?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                             $stmtInsertRecord = $database->prepare($insertQuery);
-                            $stmtInsertRecord->bind_param('sssssssiiis', $ownerOfForm, $leaveappformId, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+                            $stmtInsertRecord->bind_param('ssssssssssiiis', $ownerOfForm, $leaveappformId, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $inclusiveDateOne, $inclusiveDateTwo, $inclusiveDateThree, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
                             $stmtInsertRecord->execute();
 
                             if ($stmtInsertRecord->error) {

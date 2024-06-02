@@ -26,6 +26,8 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $minutes = isset($_POST['minuteInput']) ? sanitizeInput($_POST['minuteInput']) : null;
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
+    $noError = true;
+
     if ($selectedYear) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }

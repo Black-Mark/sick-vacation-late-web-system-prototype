@@ -148,7 +148,7 @@ $designations = getAllDesignations();
                         style="width:100%">
                         <thead>
                             <tr>
-                                <th>Select</th>
+                                <th></th>
                                 <th>Designation Name</th>
                                 <th>Action</th>
                             </tr>
@@ -160,7 +160,7 @@ $designations = getAllDesignations();
                                     ?>
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="designationId"
+                                    <input type="hidden" name="designationId"
                                         value="<?php echo $row['designation_id']; ?>" />
                                 </td>
                                 <td title="<?php echo $row['designationDescription']; ?>">
