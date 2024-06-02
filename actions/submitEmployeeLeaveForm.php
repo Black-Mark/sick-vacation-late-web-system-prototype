@@ -23,7 +23,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $lastName = isset($_POST['lastName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['lastName'])) : '';
     $firstName = isset($_POST['firstName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['firstName'])) : '';
     $middleName = isset($_POST['middleName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['middleName'])) : '';
-    $dateFiling = isset($_POST['dateFiling']) ? strip_tags(mysqli_real_escape_string($database, $_POST['dateFiling'])) : '';
+    $dateFiling = isset($_POST['dateFiling']) ? strip_tags(mysqli_real_escape_string($database, $_POST['dateFiling'])) : date("Y-m-d");
     $position = isset($_POST['position']) ? strip_tags(mysqli_real_escape_string($database, $_POST['position'])) : '';
     $salary = isset($_POST['salary']) ? strip_tags(mysqli_real_escape_string($database, $_POST['salary'])) : '';
     $typeOfLeave = isset($_POST['typeOfLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfLeave'])) : '';
@@ -42,6 +42,11 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $workingDays = isset($_POST['workingDays']) ? strip_tags(mysqli_real_escape_string($database, $_POST['workingDays'])) : '';
     $inclusiveDateStart = isset($_POST['inclusiveDateStart']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateStart'])) : '';
     $inclusiveDateEnd = isset($_POST['inclusiveDateEnd']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateEnd'])) : '';
+
+    $inclusiveDateOne = isset($_POST['inclusiveDateSelectOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectOne'])) : '';
+    $inclusiveDateTwo = isset($_POST['inclusiveDateSelectTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectTwo'])) : '';
+    $inclusiveDateThree = isset($_POST['inclusiveDateSelectThree']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectThree'])) : '';
+
     $commutation = isset($_POST['commutation']) ? strip_tags(mysqli_real_escape_string($database, $_POST['commutation'])) : '';
     $status = 'Submitted';
 
@@ -54,79 +59,79 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $leaveData = [];
     $settingData = [];
     $departmentHeadData = [];
+    $noError = true;
+
+    // Gets data from the database to process and will be passed as new data to the database.
+    $employeeData = getEmployeeData($employeeId);
 
     // Checks the Input of the Leave Application Form
-    if (empty($typeOfLeave) || empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
-        $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";
+    // Checks if there is a type of Leave
+    if ($noError && empty($typeOfLeave)) {
+        $_SESSION['alert_message'] = "Please Specify Your Type Leave!";
         $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    }
 
-        if ($accountRole == "employee") {
-            header("Location: " . $location_employee_leave_form);
-        } else if ($accountRole == "staff") {
-            header("Location: " . $location_staff_leave_form);
-        } else {
-            header("Location: " . $location_login);
+    // Checks the required fields for the Type of Leaves
+    if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && (empty($typeOfVacationLeaveWithin) || empty($typeOfVacationLeaveAbroad))) {
+        $_SESSION['alert_message'] = "Please select either 'Within the Philippines' or 'Abroad' for Vacation Leave";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && (empty($typeOfSickLeaveInHospital) || empty($typeOfSickLeaveOutPatient))) {
+        $_SESSION['alert_message'] = "Please select either 'In Hospital' or 'Out Patient' for Sick Leave";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
+        $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    } else if ($typeOfLeave === 'Study Leave' && empty($typeOfStudyLeave)) {
+        $_SESSION['alert_message'] = "Please select either 'Completion of Master's Degree or Bar / Board Examination Review' Incase for Study Leave";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    } else if ($typeOfLeave === 'Others' && empty($typeOfOtherLeave)) {
+        $_SESSION['alert_message'] = "Please select either 'Monetization of Leave Credit or Terminal Leave' Incase for Others";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    }
+
+    $typeOfLeaveLower = strtolower($typeOfLeave);
+    $employeeSexUpper = strtoupper($employeeData['sex']);
+
+    if ((in_array($typeOfLeaveLower, ["maternity leave", "10-day vawc leave", "special leave benefits for women"]) && $employeeSexUpper != "FEMALE")) {
+        $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Female Character!";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    } else if ($typeOfLeaveLower == "paternity leave" && $employeeSexUpper != "MALE") {
+        $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Male Character!";
+        $_SESSION['alert_type'] = $warning_color;
+        $noError = false;
+    }
+
+    if ($typeOfLeave === "Special Privilege Leave") {
+        $inclusiveDateStart = $dateFiling;
+        $inclusiveDateEnd = $dateFiling;
+        if (empty($inclusiveDateOne) || empty($inclusiveDateTwo) || empty($inclusiveDateThree)) {
+            $_SESSION['alert_message'] = "Enter List of Inclusive Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+            // echo $inclusiveDateOne;
+            // echo $inclusiveDateTwo;
+            // echo $inclusiveDateThree;
         }
-        exit();
     } else {
-        try {
-            if ($typeOfLeave === 'Vacation Leave' && empty($typeOfVacationLeave) && (empty($typeOfVacationLeaveWithin) || empty($typeOfVacationLeaveAbroad))) {
-                $_SESSION['alert_message'] = "Please select either 'Within the Philippines' or 'Abroad' for Vacation Leave";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            } else if ($typeOfLeave === 'Sick Leave' && empty($typeOfSickLeave) && (empty($typeOfSickLeaveInHospital) || empty($typeOfSickLeaveOutPatient))) {
-                $_SESSION['alert_message'] = "Please select either 'In Hospital' or 'Out Patient' for Sick Leave";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
-                $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            } else if ($typeOfLeave === 'Study Leave' && empty($typeOfStudyLeave)) {
-                $_SESSION['alert_message'] = "Please select either 'Completion of Master's Degree or Bar / Board Examination Review' Incase for Study Leave";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            } else if ($typeOfLeave === 'Others' && empty($typeOfOtherLeave)) {
-                $_SESSION['alert_message'] = "Please select either 'Monetization of Leave Credit or Terminal Leave' Incase for Others";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            }
+        $inclusiveDateOne = $dateFiling;
+        $inclusiveDateTwo = $dateFiling;
+        $inclusiveDateThree = $dateFiling;
+        if (empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
+            $_SESSION['alert_message'] = "Enter Inclusive Start and End Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+        }
+    }
 
+    if ($noError) {
+        try {
             // Generates Leave Application Id
             $randomBytes = random_bytes(25);
             $randomHex = bin2hex($randomBytes);
@@ -143,36 +148,6 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             }
 
             $leaveappformId = $randomHex;
-
-            // Gets data from the database to process and will be passed as new data to the database.
-            $employeeData = getEmployeeData($employeeId);
-
-            $typeOfLeaveLower = strtolower($typeOfLeave);
-            $employeeSexUpper = strtoupper($employeeData['sex']);
-            
-            if ((in_array($typeOfLeaveLower, ["maternity leave", "10-day vawc leave", "special leave benefits for women"]) && $employeeSexUpper != "FEMALE")) {
-                $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Female Character!";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            } else if ($typeOfLeaveLower == "paternity leave" && $employeeSexUpper != "MALE") {
-                $_SESSION['alert_message'] = "You cannot apply for " . $typeOfLeave . " due to being not a Male Character!";
-                $_SESSION['alert_type'] = $warning_color;
-                if ($accountRole == "employee") {
-                    header("Location: " . $location_employee_leave_form);
-                } else if ($accountRole == "staff") {
-                    header("Location: " . $location_staff_leave_form);
-                } else {
-                    header("Location: " . $location_login);
-                }
-                exit();
-            }       
 
             if (isset($employeeData['departmentHead']) && $employeeData['departmentHead'] !== "") {
                 $departmentHeadData = getEmployeeData($employeeData['departmentHead']);
@@ -266,18 +241,18 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             (leaveappform_id, employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
             typeOfLeave, typeOfSpecifiedOtherLeave, typeOfVacationLeave, typeOfVacationLeaveWithin, typeOfVacationLeaveAbroad,
             typeOfSickLeave, typeOfSickLeaveInHospital, typeOfSickLeaveOutPatient, typeOfSpecialLeaveForWomen, typeOfStudyLeave,
-            typeOfOtherLeave, workingDays, inclusiveDateStart, inclusiveDateEnd, commutation,
+            typeOfOtherLeave, workingDays, inclusiveDateStart, inclusiveDateEnd, inclusiveDateOne, inclusiveDateTwo, inclusiveDateThree, commutation,
             asOfDate, vacationLeaveTotalEarned, sickLeaveTotalEarned, vacationLeaveLess, sickLeaveLess,
             vacationLeaveBalance, sickLeaveBalance, recommendation, recommendMessage,
             dayWithPay, dayWithoutPay, otherDayPay, otherDaySpecify, disapprovedMessage,
             hrName, hrPosition, deptHeadName, mayorName, mayorPosition, hrmanager_id, depthead_id, mayor_id, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = mysqli_prepare($database, $query);
 
             mysqli_stmt_bind_param(
                 $stmt,
-                "ssssssssssssssssssssissssddddddssiiisssssssssss",
+                "ssssssssssssssssssssisssssssddddddssiiisssssssssss",
                 $leaveappformId,
                 $employeeId,
                 $departmentName,
@@ -304,6 +279,9 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 $workingDays,
                 $inclusiveDateStart,
                 $inclusiveDateEnd,
+                $inclusiveDateOne,
+                $inclusiveDateTwo,
+                $inclusiveDateThree,
                 $commutation,
 
                 $asOfDate,
@@ -338,12 +316,21 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 $_SESSION['alert_message'] = "Leave Application Form Successfully Created";
                 $_SESSION['alert_type'] = $success_color;
 
+                $inclusiveDates = "";
+                if($typeOfLeave == "Special Privilege Leave"){
+                    $arrayDate = [$inclusiveDateOne, $inclusiveDateTwo, $inclusiveDateThree];
+                    $resultArray = eliminateDuplicate($arrayDate, 1);
+                    $inclusiveDates = join(", ", $resultArray);
+                }else{
+                    $inclusiveDates = convertDateFormat($inclusiveDateStart, "Y-m-d", "m-d-Y") . ($inclusiveDateEnd && $inclusiveDateStart < $inclusiveDateEnd ? ' to ' . convertDateFormat($inclusiveDateEnd, "Y-m-d", "m-d-Y") : '');
+                }
+
                 // Notification
                 $notifEmpIdFrom = $_SESSION['employeeId'];
                 $notifEmpIdTo = '@Admin';
-                $notifSubject = $_SESSION['role'] . ' Leave Form Request';
+                $notifSubject = trim($lastName) . " " . trim($firstName).' Leave Form Request';
 
-                $notifMessage = $lastName . " " . $firstName . ' is Applying For ' . $typeOfLeave;
+                $notifMessage = 'Applying For ' . $typeOfLeave. ' from '.$inclusiveDates;
                 $notifLink = "";
                 // $notifLink = $location_admin_leaveapplist . '/view/' . $leaveappformId;
                 $notifSeen = 'unseen';
@@ -380,7 +367,17 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             }
             exit();
         }
+    } else {
+        if ($accountRole == "employee") {
+            header("Location: " . $location_employee_leave_form);
+        } else if ($accountRole == "staff") {
+            header("Location: " . $location_staff_leave_form);
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
     }
+
 } else {
     // echo '<script type="text/javascript">window.history.back();</script>';
     if ($accountRole == "employee") {

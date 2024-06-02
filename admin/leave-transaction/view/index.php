@@ -546,22 +546,39 @@ if ($sickLeaveTotalEarned < $sickLeaveLess) {
                                             class='leave-app-form-input'
                                             value="<?php echo $leaveAppFormData['workingDays']; ?>" />
                                     </div>
-                                    <div class="leave-app-form-inclusivedate-detail-container">
 
-                                        <label for="inclusiveDateStart" class='leave-app-form-label'>
+                                    <div id="allLeave" <?php echo $leaveAppFormData['typeOfLeave'] != "Special Privilege Leave" ? 'style="display: block;"' : 'style="display: none;"' ?> class="leave-app-form-inclusivedate-detail-container">
+
+                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
+                                                Inclusive Dates
+                                            </label>
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                            <span class="inclusive-date-text">to</span>
+                                            <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd" class='leave-app-form-input-plain'
+                                                value="<?php echo date('Y-m-d'); ?>" />
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div id="splLeave" <?php echo $leaveAppFormData['typeOfLeave'] == "Special Privilege Leave" ? 'style="display: block;"' : 'style="display: block;"' ?> class="leave-app-form-inclusivedate-detail-container">
+                                    
+                                        <label for="inclusiveDateSelectOne" class='leave-app-form-label'>
                                             Inclusive Dates
                                         </label>
                                         <div class="leave-app-form-inclusivedate-input-container">
-                                            <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
-                                                class='leave-app-form-input-plain'
-                                                value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
-                                            <span class="inclusive-date-text">to</span>
-                                            <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
-                                                class='leave-app-form-input-plain'
-                                                value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
+                                            <input type="date" id="inclusiveDateSelectOne" name="inclusiveDateSelectOne" class='leave-app-form-input-plain'
+                                                value="<?php echo date('Y-m-d'); ?>" />
+                                            <input type="date" id="inclusiveDateSelectTwo" name="inclusiveDateSelectTwo" class='leave-app-form-input-plain'
+                                                value="<?php echo date('Y-m-d'); ?>" />
+                                            <input type="date" id="inclusiveDateSelectThree" name="inclusiveDateSelectThree"
+                                                class='leave-app-form-input-plain' value="<?php echo date('Y-m-d'); ?>" />
                                         </div>
-
+                                    
                                     </div>
+
                                 </div>
                                 <div class="leave-app-form-commutation-container">
                                     <div class='leave-app-form-label'>

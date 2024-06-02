@@ -65,6 +65,7 @@ if (isset($_POST['upload'])) {
 
                             if (!empty($employee_id)) {
                                 $totalEmp++;
+                                $recordType = "Deduction Type";
                                 $type = 'Late';
 
                                 $total_minutes = (int) $total_minutes;

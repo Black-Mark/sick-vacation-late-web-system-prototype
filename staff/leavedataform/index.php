@@ -188,7 +188,7 @@ if (!empty($leaveData)) {
                                         <div class="table-item-base-none">
                                             <?php
                                             if (isset($employeeData['dateStarted'])) {
-                                                echo $employeeData['dateStarted'];
+                                                echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y");
                                             } else {
                                                 echo 'N/A';
                                             }
@@ -255,11 +255,18 @@ if (!empty($leaveData)) {
                                         ?>
                                         <tr>
                                             <td class="table-item-base">
-                                                <?php echo $ldata['period'];
-                                                if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
-                                                    echo ' to ' . $ldata['periodEnd'];
-                                                }
-                                                ?>
+                                                <?php if ($ldata['particular'] === 'Special Privilege Leave') { ?>
+                                                    <?php $arrayDate = [$ldata['periodOne'], $ldata['periodTwo'], $ldata['periodThree']];
+                                                    $resultArray = eliminateDuplicate($arrayDate, 1);
+                                                    echo join(", ", $resultArray);
+                                                    ?>
+                                                <?php } else { ?>
+                                                    <?php echo convertDateFormat($ldata['period'], "Y-m-d", "m-d-Y");
+                                                    if ($ldata['periodEnd'] && $ldata['periodStart'] < $ldata['periodEnd']) {
+                                                        echo ' to ' . convertDateFormat($ldata['periodEnd'], "Y-m-d", "m-d-Y");
+                                                    }
+                                                    ?>
+                                                <?php } ?>
                                             </td>
                                             <td title="<?php
                                             if ($ldata['days'] > 0) {
@@ -315,7 +322,7 @@ if (!empty($leaveData)) {
                                             </td>
 
                                             <td class="table-item-base">
-                                                <?php echo $ldata['dateOfAction']; ?>
+                                                <?php echo convertDateFormat($ldata['dateOfAction'], "Y-m-d", "m-d-Y"); ?>
                                             </td>
                                         </tr>
                                         <?php

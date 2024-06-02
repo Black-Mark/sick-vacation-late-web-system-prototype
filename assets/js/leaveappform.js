@@ -64,16 +64,16 @@ document.addEventListener("DOMContentLoaded", function () {
         function dateDifference(currentDate, days) {
             // Parse the current date
             var date = new Date(currentDate);
-    
+
             // Add or subtract the days
             date.setDate(date.getDate() + days);
-    
+
             // Format the new date as Y-m-d
             var year = date.getFullYear();
             var month = String(date.getMonth() + 1).padStart(2, '0');
             var day = String(date.getDate()).padStart(2, '0');
             var formattedDate = `${year}-${month}-${day}`;
-    
+
             return formattedDate;
         }
 
@@ -82,10 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
             var inclusiveDateStart = $('#inclusiveDateStart').val();
             var inclusiveDateEnd = $('#inclusiveDateEnd').val();
             var typeOfLeave = document.querySelector('input[name="typeOfLeave"]:checked') ? document.querySelector('input[name="typeOfLeave"]:checked').value : '';
-
-            if(typeOfLeave === 'Maternity Leave'){
-                $('#inclusiveDateEnd').val(dateDifference(inclusiveDateStart, 105));
-            }
 
             // Compare the values
             if (inclusiveDateStart >= inclusiveDateEnd) {
@@ -106,6 +102,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 containerPeriod = $('#inclusiveDateStart').val();
             }
             updateWorkDays();
+
+            if (typeOfLeave === 'Maternity Leave') {
+                $('#inclusiveDateEnd').val(dateDifference(inclusiveDateStart, 105));
+                $('#workingDays').val(105);
+            }
+
+            if (typeOfLeave === 'Paternity Leave') {
+                $('#inclusiveDateEnd').val(dateDifference(inclusiveDateStart, 7));
+                $('#workingDays').val(7);
+            }
         });
 
         $('#inclusiveDateEnd').on('change', function () {
@@ -149,7 +155,11 @@ document.addEventListener("DOMContentLoaded", function () {
 // }
 
 function handleLeaveTypeChange() {
-    var lastType = "Special Privilege Leave";
+    // var today = new Date().toISOString().split('T')[0];
+    // console.log(today);
+    var today = document.getElementById('dateFilingInput').value;
+    // console.log(today);
+
     var typeOfLeave = document.querySelector('input[name="typeOfLeave"]:checked') ? document.querySelector('input[name="typeOfLeave"]:checked').value : '';
     var typeOfVacationLeave = document.querySelector('input[name="typeOfVacationLeave"]:checked') ? document.querySelector('input[name="typeOfVacationLeave"]:checked').value : '';
     var typeOfSickLeave = document.querySelector('input[name="typeOfSickLeave"]:checked') ? document.querySelector('input[name="typeOfSickLeave"]:checked').value : '';
@@ -166,7 +176,6 @@ function handleLeaveTypeChange() {
 
     var noaomlfLink = document.getElementById('noaomlfLink');
     var noaomlfLinkBtnDummy = document.getElementById('noaomlfLinkBtnDummy');
-    var today = new Date().toISOString().split('T')[0];
 
     // Disable all leaveclass inputs
     var leaveClassInputs = document.querySelectorAll('.leave-app-form-leaveclass-container input');
@@ -334,20 +343,25 @@ function handleLeaveTypeChange() {
         // });
     }
 
-    if (typeOfLeave === 'Maternity Leave' || typeOfLeave === 'Paternity Leave') {
-        noaomlfLink.style.display = 'block';
-        noaomlfLinkBtnDummy.style.display = 'none';
-    } else {
-        noaomlfLink.style.display = 'none';
-        noaomlfLinkBtnDummy.style.display = 'block';
+    // console.log(typeOfLeave);
+    if (noaomlfLink && noaomlfLinkBtnDummy) {
+        if (typeOfLeave == 'Maternity Leave' || typeOfLeave == 'Paternity Leave') {
+            noaomlfLink.style.display = 'block';
+            noaomlfLinkBtnDummy.style.display = 'none';
+        } else {
+            noaomlfLink.style.display = 'none';
+            noaomlfLinkBtnDummy.style.display = 'block';
+        }
     }
 
-    if (typeOfLeave === 'Special Privilege Leave') {
-        allLeave.style.display = 'none';
-        splLeave.style.display = 'block';
-    } else {
-        allLeave.style.display = 'block';
-        splLeave.style.display = 'none';
+    if (allLeave && splLeave) {
+        if (typeOfLeave === 'Special Privilege Leave') {
+            allLeave.style.display = 'none';
+            splLeave.style.display = 'block';
+        } else {
+            allLeave.style.display = 'block';
+            splLeave.style.display = 'none';
+        }
     }
 
     inclusiveDateStart.value = today;
@@ -357,47 +371,139 @@ function handleLeaveTypeChange() {
     inclusiveDateThree.value = today;
     workingDays.value = 1;
 
-    if (typeOfLeave == "Vacation Leave" || typeOfLeave == 'Forced Leave') {
+    if (typeOfLeave == "Vacation Leave" || typeOfLeave == 'Forced Leave' || typeOfLeave == 'Solo Parent Leave' || typeOfLeave == 'Study Leave' || typeOfLeave == "Special Leave Benefits for Women" || typeOfLeave == "Adoption Leave") {
         inclusiveDateStart.min = dateDifference(today, 5);
         inclusiveDateStart.max = '';
+        inclusiveDateStart.value = dateDifference(today, 5);
+
         inclusiveDateEnd.min = dateDifference(today, 5);
         inclusiveDateEnd.max = '';
+        inclusiveDateEnd.value = dateDifference(today, 5);
+
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
         inclusiveDateEnd.readOnly = false;
-    }else if (typeOfLeave == "Sick Leave") {
-        inclusiveDateStart.min = dateDifference(today, -5);
-        inclusiveDateStart.max = dateDifference(today, -1);
-        inclusiveDateEnd.min = dateDifference(today, -5);
-        inclusiveDateEnd.max = dateDifference(today, -1);
+    } else if (typeOfLeave == "Sick Leave") {
+        inclusiveDateStart.min = dateDifference(today, -15);
+        inclusiveDateStart.max = dateDifference(today, 15);
+        inclusiveDateStart.value = dateDifference(today, -15);
+
+        inclusiveDateEnd.min = dateDifference(today, -15);
+        inclusiveDateEnd.max = dateDifference(today, 15);
+        inclusiveDateEnd.value = dateDifference(today, -15);
+
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
         inclusiveDateEnd.readOnly = false;
-    }else if (typeOfLeave == "Maternity Leave") {
+    } else if (typeOfLeave == "Maternity Leave") {
         inclusiveDateStart.min = dateDifference(today, 5);
         inclusiveDateStart.max = '';
+        inclusiveDateStart.value = dateDifference(today, 5);
+
         inclusiveDateEnd.min = dateDifference(today, 5);
-        inclusiveDateEnd.max = dateDifference(today, 125);
+        inclusiveDateEnd.max = dateDifference(inclusiveDateStart.value, 105);
+        inclusiveDateEnd.value = dateDifference(inclusiveDateStart.value, 105);
+
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
+
+        workingDays.value = 105;
+
         inclusiveDateEnd.readOnly = true;
-    }else if (typeOfLeave == "Rehabilitation Privilege") {
+    } else if (typeOfLeave == "Paternity Leave") {
+        inclusiveDateStart.min = dateDifference(today, 5);
+        inclusiveDateStart.max = '';
+        inclusiveDateStart.value = dateDifference(today, 5);
+
+        inclusiveDateEnd.min = dateDifference(today, 5);
+        inclusiveDateEnd.max = dateDifference(inclusiveDateStart.value, 7);
+        inclusiveDateEnd.value = dateDifference(inclusiveDateStart.value, 7);
+
+        inclusiveDateOne.min = '';
+        inclusiveDateTwo.min = '';
+        inclusiveDateThree.min = '';
+
+        workingDays.value = 7;
+
+        inclusiveDateEnd.readOnly = true;
+    } else if (typeOfLeave == "Special Privilege Leave") {
+        inclusiveDateStart.min = '';
+        inclusiveDateStart.max = '';
+        inclusiveDateEnd.min = '';
+        inclusiveDateEnd.max = '';
+
+        inclusiveDateOne.min = dateDifference(today, 5);
+        inclusiveDateOne.max = '';
+        inclusiveDateOne.value = dateDifference(today, 5);
+        inclusiveDateTwo.min = dateDifference(today, 5);
+        inclusiveDateTwo.max = '';
+        inclusiveDateTwo.value = dateDifference(today, 5);
+        inclusiveDateThree.min = dateDifference(today, 5);
+        inclusiveDateThree.max = '';
+        inclusiveDateThree.value = dateDifference(today, 5);
+        inclusiveDateEnd.readOnly = true;
+    } else if (typeOfLeave == "10-Day VAWC Leave") {
+        inclusiveDateStart.min = dateDifference(today, -10);
+        inclusiveDateStart.max = dateDifference(today, 10);
+        inclusiveDateStart.value = today;
+
+        inclusiveDateEnd.min = dateDifference(today, -10);
+        inclusiveDateEnd.max = dateDifference(today, 10);
+        inclusiveDateEnd.value = today;
+
+        inclusiveDateOne.min = '';
+        inclusiveDateTwo.min = '';
+        inclusiveDateThree.min = '';
+
+        inclusiveDateEnd.readOnly = false;
+    } else if (typeOfLeave == "Rehabilitation Privilege") {
+        inclusiveDateStart.min = dateDifference(today, 3);
+        inclusiveDateStart.max = '';
+        inclusiveDateStart.value = dateDifference(today, 3);
+
+        inclusiveDateEnd.min = dateDifference(today, 3);
+        inclusiveDateEnd.max = '';
+        inclusiveDateEnd.value = dateDifference(today, 3);
+
+        inclusiveDateOne.min = '';
+        inclusiveDateTwo.min = '';
+        inclusiveDateThree.min = '';
+
+        inclusiveDateEnd.readOnly = false;
+    } else if (typeOfLeave == "Special Leave Benefits for Women") {
+        inclusiveDateStart.min = dateDifference(today, 3);
+        inclusiveDateStart.max = '';
+        inclusiveDateStart.value = dateDifference(today, 3);
+
+        inclusiveDateEnd.min = dateDifference(today, 3);
+        inclusiveDateEnd.max = '';
+        inclusiveDateEnd.value = dateDifference(today, 3);
+
+        inclusiveDateOne.min = '';
+        inclusiveDateTwo.min = '';
+        inclusiveDateThree.min = '';
+
+        inclusiveDateEnd.readOnly = false;
+    } else if (typeOfLeave == "Special Emergency (Calamity) Leave") {
         inclusiveDateStart.min = today;
-        inclusiveDateStart.max = dateDifference(today, 7);
+        inclusiveDateStart.max = dateDifference(today, 30);
+        inclusiveDateStart.value = today;
+
         inclusiveDateEnd.min = today;
-        inclusiveDateEnd.max = dateDifference(today, 180);
+        inclusiveDateEnd.max = dateDifference(today, 30);
+        inclusiveDateEnd.value = today;
+
         inclusiveDateOne.min = '';
         inclusiveDateTwo.min = '';
         inclusiveDateThree.min = '';
-        inclusiveDateEnd.readOnly = true;
+
+        inclusiveDateEnd.readOnly = false;
     }
 
     // console.log(today);
-
-
 
     if (otherTypeOfLeaveInput.value.trim() !== '') {
         // leaveTypeRadios.forEach(function (radio) {

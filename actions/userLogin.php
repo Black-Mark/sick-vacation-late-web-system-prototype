@@ -12,7 +12,7 @@ if (isset($_REQUEST['login'])) {
 
     if (!empty($employeeId) && !empty($password)) {
         try {
-            $query = "SELECT * FROM tbl_useraccounts WHERE employee_id=? AND BINARY password=? AND UPPER(archive) != 'DELETED'";
+            $query = "SELECT * FROM tbl_useraccounts WHERE BINARY employee_id=? AND BINARY password=? AND UPPER(archive) != 'DELETED'";
             $stmt = mysqli_prepare($database, $query);
             mysqli_stmt_bind_param($stmt, "ss", $employeeId, $password);
             mysqli_stmt_execute($stmt);

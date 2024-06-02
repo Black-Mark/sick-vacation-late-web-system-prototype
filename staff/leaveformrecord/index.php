@@ -127,7 +127,7 @@ if (isset($_SESSION['employeeId'])) {
                             $start_date = $mostMinimalYear;
 
                             // $start_year = $start_date ? date("Y", strtotime($start_date)) : $currentYear;
-
+                            
                             if (!$start_date || $start_date <= 1924) {
                                 $start_date = $currentYear;
                             }
@@ -150,8 +150,10 @@ if (isset($_SESSION['employeeId'])) {
                     style="width:100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
+                            <th>Date Filed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -163,31 +165,52 @@ if (isset($_SESSION['employeeId'])) {
                                 ?>
                                 <tr>
                                     <td>
+                                        <input type="hidden" name="selectedLeaveForm[]"
+                                            value="<?php echo $ldata['dateLastModified']; ?>" />
+                                    </td>
+                                    <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDateStart'];
-                                        if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
-                                            echo ' to ' . $ldata['inclusiveDateEnd'];
-                                        }
-                                        ?>
+                                        <?php if ($ldata['typeOfLeave'] === 'Special Privilege Leave') { ?>
+                                            <?php $arrayDate = [$ldata['inclusiveDateOne'], $ldata['inclusiveDateTwo'], $ldata['inclusiveDateThree']];
+                                            $resultArray = eliminateDuplicate($arrayDate, 1);
+                                            echo join(", ", $resultArray);
+                                            ?>
+                                        <?php } else { ?>
+                                            <?php echo convertDateFormat($ldata['inclusiveDateStart'], "Y-m-d", "m-d-Y");
+                                            if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
+                                                echo ' to ' . convertDateFormat($ldata['inclusiveDateEnd'], "Y-m-d", "m-d-Y");
+                                            }
+                                            ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php echo convertDateFormat($ldata['dateFiling'], "Y-m-d", "m-d-Y"); ?>
                                     </td>
                                     <td>
                                         <?php
                                         if (strtolower($ldata['status']) == "submitted") {
-                                            echo "Pending";
+                                            $limitDayOfExpiry = 5;
+                                            if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
+                                                $limitDayOfExpiry = $limitDayOfExpiry - 2;
+                                            }
+                                            if (dateDifference($ldata['dateFiling'], $limitDayOfExpiry) <= $today) {
+                                                echo "Expired";
+                                            } else {
+                                                echo "Pending";
+                                            }
                                         } else {
                                             echo $ldata['status'];
                                         }
                                         ?>
                                     </td>
-                                    <td>
-                                        <a
-                                            href="<?php echo $location_staff_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                            <button type="button" class="custom-regular-button">
-                                                View
-                                            </button>
-                                        </a>
+                                    <a
+                                        href="<?php echo $location_staff_leave_form_record_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                        <button type="button" class="custom-regular-button">
+                                            View
+                                        </button>
+                                    </a>
                                     </td>
                                 </tr>
                                 <?php

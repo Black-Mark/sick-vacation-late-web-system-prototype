@@ -47,7 +47,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $lastName = isset($_POST['lastName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['lastName'])) : '';
     $firstName = isset($_POST['firstName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['firstName'])) : '';
     $middleName = isset($_POST['middleName']) ? strip_tags(mysqli_real_escape_string($database, $_POST['middleName'])) : '';
-    $dateFiling = isset($_POST['dateFiling']) ? strip_tags(mysqli_real_escape_string($database, $_POST['dateFiling'])) : '';
+    $dateFiling = isset($_POST['dateFiling']) ? strip_tags(mysqli_real_escape_string($database, $_POST['dateFiling'])) : date("Y-m-d");
     $position = isset($_POST['position']) ? strip_tags(mysqli_real_escape_string($database, $_POST['position'])) : '';
     $salary = isset($_POST['salary']) ? strip_tags(mysqli_real_escape_string($database, $_POST['salary'])) : '';
     $typeOfLeave = isset($_POST['typeOfLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfLeave'])) : '';
@@ -64,8 +64,13 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $typeOfStudyLeave = isset($_POST['typeOfStudyLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfStudyLeave'])) : '';
     $typeOfOtherLeave = isset($_POST['typeOfOtherLeave']) ? strip_tags(mysqli_real_escape_string($database, $_POST['typeOfOtherLeave'])) : '';
     $workingDays = isset($_POST['workingDays']) ? strip_tags(mysqli_real_escape_string($database, $_POST['workingDays'])) : '';
+
     $inclusiveDateStart = isset($_POST['inclusiveDateStart']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateStart'])) : '';
     $inclusiveDateEnd = isset($_POST['inclusiveDateEnd']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateEnd'])) : '';
+    $inclusiveDateOne = isset($_POST['inclusiveDateSelectOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectOne'])) : '';
+    $inclusiveDateTwo = isset($_POST['inclusiveDateSelectTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectTwo'])) : '';
+    $inclusiveDateThree = isset($_POST['inclusiveDateSelectThree']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectThree'])) : '';
+
     $commutation = isset($_POST['commutation']) ? strip_tags(mysqli_real_escape_string($database, $_POST['commutation'])) : '';
     $asOfDate = isset($_POST['asOfDate']) ? strip_tags(mysqli_real_escape_string($database, $_POST['asOfDate'])) : '';
     $vacationLeaveTotalEarned = isset($_POST['vacationLeaveTotalEarned']) ? strip_tags(mysqli_real_escape_string($database, $_POST['vacationLeaveTotalEarned'])) : '';
@@ -88,6 +93,8 @@ if (isset($_POST['validateLeaveAppForm'])) {
     $disapprovedMessageOne = isset($_POST['disapprovedMessageOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageOne'])) : '';
     $disapprovedMessageTwo = isset($_POST['disapprovedMessageTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageTwo'])) : '';
     $status = 'Validated';
+
+    $noError = true;
 
     if (strtolower($recommendation) == strtolower("For Disapproved Due to")) {
         $status = "Disapproved";
@@ -127,8 +134,30 @@ if (isset($_POST['validateLeaveAppForm'])) {
         $completeField = true;
     }
 
+    if ($typeOfLeave === "Special Privilege Leave") {
+        $inclusiveDateStart = $dateFiling;
+        $inclusiveDateEnd = $dateFiling;
+        if (empty($inclusiveDateOne) || empty($inclusiveDateTwo) || empty($inclusiveDateThree)) {
+            $_SESSION['alert_message'] = "Enter List of Inclusive Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+            // echo $inclusiveDateOne;
+            // echo $inclusiveDateTwo;
+            // echo $inclusiveDateThree;
+        }
+    } else {
+        $inclusiveDateOne = $dateFiling;
+        $inclusiveDateTwo = $dateFiling;
+        $inclusiveDateThree = $dateFiling;
+        if (empty($inclusiveDateStart) || empty($inclusiveDateEnd)) {
+            $_SESSION['alert_message'] = "Enter Inclusive Start and End Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+        }
+    }
+
     // Checks first if the Inclusive Dates is Valid
-    if ($completeField) {
+    if ($completeField && $noError) {
         // if possible checks if the employee Exist
         $getInitialRecordQuery = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? AND recordType = ? LIMIT 1";
         $stmtForInitialRecord = $database->prepare($getInitialRecordQuery);
@@ -174,7 +203,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                             typeOfVacationLeave = ?, typeOfVacationLeaveWithin = ?, typeOfVacationLeaveAbroad = ?,
                             typeOfSickLeave = ?, typeOfSickLeaveInHospital = ?, typeOfSickLeaveOutPatient = ?,
                             typeOfSpecialLeaveForWomen = ?, typeOfStudyLeave = ?, typeOfOtherLeave = ?,
-                            workingDays = ?, inclusiveDateStart = ?, inclusiveDateEnd = ?, commutation = ?,
+                            workingDays = ?, inclusiveDateStart = ?, inclusiveDateEnd = ?, inclusiveDateOne = ?, inclusiveDateTwo = ?, inclusiveDateThree = ?, commutation = ?,
                             asOfDate = ?, vacationLeaveTotalEarned = ?, sickLeaveTotalEarned = ?,
                             vacationLeaveLess = ?, sickLeaveLess = ?, vacationLeaveBalance = ?, sickLeaveBalance = ?,
                             recommendation = ?, recommendMessage = ?,
@@ -185,7 +214,7 @@ if (isset($_POST['validateLeaveAppForm'])) {
                 $stmt = mysqli_prepare($database, $query);
                 mysqli_stmt_bind_param(
                     $stmt,
-                    "ssssssssssssssssssissssddddddssiiissssssssiiis",
+                    "ssssssssssssssssssisssssssddddddssiiissssssssiiis",
                     $departmentName,
                     $lastName,
                     $firstName,
@@ -207,6 +236,9 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $workingDays,
                     $inclusiveDateStart,
                     $inclusiveDateEnd,
+                    $inclusiveDateOne,
+                    $inclusiveDateTwo,
+                    $inclusiveDateThree,
                     $commutation,
                     $asOfDate,
                     $vacationLeaveTotalEarned,
@@ -242,7 +274,13 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $particularType = "";
                     $particularLabel = "";
                     if ($typeOfLeave != '') {
-                        if ($typeOfLeave == "Vacation Leave" || $typeOfLeave == "Sick Leave" || $typeOfLeave == "Forced Leave") {
+                        if (
+                            $typeOfLeave == "Vacation Leave" || $typeOfLeave == "Sick Leave" || $typeOfLeave == "Forced Leave"
+                            || $typeOfLeave == "Maternity Leave" || $typeOfLeave == "Paternity Leave" || $typeOfLeave == "Special Privilege Leave"
+                            || $typeOfLeave == "Solo Parent Leave" || $typeOfLeave == "Study Leave" || $typeOfLeave == "10-Day VAWC Leave"
+                            || $typeOfLeave == "Rehabilitation Privilege" || $typeOfLeave == "Special Leave Benefits for Women"
+                            || $typeOfLeave == "Special Emergency (Calamity) Leave" || $typeOfLeave == "Adoption Leave"
+                        ) {
                             $particularType = $typeOfLeave;
                         } else {
                             $particularType = "Other";
@@ -271,9 +309,9 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     if ($count > 0) {
                         // If record exists, perform update
                         if ($status == "Approved") {
-                            $updateQuery = "UPDATE tbl_leavedataform SET employee_id = ?, recordType = ?, period = ?, periodEnd = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? WHERE foreignKeyId = ?";
+                            $updateQuery = "UPDATE tbl_leavedataform SET employee_id = ?, recordType = ?, period = ?, periodEnd = ?, periodOne = ?, periodTwo = ?, periodThree = ?, particular = ?, particularLabel = ?, days = ?, hours = ?, minutes = ?, dateOfAction = ? WHERE foreignKeyId = ?";
                             $stmtUpdateRecord = $database->prepare($updateQuery);
-                            $stmtUpdateRecord->bind_param('ssssssiiiss', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveappformId);
+                            $stmtUpdateRecord->bind_param('sssssssssiiiss', $ownerOfForm, $dataRecordType, $inclusiveDateStart, $inclusiveDateEnd, $inclusiveDateOne, $inclusiveDateTwo, $inclusiveDateThree, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction, $leaveappformId);
                             $stmtUpdateRecord->execute();
 
                             if ($stmtUpdateRecord->error) {
@@ -329,6 +367,10 @@ if (isset($_POST['validateLeaveAppForm'])) {
                     $notifEmpIdFrom = '@Admin';
                     $notifEmpIdTo = $ownerOfForm;
                     $notifSubject = 'Validation of Leave Form';
+
+                    if ($typeOfLeave == "Sick Leave") {
+                        //
+                    }
 
                     $notifMessage = "Check this Leave Request Form";
                     if ($status == "Approved") {

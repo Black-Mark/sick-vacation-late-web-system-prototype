@@ -445,22 +445,40 @@ if ($empId && $leaveAppFormId) {
                                             name="workingDays" class='leave-app-form-input'
                                             value="<?php echo $leaveAppFormData['workingDays']; ?>" />
                                     </div>
-                                    <div class="leave-app-form-inclusivedate-detail-container">
-
-                                        <label for="inclusiveDateStart" class='leave-app-form-label'>
-                                            Inclusive Dates
-                                        </label>
-                                        <div class="leave-app-form-inclusivedate-input-container">
-                                            <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart"
-                                                class='leave-app-form-input-plain'
-                                                value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
-                                            <span class="inclusive-date-text">to</span>
-                                            <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
-                                                class='leave-app-form-input-plain'
-                                                value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
+                                    
+                                    <?php if ($leaveAppFormData['typeOfLeave'] === "Special Privilege Leave") { ?>
+                                        <div id="splLeave" class="leave-app-form-inclusivedate-detail-container">
+                                    
+                                            <label for="inclusiveDateSelectOne" class='leave-app-form-label'>
+                                                Inclusive Dates
+                                            </label>
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input disabled type="date" id="inclusiveDateSelectOne" name="inclusiveDateSelectOne" class='leave-app-form-input-plain'
+                                                    value="<?php echo $leaveAppFormData['inclusiveDateOne']; ?>" />
+                                                <input disabled type="date" id="inclusiveDateSelectTwo" name="inclusiveDateSelectTwo" class='leave-app-form-input-plain'
+                                                    value="<?php echo $leaveAppFormData['inclusiveDateTwo']; ?>" />
+                                                <input disabled type="date" id="inclusiveDateSelectThree" name="inclusiveDateSelectThree"
+                                                    class='leave-app-form-input-plain' value="<?php echo $leaveAppFormData['inclusiveDateThree']; ?>" />
+                                            </div>
+                                    
                                         </div>
+                                    <?php } else { ?>
+                                        <div id="allLeave" class="leave-app-form-inclusivedate-detail-container">
+                                    
+                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
+                                                Inclusive Dates
+                                            </label>
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input disabled type="date" id="inclusiveDateStart" name="inclusiveDateStart" class='leave-app-form-input-plain'
+                                                    value="<?php echo $leaveAppFormData['inclusiveDateStart']; ?>" />
+                                                <span class="inclusive-date-text">to</span>
+                                                <input disabled type="date" id="inclusiveDateEnd" name="inclusiveDateEnd" class='leave-app-form-input-plain'
+                                                    value="<?php echo $leaveAppFormData['inclusiveDateEnd']; ?>" />
+                                            </div>
+                                    
+                                        </div>
+                                    <?php } ?>
 
-                                    </div>
                                 </div>
                                 <div class="leave-app-form-commutation-container">
                                     <div class='leave-app-form-label'>

@@ -140,7 +140,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="period" class="form-control" id="floatingInitializePeriod"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingInitializePeriod">Start Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -149,7 +149,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="periodEnd" class="form-control"
-                                    id="floatingInitializePeriodEnd" placeholder="2020-12-31" required>
+                                    id="floatingInitializePeriodEnd" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingInitializePeriodEnd">End Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -213,7 +213,7 @@ if (!empty($leaveData)) {
 
                     <div class="form-floating mb-2">
                         <input type="date" name="dateOfAction" class="form-control" id="floatingInitializeDateOfAction"
-                            placeholder="2020-12-31" required>
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                         <label for="floatingInitializeDateOfAction">Date of Action <span
                                 class="required-color">*</span></label>
                     </div>
@@ -249,7 +249,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="period" class="form-control" id="floatingPeriod"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingPeriod">Start Period <span class="required-color">*</span></label>
                             </div>
                         </div>
@@ -257,7 +257,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="periodEnd" class="form-control" id="floatingPeriodEnd"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingPeriodEnd">End Period <span class="required-color">*</span></label>
                             </div>
                         </div>
@@ -273,6 +273,17 @@ if (!empty($leaveData)) {
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
                             <option value="Break Monthly Credit">Break Monthly Credit</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Special Privilege Leave">Special Privilege Leave</option>
+                            <option value="Solo Parent Leave">Solo Parent Leave</option>
+                            <option value="Study Leave">Study Leave</option>
+                            <option value="10-Day VAWC Leave">10-Day VAWC Leave</option>
+                            <option value="Rehabilitation Privilege">Rehabilitation Privilege</option>
+                            <option value="Special Leave Benefits for Women">Special Leave Benefits for Women</option>
+                            <option value="Special Emergency (Calamity) Leave">Special Emergency (Calamity) Leave
+                            </option>
+                            <option value="Adoption Leave">Adoption Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -316,7 +327,7 @@ if (!empty($leaveData)) {
 
                     <div class="form-floating mb-2">
                         <input type="date" name="dateOfAction" class="form-control" id="floatingDateOfAction"
-                            placeholder="2020-12-31" required>
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                         <label for="floatingDateOfAction">Date of Action <span class="required-color">*</span></label>
                     </div>
 
@@ -351,7 +362,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="period" class="form-control" id="floatingNewPeriod"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingNewPeriod">Start Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -360,7 +371,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="periodEnd" class="form-control" id="floatingNewPeriodEnd"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingNewPeriodEnd">End Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -377,6 +388,17 @@ if (!empty($leaveData)) {
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
                             <option value="Break Monthly Credit">Break Monthly Credit</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Special Privilege Leave">Special Privilege Leave</option>
+                            <option value="Solo Parent Leave">Solo Parent Leave</option>
+                            <option value="Study Leave">Study Leave</option>
+                            <option value="10-Day VAWC Leave">10-Day VAWC Leave</option>
+                            <option value="Rehabilitation Privilege">Rehabilitation Privilege</option>
+                            <option value="Special Leave Benefits for Women">Special Leave Benefits for Women</option>
+                            <option value="Special Emergency (Calamity) Leave">Special Emergency (Calamity) Leave
+                            </option>
+                            <option value="Adoption Leave">Adoption Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingParticularType">Type <span class="required-color">*</span></label>
@@ -421,7 +443,7 @@ if (!empty($leaveData)) {
 
                     <div class="form-floating mb-2">
                         <input type="date" name="dateOfAction" class="form-control" id="floatingNewDateOfAction"
-                            placeholder="2020-12-31" required>
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                         <label for="floatingNewDateOfAction">Date of Action <span
                                 class="required-color">*</span></label>
                     </div>
@@ -457,7 +479,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="period" class="form-control" id="floatingEditPeriod"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingEditPeriod">Start Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -466,7 +488,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="periodEnd" class="form-control" id="floatingEditPeriodEnd"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingEditPeriodEnd">End Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -482,7 +504,18 @@ if (!empty($leaveData)) {
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Late">Late</option>
                             <option value="Forced Leave">Forced Leave</option>
-                            <option value="Break Monthly Record">Break Monthly Record</option>
+                            <option value="Break Monthly Credit">Break Monthly Credit</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Special Privilege Leave">Special Privilege Leave</option>
+                            <option value="Solo Parent Leave">Solo Parent Leave</option>
+                            <option value="Study Leave">Study Leave</option>
+                            <option value="10-Day VAWC Leave">10-Day VAWC Leave</option>
+                            <option value="Rehabilitation Privilege">Rehabilitation Privilege</option>
+                            <option value="Special Leave Benefits for Women">Special Leave Benefits for Women</option>
+                            <option value="Special Emergency (Calamity) Leave">Special Emergency (Calamity) Leave
+                            </option>
+                            <option value="Adoption Leave">Adoption Leave</option>
                             <option value="Others">Others</option>
                         </select>
                         <label for="floatingEditParticularType">Type <span class="required-color">*</span></label>
@@ -528,7 +561,7 @@ if (!empty($leaveData)) {
 
                     <div class="form-floating mb-2">
                         <input type="date" name="dateOfAction" class="form-control" id="floatingEditDateOfAction"
-                            placeholder="2020-12-31" required>
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                         <label for="floatingEditDateOfAction">Date of Action <span
                                 class="required-color">*</span></label>
                     </div>
@@ -564,7 +597,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="period" class="form-control" id="floatingEditInitializePeriod"
-                                    placeholder="2020-12-31" required>
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingEditInitializePeriod">Start Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -573,7 +606,7 @@ if (!empty($leaveData)) {
                         <div class="col-md">
                             <div class="form-floating">
                                 <input type="date" name="periodEnd" class="form-control"
-                                    id="floatingEditInitializePeriodEnd" placeholder="2020-12-31" required>
+                                    id="floatingEditInitializePeriodEnd" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                                 <label for="floatingEditInitializePeriodEnd">End Period <span
                                         class="required-color">*</span></label>
                             </div>
@@ -582,8 +615,8 @@ if (!empty($leaveData)) {
                     </div>
 
                     <div class="form-floating mb-2">
-                        <input type="text" name="particularLabel" class="form-control" id="floatingEditInitialParticularLabel"
-                            placeholder="">
+                        <input type="text" name="particularLabel" class="form-control"
+                            id="floatingEditInitialParticularLabel" placeholder="">
                         <label for="floatingEditInitialParticularLabel">Label
                             <!-- <span class="required-color">*</span> -->
                         </label>
@@ -597,7 +630,8 @@ if (!empty($leaveData)) {
                             <div class="form-floating">
                                 <input type="number" step="any" name="vacationBalance" class="form-control"
                                     id="editVacationBalanceInput" value="0" required>
-                                <label for="editVacationBalanceInput">Balance <span class="required-color">*</span></label>
+                                <label for="editVacationBalanceInput">Balance <span
+                                        class="required-color">*</span></label>
                             </div>
                         </div>
 
@@ -636,8 +670,8 @@ if (!empty($leaveData)) {
                     </div>
 
                     <div class="form-floating mb-2">
-                        <input type="date" name="dateOfAction" class="form-control" id="floatingEditInitializeDateOfAction"
-                            placeholder="2020-12-31" required>
+                        <input type="date" name="dateOfAction" class="form-control"
+                            id="floatingEditInitializeDateOfAction" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
                         <label for="floatingEditInitializeDateOfAction">Date of Action <span
                                 class="required-color">*</span></label>
                     </div>
@@ -755,7 +789,7 @@ if (!empty($leaveData)) {
                                         <div class="table-item-base-none">
                                             <?php
                                             if (isset($employeeData['dateStarted'])) {
-                                                echo $employeeData['dateStarted'];
+                                                echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y");
                                             } else {
                                                 echo 'N/A';
                                             }
@@ -829,11 +863,18 @@ if (!empty($leaveData)) {
                                                 aria-expanded="true"
                                                 aria-controls="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>">
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['period'];
-                                                    if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
-                                                        echo ' to ' . $ldata['periodEnd'];
-                                                    }
-                                                    ?>
+                                                    <?php if ($ldata['particular'] === 'Special Privilege Leave') { ?>
+                                                        <?php $arrayDate = [$ldata['periodOne'], $ldata['periodTwo'], $ldata['periodThree']];
+                                                        $resultArray = eliminateDuplicate($arrayDate, 1);
+                                                        echo join(", ", $resultArray);
+                                                        ?>
+                                                    <?php } else { ?>
+                                                        <?php echo convertDateFormat($ldata['period'], "Y-m-d", "m-d-Y");
+                                                        if ($ldata['periodEnd'] && $ldata['periodStart'] < $ldata['periodEnd']) {
+                                                            echo ' to ' . convertDateFormat($ldata['periodEnd'], "Y-m-d", "m-d-Y");
+                                                        }
+                                                        ?>
+                                                    <?php } ?>
                                                 </td>
                                                 <td title="" class="table-item-base">
                                                     <?php
@@ -884,7 +925,7 @@ if (!empty($leaveData)) {
                                                 </td>
 
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['dateOfAction']; ?>
+                                                    <?php echo convertDateFormat($ldata['dateOfAction'], "Y-m-d", "m-d-Y"); ?>
                                                 </td>
                                             </tr>
                                             <?php

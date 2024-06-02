@@ -142,8 +142,10 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                     style="width:100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
+                            <th>Date Filed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -155,19 +157,41 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                                 ?>
                                 <tr>
                                     <td>
+                                        <input type="hidden" name="selectedLeaveForm[]"
+                                            value="<?php echo $ldata['dateLastModified']; ?>" />
+                                    </td>
+                                    <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDateStart'];
-                                        if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
-                                            echo ' to ' . $ldata['inclusiveDateEnd'];
-                                        }
-                                        ?>
+                                        <?php if ($ldata['typeOfLeave'] === 'Special Privilege Leave') { ?>
+                                            <?php $arrayDate = [$ldata['inclusiveDateOne'], $ldata['inclusiveDateTwo'], $ldata['inclusiveDateThree']];
+                                            $resultArray = eliminateDuplicate($arrayDate, 1);
+                                            echo join(", ", $resultArray);
+                                            ?>
+                                        <?php } else { ?>
+                                            <?php echo convertDateFormat($ldata['inclusiveDateStart'], "Y-m-d", "m-d-Y");
+                                            if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
+                                                echo ' to ' . convertDateFormat($ldata['inclusiveDateEnd'], "Y-m-d", "m-d-Y");
+                                            }
+                                            ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php echo convertDateFormat($ldata['dateFiling'], "Y-m-d", "m-d-Y"); ?>
                                     </td>
                                     <td>
                                         <?php
                                         if (strtolower($ldata['status']) == "submitted") {
-                                            echo "Pending";
+                                            $limitDayOfExpiry = 5;
+                                            if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
+                                                $limitDayOfExpiry = $limitDayOfExpiry - 2;
+                                            }
+                                            if (dateDifference($ldata['dateFiling'], $limitDayOfExpiry) <= $today) {
+                                                echo "Expired";
+                                            } else {
+                                                echo "Pending";
+                                            }
                                         } else {
                                             echo $ldata['status'];
                                         }
@@ -212,14 +236,14 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
             // },
             // ordering: false,
             columnDefs: [
-                // {
-                //     'targets': 0,
-                //     'orderable': false,
-                //     'checkboxes': {
-                //         'selectRow': true,
-                //         // 'page': 'current',
-                //     }
-                // },
+                {
+                    'targets': 0,
+                    'orderable': false,
+                    // 'checkboxes': {
+                    //     'selectRow': true,
+                    //     // 'page': 'current',
+                    // }
+                },
                 {
                     'targets': -1,
                     'orderable': false,

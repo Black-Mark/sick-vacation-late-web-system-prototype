@@ -17,6 +17,7 @@ $sickLeaveMonthlyCredit = 1.25;
 $today = date("Y-m-d");
 $systemStartDate = 2023;
 // Limits
+$limitDayOfExpiry = 5;
 $legalAge = 18;
 $loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // For Birthdate and DateStarted
 
@@ -331,7 +332,7 @@ function getLeaveAppFormRecordBasedYear($employee_id, $year)
 
     $leaveAppRecordList = [];
 
-    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND UPPER(archive) != 'DELETED' AND (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?)";
+    $leaveAppFormRecordQuery = "SELECT * FROM tbl_leaveappform WHERE employee_id = ? AND UPPER(archive) != 'DELETED' AND (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) ORDER BY dateCreated DESC";
 
     $leaveAppFormRecordStatement = $database->prepare($leaveAppFormRecordQuery);
     $leaveAppFormRecordStatement->bind_param("sss", $employee_id, $year, $year);
@@ -1020,8 +1021,43 @@ function dateDifference($currentDate, $days) {
         $date->modify("$days days");
     }
 
-    return $date->format('F d, Y');
+    return $date->format('Y-m-d');
 }
 
+// function eliminateDuplicate($array, $order = 0) {
+//     $uniqueArray = array_unique($array);
+    
+//     if ($order >= 1) {
+//         sort($uniqueArray);
+//     }
+    
+//     return $uniqueArray;
+// }
+
+// Date with Format tinatamad na yung nag cocode maghanap sa mga pages
+function eliminateDuplicate($array, $order) {
+    $inputFormat = 'Y-m-d';
+    $outputFormat = 'm-d-Y';
+    $uniqueArray = array_unique($array);
+    
+    if ($order >= 1) {
+        sort($uniqueArray);
+    }
+
+    $formattedDates = [];
+    
+    foreach ($uniqueArray as $dateString) {
+        // Create a DateTime object from the provided date string
+        $date = DateTime::createFromFormat($inputFormat, $dateString);
+        
+        if (!$date) {
+            return false;
+        }
+        
+        $formattedDates[] = $date->format($outputFormat);
+    }
+    
+    return $formattedDates;
+}
 ?>
 <!-- -->

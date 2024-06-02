@@ -482,7 +482,7 @@ $settingData = getAuthorizedUser();
                                             <input type="number" step="any" min="0" max="3652" id="workingDays"
                                                 name="workingDays" class='leave-app-form-input' value="1" />
                                         </div>
-                                        <div class="leave-app-form-inclusivedate-detail-container">
+                                        <div id="allLeave" class="leave-app-form-inclusivedate-detail-container">
 
                                             <label for="inclusiveDateStart" class='leave-app-form-label'>
                                                 Inclusive Dates
@@ -494,6 +494,25 @@ $settingData = getAuthorizedUser();
                                                 <span class="inclusive-date-text">to</span>
                                                 <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
                                                     class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                            </div>
+
+                                        </div>
+
+                                        <div id="splLeave" class="leave-app-form-inclusivedate-detail-container">
+
+                                            <label for="inclusiveDateSelectOne" class='leave-app-form-label'>
+                                                Inclusive Dates
+                                            </label>
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input type="date" id="inclusiveDateSelectOne" name="inclusiveDateSelectOne"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                <input type="date" id="inclusiveDateSelectTwo" name="inclusiveDateSelectTwo"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                <input type="date" id="inclusiveDateSelectThree"
+                                                    name="inclusiveDateSelectThree" class='leave-app-form-input-plain'
                                                     value="<?php echo date('Y-m-d'); ?>" />
                                             </div>
 

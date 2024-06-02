@@ -174,11 +174,11 @@ if ($selectedYear && $selectedYear != 'All') {
                     style="width:100%">
                     <thead>
                         <tr>
-                            <th>Select</th>
-                            <th>Date</th>
+                            <th></th>
                             <th>Name</th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
+                            <th>Date Filed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -190,11 +190,8 @@ if ($selectedYear && $selectedYear != 'All') {
                                 ?>
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="selectedLeaveForm[]"
+                                        <input type="hidden" name="selectedLeaveForm[]"
                                             value="<?php echo $ldata['dateLastModified']; ?>" />
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['dateLastModified']; ?>
                                     </td>
                                     <td>
                                         <?php
@@ -209,16 +206,34 @@ if ($selectedYear && $selectedYear != 'All') {
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDateStart'];
-                                        if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
-                                            echo ' to ' . $ldata['inclusiveDateEnd'];
-                                        }
-                                        ?>
+                                        <?php if ($ldata['typeOfLeave'] === 'Special Privilege Leave') { ?>
+                                            <?php $arrayDate = [$ldata['inclusiveDateOne'], $ldata['inclusiveDateTwo'], $ldata['inclusiveDateThree']];
+                                            $resultArray = eliminateDuplicate($arrayDate, 1);
+                                            echo join(", ", $resultArray);
+                                            ?>
+                                        <?php } else { ?>
+                                            <?php echo convertDateFormat($ldata['inclusiveDateStart'], "Y-m-d", "m-d-Y");
+                                            if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
+                                                echo ' to ' . convertDateFormat($ldata['inclusiveDateEnd'], "Y-m-d", "m-d-Y");
+                                            }
+                                            ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?php echo convertDateFormat($ldata['dateFiling'], "Y-m-d", "m-d-Y"); ?>
                                     </td>
                                     <td>
                                         <?php
                                         if (strtolower($ldata['status']) == "submitted") {
-                                            echo "Pending";
+                                            $limitDayOfExpiry = 5;
+                                            if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
+                                                $limitDayOfExpiry = $limitDayOfExpiry - 2;
+                                            }
+                                            if (dateDifference($ldata['dateFiling'], $limitDayOfExpiry) <= $today) {
+                                                echo "Expired";
+                                            } else {
+                                                echo "Pending";
+                                            }
                                         } else {
                                             echo $ldata['status'];
                                         }
