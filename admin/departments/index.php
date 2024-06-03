@@ -13,18 +13,18 @@ $sql_department = "SELECT
                         u.middleName AS headMiddleName,
                         u.lastName AS headLastName,
                         u.suffix AS headSuffix,
-                        COUNT(CASE WHEN UPPER(u.archive) != 'DELETED' THEN u.employee_id END) AS departmentCount
+                        (SELECT COUNT(*) 
+                            FROM tbl_useraccounts ua 
+                            WHERE ua.department = d.department_id 
+                            AND UPPER(ua.archive) != 'DELETED') AS departmentCount
                     FROM
                         tbl_departments d
                     LEFT JOIN
-                        tbl_useraccounts u ON d.department_id = u.department
+                        tbl_useraccounts u ON d.departmentHead = u.employee_id
                     WHERE 
                         UPPER(d.archive) != 'DELETED'
-                    GROUP BY
-                        d.department_id
                     ORDER BY 
-                        departmentName
-                ";
+                    d.departmentName;";
 $departments = $database->query($sql_department);
 
 $employeesNameAndId = getAllEmployeesNameAndID();

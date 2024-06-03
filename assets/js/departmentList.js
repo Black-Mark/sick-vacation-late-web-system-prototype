@@ -65,16 +65,48 @@ $(document).ready(function () {
         $('#floatingDeleteDeptName').text(deptName);
         $('#floatingDeleteDeptCount').text(deptCount);
 
+        // Save the state
+        deleteDepartmentState = {
+            deptId: deptId,
+            deptName: deptName,
+            deptHead: deptHead,
+            deptCount: deptCount,
+            deptDescription: deptDescription,
+        };
+
+        // Disable the selected department in the dropdown
+        resetDropdown();
+        disableSelectedDepartment();
+    });
+
+    // Function to disable the selected department in the dropdown
+    function disableSelectedDepartment() {
+        if (deleteDepartmentState) {
+            var departmentAssigned = document.getElementById("floatingDepartmentReassigned");
+
+            // Loop through the options in the select element
+            for (var i = 0; i < departmentAssigned.options.length; i++) {
+                if (departmentAssigned.options[i].value == deleteDepartmentState.deptId) {
+                    departmentAssigned.options[i].disabled = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Function to reset the dropdown
+    function resetDropdown() {
         var departmentAssigned = document.getElementById("floatingDepartmentReassigned");
-        var currentDepartment = document.getElementById('floatingDeleteDeptId');
 
         // Loop through the options in the select element
         for (var i = 0; i < departmentAssigned.options.length; i++) {
-            if (departmentAssigned.options[i].value == currentDepartment.value) {
-                departmentAssigned.remove(i);
-                break;
-            }
+            departmentAssigned.options[i].disabled = false;
         }
+    }
+
+    // Add event handler for modal close
+    $('#deleteDepartment').on('hidden.bs.modal', function () {
+        resetDropdown();
     });
 });
 
@@ -82,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var actionSet = document.getElementById("floatingActionSet");
     var departmentReassigned = document.getElementById("departmentAssigned");
     var departmentAssigned = document.getElementById("floatingDepartmentReassigned");
-    var currentDepartment = document.getElementById('floatingDeleteDeptId');
 
     // Function to toggle visibility and requirement of reason input based on status
     function toggleDeleteActionSet() {
