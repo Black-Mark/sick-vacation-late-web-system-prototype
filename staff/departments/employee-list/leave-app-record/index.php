@@ -50,6 +50,9 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
     }
 }
 
+//To disable
+$allow_op = false;
+
 ?>
 
 <!DOCTYPE html>

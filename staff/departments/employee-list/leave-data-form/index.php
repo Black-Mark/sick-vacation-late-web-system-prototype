@@ -73,6 +73,9 @@ if (!empty($leaveData)) {
     $hasYearRecord = true;
 }
 
+$staffDelimit = false;
+$allow_op = false;
+
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +114,7 @@ if (!empty($leaveData)) {
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
     <link rel="stylesheet" href="<?php echo $assets_css_printmedia; ?>">
 
-    <script src="<?php echo $assets_file_leavedataform; ?>"></script>
+    <!-- <script src="<?php echo $assets_file_leavedataform; ?>"></script> -->
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -122,6 +125,8 @@ if (!empty($leaveData)) {
     <div class="component-container">
         <?php include ($components_file_topnav) ?>
     </div>
+
+    <?php if($staffDelimit){ ?>
 
     <!-- Initialize Record -->
     <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade" id="createInitialRecord"
@@ -636,6 +641,8 @@ if (!empty($leaveData)) {
             </div>
         </div>
     </form>
+
+    <?php } ?>
 
     <div class="page-container">
         <div class="page-content">

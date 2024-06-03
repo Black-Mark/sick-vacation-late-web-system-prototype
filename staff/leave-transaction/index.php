@@ -266,18 +266,12 @@ if ($selectedYear && $selectedYear != 'All') {
                                         ?>
                                     </td>
                                     <td>
-                                        <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
-                                            <a
-                                                href="<?php echo $location_staff_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
-                                                <button type="button" class="custom-regular-button">
-                                                    View
-                                                </button>
-                                            </a>
-                                            <input type="hidden" name="recordId"
-                                                value="<?php echo $ldata['leaveappform_id']; ?>" />
-                                            <input type="submit" name="deleteLeaveAppForm" value="Delete"
-                                                class="custom-regular-button" />
-                                        </form>
+                                        <a
+                                            href="<?php echo $location_staff_leaveapplist_view . '/' . $ldata['leaveappform_id'] . '/'; ?>">
+                                            <button type="button" class="custom-regular-button">
+                                                View
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
