@@ -191,7 +191,6 @@ if (isset($_SESSION['employeeId'])) {
                                     <td>
                                         <?php
                                         if (strtolower($ldata['status']) == "submitted") {
-                                            $limitDayOfExpiry = 5;
                                             if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
                                                 $limitDayOfExpiry = $limitDayOfExpiry - 2;
                                             }

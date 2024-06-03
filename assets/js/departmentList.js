@@ -64,5 +64,41 @@ $(document).ready(function () {
         // Set text for span elements
         $('#floatingDeleteDeptName').text(deptName);
         $('#floatingDeleteDeptCount').text(deptCount);
+
+        var departmentAssigned = document.getElementById("floatingDepartmentReassigned");
+        var currentDepartment = document.getElementById('floatingDeleteDeptId');
+
+        // Loop through the options in the select element
+        for (var i = 0; i < departmentAssigned.options.length; i++) {
+            if (departmentAssigned.options[i].value == currentDepartment.value) {
+                departmentAssigned.remove(i);
+                break;
+            }
+        }
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    var actionSet = document.getElementById("floatingActionSet");
+    var departmentReassigned = document.getElementById("departmentAssigned");
+    var departmentAssigned = document.getElementById("floatingDepartmentReassigned");
+    var currentDepartment = document.getElementById('floatingDeleteDeptId');
+
+    // Function to toggle visibility and requirement of reason input based on status
+    function toggleDeleteActionSet() {
+        var selectedAction = actionSet.value;
+        if (selectedAction == "Reassign") {
+            departmentReassigned.style.display = "block";
+            departmentAssigned.setAttribute("required", "required");
+        } else {
+            departmentReassigned.style.display = "none";
+            departmentAssigned.removeAttribute("required");
+        }
+    }
+
+    // Initial call to set initial state
+    toggleDeleteActionSet();
+
+    // Event listener for status change
+    actionSet.addEventListener("change", toggleDeleteActionSet);
 });

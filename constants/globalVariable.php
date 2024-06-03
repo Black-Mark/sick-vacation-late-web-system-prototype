@@ -17,7 +17,7 @@ $sickLeaveMonthlyCredit = 1.25;
 $today = date("Y-m-d");
 $systemStartDate = 2023;
 // Limits
-$limitDayOfExpiry = 5;
+$limitDayOfExpiry = 7;
 $legalAge = 18;
 $loweredDateRange = (new DateTime())->modify('-18 years')->format('Y-m-d'); // For Birthdate and DateStarted
 
@@ -218,7 +218,7 @@ function getAllDepartments()
 
     $departments = [];
 
-    $fetchAllDepartmentQuery = "SELECT * FROM tbl_departments WHERE UPPER(archive) != 'DELETED'";
+    $fetchAllDepartmentQuery = "SELECT * FROM tbl_departments WHERE UPPER(archive) != 'DELETED' ORDER BY departmentName ASC";
 
     $fetchAllDepartmentResult = $database->query($fetchAllDepartmentQuery);
 

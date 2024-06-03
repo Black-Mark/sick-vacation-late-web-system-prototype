@@ -5,6 +5,8 @@ include ($constants_file_dbconnect);
 include ($constants_file_session_admin);
 include ($constants_variables);
 
+$departmentListing = getAllDepartments();
+
 $sql_department = "SELECT
                         d.*,
                         u.firstName AS headFirstName,
@@ -213,9 +215,40 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                 <input type="hidden" name="deptDescription" id="floatingDeleteDeptDescription" />
 
                                 <div class="text-center alert alert-warning" role="alert">
-                                    Are you sure you want to remove <span class="font-weight-bold text-uppercase" id="floatingDeleteDeptName"></span> in the
-                                    list? It has <span class="font-weight-bold text-uppercase" id="floatingDeleteDeptCount"></span> employee(s) under it. Upon
+                                    Are you sure you want to remove <span class="font-weight-bold text-uppercase"
+                                        id="floatingDeleteDeptName"></span> in the
+                                    list? It has <span class="font-weight-bold text-uppercase"
+                                        id="floatingDeleteDeptCount"></span> employee(s) under it. Upon
                                     Delete, employees will be unassigned.
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select name="actionSet" class="form-select text-center" id="floatingActionSet"
+                                        aria-label="Floating Action Selection">
+                                        <option value="" selected>--None--</option>
+                                        <option value="Reassign">Reassign Employee(s)</option>
+                                        <option value="Terminate">Terminate Account(s)</option>
+                                    </select>
+                                    <label for="floatingActionSet">Additional Action</label>
+                                </div>
+
+                                <div id="departmentAssigned" class="form-floating">
+                                    <select name="departmentReassigned" class="form-select text-center"
+                                        id="floatingDepartmentReassigned" aria-label="Floating Department Selection">
+                                        <option value="" selected></option>
+                                        <?php
+                                        if (!empty($departmentListing)) {
+                                            foreach ($departmentListing as $departmentItem) {
+                                                ?>
+                                                <option value="<?php echo $departmentItem['department_id']; ?>">
+                                                    <?php echo $departmentItem['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="floatingDepartmentReassigned">Available Departments</label>
                                 </div>
                             </div>
                             <div class="modal-footer d-flex justify-content-center">

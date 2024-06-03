@@ -187,7 +187,6 @@ if ($empId !== 'index.php' && $empId !== 'index.html' && $empId !== null) {
                                     <td>
                                         <?php
                                         if (strtolower($ldata['status']) == "submitted") {
-                                            $limitDayOfExpiry = 5;
                                             if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
                                                 $limitDayOfExpiry = $limitDayOfExpiry - 2;
                                             }
