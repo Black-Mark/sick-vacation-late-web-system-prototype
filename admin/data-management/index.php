@@ -150,12 +150,6 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                     </form> -->
 
                     <div class="item-detail-container mb-2">
-                        <a href="<?php echo $location_admin_datamanagement_laterecords; ?>" class="item-detail-container-summary">
-                            Employee Late Record
-                        </a>
-                    </div>
-
-                    <div class="item-detail-container mb-2">
                         <a href="<?php echo $location_admin_datamanagement_designation; ?>" class="item-detail-container-summary">
                             Work Designations
                         </a>

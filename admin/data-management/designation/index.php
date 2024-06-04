@@ -7,7 +7,7 @@ include ($constants_variables);
 
 $designations = [];
 
-$designations = getAllDesignations();
+$designations = getAllDesignationsWithInfo();
 
 ?>
 
@@ -90,6 +90,38 @@ $designations = getAllDesignations();
         </div>
     </form>
 
+    <!-- Delete Modal -->
+    <form action="<?php echo $action_delete_designation; ?>" method="post" class="modal fade" id="deleteDesignation"
+        tabindex="-1" role="dialog" aria-labelledby="deleteDesignationTitle" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteDesignationModalLongTitle">Confirm Designation Removal
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="designationId" id="floatingDeleteDesignationId" />
+
+                    <div class="text-center alert alert-warning" role="alert">
+                        Are you sure you want to remove <span class="font-weight-bold text-uppercase"
+                            id="floatingDeleteDesignationName"></span> in the
+                        list? It has <span class="font-weight-bold text-uppercase"
+                            id="floatingDeleteDesignationCount"></span>
+                        employee(s) under it. Upon
+                        Deletion, employee(s) will be unassigned.
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <input type="submit" name="deleteDesignation" value="Yes" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <!-- Edit Modal -->
     <form action="<?php echo $action_edit_designation; ?>" method="post" class="modal fade" id="editDesignation"
         tabindex="-1" role="dialog" aria-labelledby="editDesignationTitle" aria-hidden="true">
@@ -158,32 +190,38 @@ $designations = getAllDesignations();
                             if (!empty($designations)) {
                                 foreach ($designations as $row) {
                                     ?>
-                            <tr>
-                                <td>
-                                    <input type="hidden" name="designationId"
-                                        value="<?php echo $row['designation_id']; ?>" />
-                                </td>
-                                <td title="<?php echo $row['designationDescription']; ?>">
-                                    <?php echo $row['designationName']; ?>
-                                </td>
-                                <td>
-                                    <form method="POST" action="<?php echo $action_delete_designation; ?>">
-                                        <button type="button" class="custom-regular-button editDesignationButton"
-                                            data-toggle="modal" data-target="#editDesignation"
-                                            data-designation-id="<?php echo $row['designation_id']; ?>"
-                                            data-designation-name="<?php echo $row['designationName']; ?>"
-                                            data-designation-description="<?php echo $row['designationDescription']; ?>">
-                                            Edit
-                                        </button>
-
-                                        <input type="hidden" name="designationId"
-                                            value="<?php echo $row['designation_id']; ?>" />
-                                        <input type="submit" name="deleteDesignation" value="Delete"
-                                            class="custom-regular-button" />
-                                    </form>
-                                </td>
-                            </tr>
-                            <?php
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="designationId"
+                                                value="<?php echo $row['designation_id']; ?>" />
+                                        </td>
+                                        <td title="<?php echo $row['designationDescription']; ?>">
+                                            <?php echo $row['designationName']; ?>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="custom-regular-button editDesignationButton"
+                                                data-toggle="modal" data-target="#editDesignation"
+                                                data-designation-id="<?php echo $row['designation_id']; ?>"
+                                                data-designation-name="<?php echo $row['designationName']; ?>"
+                                                data-designation-description="<?php echo $row['designationDescription']; ?>">
+                                                Edit
+                                            </button>
+                                            <!-- <form method="POST" action="<?php echo $action_delete_designation; ?>">
+                                                <input type="hidden" name="designationId"
+                                                    value="<?php echo $row['designation_id']; ?>" />
+                                                <input type="submit" name="deleteDesignation" value="Delete"
+                                                    class="custom-regular-button" />
+                                            </form> -->
+                                            <button type="button" class="custom-regular-button deleteDesignationButton"
+                                                data-toggle="modal" data-target="#deleteDesignation"
+                                                data-designation-id="<?php echo $row['designation_id']; ?>"
+                                                data-designation-name="<?php echo $row['designationName']; ?>"
+                                                data-designation-count="<?php echo $row['designationCount']; ?>">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php
                                 }
                             }
                             ?>
@@ -195,16 +233,16 @@ $designations = getAllDesignations();
                 <!-- Data Table Configuration -->
 
                 <script>
-                let table = new DataTable('#designations', {
-                    pagingType: 'full_numbers',
-                    scrollCollapse: true,
-                    scrollY: '100%',
-                    scrollX: true,
-                    // 'select': {
-                    //     'style': 'multi',
-                    // },
-                    // ordering: false,
-                    columnDefs: [{
+                    let table = new DataTable('#designations', {
+                        pagingType: 'full_numbers',
+                        scrollCollapse: true,
+                        scrollY: '100%',
+                        scrollX: true,
+                        // 'select': {
+                        //     'style': 'multi',
+                        // },
+                        // ordering: false,
+                        columnDefs: [{
                             'targets': 0,
                             'orderable': false,
                             // 'checkboxes': {
@@ -220,29 +258,29 @@ $designations = getAllDesignations();
                             //     // 'page': 'current',
                             // }
                         },
-                        // {
-                        //     targets: [0],
-                        //     orderData: [0, 1]
-                        // },
-                        // {
-                        //     targets: [1],
-                        //     orderData: [1, 0]
-                        // },
-                        // {
-                        //     targets: [4],
-                        //     orderData: [4, 0]
-                        // }
-                    ],
-                    search: {
-                        return: true
-                    },
-                    "dom": 'Blfrtip',
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        [10, 25, 50, 100, 'All']
-                    ],
-                    // "colReorder": true,
-                    "buttons": [{
+                            // {
+                            //     targets: [0],
+                            //     orderData: [0, 1]
+                            // },
+                            // {
+                            //     targets: [1],
+                            //     orderData: [1, 0]
+                            // },
+                            // {
+                            //     targets: [4],
+                            //     orderData: [4, 0]
+                            // }
+                        ],
+                        search: {
+                            return: true
+                        },
+                        "dom": 'Blfrtip',
+                        lengthMenu: [
+                            [10, 25, 50, 100, -1],
+                            [10, 25, 50, 100, 'All']
+                        ],
+                        // "colReorder": true,
+                        "buttons": [{
                             extend: 'copy',
                             exportOptions: {
                                 columns: ':visible:not(:eq(0)):not(:eq(-1))',
@@ -287,9 +325,9 @@ $designations = getAllDesignations();
                             text: 'Column Visibility',
                             columns: ':first,:gt(0),:last'
                         }
-                    ],
-                    // responsive: true,
-                });
+                        ],
+                        // responsive: true,
+                    });
                 </script>
 
                 <!-- <button onclick="printSelectedValues()">Print Selected Values</button> -->

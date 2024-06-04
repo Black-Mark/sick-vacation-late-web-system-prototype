@@ -19,6 +19,18 @@ $(document).ready(function () {
         };
     });
 
+    $('#designations').on('click', '.deleteDesignationButton', function () {
+        // Get data from the button
+        var designationId = $(this).data('designation-id');
+        var designationName = $(this).data('designation-name');
+        var designationCount = $(this).data('designation-count');
+
+        // Set form field values
+        $('#floatingDeleteDesignationId').val(designationId);
+        $('#floatingDeleteDesignationName').text(designationName);
+        $('#floatingDeleteDesignationCount').text(designationCount);
+    });
+
     // Function to set data based on the saved state
     function setDataFromState() {
         if (editDesignationState) {

@@ -33,7 +33,7 @@ if (isset($_POST['deleteDesignation'])) {
 } else if (isset($_POST['absoluteDeleteDesignation'])) {
     $designationId = strip_tags(mysqli_real_escape_string($database, $_POST['designationId']));
 
-    $query = "DELETE FROM tbl_designation WHERE designation_id = ?";
+    $query = "DELETE FROM tbl_designations WHERE designation_id = ?";
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {

@@ -1,5 +1,5 @@
 <?php
-include ("../../../constants/routes.php");
+include ("../../constants/routes.php");
 include ($constants_file_dbconnect);
 include ($constants_file_session_admin);
 include ($constants_variables);
@@ -150,12 +150,13 @@ $months = [
                     </form>
                 </div>
 
-                <div class="month-records">
-                    <table class="table table-striped text-center">
+                <div class="month-records table-extend">
+                    <table class="w-100 text-center">
                         <thead>
                             <tr>
                                 <th>Month</th>
-                                <th>File</th>
+                                <th>Uploaded Record</th>
+                                <th>Late Sheet</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -181,22 +182,32 @@ $months = [
                                         <td>
                                             <?php
                                             if (isset($records[$monthYear])) {
-                                                $file = "../../../".$records[$monthYear]['fileOfRecord'];
+                                                $file = "../../" . $records[$monthYear]['fileOfRecord'];
                                                 if (file_exists($file)) {
                                                     ?>
-                                                    <a href="<?php echo $file; ?>" download>Download</a>
+                                                    <i class="fa fa-download"></i>
+                                                    <a class="link-hover-underline" href="<?php echo $file; ?>"
+                                                        download>Download</a>
                                                     <?php
                                                 } else {
                                                     ?>
+                                                    <i class="fa fa-file-o"></i>
                                                     Missing file
                                                     <?php
                                                 }
                                             } else {
                                                 ?>
-                                                No record
+                                                <i>No record</i>
                                                 <?php
                                             }
                                             ?>
+                                        </td>
+                                        <td>
+                                            <form action="<?php echo $action_download_latesheet; ?>" method="post">
+                                                <input type="hidden" name="monthYearName" value="<?php echo $monthYear; ?>" />
+                                                <input type="submit" name="downloadLateSheet" class="input-submit-plain"
+                                                    value="<?php echo 'Late Sheet - ' . $monthYear; ?>" />
+                                            </form>
                                         </td>
                                         <td>
                                             <button type="button" class="custom-regular-button uploadMonthlyLateRecord"

@@ -40,6 +40,7 @@ $action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.ph
 $action_resetpassword = $webhostpage . '/actions/resetPassword.php';
 
 $action_download_noaoml = $webhostpage. "/actions/downloadNOAOML.php";
+$action_download_latesheet = $webhostpage. "/actions/downloadLateSheetCSV.php";
 
 $action_upload_leave_record = $webhostpage. "/actions/uploadLateRecord.php";
 
@@ -119,7 +120,7 @@ $location_admin_departments_employee_leaveappform_view = $webhostpage . '/admin/
 $location_admin_departments_employee_leavedataform = $webhostpage . '/admin/departments/employee-list/leave-data-form';
 
 $location_admin_datamanagement = $webhostpage . '/admin/data-management';
-$location_admin_datamanagement_laterecords = $webhostpage . '/admin/data-management/late-records';
+$location_admin_datamanagement_laterecords = $webhostpage . '/admin/late-records';
 $location_admin_datamanagement_designation = $webhostpage . '/admin/data-management/designation';
 $location_admin_datamanagement_leavetype = $webhostpage . '/admin/data-management/leave-types';
 $location_admin_datamanagement_archive = $webhostpage . '/admin/data-management/archive';

@@ -838,26 +838,26 @@ if (!empty($leaveData)) {
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 

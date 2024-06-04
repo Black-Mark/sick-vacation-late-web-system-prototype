@@ -37,6 +37,24 @@ a:focus {
     cursor: pointer;
 }
 
+.input-submit-plain {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    /* Optional: to mimic a hyperlink */
+    padding: 0;
+    /* Remove padding */
+}
+
+.input-submit-plain:hover {
+    text-decoration: underline;
+}
+
+.link-hover-underline:hover {
+    text-decoration: underline;
+}
 
 /* Experiments */
 .text-experiment {
@@ -263,7 +281,7 @@ body.webpage-background-cover {
 }
 
 .card h1 {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     margin-bottom: 8px;
 
 }
@@ -274,6 +292,24 @@ body.webpage-background-cover {
 
 }
 
+
+/* Table */
+
+.table-extend table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-extend th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center; /* Horizontal centering */
+    vertical-align: middle; /* Vertical centering */
+}
+
+.table-extend th {
+    background-color: #f2f2f2;
+}
 
 
 /* Buttons */
@@ -607,7 +643,7 @@ body.webpage-background-cover {
     text-decoration: none;
     color: var(--webtextcolor);
     line-height: 1.5rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-align: center;
     overflow-x: hidden;
@@ -961,6 +997,12 @@ body::-webkit-scrollbar-thumb {
     cursor: pointer;
 }
 
+@media screen {
+    .deduct-type {
+        color: red;
+    }
+}
+
 
 /* Notification */
 
@@ -974,7 +1016,7 @@ body::-webkit-scrollbar-thumb {
     height: 400px;
     background-color: #fff;
     box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
+    overflow-y: hidden;
     transition: right 0.3s ease;
     /* Animation transition */
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

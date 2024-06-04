@@ -27,7 +27,7 @@ $firstDayNextMonth = $dummyDateForOrb->modify('+1 month')->format('Y-m-d');
 
 $minDate = '1924-01-01'; // for all
 // $generatedEmpId = bin2hex(random_bytes(4));
-$generatedEmpId = chr(rand(65, 90)).date('YmdHis').chr(rand(65, 90));
+$generatedEmpId = chr(rand(65, 90)) . date('YmdHis') . chr(rand(65, 90));
 
 // Function to Apply strip_tags and mysqli_real_escape_string
 function sanitizeInput($input)
@@ -63,7 +63,8 @@ function organizeFullName($firstName = "", $middleName = "", $lastName = "", $su
     return trim($fullName);
 }
 
-function identifyEmployeeAge($birthdate) {
+function identifyEmployeeAge($birthdate)
+{
 
     if (empty($birthdate) || $birthdate == '0000-00-00') {
         return 'Not Specified';
@@ -72,7 +73,7 @@ function identifyEmployeeAge($birthdate) {
     // Append a default time to the birthdate
     $birthdate .= ' 00:00:00';
     $birthDateTime = new DateTime($birthdate);
-    
+
     $currentDate = new DateTime();
     $ageInterval = $currentDate->diff($birthDateTime);
     return $ageInterval->y;
@@ -126,7 +127,8 @@ function getEmployeeData($employee_id)
     return $employeeData;
 }
 
-function getEmployeePersonalInfo($employee_id){
+function getEmployeePersonalInfo($employee_id)
+{
     global $database;
 
     $personalData = [];
@@ -150,7 +152,8 @@ function getEmployeePersonalInfo($employee_id){
     return $personalData;
 }
 
-function getEmployeeFamilyBackground($employee_id){
+function getEmployeeFamilyBackground($employee_id)
+{
     global $database;
 
     $familyBackgroundData = [];
@@ -174,7 +177,8 @@ function getEmployeeFamilyBackground($employee_id){
     return $familyBackgroundData;
 }
 
-function getEmployeeEducationalBackground($employee_id){
+function getEmployeeEducationalBackground($employee_id)
+{
     global $database;
 
     $educationalBackgroundData = [];
@@ -198,7 +202,8 @@ function getEmployeeEducationalBackground($employee_id){
     return $educationalBackgroundData;
 }
 
-function getAccountRole($employeeId) {
+function getAccountRole($employeeId)
+{
     global $database;
 
     $employeeId = mysqli_real_escape_string($database, strip_tags($employeeId));
@@ -208,7 +213,7 @@ function getAccountRole($employeeId) {
     if (!$result || mysqli_num_rows($result) == 0) {
         return "User not found";
     }
-    
+
     return mysqli_fetch_assoc($result)['role'];
 }
 
@@ -258,6 +263,36 @@ function getAllDesignations()
     $designations = [];
 
     $fetchAllDesignationsQuery = "SELECT * FROM tbl_designations WHERE UPPER(archive) != 'DELETED' ORDER BY designationName";
+
+    $fetchAllDesignationsResult = $database->query($fetchAllDesignationsQuery);
+
+    if ($fetchAllDesignationsResult->num_rows > 0) {
+        while ($designationData = $fetchAllDesignationsResult->fetch_assoc()) {
+            $designations[] = $designationData;
+        }
+    }
+
+    return $designations;
+}
+
+function getAllDesignationsWithInfo()
+{
+    global $database;
+
+    $designations = [];
+
+    $fetchAllDesignationsQuery = "  SELECT
+                                        d.*,
+                                        (SELECT COUNT(*) 
+                                            FROM tbl_useraccounts ua 
+                                            WHERE ua.jobPosition = d.designation_id 
+                                            AND UPPER(ua.archive) != 'DELETED') AS designationCount
+                                    FROM
+                                        tbl_designations d
+                                    WHERE 
+                                        UPPER(d.archive) != 'DELETED'
+                                    ORDER BY 
+                                        d.designationName;";
 
     $fetchAllDesignationsResult = $database->query($fetchAllDesignationsQuery);
 
@@ -902,7 +937,8 @@ function getIncentiveLeaveComputationToday($employee_id)
     return $fetchLeaveDataWithMontly;
 }
 
-function computeExactTime($valuePoints) {
+function computeExactTime($valuePoints)
+{
     // Define the number of minutes in a workday
     $minutesInWorkday = 8 * 60; // 8 hours * 60 minutes
 
@@ -958,7 +994,8 @@ function computeExactTime($valuePoints) {
     return $result;
 }
 
-function formatExactTime($day, $hour, $minutes) {
+function formatExactTime($day, $hour, $minutes)
+{
     $formattedTime = '';
 
     if ($day > 0) {
@@ -989,10 +1026,11 @@ function formatExactTime($day, $hour, $minutes) {
     return $formattedTime;
 }
 
-function convertDateFormat($dateString, $currentFormat, $desiredFormat) {
+function convertDateFormat($dateString, $currentFormat, $desiredFormat)
+{
     // Create a DateTime object from the provided date string and current format
     $date = DateTime::createFromFormat($currentFormat, $dateString);
-    
+
     if (!$date) {
         return false;
     }
@@ -1000,21 +1038,23 @@ function convertDateFormat($dateString, $currentFormat, $desiredFormat) {
     return $date->format($desiredFormat);
 }
 
-function yearDifference($startDate, $endDate) {
+function yearDifference($startDate, $endDate)
+{
     // Convert dates to DateTime objects
     $start = new DateTime($startDate);
     $end = new DateTime($endDate);
-    
+
     // Calculate the difference in years
     $interval = $start->diff($end);
     $years = $interval->y;
-    
+
     return $years;
 }
 
-function dateDifference($currentDate, $days) {
+function dateDifference($currentDate, $days)
+{
     $date = new DateTime($currentDate);
-    
+
     if ($days >= 0) {
         $date->modify("+$days days");
     } else {
@@ -1026,37 +1066,38 @@ function dateDifference($currentDate, $days) {
 
 // function eliminateDuplicate($array, $order = 0) {
 //     $uniqueArray = array_unique($array);
-    
+
 //     if ($order >= 1) {
 //         sort($uniqueArray);
 //     }
-    
+
 //     return $uniqueArray;
 // }
 
 // Date with Format tinatamad na yung nag cocode maghanap sa mga pages
-function eliminateDuplicate($array, $order) {
+function eliminateDuplicate($array, $order)
+{
     $inputFormat = 'Y-m-d';
     $outputFormat = 'm-d-Y';
     $uniqueArray = array_unique($array);
-    
+
     if ($order >= 1) {
         sort($uniqueArray);
     }
 
     $formattedDates = [];
-    
+
     foreach ($uniqueArray as $dateString) {
         // Create a DateTime object from the provided date string
         $date = DateTime::createFromFormat($inputFormat, $dateString);
-        
+
         if (!$date) {
             return false;
         }
-        
+
         $formattedDates[] = $date->format($outputFormat);
     }
-    
+
     return $formattedDates;
 }
 ?>

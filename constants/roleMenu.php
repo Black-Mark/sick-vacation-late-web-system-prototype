@@ -5,6 +5,7 @@ $adminMenu = array(
     "Profile" => array("icon" => "fa fa-user", "link" => $location_admin_profile),
     "Department List" => array("icon" => "fa fa-folder-open", "link" => $location_admin_departments),
     "Leave Transaction" => array("icon" => "fa fa-envelope", "link" => $location_admin_leaveapplist),
+    "Employee Late Record" => array("icon" => "fa fa-archive", "link" => $location_admin_datamanagement_laterecords),
     "Data Management" => array("icon" => "fa fa-database", "link" => $location_admin_datamanagement),
 );
 

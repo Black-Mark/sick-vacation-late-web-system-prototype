@@ -39,7 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
 
-                echo '<div class="notification-header bg-primary text-white">Notifications</div><div class="overflow-auto custom-scrollbar">';
+                echo "<div>";
+                echo '<div class="notification-header bg-primary text-white">Notifications</div><div class="overflow-y custom-scrollbar">';
 
                 // Check if any notifications were fetched
                 if (!empty($unreadNotifications)) {
@@ -66,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo '<div class="notification text-center font-italic">There are no recent notification.</div>';
                 }
                 echo '</div><div class="notification-footer bg-primary text-white"><a href="' . $location_admin_leaveapplist . '">See all Leave Application Transaction</a></div>';
+                echo "</div>";
 
                 mysqli_close($database);
             } else if (strcasecmp($userData['role'], "Employee") == 0) {
