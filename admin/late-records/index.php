@@ -113,6 +113,10 @@ $months = [
                                     <label for="file" class="input-group-text">.csv file &nbsp; <span
                                             class="required-color"> *</span></label>
                                 </div>
+                                <div class="form-check text-center mb-3">
+                                    <input type="checkbox" name="typeOfRecording" class="form-check-input" id="typeOfRecording">
+                                    <label for="typeOfRecording" class="form-check-label">Auto Sum Duplicate Employee Entry</label>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
