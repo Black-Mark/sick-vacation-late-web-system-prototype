@@ -1100,5 +1100,22 @@ function eliminateDuplicate($array, $order)
 
     return $formattedDates;
 }
+
+function getMinYearPeriodEnd() {
+    global $database;
+
+    $sql = "SELECT MIN(periodEnd) AS minimum FROM tbl_leavedataform";
+
+    $result = $database->query($sql);
+
+    if ($result) {
+        $row = $result->fetch_assoc();
+        
+        return $row['minimum'];
+    } else {
+        echo "Error: " . $database->error;
+        return null;
+    }
+}
 ?>
 <!-- -->

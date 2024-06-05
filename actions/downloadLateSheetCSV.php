@@ -15,21 +15,26 @@ if (isset($_POST['monthYearName']) && !empty($_POST['monthYearName'])) {
     $monthYearName = $_POST['monthYearName'];
 
     // Fetch data from the database
-    $query = "SELECT ua.employee_id, ua.firstName, ua.lastName, ua.middleName, ua.suffix 
-              FROM tbl_useraccounts ua
-              LEFT JOIN tbl_leavedataform ldata ON ua.employee_id = ldata.employee_id
-              WHERE UPPER(ua.archive) != 'DELETED' 
-              AND UPPER(ldata.archive) != 'DELETED'
-              AND UPPER(ldata.recordType) = 'INITIAL RECORD' 
-              AND (DATE_FORMAT(ldata.periodEnd, '%M %Y') = '$monthYearName' OR ldata.periodEnd <= DATE_FORMAT('$monthYearName', '%Y-%m-%d'))
-    ";
+    $firstDayOfMonth = date('Y-m-01', strtotime($monthYearName));
+
+    $query = "  SELECT ua.employee_id, ua.firstName, ua.lastName, ua.middleName, ua.suffix 
+                FROM tbl_useraccounts ua
+                LEFT JOIN tbl_leavedataform ldata ON ua.employee_id = ldata.employee_id
+                WHERE UPPER(ua.archive) != 'DELETED' 
+                AND UPPER(ua.status) != 'INACTIVE'
+                AND UPPER(ua.status) != 'BANNED'
+                AND UPPER(ua.role) != 'ADMIN'
+                AND UPPER(ldata.archive) != 'DELETED'
+                AND UPPER(ldata.recordType) = 'INITIAL RECORD' 
+                AND (DATE_FORMAT(ldata.periodEnd, '%M %Y') = '$monthYearName' OR ldata.periodEnd <= '$firstDayOfMonth')
+                ORDER BY ua.lastName ASC
+            ";
     $result = $database->query($query);
 
     // Check if query was successful
     if (!$result) {
         die("Query failed: " . $database->error);
 
-        // Redirect based on account role
         if ($accountRole == "admin") {
             header("Location: " . $location_admin_datamanagement_laterecords);
             exit();
@@ -47,12 +52,12 @@ if (isset($_POST['monthYearName']) && !empty($_POST['monthYearName'])) {
     $csvPath = stream_get_meta_data($csvFile)['uri'];
 
     // Write the header row
-    fputcsv($csvFile,[trim('EmployeeId'), 'FullName', 'TotalLate']);
+    fputcsv($csvFile, [trim('EmployeeId'), 'FullName', 'TotalLate']);
 
     // Write the data rows
     while ($row = $result->fetch_assoc()) {
         $employeeId = $row['employee_id'];
-        $fullName = organizeFullName($row['firstName'], $row['middleName'], $row['lastName'], $row['suffix'], 1);
+        $fullName = organizeFullName($row['firstName'], $row['middleName'], $row['lastName'], $row['suffix'], 2);
         $totalLate = ''; // Leaving TotalLate column empty
 
         // Write the customized row to the CSV file
