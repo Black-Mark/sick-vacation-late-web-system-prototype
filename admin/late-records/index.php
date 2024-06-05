@@ -172,6 +172,10 @@ $months = [
                         <input type="submit" name="leaveTransactionYear" value="Load Year Record"
                             class="custom-regular-button">
                     </form>
+                    <form action="<?php echo $action_remove_late_cache; ?>" method="POST" >
+                        <input type="submit" name="clearCacheLateRecord" value="Clear Cache"
+                            class="custom-regular-button">
+                    </form>
                 </div>
 
                 <div class="month-records table-extend">

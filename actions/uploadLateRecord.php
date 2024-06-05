@@ -15,7 +15,7 @@ if (isset($_SESSION['employeeId'])) {
 if (isset($_POST['upload'])) {
     $typeOfRecording = "";
 
-    if(!empty($_POST['typeOfRecording'])){
+    if (!empty($_POST['typeOfRecording'])) {
         $typeOfRecording = sanitizeInput($_POST['typeOfRecording']);
     }
 
@@ -48,14 +48,14 @@ if (isset($_POST['upload'])) {
                     $_SESSION['alert_type'] = $warning_color;
                 } else {
                     $inputFileNamePath = $_FILES['file']['tmp_name'];
-                
+
                     try {
                         $file = new SplFileObject($inputFileNamePath);
                         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::READ_AHEAD);
-                
+
                         $newFileName = trim($monthYearName) . '-' . date('Y-m-d-His') . '.' . $file_ext;
                         move_uploaded_file($inputFileNamePath, $upload_directory . $newFileName);
-                
+
                         $totalEmp = 0;
                         $errors = 0;
                         $noupdate = 0;
@@ -65,155 +65,161 @@ if (isset($_POST['upload'])) {
                         $success = 0;
                         $failed = 0;
                         $uploadSuccess = 0;
-                
+
+                        $employee_minutes = array();
+
                         foreach ($file as $key => $csv) {
                             if ($key == 0) {
                                 continue; // Skips csv header
                             }
-                
+                        
                             $employee_id = sanitizeInput(trim($csv[0])); // First column of csv
                             $total_minutes = sanitizeInput(trim($csv[2])); // Second column of csv
-                
+                        
                             if (!empty($employee_id)) {
-                                $totalEmp++;
-                                $recordType = "Deduction Type";
-                                $type = 'Late';
-                
-                                $total_minutes = (int) $total_minutes;
-                                $formatted_duration = getFormattedDurationInMinutes($total_minutes);
-                                $days = $formatted_duration['days'];
-                                $hours = $formatted_duration['hours'];
-                                $minutes = $formatted_duration['minutes'];
-                
-                                $period_start = date("Y-m-01", strtotime($monthYearName));
-                                $period_end = date("Y-m-t", strtotime($monthYearName));
-                
-                                $date_of_action = date('Y-m-d');
-                
-                                // Check if the employee exists
-                                $empStatement = $database->prepare("SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'");
-                                $empStatement->bind_param("s", $employee_id);
-                                $empStatement->execute();
-                                $empResult = $empStatement->get_result();
-                
-                                if ($empResult->num_rows > 0) {
-                                    // Employee exists, now check for initial record
-                                    $initialRecordStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE recordType = 'Initial Record' AND employee_id = ? AND periodEnd IS NOT NULL");
-                                    $initialRecordStatement->bind_param("s", $employee_id);
-                                    $initialRecordStatement->execute();
-                                    $initialRecordResult = $initialRecordStatement->get_result();
-                
-                                    if ($initialRecordResult->num_rows > 0) {
-                                        $initialRecord = $initialRecordResult->fetch_assoc();
-                                        $initialRecordPeriodEnd = $initialRecord['periodEnd'];
-                
-                                        // Compare period start with initial record periodEnd
-                                        if ((new DateTime($initialRecord['periodEnd']))->format('Y-m') === (new DateTime($period_start))->format('Y-m')) {
-                                            $period_start = $initialRecordPeriodEnd;
-                                            // Check if a record with particular = "Late", period = $period_start, periodEnd = $period_end, and employee_id = $employee_id exists
-                                            $checkStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                            $checkStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
-                                            $checkStatement->execute();
-                                            $checkResult = $checkStatement->get_result();
-                
-                                            if ($checkResult->num_rows > 0) {
-                                                // If a record exists
-                                                if ($typeOfRecording == "autosumduplicate") {
-                                                    // Sum the values
-                                                    $existingRecord = $checkResult->fetch_assoc();
-                                                    $days += $existingRecord['days'];
-                                                    $hours += $existingRecord['hours'];
-                                                    $minutes += $existingRecord['minutes'];
-                                                }
-                
-                                                // Update days, hours, and minutes
-                                                $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                                $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
-                                                $updateStatement->execute();
-                
-                                                // Check if any rows were affected by the update
-                                                if ($updateStatement->affected_rows > 0) {
-                                                    // Update successful
-                                                    $update++;
-                                                } else {
-                                                    // No rows were updated (possibly because the values are the same)
-                                                    $noupdate++;
-                                                }
-                                            } else {
-                                                // If no record exists, insert a new record
-                                                $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                                                $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
-                                                $insertStatement->execute();
-                
-                                                // Check if the insert was successful
-                                                if ($insertStatement->affected_rows > 0) {
-                                                    // Insert successful
-                                                    $success++;
-                                                } else {
-                                                    $failed++;
-                                                }
-                                            }
-                                        } else if ($period_start >= $initialRecordPeriodEnd) {
-                                            // Check if a record with particular = "Late", period = $period_start, periodEnd = $period_end, and employee_id = $employee_id exists
-                                            $checkStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                            $checkStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
-                                            $checkStatement->execute();
-                                            $checkResult = $checkStatement->get_result();
-                
-                                            if ($checkResult->num_rows > 0) {
-                                                // If a record exists
-                                                if ($typeOfRecording == "autosumduplicate") {
-                                                    // Sum the values
-                                                    $existingRecord = $checkResult->fetch_assoc();
-                                                    $days += $existingRecord['days'];
-                                                    $hours += $existingRecord['hours'];
-                                                    $minutes += $existingRecord['minutes'];
-                                                }
-                
-                                                // Update days, hours, and minutes
-                                                $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                                $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
-                                                $updateStatement->execute();
-                
-                                                // Check if any rows were affected by the update
-                                                if ($updateStatement->affected_rows > 0) {
-                                                    // Update successful
-                                                    $update++;
-                                                } else {
-                                                    // No rows were updated (possibly because the values are the same)
-                                                    $noupdate++;
-                                                }
-                                            } else {
-                                                // If no record exists, insert a new record
-                                                $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                                                $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
-                                                $insertStatement->execute();
-                
-                                                // Check if the insert was successful
-                                                if ($insertStatement->affected_rows > 0) {
-                                                    // Insert successful
-                                                    $success++;
-                                                } else {
-                                                    $failed++;
-                                                }
-                                            }
+                                if ($typeOfRecording == "autosumduplicate") {
+                                    if (is_numeric($total_minutes)) {
+                                        // Check if employee ID already exists in the array
+                                        if (array_key_exists($employee_id, $employee_minutes)) {
+                                            // If employee ID exists, add the total minutes to the existing value
+                                            $employee_minutes[$employee_id] += $total_minutes;
                                         } else {
-                                            // The employee initial record is in range of date
-                                            $noupdate++;
+                                            // If employee ID doesn't exist, initialize it with the total minutes
+                                            $employee_minutes[$employee_id] = $total_minutes;
                                         }
-                                    } else {
-                                        // No initial record found
-                                        $noInitialRecord++;
                                     }
                                 } else {
-                                    // Employee does not exist
-                                    $notExist++;
+                                    // Overwrite the existing value or add new entry
+                                    if (is_numeric($total_minutes)) {
+                                        $employee_minutes[$employee_id] = $total_minutes;
+                                    }
                                 }
                             }
                         }
-                
+
+                        foreach ($employee_minutes as $employee_id => $total_minutes) {
+                            $totalEmp++;
+                            $recordType = "Deduction Type";
+                            $type = 'Late';
+
+                            $total_minutes = (int) $total_minutes;
+                            $formatted_duration = getFormattedDurationInMinutes($total_minutes);
+                            $days = $formatted_duration['days'];
+                            $hours = $formatted_duration['hours'];
+                            $minutes = $formatted_duration['minutes'];
+
+                            $period_start = date("Y-m-01", strtotime($monthYearName));
+                            $period_end = date("Y-m-t", strtotime($monthYearName));
+
+                            $date_of_action = date('Y-m-d');
+
+                            // Check if the employee exists
+                            $empStatement = $database->prepare("SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'");
+                            $empStatement->bind_param("s", $employee_id);
+                            $empStatement->execute();
+                            $empResult = $empStatement->get_result();
+
+                            if ($empResult->num_rows > 0) {
+                                // Employee exists, now check for initial record
+                                $initialRecordStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE recordType = 'Initial Record' AND employee_id = ? AND periodEnd IS NOT NULL");
+                                $initialRecordStatement->bind_param("s", $employee_id);
+                                $initialRecordStatement->execute();
+                                $initialRecordResult = $initialRecordStatement->get_result();
+
+                                if ($initialRecordResult->num_rows > 0) {
+                                    $initialRecord = $initialRecordResult->fetch_assoc();
+                                    $initialRecordPeriodEnd = $initialRecord['periodEnd'];
+
+                                    // Compare period start with initial record periodEnd
+                                    if ((new DateTime($initialRecord['periodEnd']))->format('Y-m') === (new DateTime($period_start))->format('Y-m')) {
+                                        $period_start = $initialRecordPeriodEnd;
+                                        // Check if a record with particular = "Late", period = $period_start, periodEnd = $period_end, and employee_id = $employee_id exists
+                                        $checkStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                        $checkStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
+                                        $checkStatement->execute();
+                                        $checkResult = $checkStatement->get_result();
+
+                                        if ($checkResult->num_rows > 0) {
+                                            // If a record exists
+                                            // Update days, hours, and minutes
+                                            $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                            $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
+                                            $updateStatement->execute();
+
+                                            // Check if any rows were affected by the update
+                                            if ($updateStatement->affected_rows > 0) {
+                                                // Update successful
+                                                $update++;
+                                            } else {
+                                                // No rows were updated (possibly because the values are the same)
+                                                $noupdate++;
+                                            }
+                                        } else {
+                                            // If no record exists, insert a new record
+                                            $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                            $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
+                                            $insertStatement->execute();
+
+                                            // Check if the insert was successful
+                                            if ($insertStatement->affected_rows > 0) {
+                                                // Insert successful
+                                                $success++;
+                                            } else {
+                                                $failed++;
+                                            }
+                                        }
+                                    } else if ($period_start >= $initialRecordPeriodEnd) {
+                                        // Check if a record with particular = "Late", period = $period_start, periodEnd = $period_end, and employee_id = $employee_id exists
+                                        $checkStatement = $database->prepare("SELECT * FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                        $checkStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
+                                        $checkStatement->execute();
+                                        $checkResult = $checkStatement->get_result();
+
+                                        if ($checkResult->num_rows > 0) {
+                                            // If a record exists
+                                            // Update days, hours, and minutes
+                                            $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                            $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
+                                            $updateStatement->execute();
+
+                                            // Check if any rows were affected by the update
+                                            if ($updateStatement->affected_rows > 0) {
+                                                // Update successful
+                                                $update++;
+                                            } else {
+                                                // No rows were updated (possibly because the values are the same)
+                                                $noupdate++;
+                                            }
+                                        } else {
+                                            // If no record exists, insert a new record
+                                            $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                            $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
+                                            $insertStatement->execute();
+
+                                            // Check if the insert was successful
+                                            if ($insertStatement->affected_rows > 0) {
+                                                // Insert successful
+                                                $success++;
+                                            } else {
+                                                $failed++;
+                                            }
+                                        }
+                                    } else {
+                                        // The employee initial record is in range of date
+                                        $noupdate++;
+                                    }
+                                } else {
+                                    // No initial record found
+                                    $noInitialRecord++;
+                                }
+                            } else {
+                                // Employee does not exist
+                                $notExist++;
+                            }
+                        }
+
                         $fileOfRecord = "files/upload/laterecords/" . $newFileName;
-                
+
                         // Check if the monthYearOfRecord already exists
                         $checkStatement = $database->prepare("SELECT COUNT(*) FROM tbl_laterecordfile WHERE monthYearOfRecord = ?");
                         $checkStatement->bind_param("s", $monthYearName);
@@ -221,13 +227,13 @@ if (isset($_POST['upload'])) {
                         $checkStatement->bind_result($count);
                         $checkStatement->fetch();
                         $checkStatement->close();
-                
+
                         if ($count == 0) {
                             // Insert new record
                             $insertStatement = $database->prepare("INSERT INTO tbl_laterecordfile (monthYearOfRecord, fileOfRecord) VALUES (?, ?)");
                             $insertStatement->bind_param("ss", $monthYearName, $fileOfRecord);
                             $insertStatement->execute();
-                
+
                             if ($insertStatement->affected_rows > 0) {
                                 $uploadSuccess++;
                             } else {
@@ -239,7 +245,7 @@ if (isset($_POST['upload'])) {
                             $updateStatement = $database->prepare("UPDATE tbl_laterecordfile SET fileOfRecord = ? WHERE monthYearOfRecord = ?");
                             $updateStatement->bind_param("ss", $fileOfRecord, $monthYearName);
                             $updateStatement->execute();
-                
+
                             if ($updateStatement->affected_rows > 0) {
                                 $uploadSuccess += 2;
                             } else {
@@ -247,7 +253,7 @@ if (isset($_POST['upload'])) {
                             }
                             $updateStatement->close();
                         }
-                
+
                         echo "Number of employees without initial records: $noInitialRecord<br>";
                         echo "Number of employees that do not exist: $notExist<br>";
                         echo "Total number of employees: $totalEmp<br>";
@@ -256,7 +262,7 @@ if (isset($_POST['upload'])) {
                         echo "Number of successful records: $success<br>";
                         echo "Number of failed updates: $failed<br>";
                         echo "File Uploaded: $uploadSuccess<br>";
-                
+
                         if ($uploadSuccess == 1) {
                             $_SESSION['alert_message'] = "File Has Successfully Uploaded!";
                             $_SESSION['alert_type'] = "";
@@ -270,13 +276,13 @@ if (isset($_POST['upload'])) {
                             $_SESSION['alert_message'] = "File Has Failed to Update!";
                             $_SESSION['alert_type'] = $error_color;
                         } else {
-                
+
                         }
                     } catch (Exception $exception) {
                         $_SESSION['alert_message'] = $exception->getMessage();
                         $_SESSION['alert_type'] = $error_color;
                     }
-                }                
+                }
             }
         }
     }

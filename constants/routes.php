@@ -39,10 +39,11 @@ $action_retrieve_designation = $webhostpage . '/actions/retrieveDesignation.php'
 $action_forgotpassword_mailer = $webhostpage . '/actions/forgotPasswordMailer.php';
 $action_resetpassword = $webhostpage . '/actions/resetPassword.php';
 
-$action_download_noaoml = $webhostpage. "/actions/downloadNOAOML.php";
-$action_download_latesheet = $webhostpage. "/actions/downloadLateSheetCSV.php";
+$action_download_noaoml = $webhostpage . "/actions/downloadNOAOML.php";
+$action_download_latesheet = $webhostpage . "/actions/downloadLateSheetCSV.php";
 
-$action_upload_leave_record = $webhostpage. "/actions/uploadLateRecord.php";
+$action_upload_leave_record = $webhostpage . "/actions/uploadLateRecord.php";
+$action_remove_late_cache = $webhostpage . "/actions/removeCacheLateRecord.php";
 
 $action_update_password = $webhostpage . '/actions/updatePassword.php';
 $action_update_system_setting = $webhostpage . '/actions/updateSystemSetting.php';
@@ -97,10 +98,10 @@ $assets_file_leaveappform = $webhostpage . '/assets/js/leaveappform.js';
 $assets_file_leavetransaction = $webhostpage . '/assets/js/leaveTransaction.js';
 $assets_file_archive = $webhostpage . '/assets/js/archiveListing.js';
 $assets_file_incharge_change = $webhostpage . '/assets/js/inChargeChange.js';
-$assets_departmentlist_js = $webhostpage. '/assets/js/departmentList.js';
-$assets_designationlist_js = $webhostpage. '/assets/js/designationListing.js';
-$assets_monthlylaterecordlist_js = $webhostpage. '/assets/js/lateRecords.js';
-$assets_adjustableTableCell_js = $webhostpage. '/assets/js/adjustableTableCell.js';
+$assets_departmentlist_js = $webhostpage . '/assets/js/departmentList.js';
+$assets_designationlist_js = $webhostpage . '/assets/js/designationListing.js';
+$assets_monthlylaterecordlist_js = $webhostpage . '/assets/js/lateRecords.js';
+$assets_adjustableTableCell_js = $webhostpage . '/assets/js/adjustableTableCell.js';
 
 // Web Host Page - Pages
 $location_login = $webhostpage;
