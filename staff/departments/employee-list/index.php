@@ -175,7 +175,6 @@ if ($departmentlabel) {
                         style="width:100%">
                         <thead>
                             <tr>
-                                <th>Select</th>
                                 <th>Name</th>
                                 <th>Department</th>
                                 <th>Job Title</th>
@@ -192,10 +191,6 @@ if ($departmentlabel) {
                                 while ($row = $employees->fetch_assoc()) {
                                     ?>
                                     <tr>
-                                        <td>
-                                            <input type="checkbox" name="selectedEmployee[]"
-                                                value="<?php echo $row['employee_id']; ?>" />
-                                        </td>
                                         <td>
                                             <?php
                                             echo organizeFullName($row['firstName'], $row['middleName'], $row['lastName'], $row['suffix'], $order = 2);
@@ -264,18 +259,18 @@ if ($departmentlabel) {
                         // ordering: false,
                         columnDefs: [
                             {
-                                targets: [ 0, <?php if ($departmentlabel != "") {
-                                    echo "2,";
-                                } ?>5, 7], visible: false
+                                targets: [<?php if ($departmentlabel != "") {
+                                    echo "1,";
+                                } ?>4, 6], visible: false
                             },
-                            {
-                                'targets': 0,
-                                'orderable': false,
-                                // 'checkboxes': {
-                                //     'selectRow': true,
-                                //     // 'page': 'current',
-                                // }
-                            },
+                            // {
+                            //     'targets': 0,
+                            //     'orderable': false,
+                            //     // 'checkboxes': {
+                            //     //     'selectRow': true,
+                            //     //     // 'page': 'current',
+                            //     // }
+                            // },
                             {
                                 'targets': -1,
                                 'orderable': false,
@@ -310,7 +305,7 @@ if ($departmentlabel) {
                             {
                                 extend: 'copy',
                                 exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                    columns: ':visible:not(:eq(-1))',
                                 }
                             },
                             {
@@ -318,7 +313,7 @@ if ($departmentlabel) {
                                 title: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 filename: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                    columns: ':visible:not(:eq(-1))',
                                 }
                             },
                             {
@@ -326,7 +321,7 @@ if ($departmentlabel) {
                                 title: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 filename: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                    columns: ':visible:not(:eq(-1))',
                                 }
                             },
                             {
@@ -334,7 +329,7 @@ if ($departmentlabel) {
                                 title: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 filename: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                    columns: ':visible:not(:eq(-1))',
                                 }
                             },
                             {
@@ -343,7 +338,7 @@ if ($departmentlabel) {
                                 filename: '<?php echo $departmentName ? $departmentName . ' - ' : ''; ?>List of Employees',
                                 message: 'Produced and Prepared by the Human Resources System',
                                 exportOptions: {
-                                    columns: ':visible:not(:eq(0)):not(:eq(-1))',
+                                    columns: ':visible:not(:eq(-1))',
                                 }
                             },
                             {
