@@ -52,7 +52,7 @@ if (isset($_POST['monthYearName']) && !empty($_POST['monthYearName'])) {
     $csvPath = stream_get_meta_data($csvFile)['uri'];
 
     // Write the header row
-    fputcsv($csvFile, [trim('EmployeeId'), 'FullName', 'TotalLate']);
+    fputcsv($csvFile, [trim(''), 'FullName', 'TotalLate']);
 
     // Write the data rows
     while ($row = $result->fetch_assoc()) {

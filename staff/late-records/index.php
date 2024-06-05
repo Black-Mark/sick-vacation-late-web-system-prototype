@@ -4,11 +4,30 @@ include ($constants_file_dbconnect);
 include ($constants_file_session_staff);
 include ($constants_variables);
 
-$mostMinimalYear = $systemStartDate;
+$mostMinimalPeriod = getMinYearPeriodEnd(); // Value changes based on fetch data 2023-07-05
+$mostMinimalYear = date("Y", strtotime($mostMinimalPeriod));
+$monthStartInMinimalYear = intval(date("m", strtotime($mostMinimalPeriod)));
 
-$selectedYear = $_POST['selectedYear'] ?? date("Y");
+// echo $mostMinimalPeriod;
+// echo $mostMinimalYear;
+// echo $monthStartInMinimalYear;
 
-// Fetch records for the selected year
+$currentYear = date("Y");
+
+// echo $_SESSION['post_lateYear'];
+
+$selectedYear = $currentYear;
+if (isset($_POST['selectedLateYear'])) {
+    $selectedYear = $_POST['selectedLateYear'];
+    if (isset($_SESSION['post_lateYear'])) {
+        unset($_SESSION['post_lateYear']);
+    }
+} else if (isset($_SESSION['post_lateYear'])) {
+    $selectedYear = $_SESSION['post_lateYear'];
+} else {
+    $selectedYear = date("Y");
+}
+
 $sql = "SELECT * FROM tbl_laterecordfile WHERE monthYearOfRecord LIKE '%$selectedYear%' ORDER BY monthYearOfRecord ASC";
 $result = $database->query($sql);
 
@@ -40,9 +59,9 @@ $months = [
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Staff</title>
+    <title>Human Resources of Municipality of Indang - Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Staff Page">
+    <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
     include ($constants_file_html_credits);
     ?>
@@ -84,6 +103,8 @@ $months = [
 
             <div class="box-container">
                 <div>
+                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
+                            class="custom-regular-button">Back</button></a>
                     <div class="title-text">Employee Late Record</div>
                     <div class="title-text-caption">
                         <h6>Selected Year: <?php echo $selectedYear; ?></h6>
@@ -111,6 +132,12 @@ $months = [
                                     <label for="file" class="input-group-text">.csv file &nbsp; <span
                                             class="required-color"> *</span></label>
                                 </div>
+                                <div class="form-check text-center mb-3">
+                                    <input type="checkbox" name="typeOfRecording" class="form-check-input"
+                                        id="typeOfRecording" value="autosumduplicate">
+                                    <label for="typeOfRecording" class="form-check-label">Auto Sum Duplicate Employee
+                                        Entry</label>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -122,11 +149,10 @@ $months = [
 
                 <div class="button-container component-container mb-2">
                     <form action="" method="post">
-                        <label for="selectedYear">Select a Year:</label>
-                        <select name="selectedYear" id="selectedYear" class="custom-regular-button"
+                        <label for="selectedLateYear">Select a Year:</label>
+                        <select name="selectedLateYear" id="selectedLateYear" class="custom-regular-button"
                             aria-label="Year Selection">
                             <?php
-                            $currentYear = date("Y");
 
                             $start_year = $mostMinimalYear ?? $currentYear;
 
@@ -148,66 +174,70 @@ $months = [
                     </form>
                 </div>
 
-                <div class="month-records">
-                    <table class="table table-striped text-center">
+                <div class="month-records table-extend">
+                    <table class="w-100 text-center">
                         <thead>
                             <tr>
                                 <th>Month</th>
-                                <th>File</th>
+                                <th>Uploaded Record</th>
+                                <th>Late Sheet</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody><?php
-                        $currentYear = date("Y");
-                        $currentMonth = date("n"); // Get the current month as a number without leading zeros
-                        
-                        foreach ($months as $key => $month) {
-                            // Get the month number from the $months array
-                            $monthNumber = $key + 1;
+                        <tbody>
+                            <?php
+                            $currentMonth = date("n");
 
-                            // Display months up to the current month for the current year
-                            if ($selectedYear == $currentYear && $monthNumber > $currentMonth) {
-                                continue;
-                            }
+                            foreach ($months as $key => $month) {
+                                $monthNumber = $key + 1;
 
-                            // Display all months for previous years
-                            if ($selectedYear <= $currentYear) {
                                 $monthYear = "$month $selectedYear";
+
+                                if (($selectedYear == $currentYear && $monthNumber > $currentMonth) || ($selectedYear < $currentYear && $selectedYear == $mostMinimalYear && $monthNumber <= $monthStartInMinimalYear - 1)) {
+                                    continue;
+                                }
+
                                 ?>
-                                    <tr>
-                                        <td><?php echo $month; ?></td>
-                                        <td>
-                                            <?php
-                                            if (isset($records[$monthYear])) {
-                                                $file = "../../".$records[$monthYear]['fileOfRecord'];
-                                                if (file_exists($file)) {
-                                                    ?>
-                                                    <a href="<?php echo $file; ?>" download>Download</a>
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    Missing file
-                                                    <?php
-                                                }
+                                <tr>
+                                    <td><?php echo $month; ?></td>
+                                    <td>
+                                        <?php
+                                        if (isset($records[$monthYear])) {
+                                            $file = "../../" . $records[$monthYear]['fileOfRecord'];
+                                            if (file_exists($file)) {
+                                                ?>
+                                                <i class="fa fa-download"></i>
+                                                <a class="link-hover-underline" href="<?php echo $file; ?>" download>Download</a>
+                                                <?php
                                             } else {
                                                 ?>
-                                                No record
+                                                <i class="fa fa-file-o"></i>
+                                                Missing file
                                                 <?php
                                             }
+                                        } else {
                                             ?>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="custom-regular-button uploadMonthlyLateRecord"
-                                                data-toggle="modal" data-target="#uploadLeaveRecord"
-                                                data-month-year="<?php echo $monthYear; ?>">
-                                                Upload Late Record
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                            <i>No record</i>
+                                            <?php
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <form action="<?php echo $action_download_latesheet; ?>" method="post">
+                                            <input type="hidden" name="monthYearName" value="<?php echo $monthYear; ?>" />
+                                            <input type="submit" name="downloadLateSheet" class="input-submit-plain"
+                                                value="<?php echo 'Late Sheet - ' . $monthYear; ?>" />
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="custom-regular-button uploadMonthlyLateRecord"
+                                            data-toggle="modal" data-target="#uploadLeaveRecord"
+                                            data-month-year="<?php echo $monthYear; ?>">Upload Late Record</button>
+                                    </td>
+                                </tr>
+                                <?php
                             }
-                        }
-                        ?>
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -229,4 +259,4 @@ $months = [
 
 </body>
 
-</html>t
+</html>

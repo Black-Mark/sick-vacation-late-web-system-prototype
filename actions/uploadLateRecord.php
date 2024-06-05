@@ -13,7 +13,6 @@ if (isset($_SESSION['employeeId'])) {
 }
 
 if (isset($_POST['upload'])) {
-    // Check if monthYearName is provided
     $typeOfRecording = "";
 
     if(!empty($_POST['typeOfRecording'])){
@@ -33,6 +32,9 @@ if (isset($_POST['upload'])) {
             $_SESSION['alert_message'] = "Selected Month and Year is ahead of the current month!";
             $_SESSION['alert_type'] = $warning_color;
         } else {
+            // Sesion save selecte year
+            $_SESSION['post_lateYear'] = date("Y", strtotime($_POST['monthYearName']));
+
             // Check if file is uploaded
             if (!isset($_FILES['file'])) {
                 $_SESSION['alert_message'] = "File not uploaded!";
