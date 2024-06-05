@@ -72,29 +72,32 @@ if (isset($_POST['upload'])) {
                             if ($key == 0) {
                                 continue; // Skips csv header
                             }
-                        
+
                             $employee_id = sanitizeInput(trim($csv[0])); // First column of csv
                             $total_minutes = sanitizeInput(trim($csv[2])); // Second column of csv
-                        
+
                             if (!empty($employee_id)) {
-                                if ($typeOfRecording == "autosumduplicate") {
-                                    if (is_numeric($total_minutes)) {
-                                        // Check if employee ID already exists in the array
-                                        if (array_key_exists($employee_id, $employee_minutes)) {
-                                            // If employee ID exists, add the total minutes to the existing value
-                                            $employee_minutes[$employee_id] += $total_minutes;
+                                if (is_numeric($total_minutes)) {
+                                    if ($total_minutes > 0) {
+                                        if ($typeOfRecording == "autosumduplicate") {
+                                            // Check if employee ID already exists in the array
+                                            if (array_key_exists($employee_id, $employee_minutes)) {
+                                                // If employee ID exists, add the total minutes to the existing value
+                                                $employee_minutes[$employee_id] += $total_minutes;
+                                            } else {
+                                                // If employee ID doesn't exist, initialize it with the total minutes
+                                                $employee_minutes[$employee_id] = $total_minutes;
+                                            }
                                         } else {
-                                            // If employee ID doesn't exist, initialize it with the total minutes
-                                            $employee_minutes[$employee_id] = $total_minutes;
+                                            // Overwrite the existing value or add new entry
+                                            if (is_numeric($total_minutes)) {
+                                                $employee_minutes[$employee_id] = $total_minutes;
+                                            }
                                         }
-                                    }
-                                } else {
-                                    // Overwrite the existing value or add new entry
-                                    if (is_numeric($total_minutes)) {
-                                        $employee_minutes[$employee_id] = $total_minutes;
                                     }
                                 }
                             }
+
                         }
 
                         foreach ($employee_minutes as $employee_id => $total_minutes) {
