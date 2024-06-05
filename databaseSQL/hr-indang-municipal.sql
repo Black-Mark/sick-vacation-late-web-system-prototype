@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 03, 2024 at 03:13 PM
+-- Generation Time: Jun 05, 2024 at 05:34 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -78,7 +78,7 @@ CREATE TABLE `tbl_designations` (
 
 INSERT INTO `tbl_designations` (`designation_id`, `designationName`, `designationDescription`, `dateLastModified`, `dateCreated`, `archive`) VALUES
 (1, 'HR Staff', 'HR staff oversee all aspects of personnel management, from recruitment to employee relations, ensuring a positive work environment.', '2024-05-27 11:35:05', '2024-05-27', ''),
-(2, 'Clerk', 'A clerk manages administrative tasks like record-keeping and office organization, providing essential support for smooth operations.', '2024-05-28 02:36:38', '2024-05-28', ''),
+(2, 'Clerk', 'A clerk manages administrative tasks like record-keeping and office organization, providing essential support for smooth operations.', '2024-06-04 05:39:34', '2024-05-28', ''),
 (102, 'City Manager', '', '2024-06-02 15:09:39', '0000-00-00', ''),
 (103, 'Finance Director', '', '2024-06-02 15:10:07', '0000-00-00', ''),
 (104, 'Treasurer', '', '2024-06-02 15:11:05', '0000-00-00', ''),
@@ -86,13 +86,12 @@ INSERT INTO `tbl_designations` (`designation_id`, `designationName`, `designatio
 (106, 'Police Chief', '', '2024-06-02 15:11:36', '0000-00-00', ''),
 (107, 'Public Health Director', '', '2024-06-02 15:11:49', '0000-00-00', ''),
 (108, 'Community Services Coordinator', '', '2024-06-02 15:12:06', '0000-00-00', ''),
-(109, 'HR Director', '', '2024-06-02 15:13:31', '0000-00-00', 'deleted'),
-(110, 'Benefits Coordinator', '', '2024-06-02 15:13:46', '0000-00-00', ''),
+(110, 'Benefits Coordinator', '', '2024-06-04 05:35:07', '0000-00-00', ''),
 (111, 'Payroll Specialist', '', '2024-06-02 19:13:25', '0000-00-00', ''),
-(112, 'Accountant', '', '2024-06-02 19:13:43', '0000-00-00', ''),
+(112, 'Accountant', '', '2024-06-04 05:32:00', '0000-00-00', ''),
 (113, 'Training and Development Coordinator', '', '2024-06-02 19:15:38', '0000-00-00', ''),
 (114, 'City Engineer', '', '2024-06-02 19:16:01', '0000-00-00', ''),
-(115, 'Assessor', '', '2024-06-02 19:16:26', '0000-00-00', ''),
+(115, 'Assessor', '', '2024-06-04 05:30:46', '0000-00-00', ''),
 (116, 'Police Officer', '', '2024-06-02 19:17:15', '0000-00-00', ''),
 (117, 'Systems Analyst', '', '2024-06-02 19:18:14', '0000-00-00', ''),
 (118, 'Environmental Engineer', '', '2024-06-02 19:18:45', '0000-00-00', ''),
@@ -184,7 +183,9 @@ CREATE TABLE `tbl_laterecordfile` (
 
 INSERT INTO `tbl_laterecordfile` (`laterecordfile_id`, `monthYearOfRecord`, `fileOfRecord`, `lastDateModified`) VALUES
 (19, 'May 2024', 'files/upload/laterecords/May 2024-2024-06-03-014928.csv', '2024-06-02 17:49:29'),
-(20, 'June 2024', 'files/upload/laterecords/June 2024-2024-06-03-155811.csv', '2024-06-03 07:58:11');
+(20, 'June 2024', 'files/upload/laterecords/June 2024-2024-06-04-201446.csv', '2024-06-04 12:14:46'),
+(21, 'July 2023', 'files/upload/laterecords/July 2023-2024-06-05-112544.csv', '2024-06-05 03:25:44'),
+(22, 'August 2023', 'files/upload/laterecords/August 2023-2024-06-05-112319.csv', '2024-06-05 03:23:19');
 
 -- --------------------------------------------------------
 
@@ -255,15 +256,19 @@ CREATE TABLE `tbl_leaveappform` (
 INSERT INTO `tbl_leaveappform` (`leaveappform_id`, `dateLastModified`, `dateCreated`, `employee_id`, `departmentName`, `lastName`, `firstName`, `middleName`, `dateFiling`, `position`, `salary`, `typeOfLeave`, `typeOfSpecifiedOtherLeave`, `typeOfVacationLeave`, `typeOfVacationLeaveWithin`, `typeOfVacationLeaveAbroad`, `typeOfSickLeave`, `typeOfSickLeaveInHospital`, `typeOfSickLeaveOutPatient`, `typeOfSpecialLeaveForWomen`, `typeOfStudyLeave`, `typeOfOtherLeave`, `workingDays`, `inclusiveDateStart`, `inclusiveDateEnd`, `inclusiveDateOne`, `inclusiveDateTwo`, `inclusiveDateThree`, `commutation`, `asOfDate`, `vacationLeaveTotalEarned`, `sickLeaveTotalEarned`, `vacationLeaveLess`, `sickLeaveLess`, `vacationLeaveBalance`, `sickLeaveBalance`, `recommendation`, `recommendMessage`, `dayWithPay`, `dayWithoutPay`, `otherDayPay`, `otherDaySpecify`, `disapprovedMessage`, `hrName`, `hrPosition`, `deptHeadName`, `mayorName`, `mayorPosition`, `hrmanager_id`, `depthead_id`, `mayor_id`, `status`, `archive`) VALUES
 ('09b2896575a016b90bb3dd7fce1dcfed140b634bfb7be1f294', '2024-06-02 17:39:55', '2024-06-02 17:39:55', 'Payad', 'Department of Human Resources Office', 'Payad', 'Nina', 'Lontoc', '2024-06-03', 'Clerk', '', 'Sick Leave', '', '', '', '', 'In Hospital', '', ' ', ' ', '', '0', 4, '2024-05-28', '2024-05-31', '2024-06-03', '2024-06-03', '2024-06-03', 'Not Requested', '2024-01-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('1b59f7afe124f4740596b05911eff6aae8c276003ea421fa29', '2024-06-02 19:09:30', '2024-06-02 18:20:19', 'Payad', 'Department of Human Resources Office', 'Payad', 'Nina', 'Lontoc', '2024-06-03', 'Clerk', '', 'Special Privilege Leave', '', '', '', '', '', '', '', '', '', '', 3, '2024-06-03', '2024-06-03', '2024-06-08', '2024-06-13', '2024-06-10', 'Requested', '2024-01-02', 5.9900, 4.7500, 0.0000, 0.0000, 5.9900, 4.7500, 'For Approval', '', 0, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', 'deleted'),
+('26f024bc65d037a5cddcbfd8e7c9964ad3013ba7447d8ce08d', '2024-06-04 03:35:10', '2024-06-04 03:33:35', 'REGULAR', 'Social Welfare and Development Office', 'Account', 'Regular', '', '2024-06-04', 'Training and Development Coordinator', '', 'Sick Leave', '', '', '', '', 'In Hospital', 'Dengue', '', '', '', '', 7, '2024-05-20', '2024-05-26', '2024-06-04', '2024-06-04', '2024-06-04', 'Not Requested', '2024-01-01', 6.5000, 1.2500, 0.0000, 7.0000, 6.5000, -5.7500, 'For Approval', '', 1, 5, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', ''),
 ('27e6bf21c9d08289f314300b408b3ffda6b2a85d8ca87c9859', '2024-06-02 15:57:26', '2024-06-02 15:57:26', 'Julieann', 'Assesors Office', 'Ariza', 'Julieann', '', '2024-06-02', 'Clerk', '', 'Vacation Leave', '', 'Abroad', '', 'Korea', '', '', ' ', ' ', '', '0', 4, '2024-07-02', '2024-07-05', '2024-06-02', '2024-06-02', '2024-06-02', 'Requested', '2023-03-07', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('52322eea43b35fb8106ef3d2bbaf8fabddff164100a8663c10', '2024-06-02 15:54:54', '2024-06-02 15:54:54', 'Lyca', 'Assesors Office', 'Avilla', 'Lyca Joy', '', '2024-06-02', 'Clerk', '', 'Study Leave', '', '', '', '', '', '', ' ', ' ', 'Completion of Master Degree', '0', 5, '2024-06-11', '2024-06-15', '2024-06-02', '2024-06-02', '2024-06-02', 'Requested', '2024-02-15', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('653edce419c6abcf4304c0a036861528a164357a139aaf8ccc', '2024-06-02 18:47:10', '2024-06-02 18:10:36', 'Payad', 'Department of Human Resources Office', 'Payad', 'Nina', 'Lontoc', '2024-06-03', 'Clerk', '', 'Special Privilege Leave', '', '', '', '', '', '', '', '', '', '', 3, '2024-06-03', '2024-06-03', '2024-06-10', '2024-06-20', '2024-06-30', 'Requested', '2024-01-02', 5.9900, 4.7500, 0.0000, 0.0000, 5.9900, 4.7500, 'For Approval', '', 0, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', 'deleted'),
+('9b386d04f2640c8668dbff4371c6eff1c781ffa80fec7cc03f', '2024-02-04 22:52:58', '2024-02-04 22:50:57', 'REGULAR', 'Social Welfare and Development Office', 'Account', 'Regular', '', '2024-02-05', 'Training and Development Coordinator', '', 'Vacation Leave', '', 'Within the Philippines', 'On the Date', '', '', '', '', '', '', '', 1, '2024-02-14', '2024-02-14', '2024-02-05', '2024-02-05', '2024-02-05', 'Requested', '2024-01-01', 2.5000, 2.5000, 1.0000, 0.0000, 1.5000, 2.5000, 'For Approval', '', 1, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', ''),
 ('a4042b407f020dddd63d43c44592097326a6e462abb0906566', '2024-06-02 15:55:47', '2024-06-02 15:55:47', 'Rhina', 'Municipal Office', 'Gerpacio', 'Rhina', '', '2024-06-02', 'Clerk', '', 'Special Leave Benefits for Women', '', '', '', '', '', '', ' ', ' ', '', '0', 4, '2024-07-07', '2024-07-10', '2024-06-02', '2024-06-02', '2024-06-02', 'Requested', '2024-02-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '2024-06-02 18:48:26', '2024-06-02 18:44:38', 'Payad', 'Department of Human Resources Office', 'Payad', 'Nina', 'Lontoc', '2024-06-03', 'Clerk', '', 'Special Privilege Leave', '', '', '', '', '', '', '', '', '', '', 2, '2024-06-03', '2024-06-03', '2024-06-15', '2024-06-25', '2024-06-25', 'Requested', '2024-01-02', 5.9900, 4.7500, 0.0000, 0.0000, 5.9900, 4.7500, 'For Approval', '', 0, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', ''),
 ('a5d15af85d55314ebb65aee0157cbed3f87d2584fed4366f06', '2024-06-02 15:48:21', '2024-06-02 15:48:21', 'Payad', 'Department of Human Resources Office', 'Payad', 'Nina', 'Lontoc', '2024-06-02', 'Clerk', '', 'Vacation Leave', '', 'Within the Philippines', 'Bataan', '', '', '', ' ', ' ', '', '0', 2, '2024-06-07', '2024-06-08', '2024-06-02', '2024-06-02', '2024-06-02', 'Requested', '2024-01-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('b46905de46f0b69d18be87744d7c41dc517e18e2a86b8a5cc4', '2024-06-02 15:50:04', '2024-06-02 15:50:04', 'Bay', 'Agricultural Office', 'Bay', 'Jeshua Mark', 'Sarmiento', '2024-06-02', 'Clerk', '', 'Forced Leave', '', '', '', '', '', '', ' ', ' ', '', '0', 2, '2024-06-07', '2024-06-08', '2024-06-02', '2024-06-02', '2024-06-02', 'Not Requested', '2023-12-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
 ('e313256d1d56f8ad0f0fe1ff379185ae673a87493baa2bf087', '2024-06-02 15:53:08', '2024-06-02 15:53:08', 'Jimmy', 'Treasury Services', 'Banting', 'Jimmy', '', '2024-06-02', 'Treasurer', '', 'Paternity Leave', '', '', '', '', '', '', ' ', ' ', '', '0', 7, '2024-06-07', '2024-06-14', '2024-06-02', '2024-06-02', '2024-06-02', 'Requested', '2023-05-10', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
-('ee213dbfc09e956b3f725038571796254815c844dd35f1ae48', '2024-06-02 15:49:11', '2024-06-02 15:49:11', 'Capacio', 'Agricultural Office', 'Capacio', 'Ren', '', '2024-06-02', 'Clerk', '', 'Sick Leave', '', '', '', '', 'In Hospital', 'Dengue', ' ', ' ', '', '0', 3, '2024-05-18', '2024-05-20', '2024-06-02', '2024-06-02', '2024-06-02', 'Not Requested', '2024-02-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', '');
+('e35e34029d7066da06d2a136b36a05212e125dc5c3ce5946fb', '2024-04-28 22:59:47', '2024-04-28 22:56:55', 'REGULAR', 'Social Welfare and Development Office', 'Account', 'Regular', '', '2024-04-29', 'Training and Development Coordinator', '', 'Sick Leave', '', '', '', '', 'Out Patient', '', 'High Fever ', '', '', '', 3, '2024-04-24', '2024-04-26', '2024-04-29', '2024-04-29', '2024-04-29', 'Not Requested', '2024-01-01', 4.0000, 5.0000, 0.0000, 3.0000, 4.0000, 2.0000, 'For Approval', '', 3, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', ''),
+('ee213dbfc09e956b3f725038571796254815c844dd35f1ae48', '2024-06-02 15:49:11', '2024-06-02 15:49:11', 'Capacio', 'Agricultural Office', 'Capacio', 'Ren', '', '2024-06-02', 'Clerk', '', 'Sick Leave', '', '', '', '', 'In Hospital', 'Dengue', ' ', ' ', '', '0', 3, '2024-05-18', '2024-05-20', '2024-06-02', '2024-06-02', '2024-06-02', 'Not Requested', '2024-02-02', 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '', '', 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 'Submitted', ''),
+('efee5e84f0c2a005f58f5616a678e3c1ea76f22175897ad704', '2024-06-04 03:36:22', '2024-06-04 03:34:28', 'REGULAR', 'Social Welfare and Development Office', 'Account', 'Regular', '', '2024-06-04', 'Training and Development Coordinator', '', 'Vacation Leave', '', 'Within the Philippines', 'Tagaytay', '', '', '', '', '', '', '', 7, '2024-06-09', '2024-06-15', '2024-06-04', '2024-06-04', '2024-06-04', 'Requested', '2024-01-01', 6.5000, 1.2500, 7.0000, 0.0000, -0.5000, 1.2500, 'For Approval', '', 6, 0, 0, '', '', 'Admin Account', 'Authorized Officer', 'Admin Account', 'Admin Account', 'Authorized Official', '0', '0', '0', 'Approved', '');
 
 -- --------------------------------------------------------
 
@@ -352,7 +357,14 @@ INSERT INTO `tbl_leavedataform` (`leavedataform_id`, `employee_id`, `foreignKeyI
 (84, 'FEMALE', '', '2024-06-02 19:01:48', 'Deduction Type', '2024-06-03', '2024-06-03', '2024-06-03', '2024-06-03', '2024-06-03', 'Sick Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-03', '2024-06-02 19:05:16', '', 'deleted'),
 (85, 'FEMALE', '', '2024-06-02 19:08:42', 'Deduction Type', '2024-06-08', '2024-06-08', '2024-06-03', '2024-06-03', '2024-06-03', 'Sick Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-03', '2024-06-02 19:08:58', '', 'deleted'),
 (88, 'daez', '', '2024-06-03 00:53:10', 'Initial Record', '2006-12-25', '2024-06-03', '0000-00-00', '0000-00-00', '0000-00-00', 'Initial Record', '', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-06-03', '2024-06-03 00:53:10', '', ''),
-(89, 'daez', '', '2024-06-03 01:08:50', '', '2024-06-03', '2024-06-30', '0000-00-00', '0000-00-00', '0000-00-00', 'Late', '', 0, 0, 3, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-03', '2024-06-03 01:08:50', '', '');
+(89, 'daez', '', '2024-06-03 01:08:50', '', '2024-06-03', '2024-06-30', '0000-00-00', '0000-00-00', '0000-00-00', 'Late', '', 0, 0, 3, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-03', '2024-06-03 01:08:50', '', ''),
+(90, 'REGULAR', '', '2024-06-03 22:35:46', 'Initial Record', '2024-01-08', '2024-01-08', '0000-00-00', '0000-00-00', '0000-00-00', 'Initial Record', '0', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-06-01', '2024-06-03 22:44:25', '', ''),
+(91, 'REGULAR', '9b386d04f2640c8668dbff4371c6eff1c781ffa80fec7cc03f', '2024-02-04 22:52:59', 'Deduction Type', '2024-02-14', '2024-02-14', '2024-02-05', '2024-02-05', '2024-02-05', 'Vacation Leave', '', 1, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-02-05', '2024-02-04 22:52:59', '', ''),
+(92, 'REGULAR', 'e35e34029d7066da06d2a136b36a05212e125dc5c3ce5946fb', '2024-04-28 22:59:47', 'Deduction Type', '2024-04-24', '2024-04-26', '2024-04-29', '2024-04-29', '2024-04-29', 'Sick Leave', '', 3, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-04-29', '2024-04-28 22:59:47', '', ''),
+(93, 'REGULAR', '26f024bc65d037a5cddcbfd8e7c9964ad3013ba7447d8ce08d', '2024-06-04 03:35:00', 'Deduction Type', '2024-05-20', '2024-05-26', '2024-06-04', '2024-06-04', '2024-06-04', 'Sick Leave', '', 7, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-04', '2024-06-04 03:35:00', '', ''),
+(94, 'REGULAR', 'efee5e84f0c2a005f58f5616a678e3c1ea76f22175897ad704', '2024-06-04 03:36:22', 'Deduction Type', '2024-06-09', '2024-06-15', '2024-06-04', '2024-06-04', '2024-06-04', 'Vacation Leave', '', 7, 0, 0, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-04', '2024-06-04 03:36:22', '', ''),
+(95, 'Capacio', '', '2024-06-04 09:39:18', '', '2024-06-01', '2024-06-30', '0000-00-00', '0000-00-00', '0000-00-00', 'Late', '', 0, 0, 10, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, '2024-06-04', '2024-06-04 12:14:46', '', ''),
+(96, 'OLD', '', '2024-06-05 01:27:11', 'Initial Record', '2023-07-05', '2023-07-15', '0000-00-00', '0000-00-00', '0000-00-00', 'Initial Record', '0', 0, 0, 0, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, 1.2500, 0.0000, '2024-06-05', '2024-06-05 03:22:21', '', '');
 
 -- --------------------------------------------------------
 
@@ -413,7 +425,16 @@ INSERT INTO `tbl_notifications` (`notification_id`, `dateCreated`, `empIdFrom`, 
 (54, '2024-06-02 18:44:38', 'Payad', '@Admin', 'Payad Nina Leave Form Request', 'Applying For Special Privilege Leave from 06-10-2024, 06-20-2024, 06-30-2024', 'a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '', 'read', ''),
 (55, '2024-06-02 18:45:10', '@Admin', 'Payad', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '', 'unread', ''),
 (56, '2024-06-02 18:48:26', '@Admin', 'Payad', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '', 'unread', ''),
-(57, '2024-06-02 18:49:41', '@Admin', 'Payad', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '', 'unread', '');
+(57, '2024-06-02 18:49:41', '@Admin', 'Payad', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'a44f3dc93d39d0a18545957e80521aa9b9fb3f33c92f45497e', '', 'unread', ''),
+(58, '2024-02-04 22:50:57', 'REGULAR', '@Admin', 'Account Regular Leave Form Request', 'Applying For Vacation Leave from 02-14-2024', '9b386d04f2640c8668dbff4371c6eff1c781ffa80fec7cc03f', '', 'read', ''),
+(59, '2024-02-04 22:52:59', '@Admin', 'REGULAR', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', '9b386d04f2640c8668dbff4371c6eff1c781ffa80fec7cc03f', '', 'unread', ''),
+(60, '2024-04-28 22:56:55', 'REGULAR', '@Admin', 'Account Regular Leave Form Request', 'Applying For Sick Leave from 04-24-2024 to 04-26-2024', 'e35e34029d7066da06d2a136b36a05212e125dc5c3ce5946fb', '', 'read', ''),
+(61, '2024-04-28 22:59:48', '@Admin', 'REGULAR', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'e35e34029d7066da06d2a136b36a05212e125dc5c3ce5946fb', '', 'read', ''),
+(62, '2024-06-04 03:33:35', 'REGULAR', '@Admin', 'Account Regular Leave Form Request', 'Applying For Sick Leave from 05-20-2024 to 05-26-2024', '26f024bc65d037a5cddcbfd8e7c9964ad3013ba7447d8ce08d', '', 'read', ''),
+(63, '2024-06-04 03:34:28', 'REGULAR', '@Admin', 'Account Regular Leave Form Request', 'Applying For Vacation Leave from 06-09-2024 to 06-15-2024', 'efee5e84f0c2a005f58f5616a678e3c1ea76f22175897ad704', '', 'read', ''),
+(64, '2024-06-04 03:35:00', '@Admin', 'REGULAR', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', '26f024bc65d037a5cddcbfd8e7c9964ad3013ba7447d8ce08d', '', 'unread', ''),
+(65, '2024-06-04 03:35:10', '@Admin', 'REGULAR', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', '26f024bc65d037a5cddcbfd8e7c9964ad3013ba7447d8ce08d', '', 'unread', ''),
+(66, '2024-06-04 03:36:22', '@Admin', 'REGULAR', 'Validation of Leave Form', 'Your form is approved. Print it out and get it signed.', 'efee5e84f0c2a005f58f5616a678e3c1ea76f22175897ad704', '', 'unread', '');
 
 -- --------------------------------------------------------
 
@@ -551,7 +572,9 @@ INSERT INTO `tbl_useraccounts` (`account_id`, `employee_id`, `role`, `email`, `p
 (38, 'jessie', 'Employee', 'jessieramos@gmail.com', 'password', '', 'Jessie', '', 'Ramos', '', '1995-02-24', 'Female', 'Single', '9', '108', 'Active', '2019-02-27', '2024-06-02 15:44:16', '', ''),
 (39, 'isabel', 'Employee', 'isabelmarquez@gmail.com', 'password', '', 'Isabel', '', 'Marquez', '', '1998-12-29', 'Female', 'Married', '16', '103', 'Active', '2018-06-04', '2024-06-02 15:46:46', '', ''),
 (40, 'Jericho', 'Employee', 'jerichopulido@gmail.com', 'Password', '', 'Jericho', '', 'Pulido', '', '1998-05-20', 'Male', 'Divorced', '7', '103', 'Inactive', '2024-02-03', '2024-06-02 16:03:54', 'Resigned', 'deleted'),
-(41, 'daez', 'Employee', 'simeondaez@gmail.com', 'password', '', 'Simeon', '', 'Daez', '', '1967-06-03', 'Male', 'Married', '1', '1', 'Active', '2006-12-25', '2024-06-03 00:53:10', '', '');
+(41, 'daez', 'Employee', 'simeondaez@gmail.com', 'password', '', 'Simeon', '', 'Daez', '', '1967-06-03', 'Male', 'Married', '1', '1', 'Active', '2006-12-25', '2024-06-03 00:53:10', '', ''),
+(42, 'REGULAR', 'Employee', 'regular@gmail.com', 'Password', '', 'Regular', '', 'Account', '', '2001-01-01', 'Female', 'Single', '15', '113', 'Active', '2024-01-01', '2024-06-03 22:35:46', '', ''),
+(43, 'OLD', 'Employee', 'old@gmail.com', 'Password', '', 'Old', '', 'Account', '', '2001-01-01', 'Male', 'Single', '7', '112', 'Active', '2023-07-05', '2024-06-05 01:27:11', '', '');
 
 --
 -- Indexes for dumped tables
@@ -675,13 +698,13 @@ ALTER TABLE `tbl_family_background`
 -- AUTO_INCREMENT for table `tbl_laterecordfile`
 --
 ALTER TABLE `tbl_laterecordfile`
-  MODIFY `laterecordfile_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `laterecordfile_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tbl_leavedataform`
 --
 ALTER TABLE `tbl_leavedataform`
-  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `leavedataform_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `tbl_leaves`
@@ -693,7 +716,7 @@ ALTER TABLE `tbl_leaves`
 -- AUTO_INCREMENT for table `tbl_notifications`
 --
 ALTER TABLE `tbl_notifications`
-  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `notification_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `tbl_passwordreset_tokens`
@@ -717,7 +740,7 @@ ALTER TABLE `tbl_systemsettings`
 -- AUTO_INCREMENT for table `tbl_useraccounts`
 --
 ALTER TABLE `tbl_useraccounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
