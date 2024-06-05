@@ -313,7 +313,7 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                         <button class="custom-regular-button text-truncate">View</button>
                                     </a>
 
-                                    <?php if ($department['departmentCount'] > 0) { ?>
+                                    <?php // if ($department['departmentCount'] > 0) { ?>
                                         <!-- Delete Department Modal -->
                                         <button type="button" class="custom-regular-button deleteDepartmentButton"
                                             data-toggle="modal" data-target="#deleteDepartment"
@@ -324,14 +324,14 @@ $employeesNameAndId = getAllEmployeesNameAndID();
                                             data-dept-head="<?php echo $department['departmentHead']; ?>">
                                             Delete
                                         </button>
-                                    <?php } else { ?>
-                                        <form action="<?php echo $action_delete_department; ?>" method="post">
+                                    <?php // } else { ?>
+                                        <!-- <form action="<?php echo $action_delete_department; ?>" method="post">
                                             <input type="hidden" name="deptId"
                                                 value="<?php echo $department['department_id']; ?>" />
                                             <input type="submit" name="deleteDepartment" value="Delete"
                                                 class="custom-regular-button" />
-                                        </form>
-                                    <?php } ?>
+                                        </form> -->
+                                    <?php // } ?>
                                 </div>
                             </div>
                         </details>

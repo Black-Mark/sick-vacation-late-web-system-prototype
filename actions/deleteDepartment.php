@@ -10,6 +10,7 @@ if (isset($_POST['deleteDepartment'])) {
     $departmentId = strip_tags(mysqli_real_escape_string($database, $_POST['deptId']));
     $actionSet = strip_tags(mysqli_real_escape_string($database, $_POST['actionSet']));
     $departmentReassigned = strip_tags(mysqli_real_escape_string($database, $_POST['departmentReassigned']));
+    $dateOfAction = $today;
 
     $archiveDepartmentQuery = "UPDATE tbl_departments SET archive = 'deleted' WHERE department_id = ?";
     $archiveDepartmentStatement = mysqli_prepare($database, $archiveDepartmentQuery);
@@ -45,6 +46,8 @@ if (isset($_POST['deleteDepartment'])) {
             mysqli_stmt_bind_param($stmt, "ss", $departmentReassigned, $departmentId);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
+            $_SESSION['alert_message'] = "Department Successfully Moved to Trash and Employee Successfully Reassigned";
+            $_SESSION['alert_type'] = $success_color;
         } else {
             $_SESSION['alert_message'] = "There is a Problem in Reassigning Employees: " . mysqli_error($database);
             $_SESSION['alert_type'] = $error_color;
@@ -52,7 +55,7 @@ if (isset($_POST['deleteDepartment'])) {
     } else if ($actionSet == "Terminate") {
         // Terminate user accounts
         $query = "UPDATE tbl_useraccounts 
-              SET status = 'Inactive', archive = 'deleted' 
+              SET status = 'Inactive', archive = 'deleted', reasonForStatus = 'Terminated' 
               WHERE department = ? 
               AND archive != 'deleted' 
               AND UPPER(status) != 'INACTIVE' AND UPPER(status) != 'BANNED'";
@@ -61,6 +64,8 @@ if (isset($_POST['deleteDepartment'])) {
             mysqli_stmt_bind_param($stmt, "i", $departmentId);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
+            $_SESSION['alert_message'] = "Department and Employees Are Terminated and Moved to Trash";
+            $_SESSION['alert_type'] = $success_color;
         } else {
             $_SESSION['alert_message'] = "There is a Problem in Terminating Employees: " . mysqli_error($database);
             $_SESSION['alert_type'] = $error_color;

@@ -268,17 +268,7 @@ if (!empty($leaveData)) {
                                                     ?>
                                                 <?php } ?>
                                             </td>
-                                            <td title="<?php
-                                            if ($ldata['days'] > 0) {
-                                                echo ' ' . $ldata['days'] . ' day(s) ';
-                                            }
-                                            if ($ldata['hours'] > 0) {
-                                                echo ' ' . $ldata['hours'] . ' hour(s) ';
-                                            }
-                                            if ($ldata['minutes'] > 0) {
-                                                echo ' ' . $ldata['minutes'] . ' minute(s) ';
-                                            }
-                                            ?>" class="table-item-base">
+                                            <td title="" class="table-item-base">
                                                 <?php
                                                 if ($ldata['particular'] == "Others") {
                                                     if ($ldata['particularLabel']) {
@@ -293,31 +283,40 @@ if (!empty($leaveData)) {
                                                     }
                                                 }
                                                 ?>
+                                                <?php
+                                                if ($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit" && $ldata['particular'] != "Break Monthly Record") {
+                                                    echo '(' . formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']) . ')';
+                                                }
+                                                ?>
                                             </td>
 
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
                                             </td>
-                                            <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
                                             </td>
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
                                             </td>
-                                            <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
                                             </td>
 
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
                                             </td>
-                                            <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
                                             </td>
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
                                             </td>
-                                            <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
                                             </td>
 
