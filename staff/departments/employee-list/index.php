@@ -264,7 +264,7 @@ if ($departmentlabel) {
                         // ordering: false,
                         columnDefs: [
                             {
-                                targets: [<?php if ($departmentlabel != "") {
+                                targets: [ 0, <?php if ($departmentlabel != "") {
                                     echo "2,";
                                 } ?>5, 7], visible: false
                             },
