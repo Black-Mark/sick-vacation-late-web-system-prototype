@@ -1104,7 +1104,7 @@ function eliminateDuplicate($array, $order)
 function getMinYearPeriodEnd() {
     global $database;
 
-    $sql = "SELECT MIN(periodEnd) AS minimum FROM tbl_leavedataform";
+    $sql = "SELECT MIN(YEAR(periodEnd)) AS minimum FROM tbl_leavedataform";
 
     $result = $database->query($sql);
 
