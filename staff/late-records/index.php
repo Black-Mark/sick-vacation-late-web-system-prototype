@@ -59,9 +59,9 @@ $months = [
 
 <head>
     <meta charset="UTF-8">
-    <title>Human Resources of Municipality of Indang - Admin</title>
+    <title>Human Resources of Municipality of Indang - Staff</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HR - Indang Municipality Admin Page">
+    <meta name="description" content="HR - Indang Municipality Staff Page">
     <?php
     include ($constants_file_html_credits);
     ?>
@@ -103,8 +103,6 @@ $months = [
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
-                            class="custom-regular-button">Back</button></a>
                     <div class="title-text">Employee Late Record</div>
                     <div class="title-text-caption">
                         <h6>Selected Year: <?php echo $selectedYear; ?></h6>

@@ -2,14 +2,13 @@
 include ("../constants/routes.php");
 // include($components_file_error_handler);
 include ($constants_file_dbconnect);
-include ($constants_file_session_authorized);
+include ($constants_file_session_admin);
 include ($constants_variables);
 
 if (isset($_POST['clearCacheLateRecord'])) {
-    // Define the directory where the CSV files are stored using relative path
-    $directory = realpath("../files/upload/laterecords");
+    // Define the directory where the CSV files are stored using a relative path from htdocs
+    $directory = realpath(dirname(__FILE__) . "/../files/upload/laterecords");
 
-    // Fetch all file paths from the fileOfRecord column in the tbl_laterecordfile table
     $query = "SELECT fileOfRecord FROM tbl_laterecordfile";
     $result = mysqli_query($database, $query);
 
@@ -19,11 +18,11 @@ if (isset($_POST['clearCacheLateRecord'])) {
         while ($row = mysqli_fetch_assoc($result)) {
             if (!empty($row['fileOfRecord'])) {
                 // Convert to absolute path and use forward slashes
-                $db_files[] = str_replace('\\', '/', realpath("../" . $row['fileOfRecord']));
+                $db_files[] = str_replace('\\', '/', realpath(dirname(__FILE__) . "/../" . $row['fileOfRecord']));
             }
         }
 
-        // Scan the directory for all CSV files
+        // Scan the directory for all .CSV files
         $all_files = glob($directory . "/*.csv");
 
         // Convert directory paths to use forward slashes
@@ -32,13 +31,12 @@ if (isset($_POST['clearCacheLateRecord'])) {
         }
 
         // Debugging output: print the arrays
-        echo "Files in database:<br>";
-        echo "<pre>" . print_r($db_files, true) . "</pre>";
+        // echo "Files in database:<br>";
+        // echo "<pre>" . print_r($db_files, true) . "</pre>";
 
-        echo "Files in directory:<br>";
-        echo "<pre>" . print_r($all_files, true) . "</pre>";
+        // echo "Files in directory:<br>";
+        // echo "<pre>" . print_r($all_files, true) . "</pre>";
 
-        // Loop through all files in the directory
         foreach ($all_files as $file) {
             echo "Checking file: " . $file . "<br>";
 
@@ -62,4 +60,7 @@ if (isset($_POST['clearCacheLateRecord'])) {
         $_SESSION['alert_type'] = $error_color;
     }
 }
+
+header("Location: " . $location_admin_datamanagement_laterecords);
+exit();
 ?>

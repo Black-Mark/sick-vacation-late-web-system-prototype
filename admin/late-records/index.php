@@ -103,8 +103,6 @@ $months = [
 
             <div class="box-container">
                 <div>
-                    <a href="<?php echo $location_admin_datamanagement; ?>"><button
-                            class="custom-regular-button">Back</button></a>
                     <div class="title-text">Employee Late Record</div>
                     <div class="title-text-caption">
                         <h6>Selected Year: <?php echo $selectedYear; ?></h6>
@@ -178,7 +176,7 @@ $months = [
                     </form>
                 </div>
 
-                <div class="month-records table-extend">
+                <div class="month-records table-extend overflow-scroll">
                     <table class="w-100 text-center">
                         <thead>
                             <tr>
