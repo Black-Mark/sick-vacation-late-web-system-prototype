@@ -585,31 +585,3 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize the working days value on page load
     updateWorkingDays();
 });
-
-document.addEventListener('DOMContentLoaded', function () {
-    var typeOfLeaveOrig = document.getElementById('typeOfLeaveOrig');
-    var workingDaysOrig = document.getElementById('workingDaysOrig');
-    var inclusiveDateStartOrig = document.getElementById('inclusiveDateStartOrig');
-    var inclusiveDateEndOrig = document.getElementById('inclusiveDateEndOrig');
-    var inclusiveDateOneOrig = document.getElementById('inclusiveDateOneOrig');
-    var inclusiveDateTwoOrig = document.getElementById('inclusiveDateTwoOrig');
-    var inclusiveDateThreeOrig = document.getElementById('inclusiveDateThreeOrig');
-
-    var inclusiveDateStart = document.getElementById('inclusiveDateStart');
-    var inclusiveDateEnd = document.getElementById('inclusiveDateEnd');
-    var inclusiveDateOne = document.getElementById('inclusiveDateSelectOne');
-    var inclusiveDateTwo = document.getElementById('inclusiveDateSelectTwo');
-    var inclusiveDateThree = document.getElementById('inclusiveDateSelectThree');
-
-    function initializeForm() {
-        inclusiveDateStart.value = inclusiveDateStartOrig.value;
-        inclusiveDateEnd.value = inclusiveDateEndOrig.value;
-        inclusiveDateOne.value = inclusiveDateOneOrig.value;
-        inclusiveDateTwo.value = inclusiveDateTwoOrig.value;
-        inclusiveDateThree.value = inclusiveDateThreeOrig.value;
-        workingDays.value = workingDaysOrig.value;
-    }
-
-    // Initialize the working days value on page load
-    initializeForm();
-});

@@ -62,6 +62,8 @@ if (isset($_POST['upload'])) {
                         $notExist = 0;
                         $noInitialRecord = 0;
                         $update = 0;
+                        $deleted = 0;
+                        $nodeleted = 0;
                         $success = 0;
                         $failed = 0;
                         $uploadSuccess = 0;
@@ -78,7 +80,7 @@ if (isset($_POST['upload'])) {
 
                             if (!empty($employee_id)) {
                                 if (is_numeric($total_minutes)) {
-                                    if ($total_minutes > 0) {
+                                    if ($total_minutes >= 0) {
                                         if ($typeOfRecording == "autosumduplicate") {
                                             // Check if employee ID already exists in the array
                                             if (array_key_exists($employee_id, $employee_minutes)) {
@@ -100,6 +102,7 @@ if (isset($_POST['upload'])) {
 
                         }
 
+                        // Passed Data Insert or Update to the Database
                         foreach ($employee_minutes as $employee_id => $total_minutes) {
                             $totalEmp++;
                             $recordType = "Deduction Type";
@@ -143,32 +146,52 @@ if (isset($_POST['upload'])) {
                                         $checkResult = $checkStatement->get_result();
 
                                         if ($checkResult->num_rows > 0) {
-                                            // If a record exists
-                                            // Update days, hours, and minutes
-                                            $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                            $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
-                                            $updateStatement->execute();
+                                            if ($total_minutes > 0) {
+                                                // If a record exists
+                                                // Update days, hours, and minutes
+                                                $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                                $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
+                                                $updateStatement->execute();
 
-                                            // Check if any rows were affected by the update
-                                            if ($updateStatement->affected_rows > 0) {
-                                                // Update successful
-                                                $update++;
+                                                // Check if any rows were affected by the update
+                                                if ($updateStatement->affected_rows > 0) {
+                                                    // Update successful
+                                                    $update++;
+                                                } else {
+                                                    // No rows were updated (possibly because the values are the same)
+                                                    $noupdate++;
+                                                }
                                             } else {
-                                                // No rows were updated (possibly because the values are the same)
-                                                $noupdate++;
+                                                // Delete the record
+                                                $deleteStatement = $database->prepare("DELETE FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                                $deleteStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
+                                                $deleteStatement->execute();
+
+                                                // Check if any rows were affected by the delete
+                                                if ($deleteStatement->affected_rows > 0) {
+                                                    // Delete successful
+                                                    $deleted++;
+                                                } else {
+                                                    // No rows were deleted
+                                                    $nodeleted++;
+                                                }
                                             }
                                         } else {
-                                            // If no record exists, insert a new record
-                                            $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                                            $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
-                                            $insertStatement->execute();
+                                            if ($total_minutes > 0) {
+                                                // If no record exists, insert a new record
+                                                $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                                $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
+                                                $insertStatement->execute();
 
-                                            // Check if the insert was successful
-                                            if ($insertStatement->affected_rows > 0) {
-                                                // Insert successful
-                                                $success++;
+                                                // Check if the insert was successful
+                                                if ($insertStatement->affected_rows > 0) {
+                                                    // Insert successful
+                                                    $success++;
+                                                } else {
+                                                    $failed++;
+                                                }
                                             } else {
-                                                $failed++;
+                                                $noupdate++;
                                             }
                                         }
                                     } else if ($period_start >= $initialRecordPeriodEnd) {
@@ -180,31 +203,51 @@ if (isset($_POST['upload'])) {
 
                                         if ($checkResult->num_rows > 0) {
                                             // If a record exists
-                                            // Update days, hours, and minutes
-                                            $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
-                                            $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
-                                            $updateStatement->execute();
+                                            if ($total_minutes > 0) {
+                                                // Update days, hours, and minutes
+                                                $updateStatement = $database->prepare("UPDATE tbl_leavedataform SET days = ?, hours = ?, minutes = ? WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                                $updateStatement->bind_param("iiissss", $days, $hours, $minutes, $type, $period_start, $period_end, $employee_id);
+                                                $updateStatement->execute();
 
-                                            // Check if any rows were affected by the update
-                                            if ($updateStatement->affected_rows > 0) {
-                                                // Update successful
-                                                $update++;
+                                                // Check if any rows were affected by the update
+                                                if ($updateStatement->affected_rows > 0) {
+                                                    // Update successful
+                                                    $update++;
+                                                } else {
+                                                    // No rows were updated (possibly because the values are the same)
+                                                    $noupdate++;
+                                                }
                                             } else {
-                                                // No rows were updated (possibly because the values are the same)
-                                                $noupdate++;
+                                                // Delete the record
+                                                $deleteStatement = $database->prepare("DELETE FROM tbl_leavedataform WHERE particular = ? AND period = ? AND periodEnd = ? AND employee_id = ?");
+                                                $deleteStatement->bind_param("ssss", $type, $period_start, $period_end, $employee_id);
+                                                $deleteStatement->execute();
+
+                                                // Check if any rows were affected by the delete
+                                                if ($deleteStatement->affected_rows > 0) {
+                                                    // Delete successful
+                                                    $deleted++;
+                                                } else {
+                                                    // No rows were deleted
+                                                    $nodelete++;
+                                                }
                                             }
                                         } else {
-                                            // If no record exists, insert a new record
-                                            $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                                            $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
-                                            $insertStatement->execute();
+                                            if ($total_minutes > 0) {
+                                                // If no record exists, insert a new record
+                                                $insertStatement = $database->prepare("INSERT INTO tbl_leavedataform (employee_id, period, periodEnd, particular, dateOfAction, days, hours, minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                                $insertStatement->bind_param("sssssiii", $employee_id, $period_start, $period_end, $type, $date_of_action, $days, $hours, $minutes);
+                                                $insertStatement->execute();
 
-                                            // Check if the insert was successful
-                                            if ($insertStatement->affected_rows > 0) {
-                                                // Insert successful
-                                                $success++;
+                                                // Check if the insert was successful
+                                                if ($insertStatement->affected_rows > 0) {
+                                                    // Insert successful
+                                                    $success++;
+                                                } else {
+                                                    $failed++;
+                                                }
                                             } else {
-                                                $failed++;
+                                                $noupdate++;
                                             }
                                         }
                                     } else {
@@ -263,6 +306,8 @@ if (isset($_POST['upload'])) {
                         echo "Number of employees without updates: $noupdate<br>";
                         echo "Number of employees updated: $update<br>";
                         echo "Number of successful records: $success<br>";
+                        echo "Number of deleted records: $deleted<br>";
+                        echo "Number of not deleted records: $notdeleted<br>";
                         echo "Number of failed updates: $failed<br>";
                         echo "File Uploaded: $uploadSuccess<br>";
 

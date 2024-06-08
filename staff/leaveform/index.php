@@ -480,7 +480,7 @@ $settingData = getAuthorizedUser();
                                         </div>
                                         <div class="leave-app-form-inclusivedate-detail-container">
                                             <input type="number" step="any" min="0" max="3652" id="workingDays"
-                                                name="workingDays" class='leave-app-form-input' value="1" />
+                                                name="workingDays" class='leave-app-form-input' value="1" readonly/>
                                         </div>
                                         <div id="allLeave" class="leave-app-form-inclusivedate-detail-container">
 

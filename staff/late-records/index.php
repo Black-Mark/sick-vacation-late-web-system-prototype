@@ -172,7 +172,7 @@ $months = [
                     </form>
                 </div>
 
-                <div class="month-records table-extend">
+                <div class="month-records table-extend overflow-auto">
                     <table class="w-100 text-center">
                         <thead>
                             <tr>

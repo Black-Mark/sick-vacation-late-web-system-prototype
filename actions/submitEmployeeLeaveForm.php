@@ -43,9 +43,9 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $inclusiveDateStart = isset($_POST['inclusiveDateStart']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateStart'])) : '';
     $inclusiveDateEnd = isset($_POST['inclusiveDateEnd']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateEnd'])) : '';
 
-    $inclusiveDateOne = isset($_POST['inclusiveDateSelectOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectOne'])) : '';
-    $inclusiveDateTwo = isset($_POST['inclusiveDateSelectTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectTwo'])) : '';
-    $inclusiveDateThree = isset($_POST['inclusiveDateSelectThree']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectThree'])) : '';
+    $inclusiveDateOne = isset($_POST['inclusiveDateSelectOne']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectOne'])) : $today;
+    $inclusiveDateTwo = isset($_POST['inclusiveDateSelectTwo']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectTwo'])) : $today;
+    $inclusiveDateThree = isset($_POST['inclusiveDateSelectThree']) ? strip_tags(mysqli_real_escape_string($database, $_POST['inclusiveDateSelectThree'])) : $today;
 
     $commutation = isset($_POST['commutation']) ? strip_tags(mysqli_real_escape_string($database, $_POST['commutation'])) : '';
     $status = 'Submitted';

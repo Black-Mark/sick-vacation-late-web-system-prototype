@@ -165,6 +165,7 @@ if (strtolower($leaveAppFormData['status']) == "submitted") {
     <link rel="stylesheet" href="<?php echo $assets_css_printmedia; ?>">
 
     <script src="<?php echo $assets_file_leaveappform; ?>"></script>
+    <script src="<?php echo $assets_file_leavetransaction; ?>"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
