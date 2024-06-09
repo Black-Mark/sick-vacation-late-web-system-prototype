@@ -120,5 +120,5 @@ document.addEventListener("DOMContentLoaded", function () {
     sickLeaveTotalEarnedNum.addEventListener('input', updateLeaveComputation);
     vacationLeaveTotalEarnedNum.addEventListener('input', updateLeaveComputation);
 
-    updateLeaveComputation();
+    // updateLeaveComputation();
 });

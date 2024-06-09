@@ -459,41 +459,9 @@ function getIncentiveLeaveComputation($employee_id)
                     $holdMonth = $date->format('Y-m-d');
                 }
 
-                // if ($holdMonth > $fetchLeaveData[$i]['periodEnd']) {
-                //     $monthEarnedArray = [
-                //         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration,
-                //         'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                //         'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                //         'recordType' => "Monthly Credit",
-                //         'period' => $holdMonth,
-                //         'periodEnd' => $holdMonth,
-                //         'particular' => "Monthly Credit",
-                //         'particularLabel' => "",
-                //         'days' => 0,
-                //         'hours' => 0,
-                //         'minutes' => 0,
-                //         'vacationLeaveEarned' => 0,
-                //         'vacationLeaveAbsUndWP' => 0,
-                //         'vacationLeaveBalance' => 0,
-                //         'vacationLeaveAbsUndWOP' => 0,
-                //         'sickLeaveEarned' => 0,
-                //         'sickLeaveAbsUndWP' => 0,
-                //         'sickLeaveBalance' => 0,
-                //         'sickLeaveAbsUndWOP' => 0,
-                //         'dateOfAction' => $holdMonth,
-                //         'dateLastModified' => $holdMonth,
-                //     ];
-                //     $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                // }
             } else {
                 if ($holdMonth != "") {
                     $iterate = 0;
-
-                    // Updates the Initial Hold Month For Condition
-                    // $currentDate = $holdMonth;
-                    // $date = new DateTime($currentDate);
-                    // $date->modify('first day of next month');
-                    // $holdMonth = $date->format('Y-m-d');
 
                     // Condition If First Month Reaches The Record To Update Credit
                     while ($holdMonth <= $fetchLeaveData[$i]['period']) {
