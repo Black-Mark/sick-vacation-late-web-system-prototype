@@ -9,7 +9,43 @@ document.addEventListener("DOMContentLoaded", function () {
     var currentYear = new Date().getFullYear();
     var addPeriod = null;
     var addPeriodEnd = null;
+    var addPeriodOne = null;
+    var addPeriodTwo = null;
+    var addPeriodThree = null;
     var addDateOfAction = null;
+
+    function initialAddLeaveData() {
+        var particularType = document.getElementById('floatingParticularType');
+        var allLeave = document.getElementById('allLeave');
+        var splLeave = document.getElementById('splLeave');
+        if (allLeave && splLeave) {
+            if (particularType.value == 'Special Privilege Leave') {
+                allLeave.style.display = 'none';
+                splLeave.style.display = 'block';
+            } else {
+                allLeave.style.display = 'block';
+                splLeave.style.display = 'none';
+            }
+        }
+    }
+
+    function initialEditLeaveData() {
+        var particularType = document.getElementById('floatingEditParticularType');
+        var allLeave = document.getElementById('allLeaveEdit');
+        var splLeave = document.getElementById('splLeaveEdit');
+        if (allLeave && splLeave) {
+            if (particularType.value == 'Special Privilege Leave') {
+                allLeave.style.display = 'none';
+                splLeave.style.display = 'block';
+            } else {
+                allLeave.style.display = 'block';
+                splLeave.style.display = 'none';
+            }
+        }
+    }
+
+    initialAddLeaveData();
+    initialEditLeaveData();
 
     $(document).ready(function () {
         function formatDate(date) {
@@ -19,35 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return `${year}-${month}-${day}`;
         }
 
-        // function validateDateInput(inputField) {
-        //     var selectedDate = new Date($(inputField).val());
-
-        //     // Format the selected date for comparison
-        //     var formattedSelectedDate = formatDate(selectedDate);
-
-        //     // Format January 1st of the selected year for comparison
-        //     var formattedJanuary1 = formatDate(new Date(selectedYear, 0, 1));
-
-        //     // Format December 31st of the selected year for comparison
-        //     var formattedDecember31 = formatDate(new Date(selectedYear, 12, 31));
-
-        //     // Check if selectedDate is within the range January 1st to December 31st of the selected year
-        //     if (!(formattedJanuary1 <= formattedSelectedDate && formattedSelectedDate <= formattedDecember31)) {
-        //         $(inputField).val(formattedJanuary1);
-        //         Toastify({
-        //             text: 'Enter Date Based on the Selected Year!',
-        //             duration: 3000,
-        //             newWindow: true,
-        //             close: true,
-        //             gravity: 'top',
-        //             position: 'center',
-        //             style: {
-        //                 background: '#fca100',
-        //             },
-        //             stopOnFocus: true,
-        //         }).showToast();
-        //     }
-        // }
+        // Computation of Days
 
         function computeDays(startDate, endDate) {
             const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
@@ -57,6 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const diffDays = Math.round(Math.abs((start - end) / oneDay)) + 1;
             return diffDays;
         }
+
+        // Adding Modal Days
 
         function updateDays() {
             const period = $('#floatingPeriod').val();
@@ -69,22 +79,57 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // $('#floatingDateOfAction').on('change', function () {
-        //     validateDateInput(this);
-        // });
+        $('#floatingParticularType').on('change', function () {
+            var particularType = document.getElementById('floatingParticularType');
+            var period = document.getElementById('floatingPeriod');
+            var periodEnd = document.getElementById('floatingPeriodEnd');
+            var periodOne = document.getElementById('floatingPeriodOne');
+            var periodTwo = document.getElementById('floatingPeriodTwo');
+            var periodThree = document.getElementById('floatingPeriodThree');
+            var allLeave = document.getElementById('allLeave');
+            var splLeave = document.getElementById('splLeave');
+            if (allLeave && splLeave) {
+                if (particularType.value == 'Special Privilege Leave') {
+                    updateWorkingDays();
+                    allLeave.style.display = 'none';
+                    splLeave.style.display = 'block';
+                } else {
+                    updateDays();
+                    allLeave.style.display = 'block';
+                    splLeave.style.display = 'none';
+                }
+            }
+        });
 
-        var containerPeriod = null;
-        var containerPeriodEnd = null;
+        $('#floatingEditParticularType').on('change', function () {
+            var particularType = document.getElementById('floatingEditParticularType');
+            // var period = document.getElementById('floatingPeriod');
+            // var periodEnd = document.getElementById('floatingPeriodEnd');
+            // var periodOne = document.getElementById('floatingPeriodOne');
+            // var periodTwo = document.getElementById('floatingPeriodTwo');
+            // var periodThree = document.getElementById('floatingPeriodThree');
+            var allLeave = document.getElementById('allLeaveEdit');
+            var splLeave = document.getElementById('splLeaveEdit');
+            if (allLeave && splLeave) {
+                if (particularType.value == 'Special Privilege Leave') {
+                    updateEditWorkingDays();
+                    allLeave.style.display = 'none';
+                    splLeave.style.display = 'block';
+                } else {
+                    updateEditDays();
+                    allLeave.style.display = 'block';
+                    splLeave.style.display = 'none';
+                }
+            }
+        });
 
         $('#floatingPeriod').on('change', function () {
-            // validateDateInput(this);
-
             // Get the values of the two input fields
             var floatingPeriodValue = $('#floatingPeriod').val();
             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
             // Compare the values
-            if (floatingPeriodValue >= floatingPeriodEndValue) {
+            if (floatingPeriodValue > floatingPeriodEndValue) {
                 $('#floatingPeriodEnd').val(floatingPeriodValue);
                 Toastify({
                     text: 'Period should not be Greater Than the Period End!',
@@ -99,10 +144,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     stopOnFocus: true,
                 }).showToast();
             } else {
-                updateDays();
                 containerPeriod = $('#floatingPeriod').val();
-                containerPeriodEnd = $('#floatingPeriodEnd').val();
             }
+            updateDays();
         });
 
         $('#floatingPeriodEnd').on('change', function () {
@@ -113,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var floatingPeriodEndValue = $('#floatingPeriodEnd').val();
 
             // Compare the values
-            if (floatingPeriodValue >= floatingPeriodEndValue) {
+            if (floatingPeriodValue > floatingPeriodEndValue) {
                 $('#floatingPeriodEnd').val(floatingPeriodValue);
                 Toastify({
                     text: 'Period should not be Greater Than the Period End!',
@@ -128,11 +172,198 @@ document.addEventListener("DOMContentLoaded", function () {
                     stopOnFocus: true,
                 }).showToast();
             } else {
-                updateDays();
                 containerPeriod = $('#floatingPeriod').val();
-                containerPeriodEnd = $('#floatingPeriodEnd').val();
+            }
+            updateDays();
+        });
+
+        // Adding New Modal Days
+
+        function updateNewDays() {
+            const period = $('#floatingNewPeriod').val();
+            const periodEnd = $('#floatingNewPeriodEnd').val();
+
+            // Check if both period and periodEnd have valid values
+            if (period && periodEnd) {
+                const days = computeDays(period, periodEnd);
+                $('#floatingNewDayInput').val(days);
+            }
+        }
+
+        $('#floatingNewPeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingNewPeriod').val();
+            var floatingPeriodEndValue = $('#floatingNewPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingNewPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingNewPeriod').val();
+            }
+            updateNewDays();
+        });
+
+        $('#floatingNewPeriodEnd').on('change', function () {
+            // validateDateInput(this);
+
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingNewPeriod').val();
+            var floatingPeriodEndValue = $('#floatingNewPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingNewPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingNewPeriod').val();
+            }
+            updateNewDays();
+        });
+
+        // Adding New Modal Days
+
+        function updateEditDays() {
+            const period = $('#floatingEditPeriod').val();
+            const periodEnd = $('#floatingEditPeriodEnd').val();
+
+            // Check if both period and periodEnd have valid values
+            if (period && periodEnd) {
+                const days = computeDays(period, periodEnd);
+                $('#floatingEditDayInput').val(days);
+            }
+        }
+
+        $('#floatingEditPeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingEditPeriod').val();
+            var floatingPeriodEndValue = $('#floatingEditPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingEditPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingEditPeriod').val();
+            }
+            updateEditDays();
+        });
+
+        $('#floatingEditPeriodEnd').on('change', function () {
+            // validateDateInput(this);
+
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingEditPeriod').val();
+            var floatingPeriodEndValue = $('#floatingEditPeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingEditPeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingEditPeriod').val();
+            }
+            updateEditDays();
+        });
+
+        // Creating Initial Record
+
+        $('#floatingInitializePeriod').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingInitializePeriod').val();
+            var floatingPeriodEndValue = $('#floatingInitializePeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingInitializePeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingInitializePeriod').val();
             }
         });
+
+        $('#floatingInitializePeriodEnd').on('change', function () {
+            // Get the values of the two input fields
+            var floatingPeriodValue = $('#floatingInitializePeriod').val();
+            var floatingPeriodEndValue = $('#floatingInitializePeriodEnd').val();
+
+            // Compare the values
+            if (floatingPeriodValue > floatingPeriodEndValue) {
+                $('#floatingInitializePeriodEnd').val(floatingPeriodValue);
+                Toastify({
+                    text: 'Period should not be Greater Than the Period End!',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: 'top',
+                    position: 'center',
+                    style: {
+                        background: '#fca100',
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            } else {
+                containerPeriod = $('#floatingInitializePeriod').val();
+            }
+        });
+
+        // Modals Function
 
         $('#createInitialRecordButton').click(function () {
             addPeriod = $(this).data('period-start');
@@ -158,24 +389,35 @@ document.addEventListener("DOMContentLoaded", function () {
             if (selectedYear == currentYear) {
                 addPeriod = formatDate(new Date());
                 addPeriodEnd = formatDate(new Date());
+                addPeriodOne = formatDate(new Date());
+                addPeriodTwo = formatDate(new Date());
+                addPeriodThree = formatDate(new Date());
                 addDateOfAction = formatDate(new Date());
             } else {
                 // If not the current year, set values to January 01, selectedYear
-                addPeriod = addPeriodEnd = formatDate(new Date(selectedYear, 0, 1));
+                addPeriod = addPeriodEnd = addPeriodOne = addPeriodTwo = addPeriodThree = formatDate(new Date(selectedYear, 0, 1));
                 addDateOfAction = formatDate(new Date(selectedYear, 0, 1));
             }
 
             // Set form field values
             $('#floatingPeriod').val(addPeriod);
             $('#floatingPeriodEnd').val(addPeriodEnd);
+            $('#floatingPeriodOne').val(addPeriodOne);
+            $('#floatingPeriodTwo').val(addPeriodTwo);
+            $('#floatingPeriodThree').val(addPeriodThree);
             $('#floatingDateOfAction').val(addDateOfAction);
 
             // Save the state
             addLeaveDataRecordState = {
                 period: addPeriod,
                 periodEnd: addPeriodEnd,
+                periodOne: addPeriodOne,
+                periodTwo: addPeriodTwo,
+                periodThree: addPeriodThree,
                 dateOfAction: addDateOfAction,
             };
+
+            initialAddLeaveData();
         });
 
         $('.addNewLeaveDataRecord').click(function () {
@@ -204,6 +446,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var editLeaveDataId = $(this).data('leavedata-id');
             var editPeriodStart = $(this).data('period-start');
             var editPeriodEnd = $(this).data('period-end');
+            var editPeriodOne = $(this).data('period-one');
+            var editPeriodTwo = $(this).data('period-two');
+            var editPeriodThree = $(this).data('period-three');
             var editParticularType = $(this).data('particular-type');
             var editParticularLabel = $(this).data('particular-label');
             var editInputDay = $(this).data('input-day');
@@ -215,6 +460,9 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#floatingEditLeaveDataFormId').val(editLeaveDataId);
             $('#floatingEditPeriod').val(editPeriodStart);
             $('#floatingEditPeriodEnd').val(editPeriodEnd);
+            $('#floatingEditPeriodOne').val(editPeriodOne);
+            $('#floatingEditPeriodTwo').val(editPeriodTwo);
+            $('#floatingEditPeriodThree').val(editPeriodThree);
             $('#floatingEditParticularType').val(editParticularType);
             $('#floatingEditParticularLabel').val(editParticularLabel);
             $('#floatingEditDayInput').val(editInputDay);
@@ -227,6 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 leaveDataId: editLeaveDataId,
                 periodStart: editPeriodStart,
                 periodEnd: editPeriodEnd,
+                periodOne: editPeriodOne,
+                periodTwo: editPeriodTwo,
+                periodThree: editPeriodThree,
                 particularType: editParticularType,
                 particularLabel: editParticularLabel,
                 inputDay: editInputDay,
@@ -234,12 +485,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 inputMinute: editInputMinute,
                 dateOfAction: editDateOfAction,
             };
+            initialEditLeaveData();
         });
 
         function setEditDataFromState() {
             // Set form field values from the editLeaveDataRecordState object
             $('#floatingEditPeriod').val(editLeaveDataRecordState.periodStart);
             $('#floatingEditPeriodEnd').val(editLeaveDataRecordState.periodEnd);
+            $('#floatingEditPeriodOne').val(editLeaveDataRecordState.periodOne);
+            $('#floatingEditPeriodTwo').val(editLeaveDataRecordState.periodTwo);
+            $('#floatingEditPeriodThree').val(editLeaveDataRecordState.periodThree);
             $('#floatingEditParticularType').val(editLeaveDataRecordState.particularType);
             $('#floatingEditParticularLabel').val(editLeaveDataRecordState.particularLabel);
             $('#floatingEditDayInput').val(editLeaveDataRecordState.inputDay);
@@ -261,6 +516,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Set form field values based on the saved state
                 $('#floatingPeriod').val(addLeaveDataRecordState.period);
                 $('#floatingPeriodEnd').val(addLeaveDataRecordState.periodEnd);
+                $('#floatingPeriodOne').val(addLeaveDataRecordState.periodOne);
+                $('#floatingPeriodTwo').val(addLeaveDataRecordState.periodTwo);
+                $('#floatingPeriodThree').val(addLeaveDataRecordState.periodThree);
                 $('#floatingDateOfAction').val(addLeaveDataRecordState.dateOfAction);
                 $('#floatingNewPeriod').val(addLeaveDataRecordState.period);
                 $('#floatingNewPeriodEnd').val(addLeaveDataRecordState.periodEnd);
@@ -297,6 +555,138 @@ document.addEventListener("DOMContentLoaded", function () {
             $("select").prop('selectedIndex', 0);
             setInitializeDataFromState();
         });
+
+        // Edit Initial Record
+        $('.editInitialRecord').click(function () {
+            // Set form field values
+            var editInitialPeriodStart = $(this).data('period-start');
+            var editInitialPeriodEnd = $(this).data('period-end');
+            var editInitialParticularLabel = $(this).data('particular-label') || "";
+
+            // Retrieve the data and convert to floating-point number, set to 0 if null
+            var editInitialVacationEarned = parseFloat($(this).data('vacation-earned')) || 0;
+            var editInitialSickEarned = parseFloat($(this).data('sick-earned')) || 0;
+            var editInitialVacationWithoutPay = parseFloat($(this).data('vacation-withoutpay')) || 0;
+            var editInitialSickWithoutPay = parseFloat($(this).data('sick-withoutpay')) || 0;
+
+            // Round the values to two decimal places if not zero
+            editInitialVacationEarned = editInitialVacationEarned !== 0 ? editInitialVacationEarned.toFixed(2) : '0';
+            editInitialSickEarned = editInitialSickEarned !== 0 ? editInitialSickEarned.toFixed(2) : '0';
+            editInitialVacationWithoutPay = editInitialVacationWithoutPay !== 0 ? editInitialVacationWithoutPay.toFixed(2) : '0';
+            editInitialSickWithoutPay = editInitialSickWithoutPay !== 0 ? editInitialSickWithoutPay.toFixed(2) : '0';
+
+            var editInitialDateOfAction = $(this).data('date-of-action');
+
+            // Set form field values
+            $('#floatingEditInitializePeriod').val(editInitialPeriodStart);
+            $('#floatingEditInitializePeriodEnd').val(editInitialPeriodEnd);
+            $('#floatingEditInitialParticularLabel').val(editInitialParticularLabel);
+            $('#editVacationBalanceInput').val(editInitialVacationEarned);
+            $('#editSickBalanceInput').val(editInitialSickEarned);
+            $('#editVacationUnderWOPayInput').val(editInitialVacationWithoutPay);
+            $('#editSickUnderWOPayInput').val(editInitialSickWithoutPay);
+            $('#floatingEditInitializeDateOfAction').val(editInitialDateOfAction);
+
+            // Save the state
+            editInitialLeaveDataRecordState = {
+                editInitialPeriodStart: editInitialPeriodStart,
+                editInitialPeriodEnd: editInitialPeriodEnd,
+                editInitialParticularLabel: editInitialParticularLabel,
+                editInitialVacationEarned: editInitialVacationEarned,
+                editInitialSickEarned: editInitialSickEarned,
+                editInitialVacationWithoutPay: editInitialVacationWithoutPay,
+                editInitialSickWithoutPay: editInitialSickWithoutPay,
+                editInitialDateOfAction: editInitialDateOfAction
+            };
+        });
+
+        function setEditInitialDataFromState() {
+            // Set form field values from the editInitialLeaveDataRecordState object
+            $('#floatingEditInitializePeriod').val(editInitialLeaveDataRecordState.editInitialPeriodStart);
+            $('#floatingEditInitializePeriodEnd').val(editInitialLeaveDataRecordState.editInitialPeriodEnd);
+            $('#floatingEditInitialParticularLabel').val(editInitialLeaveDataRecordState.editInitialParticularLabel);
+            $('#editVacationBalanceInput').val(editInitialLeaveDataRecordState.editInitialVacationEarned);
+            $('#editSickBalanceInput').val(editInitialLeaveDataRecordState.editInitialSickEarned);
+            $('#editVacationUnderWOPayInput').val(editInitialLeaveDataRecordState.editInitialVacationWithoutPay);
+            $('#editSickUnderWOPayInput').val(editInitialLeaveDataRecordState.editInitialSickWithoutPay);
+            $('#floatingEditInitializeDateOfAction').val(editInitialLeaveDataRecordState.editInitialDateOfAction);
+        }
+
+        $('.resetEditInitialRecord').click(function () {
+            // Reset form fields to their initial values
+            $(":input:not(:submit, :hidden)").val('');
+            $("select").prop('selectedIndex', 0);
+            setEditInitialDataFromState();
+        });
+
     });
+
+    // Get the date input elements
+    const dateInputs = [
+        document.getElementById('floatingPeriodOne'),
+        document.getElementById('floatingPeriodTwo'),
+        document.getElementById('floatingPeriodThree')
+    ];
+
+    // Get the workingDays input element
+    const workingDaysInput = document.getElementById('floatingDayInput');
+
+    // Function to update working days based on date inputs
+    function updateWorkingDays() {
+        // Create a set to hold unique dates
+        const uniqueDates = new Set();
+
+        // Add non-empty dates to the set
+        dateInputs.forEach(input => {
+            if (input.value) {
+                uniqueDates.add(input.value);
+            }
+        });
+
+        // Update the workingDays input value based on the size of the set
+        workingDaysInput.value = uniqueDates.size;
+    }
+
+    // Add event listeners to update working days on date change
+    dateInputs.forEach(input => {
+        input.addEventListener('change', updateWorkingDays);
+    });
+
+    // Initialize the working days value on page load
+    // updateWorkingDays();
+
+    // Get the date input elements
+    const dateEditInputs = [
+        document.getElementById('floatingEditPeriodOne'),
+        document.getElementById('floatingEditPeriodTwo'),
+        document.getElementById('floatingEditPeriodThree')
+    ];
+
+    // Get the workingDays input element
+    const workingDaysEditInput = document.getElementById('floatingEditDayInput');
+
+    // Function to update working days based on date inputs
+    function updateEditWorkingDays() {
+        // Create a set to hold unique dates
+        const uniqueEditDates = new Set();
+
+        // Add non-empty dates to the set
+        dateEditInputs.forEach(input => {
+            if (input.value) {
+                uniqueEditDates.add(input.value);
+            }
+        });
+
+        // Update the workingDays input value based on the size of the set
+        workingDaysEditInput.value = uniqueEditDates.size;
+    }
+
+    // Add event listeners to update working days on date change
+    dateEditInputs.forEach(input => {
+        input.addEventListener('change', updateEditWorkingDays);
+    });
+
+    // Initialize the working days value on page load
+    // updateWorkingDays();
 
 });

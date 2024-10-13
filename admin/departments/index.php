@@ -1,24 +1,33 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
-$sql_department = "SELECT d.*, u.firstName AS headFirstName, u.lastName AS headLastName
-                   FROM tbl_departments d
-                   LEFT JOIN tbl_useraccounts u ON d.departmentHead = u.employee_id";
+$departmentListing = getAllDepartments();
+
+$sql_department = "SELECT
+                        d.*,
+                        u.firstName AS headFirstName,
+                        u.middleName AS headMiddleName,
+                        u.lastName AS headLastName,
+                        u.suffix AS headSuffix,
+                        (SELECT COUNT(*) 
+                            FROM tbl_useraccounts ua 
+                            WHERE ua.department = d.department_id 
+                            AND UPPER(ua.archive) != 'DELETED') AS departmentCount
+                    FROM
+                        tbl_departments d
+                    LEFT JOIN
+                        tbl_useraccounts u ON d.departmentHead = u.employee_id
+                    WHERE 
+                        UPPER(d.archive) != 'DELETED'
+                    ORDER BY 
+                    d.departmentName;";
 $departments = $database->query($sql_department);
 
-$sql_employee = "SELECT * FROM tbl_useraccounts";
-$employees_result = $database->query($sql_employee);
-$employees = [];
-
-if ($employees_result->num_rows > 0) {
-    while ($employee = $employees_result->fetch_assoc()) {
-        $employees[] = $employee;
-    }
-}
+$employeesNameAndId = getAllEmployeesNameAndID();
 
 ?>
 
@@ -31,7 +40,7 @@ if ($employees_result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -55,6 +64,7 @@ if ($employees_result->num_rows > 0) {
     <link rel="stylesheet" href="<?php echo $assets_datatable_bootstrap; ?>">
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
+    <script src="<?php echo $assets_departmentlist_js; ?>"></script>
 
     <!-- <script src="<?php
     // echo $assets_tailwind; 
@@ -63,7 +73,7 @@ if ($employees_result->num_rows > 0) {
 
 <body class="webpage-background-cover-admin">
     <div>
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -90,22 +100,23 @@ if ($employees_result->num_rows > 0) {
                                     <label for="floatingDepartmentName">Department Name <span
                                             class="required-color">*</span></label>
                                 </div>
-                                <!-- <div class="form-floating">
-                                    <input type="text" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="departmentDescription" class="form-control"
+                                        id="floatingDepartmentDescription" placeholder="Enter Description ...">
+                                    <label for="floatingDepartmentDescription">Description</label>
+                                </div>
 
                                 <div class="form-floating">
                                     <select name="departmentHead" class="form-select" id="floatingDepartmentHead"
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if (!empty($employees)) {
-                                            foreach ($employees as $employee) {
+                                        if (!empty($employeesNameAndId)) {
+                                            foreach ($employeesNameAndId as $employee) {
                                                 ?>
                                                 <option value="<?php echo $employee['employee_id']; ?>">
-                                                    <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                    <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 2); ?>
                                                 </option>
                                                 <?php
                                             }
@@ -114,18 +125,6 @@ if ($employees_result->num_rows > 0) {
                                     </select>
                                     <label for="floatingDepartmentHead">Department Head</label>
                                 </div>
-
-                                <!-- <div class="form-floating">
-                                    <input list="browsers" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <datalist id="browsers">
-                                        <option value="Internet Explorer">
-                                        <option value="Firefox">
-                                        <option value="Chrome">
-                                        <option value="Opera">
-                                    </datalist>
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
 
                             </div>
                             <div class="modal-footer">
@@ -158,22 +157,24 @@ if ($employees_result->num_rows > 0) {
                                     <label for="floatingEditDepartmentName">Department Name <span
                                             class="required-color">*</span></label>
                                 </div>
-                                <!-- <div class="form-floating">
-                                    <input type="text" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
+
+                                <div class="form-floating mb-2">
+                                    <input type="text" name="departmentDescription" class="form-control"
+                                        id="floatingEditDepartmentDescription"
+                                        placeholder="Enter to Edit Description ...">
+                                    <label for="floatingEditDepartmentDescription">Description</label>
+                                </div>
 
                                 <div class="form-floating">
                                     <select name="departmentHead" class="form-select" id="floatingEditDepartmentHead"
                                         aria-label="Floating Department Head Selection">
                                         <option value="" selected></option>
                                         <?php
-                                        if (!empty($employees)) {
-                                            foreach ($employees as $employee) {
+                                        if (!empty($employeesNameAndId)) {
+                                            foreach ($employeesNameAndId as $employee) {
                                                 ?>
                                                 <option value="<?php echo $employee['employee_id']; ?>">
-                                                    <?php echo $employee['lastName'] . ' ' . $employee['firstName']; ?>
+                                                    <?php echo organizeFullName($employee['firstName'], $employee['middleName'], $employee['lastName'], $employee['suffix'], 2); ?>
                                                 </option>
                                                 <?php
                                             }
@@ -183,18 +184,6 @@ if ($employees_result->num_rows > 0) {
                                     <label for="floatingEditDepartmentHead">Department Head</label>
                                 </div>
 
-                                <!-- <div class="form-floating">
-                                    <input list="browsers" name="departmentHead" class="form-control"
-                                        id="floatingDepartmentHead" placeholder="Department Head">
-                                    <datalist id="browsers">
-                                        <option value="Internet Explorer">
-                                        <option value="Firefox">
-                                        <option value="Chrome">
-                                        <option value="Opera">
-                                    </datalist>
-                                    <label for="floatingDepartmentHead">Department Head</label>
-                                </div> -->
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -202,6 +191,69 @@ if ($employees_result->num_rows > 0) {
                                     id="resetEditDepartmentInputs">Reset</button>
                                 <input type="submit" name="editDepartment" value="Save Changes"
                                     class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Delete Modal -->
+                <form action="<?php echo $action_delete_department; ?>" method="post" class="modal fade"
+                    id="deleteDepartment" tabindex="-1" role="dialog" aria-labelledby="deleteDepartmentTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteDepartmentModalLongTitle">Confirm Department Removal
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="deptId" id="floatingDeleteDeptId" />
+                                <input type="hidden" name="deptHead" id="floatingDeleteDeptHead" />
+                                <input type="hidden" name="deptDescription" id="floatingDeleteDeptDescription" />
+
+                                <div class="text-center alert alert-warning" role="alert">
+                                    Are you sure you want to remove <span class="font-weight-bold text-uppercase"
+                                        id="floatingDeleteDeptName"></span> in the
+                                    list? It has <span class="font-weight-bold text-uppercase"
+                                        id="floatingDeleteDeptCount"></span> employee(s) under it. Upon
+                                    Delete, employees will be unassigned.
+                                </div>
+
+                                <div class="form-floating mb-2">
+                                    <select name="actionSet" class="form-select text-center" id="floatingActionSet"
+                                        aria-label="Floating Action Selection">
+                                        <option value="" selected>--None--</option>
+                                        <option value="Reassign">Reassign Employee(s)</option>
+                                        <option value="Terminate">Terminate Account(s)</option>
+                                    </select>
+                                    <label for="floatingActionSet">Additional Action</label>
+                                </div>
+
+                                <div id="departmentAssigned" class="form-floating">
+                                    <select name="departmentReassigned" class="form-select text-center"
+                                        id="floatingDepartmentReassigned" aria-label="Floating Department Selection">
+                                        <option value="" selected></option>
+                                        <?php
+                                        if (!empty($departmentListing)) {
+                                            foreach ($departmentListing as $departmentItem) {
+                                                ?>
+                                                <option value="<?php echo $departmentItem['department_id']; ?>">
+                                                    <?php echo $departmentItem['departmentName']; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <label for="floatingDepartmentReassigned">Available Departments</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <input type="submit" name="deleteDepartment" value="Yes" class="btn btn-primary" />
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             </div>
                         </div>
                     </div>
@@ -229,47 +281,73 @@ if ($employees_result->num_rows > 0) {
                         ?>
                         <details class="item-detail-container">
                             <summary class="item-detail-container-summary">
-                                <div>
+                                <div title="<?php echo $department['departmentDescription'] ?>">
                                     <?php echo $department['departmentName']; ?>
                                 </div>
                             </summary>
                             <div class="item-detail-content">
-                                <span class="font-weight-bold">Department Head Name: </span>
-                                <?php echo $department['headFirstName'] . ' ' . $department['headLastName']; ?>
+                                <div>
+                                    <span class="font-weight-bold">Department Head Name: </span>
+                                    <?php
+                                    echo organizeFullName($department['headFirstName'], $department['headMiddleName'], $department['headLastName'], $department['headSuffix'], 1);
+                                    ?>
+                                </div>
+                                <div>
+                                    <span class="font-weight-bold">Employee Count: </span>
+                                    <?php
+                                    echo $department['departmentCount'];
+                                    ?>
+                                </div>
                                 <div class="button-container m-2 justify-content-center">
-                                    <a
-                                        href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
-                                        <button class="custom-regular-button text-truncate">View</button>
-                                    </a>
                                     <!-- Edit Department Modal -->
                                     <button type="button" class="custom-regular-button editDepartmentButton" data-toggle="modal"
                                         data-target="#editDepartment"
                                         data-department-id="<?php echo $department['department_id']; ?>"
                                         data-department-name="<?php echo $department['departmentName']; ?>"
+                                        data-department-description="<?php echo $department['departmentDescription']; ?>"
                                         data-department-head="<?php echo $department['departmentHead']; ?>">
                                         Edit
                                     </button>
-                                    <form action="<?php echo $action_delete_department; ?>" method="post">
-                                        <input type="hidden" name="departmentId"
-                                            value="<?php echo $department['department_id']; ?>" />
-                                        <input type="submit" name="deleteDepartment" value="Delete"
-                                            class="custom-regular-button" />
-                                    </form>
+                                    <a
+                                        href="<?php echo $location_admin_departments_office . '/' . $department['department_id'] . '/'; ?>">
+                                        <button class="custom-regular-button text-truncate">View</button>
+                                    </a>
+
+                                    <?php // if ($department['departmentCount'] > 0) { ?>
+                                        <!-- Delete Department Modal -->
+                                        <button type="button" class="custom-regular-button deleteDepartmentButton"
+                                            data-toggle="modal" data-target="#deleteDepartment"
+                                            data-dept-id="<?php echo $department['department_id']; ?>"
+                                            data-dept-name="<?php echo $department['departmentName']; ?>"
+                                            data-dept-description="<?php echo $department['departmentDescription']; ?>"
+                                            data-dept-count="<?php echo $department['departmentCount']; ?>"
+                                            data-dept-head="<?php echo $department['departmentHead']; ?>">
+                                            Delete
+                                        </button>
+                                    <?php // } else { ?>
+                                        <!-- <form action="<?php echo $action_delete_department; ?>" method="post">
+                                            <input type="hidden" name="deptId"
+                                                value="<?php echo $department['department_id']; ?>" />
+                                            <input type="submit" name="deleteDepartment" value="Delete"
+                                                class="custom-regular-button" />
+                                        </form> -->
+                                    <?php // } ?>
                                 </div>
                             </div>
                         </details>
                         <?php
                     }
-                } 
+                }
                 // else {
-                    ?>
-                    <!-- <div class="p-5 text-center">There are no existing departments</div> -->
-                    <?php
+                ?>
+                <!-- <div class="p-5 text-center">There are no existing departments</div> -->
+                <?php
                 // }
                 ?>
 
                 <div class="item-detail-container mt-2">
-                    <a href="<?php echo $location_admin_departments_office.'/pending/'; ?>" class="item-detail-container-summary">
+                    <a href="<?php echo $location_admin_departments_office . '/pending/'; ?>"
+                        class="item-detail-container-summary">
                         Others / Pending / Unassigned
                     </a>
                 </div>
@@ -280,54 +358,11 @@ if ($employees_result->num_rows > 0) {
 
     <div>
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
-
-    <!-- Edit Modal Fetch and Reset -->
-    <script>
-        // Variable to store the state
-        var editDepartmentState = null;
-
-        $(document).ready(function () {
-            $('.editDepartmentButton').click(function () {
-                // Get data from the button
-                var departmentId = $(this).data('department-id');
-                var departmentName = $(this).data('department-name');
-                var departmentHead = $(this).data('department-head');
-
-                // Set form field values
-                $('#floatingEditDepartmentId').val(departmentId);
-                $('#floatingEditDepartmentName').val(departmentName);
-                $('#floatingEditDepartmentHead').val(departmentHead);
-
-                // Save the state
-                editDepartmentState = {
-                    departmentId: departmentId,
-                    departmentName: departmentName,
-                    departmentHead: departmentHead,
-                };
-            });
-
-            // Function to set data based on the saved state
-            function setDataFromState() {
-                if (editDepartmentState) {
-                    // Set form field values based on the saved state
-                    $('#floatingEditDepartmentId').val(editDepartmentState.departmentId);
-                    $('#floatingEditDepartmentName').val(editDepartmentState.departmentName);
-                    $('#floatingEditDepartmentHead').val(editDepartmentState.departmentHead);
-                }
-            }
-
-            // Add click event handler for the Reset button
-            $('#resetEditDepartmentInputs').click(function () {
-                // Reset form fields to their initial values
-                setDataFromState();
-            });
-        });
-    </script>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

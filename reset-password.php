@@ -36,6 +36,13 @@ if (isset($_POST['validateResetToken'])) {
     $checkTokenStatement->close();
 }
 
+// Redirects to the Forgot Password
+if (!$hasValidResetToken) {
+    // $_SESSION['alert_message'] = "Invalid, Expired, Used, Not Existing Reset Token";
+    // $_SESSION['alert_type'] = $warning_color;
+    header("Location: " . $location_forgotpassword);
+}
+
 ?>
 
 <!DOCTYPE html>

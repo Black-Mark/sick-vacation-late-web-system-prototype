@@ -16,7 +16,7 @@
     <a title="Leave Application Form Record"
         href="<?php echo $location_admin_departments_employee_leaveappform . '/' . $empId . '/'; ?>"
         class="tab-nav-button <?php echo ($_SERVER['SCRIPT_NAME'] === $location_admin_departments_employee_leaveappform . '/index.php') ? 'active-tab-nav text-white' : ''; ?>">
-        Leave Application Form Record
+        Leave Application Record
     </a>
     <a title="Leave Data Form"
         href="<?php echo $location_admin_departments_employee_leavedataform . '/' . $empId . '/'; ?>"

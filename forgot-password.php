@@ -46,15 +46,23 @@ include($constants_variables);
                 <img src="./assets/images/indang-logo.png" alt="Web Logo" class="web-logo">
             </div>
             <h1 class="login-title">Forgot Password</h1>
-            <form action="<?php echo $action_forgotpassword_mailer; ?>" method="POST" autoComplete="off" class="login-form">
+            <form action="<?php echo $action_forgotpassword_mailer; ?>" method="POST" autoComplete="off"
+                class="login-form">
                 <div class="input-container">
                     <div class='inputs-group'>
-                        <label for="emailToBeVerify" class="login-password-toggle mb-0">
-                            Enter Your Email Address
+                        <label for="toBeVerify" class="login-password-toggle mb-0">
+                            Enter Your Employee ID
                         </label>
-                        <input type="email" name="emailToBeVerify" autofocus placeholder="employee@gmail.com" id="emailToBeVerify"
+                        <input type="text" name="toBeVerify" autofocus placeholder="REG001" id="toBeVerify"
                             class="login-text-input" required>
                     </div>
+                    <?php if (isset($_SESSION['temp_message'])) {
+                        ?>
+                        <div class="text-center text-white font-monospace">
+                            <?php echo $_SESSION['temp_message']; ?>
+                        </div>
+                        <?php
+                    } unset($_SESSION['temp_message']); ?>
                     <div class="d-flex flex-column gap-1 align-items-center">
                         <input type="submit" name="sendForgotPassword" value="Send Verification Link"
                             class="w-100 login-button">

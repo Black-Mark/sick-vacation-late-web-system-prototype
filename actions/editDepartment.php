@@ -9,16 +9,18 @@ if (isset($_POST['editDepartment'])) {
     $departmentId = strip_tags(mysqli_real_escape_string($database, $_POST['departmentId']));
     $departmentName = strip_tags(mysqli_real_escape_string($database, $_POST['departmentName']));
     $departmentHead = strip_tags(mysqli_real_escape_string($database, $_POST['departmentHead']));
+    $departmentDescription = strip_tags(mysqli_real_escape_string($database, $_POST["departmentDescription"]));
 
     $query = "UPDATE tbl_departments SET
               departmentName = ?,
+              departmentDescription = ?,
               departmentHead = ?
               WHERE department_id = ?";
 
     $stmt = mysqli_prepare($database, $query);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "sss", $departmentName, $departmentHead, $departmentId);
+        mysqli_stmt_bind_param($stmt, "ssss", $departmentName, $departmentDescription, $departmentHead, $departmentId);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['alert_message'] = "Department Successfully Updated!";

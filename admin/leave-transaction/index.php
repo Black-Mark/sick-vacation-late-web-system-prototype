@@ -1,26 +1,92 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $leaveAppDataList = [];
+$minStartYear = date("Y");
+$minEndYear = date("Y");
+$mostMinimalYear = date("Y");
 
+try {
+    // Determining Minimum Year
+    $minYearQuery = "   SELECT MIN(YEAR(inclusiveDateStart)) AS minStartYear, MIN(YEAR(inclusiveDateEnd)) AS minEndYear
+                        FROM tbl_leaveappform
+                        WHERE UPPER(archive) != 'DELETED'";
+    $minYearStatement = $database->prepare($minYearQuery);
+    $minYearStatement->execute();
 
-$leavelistsql = "   SELECT leaveapp.*,
+    $result = $minYearStatement->get_result();
+
+    if ($result) {
+        $minYears = $result->fetch_assoc();
+        $minStartYear = $minYears['minStartYear'] ?? date("Y");
+        $minEndYear = $minYears['minEndYear'] ?? date("Y");
+
+        if (isset($minStartYear, $minEndYear)) {
+            $mostMinimalYear = min($minStartYear, $minEndYear);
+        }
+    } else {
+        throw new Exception("Error fetching data");
+    }
+
+    $minYearStatement->close();
+} catch (Exception $e) {
+    echo "<script>console.error('Error: " . $e->getMessage() . "');</script>";
+}
+
+$selectedYear = date("Y");
+if (isset($_POST['leaveTransactionYear'])) {
+    $selectedYear = sanitizeInput($_POST['selectedYear']);
+    $_SESSION['post_transactionyear'] = $selectedYear;
+} else if (isset($_SESSION['post_transactionyear'])) {
+    $selectedYear = sanitizeInput($_SESSION['post_transactionyear']);
+} else {
+    $selectedYear = date("Y");
+    if (isset($_SESSION['post_transactionyear'])) {
+        unset($_SESSION['post_transactionyear']);
+    }
+}
+
+if ($selectedYear && $selectedYear != 'All') {
+    $leavelistsql = "SELECT leaveapp.*, users.firstName AS userFirstName, users.lastName AS userLastName
+                FROM tbl_leaveappform leaveapp
+                LEFT JOIN tbl_useraccounts users ON users.employee_id = leaveapp.employee_id
+                WHERE (YEAR(inclusiveDateStart) = ? OR YEAR(inclusiveDateEnd) = ?) AND UPPER(leaveapp.archive) != 'DELETED'
+                ORDER BY dateCreated DESC";
+
+    $leavelist_statement = $database->prepare($leavelistsql);
+    $leavelist_statement->bind_param("ss", $selectedYear, $selectedYear);
+    $leavelist_statement->execute();
+
+    $result = $leavelist_statement->get_result();
+
+    if ($result->num_rows > 0) {
+        while ($leaveform = $result->fetch_assoc()) {
+            $leaveAppDataList[] = $leaveform;
+        }
+    }
+
+    $leavelist_statement->close();
+
+} else if ($selectedYear == 'All') {
+    $leavelistsql = "   SELECT leaveapp.*,
                         users.firstName AS userFirstName,
                         users.lastName AS userLastName
                     FROM tbl_leaveappform leaveapp
                     LEFT JOIN tbl_useraccounts users
                     ON users.employee_id = leaveapp.employee_id
+                    WHERE UPPER(leaveapp.archive) != 'DELETED'
                     ORDER BY dateCreated DESC";
 
-$leavelist_result = $database->query($leavelistsql);
+    $leavelist_result = $database->query($leavelistsql);
 
-if ($leavelist_result->num_rows > 0) {
-    while ($leaveform = $leavelist_result->fetch_assoc()) {
-        $leaveAppDataList[] = $leaveform;
+    if ($leavelist_result->num_rows > 0) {
+        while ($leaveform = $leavelist_result->fetch_assoc()) {
+            $leaveAppDataList[] = $leaveform;
+        }
     }
 }
 
@@ -35,7 +101,7 @@ if ($leavelist_result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -67,7 +133,7 @@ if ($leavelist_result->num_rows > 0) {
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav); ?>
+        <?php include ($components_file_topnav); ?>
     </div>
 
     <div class="page-container">
@@ -76,15 +142,43 @@ if ($leavelist_result->num_rows > 0) {
             <div class="box-container">
                 <h3 class="title-text">Leave Application Transaction</h3>
 
+                <div class="button-container component-container mb-2">
+                    <form action="" method="post">
+                        <label for="selectedYear">Select a Year:</label>
+                        <select name="selectedYear" id="selectedYear" class="custom-regular-button"
+                            aria-label="Year Selection">
+                            <?php
+                            $currentYear = date("Y");
+
+                            $start_year = $mostMinimalYear;
+
+                            if (!$start_year || $start_year <= 1924) {
+                                $start_year = $currentYear;
+                            }
+
+                            for ($year = $currentYear; $year >= $start_year; $year--) {
+                                ?>
+                                <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>>
+                                    <?php echo $year; ?>
+                                </option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <input type="submit" name="leaveTransactionYear" value="Load Year Record"
+                            class="custom-regular-button">
+                    </form>
+                </div>
+
                 <table id="leaveAppList" class="text-center hover table-striped cell-border order-column"
                     style="width:100%">
                     <thead>
                         <tr>
-                            <th>Select</th>
-                            <th>Date</th>
+                            <th></th>
                             <th>Name</th>
                             <th>Type of Leave</th>
                             <th>Inclusive Dates</th>
+                            <th>Date Filed</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -96,23 +190,53 @@ if ($leavelist_result->num_rows > 0) {
                                 ?>
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="selectedLeaveForm[]"
+                                        <input type="hidden" name="selectedLeaveForm[]"
                                             value="<?php echo $ldata['dateLastModified']; ?>" />
                                     </td>
                                     <td>
-                                        <?php echo $ldata['dateLastModified']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $ldata['userLastName'] . ' ' . $ldata['userFirstName']; ?>
+                                        <?php
+                                        if (empty($ldata['userLastName']) && empty($ldata['userFirstName'])) {
+                                            echo $ldata['lastName'] . ' ' . $ldata['firstName'];
+                                        } else {
+                                            echo $ldata['userLastName'] . ' ' . $ldata['userFirstName'];
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <?php echo $ldata['typeOfLeave']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['inclusiveDates']; ?>
+                                        <?php if ($ldata['typeOfLeave'] === 'Special Privilege Leave') { ?>
+                                            <?php $arrayDate = [$ldata['inclusiveDateOne'], $ldata['inclusiveDateTwo'], $ldata['inclusiveDateThree']];
+                                            $resultArray = eliminateDuplicate($arrayDate, 1);
+                                            echo join(", ", $resultArray);
+                                            ?>
+                                        <?php } else { ?>
+                                            <?php echo convertDateFormat($ldata['inclusiveDateStart'], "Y-m-d", "m-d-Y");
+                                            if ($ldata['inclusiveDateEnd'] && $ldata['inclusiveDateStart'] < $ldata['inclusiveDateEnd']) {
+                                                echo ' to ' . convertDateFormat($ldata['inclusiveDateEnd'], "Y-m-d", "m-d-Y");
+                                            }
+                                            ?>
+                                        <?php } ?>
                                     </td>
                                     <td>
-                                        <?php echo $ldata['status']; ?>
+                                        <?php echo convertDateFormat($ldata['dateFiling'], "Y-m-d", "m-d-Y"); ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if (strtolower($ldata['status']) == "submitted") {
+                                            if ($ldata['typeOfLeave'] == 'Rehabilitation Privilege') {
+                                                $limitDayOfExpiry = $limitDayOfExpiry - 2;
+                                            }
+                                            if (dateDifference($ldata['dateFiling'], $limitDayOfExpiry) <= $today) {
+                                                echo "Expired";
+                                            } else {
+                                                echo "Pending";
+                                            }
+                                        } else {
+                                            echo $ldata['status'];
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <form action="<?php echo $action_delete_leaveappform; ?>" method="POST">
@@ -197,33 +321,33 @@ if ($leavelist_result->num_rows > 0) {
             },
             {
                 extend: 'excel',
-                title: 'CustomExcelFileName',
-                filename: 'custom_excel_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'csv',
-                title: 'CustomCSVFileName',
-                filename: 'custom_csv_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'pdf',
-                title: 'CustomPDFFileName',
-                filename: 'custom_PDF_file',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
             },
             {
                 extend: 'print',
-                title: 'CustomPrintFileName',
-                filename: 'custom_print_file',
-                message: 'This print was produced by Computer',
+                title: 'List of Leave Application Form Transaction',
+                filename: 'List of Leave Application Form Transaction',
+                message: 'Produced and Prepared by the Human Resources System',
                 exportOptions: {
                     columns: ':visible:not(:eq(-1))',
                 }
@@ -240,11 +364,11 @@ if ($leavelist_result->num_rows > 0) {
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

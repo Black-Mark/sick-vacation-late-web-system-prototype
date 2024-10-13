@@ -1,4 +1,15 @@
 <?php
+
+
+
+// Note that this is not used for submitting. (EMPLOYEE AND STAFF LEAVE FORM PAGE submission)
+// USE THE SUBMIT EMPLOYEE LEAVE FORM . php for employee submission and staff submission
+// USE EDIT LEAVE APP FORM .php for Validating Leave Request Approval or Disapproval
+
+
+
+// This page are meant for the Admin For Adding Leave App Form
+
 include("../constants/routes.php");
 // include($components_file_error_handler);
 include($constants_file_dbconnect);
@@ -22,7 +33,9 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $typeOfSickLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeave']));
     $typeOfSickLeaveInHospital = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveInHospital']));
     $typeOfSickLeaveOutPatient = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveOutPatient']));
+    $typeOfSickLeaveOutPatientOne = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSickLeaveOutPatientOne']));
     $typeOfSpecialLeaveForWomen = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSpecialLeaveForWomen']));
+    $typeOfSpecialLeaveForWomenOne = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfSpecialLeaveForWomenOne']));
     $typeOfStudyLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfStudyLeave']));
     $typeOfOtherLeave = strip_tags(mysqli_real_escape_string($database, $_POST['typeOfOtherLeave']));
     $workingDays = strip_tags(mysqli_real_escape_string($database, $_POST['workingDays']));
@@ -37,12 +50,23 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
     $sickLeaveBalance = strip_tags(mysqli_real_escape_string($database, $_POST['sickLeaveBalance']));
     $recommendation = strip_tags(mysqli_real_escape_string($database, $_POST['recommendation']));
     $recommendMessage = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessage']));
+    $recommendMessageOne = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageOne']));
+    $recommendMessageTwo = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageTwo']));
+    $recommendMessageThree = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageThree']));
+    $recommendMessageFour = strip_tags(mysqli_real_escape_string($database, $_POST['recommendMessageFour']));
     $dayWithPay = strip_tags(mysqli_real_escape_string($database, $_POST['dayWithPay']));
     $dayWithoutPay = strip_tags(mysqli_real_escape_string($database, $_POST['dayWithoutPay']));
     $otherDayPay = strip_tags(mysqli_real_escape_string($database, $_POST['otherDayPay']));
     $otherDaySpecify = strip_tags(mysqli_real_escape_string($database, $_POST['otherDaySpecify']));
     $disapprovedMessage = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessage']));
+    $disapprovedMessageOne = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageOne']));
+    $disapprovedMessageTwo = strip_tags(mysqli_real_escape_string($database, $_POST['disapprovedMessageTwo']));
     $status = 'Submitted';
+
+    $recommendMessage = trim($recommendMessage) . ' ' . trim($recommendMessageOne) . ' ' . trim($recommendMessageTwo) . ' ' . trim($recommendMessageThree) . ' ' . trim($recommendMessageFour);
+    $typeOfSickLeaveOutPatient = trim($typeOfSickLeaveOutPatient) . ' ' . trim($typeOfSickLeaveOutPatientOne);
+    $typeOfSpecialLeaveForWomen = trim($typeOfSpecialLeaveForWomen) . ' ' . trim($typeOfSpecialLeaveForWomenOne);
+    $disapprovedMessage = trim($disapprovedMessage) . ' ' . trim($disapprovedMessageOne) . ' ' . trim($disapprovedMessageTwo);
 
     if (empty($typeOfLeave) || empty($inclusiveDates)) {
         $_SESSION['alert_message'] = "Please Specify Your Type Leave and Inclusive Dates";
@@ -62,7 +86,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 $_SESSION['alert_type'] = $warning_color;
                 header("Location: " . $location_employee_leave_form);
                 exit();
-            }  else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
+            } else if ($typeOfLeave === 'Special Leave Benefits for Women' && empty($typeOfSpecialLeaveForWomen)) {
                 $_SESSION['alert_message'] = "Please select Specify Illness for Special Leave";
                 $_SESSION['alert_type'] = $warning_color;
                 header("Location: " . $location_employee_leave_form);
@@ -78,7 +102,7 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
                 header("Location: " . $location_employee_leave_form);
                 exit();
             }
-            
+
             $query = "INSERT INTO tbl_leaveappform
             (employee_id, departmentName, lastName, firstName, middleName, dateFiling, position, salary,
             typeOfLeave, typeOfSpecifiedOtherLeave, typeOfVacationLeave, typeOfVacationLeaveWithin, typeOfVacationLeaveAbroad,
@@ -165,6 +189,8 @@ if (isset($_POST['submitLeaveAppForm']) && isset($_SESSION['employeeId'])) {
             exit();
         }
     }
+    header("Location: " . $location_employee_leave_form);
+    exit();
 } else {
     echo '<script type="text/javascript">window.history.back();</script>';
     header("Location: " . $location_employee_leave_form);

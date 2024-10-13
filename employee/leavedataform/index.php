@@ -1,293 +1,26 @@
 <?php
-include("../../constants/routes.php");
-include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_employee);
-include($constants_variables);
+include ("../../constants/routes.php");
+include ($components_file_error_handler);
+include ($constants_file_dbconnect);
+include ($constants_file_session_employee);
+include ($constants_variables);
 
 $employeeData = [];
 $fetchLeaveData = [];
-$fetchLeaveDataWithMontly = [];
 $leaveData = [];
+$settingData = getAuthorizedUser();
+
+$hasInitialRecord = false;
+$hasYearRecord = false;
 
 if (isset($_SESSION['employeeId'])) {
-    $employeeId = $database->real_escape_string($_SESSION['employeeId']);
-    $empId = $employeeId;
-
-    $sql = "SELECT
-                ua.*,
-                d.departmentName
-            FROM
-                tbl_useraccounts ua
-            LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id
-            WHERE
-                ua.employee_id = ?";
-
-    $stmt = $database->prepare($sql);
-
-    if ($stmt) {
-        $stmt->bind_param("s", $employeeId);
-        $stmt->execute();
-        $empResult = $stmt->get_result();
-
-        if ($empResult->num_rows > 0) {
-            $employeeData = $empResult->fetch_assoc();
-        }
-
-        $stmt->close();
-    } else {
-        // Something
-    }
-
-    // Get all the Records
-    $sqlFetchAllLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? ORDER BY period ASC, dateCreated ASC";
-    $stmtsqlFetchAllLeaveData = $database->prepare($sqlFetchAllLeaveData);
-
-    if ($stmtsqlFetchAllLeaveData) {
-        $stmtsqlFetchAllLeaveData->bind_param("s", $empId);
-        $stmtsqlFetchAllLeaveData->execute();
-        $resultAllLeaveData = $stmtsqlFetchAllLeaveData->get_result();
-
-        while ($rowLeaveData = $resultAllLeaveData->fetch_assoc()) {
-            $fetchLeaveData[] = $rowLeaveData;
-        }
-
-        // Itong parte ang siyang nag-aadd ng bawat month simula sa periodEnd ng Initial Record patungo sa kasalukuyan
-
-        $holdMonth = "";
-
-        for ($i = 0; $i < count($fetchLeaveData); $i++) {
-            if ($i == 0 && $fetchLeaveData[$i]['recordType'] == "Initial Record") {
-                $fetchLeaveDataWithMontly[] = $fetchLeaveData[$i];
-                if ($holdMonth == "") {
-                    $currentDate = $fetchLeaveData[$i]['periodEnd'];
-                    $date = new DateTime($currentDate);
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                } else {
-                    $date = new DateTime();
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                }
-
-                // if ($holdMonth > $fetchLeaveData[$i]['periodEnd']) {
-                //     $monthEarnedArray = [
-                //         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration,
-                //         'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                //         'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                //         'recordType' => "Monthly Credit",
-                //         'period' => $holdMonth,
-                //         'periodEnd' => $holdMonth,
-                //         'particular' => "Monthly Credit",
-                //         'particularLabel' => "",
-                //         'days' => 0,
-                //         'hours' => 0,
-                //         'minutes' => 0,
-                //         'vacationLeaveEarned' => 0,
-                //         'vacationLeaveAbsUndWP' => 0,
-                //         'vacationLeaveBalance' => 0,
-                //         'vacationLeaveAbsUndWOP' => 0,
-                //         'sickLeaveEarned' => 0,
-                //         'sickLeaveAbsUndWP' => 0,
-                //         'sickLeaveBalance' => 0,
-                //         'sickLeaveAbsUndWOP' => 0,
-                //         'dateOfAction' => $holdMonth,
-                //         'dateLastModified' => $holdMonth,
-                //     ];
-                //     $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                // }
-            } else {
-                if ($holdMonth != "") {
-                    $iterate = 0;
-
-                    // Updates the Initial Hold Month For Condition
-                    // $currentDate = $holdMonth;
-                    // $date = new DateTime($currentDate);
-                    // $date->modify('first day of next month');
-                    // $holdMonth = $date->format('Y-m-d');
-
-                    // Condition If First Month Reaches The Record To Update Credit
-                    while ($holdMonth <= $fetchLeaveData[$i]['period']) {
-                        $monthEarnedArray = [
-                            'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $iterate . $idGeneration,
-                            'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                            'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                            'recordType' => "Monthly Credit",
-                            'period' => $holdMonth,
-                            'periodEnd' => $holdMonth,
-                            'particular' => "Monthly Credit",
-                            'particularLabel' => "",
-                            'days' => 0,
-                            'hours' => 0,
-                            'minutes' => 0,
-                            'vacationLeaveEarned' => 0,
-                            'vacationLeaveAbsUndWP' => 0,
-                            'vacationLeaveBalance' => 0,
-                            'vacationLeaveAbsUndWOP' => 0,
-                            'sickLeaveEarned' => 0,
-                            'sickLeaveAbsUndWP' => 0,
-                            'sickLeaveBalance' => 0,
-                            'sickLeaveAbsUndWOP' => 0,
-                            'dateOfAction' => $holdMonth,
-                            'dateLastModified' => $holdMonth,
-                        ];
-                        $iterate = $iterate + 1;
-                        $currentDate = $holdMonth;
-                        $date = new DateTime($currentDate);
-                        $date->modify('first day of next month');
-                        $holdMonth = $date->format('Y-m-d');
-                        $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                    }
-
-                    // Adds the Data
-                    $fetchLeaveDataWithMontly[] = $fetchLeaveData[$i];
-                }
-            }
-
-            //Checks If It The Last Array Then Creates An Array of Credit Months Up to Date
-            if ($i >= count($fetchLeaveData) - 1) {
-                $today = (new DateTime())->format('Y-m-d');
-                $iterate = 0;
-                while ($holdMonth <= $today) {
-                    $monthEarnedArray = [
-                        'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration . $iterate,
-                        'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                        'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                        'recordType' => "Monthly Credit",
-                        'period' => $holdMonth,
-                        'periodEnd' => $holdMonth,
-                        'particular' => "Monthly Credit",
-                        'particularLabel' => "",
-                        'days' => 0,
-                        'hours' => 0,
-                        'minutes' => 0,
-                        'vacationLeaveEarned' => 0,
-                        'vacationLeaveAbsUndWP' => 0,
-                        'vacationLeaveBalance' => 0,
-                        'vacationLeaveAbsUndWOP' => 0,
-                        'sickLeaveEarned' => 0,
-                        'sickLeaveAbsUndWP' => 0,
-                        'sickLeaveBalance' => 0,
-                        'sickLeaveAbsUndWOP' => 0,
-                        'dateOfAction' => $holdMonth,
-                        'dateLastModified' => $holdMonth,
-                    ];
-                    $iterate = $iterate + 1;
-                    $currentDate = $holdMonth;
-                    $date = new DateTime($currentDate);
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                    $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                }
-            }
-
-        }
-
-        // Itong parte at siyang nagcocompute ng bawat data
-        for ($i = 0; $i < count($fetchLeaveDataWithMontly); $i++) {
-            if ($i == 0) {
-                // Do Nothing
-            } else {
-                $totalMinutes = 0;
-                $totalMinutes = (($fetchLeaveDataWithMontly[$i]['days'] * 8) * 60) + ($fetchLeaveDataWithMontly[$i]['hours'] * 60) + $fetchLeaveDataWithMontly[$i]['minutes'];
-
-                $totalVacationComputedValue = 0;
-                $totalSickComputedValue = 0;
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Sick Leave") {
-                    $totalSickComputedValue = 0.002 * $totalMinutes * 1.0416667;
-                } else if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
-                    $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
-                }
-
-                $tempVacationBalance = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $tempVacationBalance;
-
-                $tempSickBalance = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $tempSickBalance;
-
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'];
-                $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'];
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $tempVacationBalance;
-                $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $tempSickBalance;
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
-                    if ($tempVacationBalance <= $totalVacationComputedValue) {
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = $tempVacationBalance;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] + ($totalVacationComputedValue - $tempVacationBalance);
-                    } else {
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = $totalVacationComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $tempVacationBalance - $totalVacationComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'];
-                    }
-                }
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Sick Leave") {
-                    if ($tempSickBalance <= $totalSickComputedValue) {
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = $tempSickBalance;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] + ($totalSickComputedValue - $tempSickBalance);
-                    } else {
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = $totalSickComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $tempSickBalance - $totalSickComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'];
-                    }
-                }
-
-                if ($fetchLeaveDataWithMontly[$i]['recordType'] == "Monthly Credit") {
-                    if ($monthReset) {
-                        if ($fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $vacationLeaveMonthlyCredit;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $vacationLeaveMonthlyCredit;
-                        }
-
-                        if ($fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $sickLeaveMonthlyCredit;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $sickLeaveMonthlyCredit;
-                        }
-
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = 0;
-
-                    } else {
-                        if ($fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] - $vacationLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
-                        }
-
-                        if ($fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] - $sickLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
-                        }
-                    }
-                }
-            }
-        }
-
-    } else {
-        // Something Error
-    }
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
+    $fetchLeaveData = getIncentiveLeaveComputation($employeeId);
 }
 
 $selectedYear = date("Y");
+
 if (isset($_POST['leaveFormYear']) && $employeeId) {
     $selectedYear = $_POST['year'];
     if (isset($_SESSION['post_dataformyear'])) {
@@ -300,7 +33,7 @@ if (isset($_POST['leaveFormYear']) && $employeeId) {
 }
 
 if ($selectedYear) {
-    foreach ($fetchLeaveDataWithMontly as $leaveRecord) {
+    foreach ($fetchLeaveData as $leaveRecord) {
 
         $periodYear = date('Y', strtotime($leaveRecord['period']));
         $periodEndYear = date('Y', strtotime($leaveRecord['periodEnd']));
@@ -310,13 +43,9 @@ if ($selectedYear) {
     }
 }
 
-$hasInitialRecord = false;
-$hasYearRecord = false;
-
-if (!empty($fetchLeaveDataWithMontly)) {
-    foreach ($fetchLeaveDataWithMontly as $fdata) {
+if (!empty($fetchLeaveData)) {
+    foreach ($fetchLeaveData as $fdata) {
         if ($fdata['recordType'] == "Initial Record" && $fdata['particular'] == "Initial Record") {
-            // If at least one Initial Record is found, set the flag to true
             $hasInitialRecord = true;
             break; // No need to continue checking, we found one Initial Record
         }
@@ -325,16 +54,6 @@ if (!empty($fetchLeaveDataWithMontly)) {
 
 if (!empty($leaveData)) {
     $hasYearRecord = true;
-}
-
-$settingData = [];
-$settingQuery = "SELECT * FROM tbl_systemsettings
-                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
-$settingResult = mysqli_query($database, $settingQuery);
-
-if ($settingResult) {
-    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
-    // mysqli_free_result($settingResult);
 }
 
 ?>
@@ -348,7 +67,7 @@ if ($settingResult) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Employee Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -382,7 +101,7 @@ if ($settingResult) {
 
 <body class="webpage-background-cover">
     <div class="component-container">
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -397,10 +116,6 @@ if ($settingResult) {
                             <?php echo $selectedYear; ?>
                         </span>
                     </h3>
-                    <div class="title-text-caption">
-                        (
-                        <?php echo $employeeData['firstName'] . " " . $employeeData['lastName']; ?>)
-                    </div>
                 </div>
 
                 <div class="button-container component-container mb-2">
@@ -441,7 +156,7 @@ if ($settingResult) {
                     </div>
 
                     <div class="overflow-auto custom-scrollbar">
-                        <table class="data-form-detail-table">
+                        <table id="adjustable-table" class="data-form-detail-table">
                             <thead>
                                 <tr>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
@@ -461,7 +176,7 @@ if ($settingResult) {
                                         <div class="table-item-base-none">
                                             <?php
                                             if (isset($employeeData['departmentName'])) {
-                                                echo $employeeData['departmentName'];
+                                                echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y");
                                             } else {
                                                 echo 'N/A';
                                             }
@@ -540,23 +255,20 @@ if ($settingResult) {
                                         ?>
                                         <tr>
                                             <td class="table-item-base">
-                                                <?php echo $ldata['period'];
-                                                if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
-                                                    echo ' to ' . $ldata['periodEnd'];
-                                                }
-                                                ?>
+                                                <?php if ($ldata['particular'] === 'Special Privilege Leave') { ?>
+                                                    <?php $arrayDate = [$ldata['periodOne'], $ldata['periodTwo'], $ldata['periodThree']];
+                                                    $resultArray = eliminateDuplicate($arrayDate, 1);
+                                                    echo join(", ", $resultArray);
+                                                    ?>
+                                                <?php } else { ?>
+                                                    <?php echo convertDateFormat($ldata['period'], "Y-m-d", "m-d-Y");
+                                                    if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
+                                                        echo ' to ' . convertDateFormat($ldata['periodEnd'], "Y-m-d", "m-d-Y");
+                                                    }
+                                                    ?>
+                                                <?php } ?>
                                             </td>
-                                            <td title="<?php
-                                            if ($ldata['days'] > 0) {
-                                                echo ' ' . $ldata['days'] . ' day(s) ';
-                                            }
-                                            if ($ldata['hours'] > 0) {
-                                                echo ' ' . $ldata['hours'] . ' hour(s) ';
-                                            }
-                                            if ($ldata['minutes'] > 0) {
-                                                echo ' ' . $ldata['minutes'] . ' minute(s) ';
-                                            }
-                                            ?>" class="table-item-base">
+                                            <td title="" class="table-item-base">
                                                 <?php
                                                 if ($ldata['particular'] == "Others") {
                                                     if ($ldata['particularLabel']) {
@@ -571,36 +283,45 @@ if ($settingResult) {
                                                     }
                                                 }
                                                 ?>
+                                                <?php
+                                                if ($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit" && $ldata['particular'] != "Break Monthly Record") {
+                                                    echo '(' . formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']) . ')';
+                                                }
+                                                ?>
                                             </td>
 
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
                                             </td>
-                                            <td class="table-item-base">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
                                             </td>
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
                                             </td>
-                                            <td class="table-item-base">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
                                             </td>
 
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
                                             </td>
-                                            <td class="table-item-base">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
                                             </td>
                                             <td class="table-item-base">
                                                 <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
                                             </td>
-                                            <td class="table-item-base">
+                                            <td
+                                                class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                 <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
                                             </td>
 
                                             <td class="table-item-base">
-                                                <?php echo $ldata['dateOfAction']; ?>
+                                                <?php echo convertDateFormat($ldata['dateOfAction'], "Y-m-d", "m-d-Y"); ?>
                                             </td>
                                         </tr>
                                         <?php
@@ -623,33 +344,50 @@ if ($settingResult) {
                     </div>
                 </div>
 
+                <!--
                 <div class="px-2 py-4">
-                        <div>Prepared by:</div>
-                        <div style="width: 18rem;" class="mt-3 text-center underline-input">
-                            <?php
-                            for ($i = 0; $i < count($settingData); $i++) {
-                                if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
-                                    echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                                    echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                                    echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                    <?php
+                    ?>
+                    <div>Prepared by:</div>
+                    <div style="width: 18rem;" class="mt-3 text-center underline-input">
+                        <?php
+                        for ($i = 0; $i < count($settingData); $i++) {
+                            if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix'], 1);
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div style="width: 18rem;" class="text-center">
+                        <?php
+                        for ($i = 0; $i < count($settingData); $i++) {
+                            if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                if ($settingData[$i]['jobPosition'] != "") {
+                                    echo $settingData[$i]['jobPosition'];
+                                } else {
+                                    echo "Human Resources Manager";
                                 }
                             }
-                            ?>
-                        </div>
+                        }
+                        ?>
                     </div>
+                </div>
+                    -->
 
             </div>
 
         </div>
     </div>
 
+    <?php if ($hasYearRecord) { ?>
+        <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
+    <?php } ?>
+
     <div class="component-container">
-        <?php
-        include($components_file_footer);
-        ?>
+        <?php include ($components_file_footer); ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
 
 </body>
 

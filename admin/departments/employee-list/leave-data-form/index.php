@@ -1,27 +1,16 @@
 <?php
-include("../../../../constants/routes.php");
-include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ("../../../../constants/routes.php");
+include ($components_file_error_handler);
+include ($constants_file_dbconnect);
+include ($constants_file_session_admin);
+include ($constants_variables);
 
 $empId = isset($_GET['empid']) ? filter_var($_GET['empid'], FILTER_SANITIZE_STRING) : null;
 $employeeData = [];
-$fetchLeaveData = [];
+$fullName = "";
 $fetchLeaveDataWithMontly = [];
 $leaveData = [];
-
-$settingData = [];
-$settingQuery = "SELECT * FROM tbl_systemsettings
-                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
-$settingResult = mysqli_query($database, $settingQuery);
-
-if ($settingResult) {
-    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
-    // mysqli_free_result($settingResult);
-}
-
-// print_r($settingData);
+$settingData = getAuthorizedUser();
 
 if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     $empId = null;
@@ -30,285 +19,13 @@ if ($empId === 'index.php' || $empId === 'index.html' || $empId === null) {
     }
 } else {
     $_SESSION['post_empId'] = $empId;
+    $empId = sanitizeInput($empId);
 
-    $sql = "SELECT
-                ua.*,
-                d.departmentName
-            FROM
-                tbl_useraccounts ua
-            LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id
-            WHERE
-                ua.employee_id = ?";
+    $employeeData = getEmployeeData($empId);
+    $fetchLeaveDataWithMontly = getIncentiveLeaveComputation($empId);
 
-    $stmt = $database->prepare($sql);
-
-    if ($stmt) {
-        $stmt->bind_param("s", $empId);
-        $stmt->execute();
-        $empResult = $stmt->get_result();
-
-        // if ($empResult->num_rows > 0) {
-        //     while ($employee = $empResult->fetch_assoc()) {
-        //         $employeeData[] = $employee;
-        //     }
-        //     echo $employeeData[0]['employee_id'];
-        // }
-
-        if ($empResult->num_rows > 0) {
-            $employeeData = $empResult->fetch_assoc();
-            // echo $employeeData['employee_id'];
-        }
-
-        $stmt->close();
-    } else {
-        // Something
-    }
-
-    // Get all the Records
-    $sqlFetchAllLeaveData = "SELECT * FROM tbl_leavedataform WHERE employee_id = ? ORDER BY period ASC, dateCreated ASC";
-    $stmtsqlFetchAllLeaveData = $database->prepare($sqlFetchAllLeaveData);
-
-    if ($stmtsqlFetchAllLeaveData) {
-        $stmtsqlFetchAllLeaveData->bind_param("s", $empId);
-        $stmtsqlFetchAllLeaveData->execute();
-        $resultAllLeaveData = $stmtsqlFetchAllLeaveData->get_result();
-
-        while ($rowLeaveData = $resultAllLeaveData->fetch_assoc()) {
-            $fetchLeaveData[] = $rowLeaveData;
-        }
-
-        // Itong parte ang siyang nag-aadd ng bawat month simula sa periodEnd ng Initial Record patungo sa kasalukuyan
-
-        $holdMonth = "";
-
-        for ($i = 0; $i < count($fetchLeaveData); $i++) {
-            if ($i == 0 && $fetchLeaveData[$i]['recordType'] == "Initial Record") {
-                $fetchLeaveDataWithMontly[] = $fetchLeaveData[$i];
-                if ($holdMonth == "") {
-                    $currentDate = $fetchLeaveData[$i]['periodEnd'];
-                    $date = new DateTime($currentDate);
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                } else {
-                    $date = new DateTime();
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                }
-
-                // if ($holdMonth > $fetchLeaveData[$i]['periodEnd']) {
-                //     $monthEarnedArray = [
-                //         'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration,
-                //         'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                //         'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                //         'recordType' => "Monthly Credit",
-                //         'period' => $holdMonth,
-                //         'periodEnd' => $holdMonth,
-                //         'particular' => "Monthly Credit",
-                //         'particularLabel' => "",
-                //         'days' => 0,
-                //         'hours' => 0,
-                //         'minutes' => 0,
-                //         'vacationLeaveEarned' => 0,
-                //         'vacationLeaveAbsUndWP' => 0,
-                //         'vacationLeaveBalance' => 0,
-                //         'vacationLeaveAbsUndWOP' => 0,
-                //         'sickLeaveEarned' => 0,
-                //         'sickLeaveAbsUndWP' => 0,
-                //         'sickLeaveBalance' => 0,
-                //         'sickLeaveAbsUndWOP' => 0,
-                //         'dateOfAction' => $holdMonth,
-                //         'dateLastModified' => $holdMonth,
-                //     ];
-                //     $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                // }
-            } else {
-                if ($holdMonth != "") {
-                    $iterate = 0;
-
-                    // Updates the Initial Hold Month For Condition
-                    // $currentDate = $holdMonth;
-                    // $date = new DateTime($currentDate);
-                    // $date->modify('first day of next month');
-                    // $holdMonth = $date->format('Y-m-d');
-
-                    // Condition If First Month Reaches The Record To Update Credit
-                    while ($holdMonth <= $fetchLeaveData[$i]['period']) {
-                        $monthEarnedArray = [
-                            'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $iterate . $idGeneration,
-                            'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                            'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                            'recordType' => "Monthly Credit",
-                            'period' => $holdMonth,
-                            'periodEnd' => $holdMonth,
-                            'particular' => "Monthly Credit",
-                            'particularLabel' => "",
-                            'days' => 0,
-                            'hours' => 0,
-                            'minutes' => 0,
-                            'vacationLeaveEarned' => 0,
-                            'vacationLeaveAbsUndWP' => 0,
-                            'vacationLeaveBalance' => 0,
-                            'vacationLeaveAbsUndWOP' => 0,
-                            'sickLeaveEarned' => 0,
-                            'sickLeaveAbsUndWP' => 0,
-                            'sickLeaveBalance' => 0,
-                            'sickLeaveAbsUndWOP' => 0,
-                            'dateOfAction' => $holdMonth,
-                            'dateLastModified' => $holdMonth,
-                        ];
-                        $iterate = $iterate + 1;
-                        $currentDate = $holdMonth;
-                        $date = new DateTime($currentDate);
-                        $date->modify('first day of next month');
-                        $holdMonth = $date->format('Y-m-d');
-                        $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                    }
-
-                    // Adds the Data
-                    $fetchLeaveDataWithMontly[] = $fetchLeaveData[$i];
-                }
-            }
-
-            //Checks If It The Last Array Then Creates An Array of Credit Months Up to Date
-            if ($i >= count($fetchLeaveData) - 1) {
-                $today = (new DateTime())->format('Y-m-d');
-                $iterate = 0;
-                while ($holdMonth <= $today) {
-                    $monthEarnedArray = [
-                        'leavedataform_id' => $fetchLeaveData[$i]['leavedataform_id'] . $idGeneration . $iterate,
-                        'employee_id' => $fetchLeaveData[$i]['employee_id'],
-                        'dateCreated' => $fetchLeaveData[$i]['dateCreated'],
-                        'recordType' => "Monthly Credit",
-                        'period' => $holdMonth,
-                        'periodEnd' => $holdMonth,
-                        'particular' => "Monthly Credit",
-                        'particularLabel' => "",
-                        'days' => 0,
-                        'hours' => 0,
-                        'minutes' => 0,
-                        'vacationLeaveEarned' => 0,
-                        'vacationLeaveAbsUndWP' => 0,
-                        'vacationLeaveBalance' => 0,
-                        'vacationLeaveAbsUndWOP' => 0,
-                        'sickLeaveEarned' => 0,
-                        'sickLeaveAbsUndWP' => 0,
-                        'sickLeaveBalance' => 0,
-                        'sickLeaveAbsUndWOP' => 0,
-                        'dateOfAction' => $holdMonth,
-                        'dateLastModified' => $holdMonth,
-                    ];
-                    $iterate = $iterate + 1;
-                    $currentDate = $holdMonth;
-                    $date = new DateTime($currentDate);
-                    $date->modify('first day of next month');
-                    $holdMonth = $date->format('Y-m-d');
-                    $fetchLeaveDataWithMontly[] = $monthEarnedArray;
-                }
-            }
-
-        }
-
-        // Itong parte at siyang nagcocompute ng bawat data
-        for ($i = 0; $i < count($fetchLeaveDataWithMontly); $i++) {
-            if ($i == 0) {
-                // Do Nothing
-            } else {
-                $totalMinutes = 0;
-                $totalMinutes = (($fetchLeaveDataWithMontly[$i]['days'] * 8) * 60) + ($fetchLeaveDataWithMontly[$i]['hours'] * 60) + $fetchLeaveDataWithMontly[$i]['minutes'];
-
-                $totalVacationComputedValue = 0;
-                $totalSickComputedValue = 0;
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Sick Leave") {
-                    $totalSickComputedValue = 0.002 * $totalMinutes * 1.0416667;
-                } else if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
-                    $totalVacationComputedValue = 0.002 * $totalMinutes * 1.0416667;
-                }
-
-                $tempVacationBalance = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $tempVacationBalance;
-
-                $tempSickBalance = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $tempSickBalance;
-
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'];
-                $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'];
-                $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $tempVacationBalance;
-                $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $tempSickBalance;
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Vacation Leave" || $fetchLeaveDataWithMontly[$i]['particular'] == "Late") {
-                    if ($tempVacationBalance <= $totalVacationComputedValue) {
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = $tempVacationBalance;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] + ($totalVacationComputedValue - $tempVacationBalance);
-                    } else {
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = $totalVacationComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $tempVacationBalance - $totalVacationComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'];
-                    }
-                }
-
-                if ($fetchLeaveDataWithMontly[$i]['particular'] == "Sick Leave") {
-                    if ($tempSickBalance <= $totalSickComputedValue) {
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = $tempSickBalance;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] + ($totalSickComputedValue - $tempSickBalance);
-                    } else {
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = $totalSickComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $tempSickBalance - $totalSickComputedValue;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'];
-                    }
-                }
-
-                if ($fetchLeaveDataWithMontly[$i]['recordType'] == "Monthly Credit") {
-                    if ($monthReset) {
-                        if ($fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $vacationLeaveMonthlyCredit;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $vacationLeaveMonthlyCredit;
-                        }
-
-                        if ($fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $sickLeaveMonthlyCredit;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $sickLeaveMonthlyCredit;
-                        }
-
-                        $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = 0;
-                        $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = 0;
-
-                    } else {
-                        if ($fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWP'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveAbsUndWOP'] - $vacationLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['vacationLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['vacationLeaveBalance'] + $vacationLeaveMonthlyCredit;
-                        }
-
-                        if ($fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] > 0) {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWP'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = 0;
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveAbsUndWOP'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveAbsUndWOP'] - $sickLeaveMonthlyCredit;
-                        } else {
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveEarned'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'];
-                            $fetchLeaveDataWithMontly[$i]['sickLeaveBalance'] = $fetchLeaveDataWithMontly[$i - 1]['sickLeaveBalance'] + $sickLeaveMonthlyCredit;
-                        }
-                    }
-                }
-            }
-        }
-
-    } else {
-        // Something Error
+    if (!empty($employeeData)) {
+        $fullName = organizeFullName($employeeData['firstName'], $employeeData['middleName'], $employeeData['lastName'], $employeeData['suffix'], 1);
     }
 }
 
@@ -363,7 +80,7 @@ if (!empty($leaveData)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Admin Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -399,456 +116,522 @@ if (!empty($leaveData)) {
 
 <body class="webpage-background-cover-admin">
     <div class="component-container">
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
+
+    <!-- Initialize Record -->
+    <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade" id="createInitialRecord"
+        tabindex="-1" role="dialog" aria-labelledby="createInitialRecordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createInitialRecordModalLongTitle">Create Initial Record
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                    <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="period" class="form-control" id="floatingInitializePeriod"
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                                <label for="floatingInitializePeriod">Start Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodEnd" class="form-control"
+                                    id="floatingInitializePeriodEnd" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                                <label for="floatingInitializePeriodEnd">End Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="text" name="particularLabel" class="form-control" id="floatingparticularLabel"
+                            placeholder="">
+                        <label for="floatingparticularLabel">Label
+                            <!-- <span class="required-color">*</span> -->
+                        </label>
+                    </div>
+
+                    <div class="m-2">Vacation Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationBalance" class="form-control"
+                                    id="vacationBalanceInput" value="1.25" required>
+                                <label for="vacationBalanceInput">Balance <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationUnderWOPay" class="form-control"
+                                    id="vacationUnderWOPayInput" value="0" required>
+                                <label for="vacationUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="m-2">Sick Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickBalance" class="form-control"
+                                    id="sickBalanceInput" value="1.25" required>
+                                <label for="sickBalanceInput">Balance <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickUnderWOPay" class="form-control"
+                                    id="sickUnderWOPayInput" value="0" required>
+                                <label for="sickUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="date" name="dateOfAction" class="form-control" id="floatingInitializeDateOfAction"
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                        <label for="floatingInitializeDateOfAction">Date of Action <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary clearInitialize">Clear</button>
+                    <input type="submit" name="createInitialRecord" value="Create Initial Record"
+                        class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Add Modal -->
+    <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade" id="addLeaveDataRecord"
+        tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLeaveDataRecordModalLongTitle">Add New Leave Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                    <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                    <div id="allLeave" class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="period" class="form-control" id="floatingPeriod"
+                                    placeholder="2020-12-31">
+                                <label for="floatingPeriod">Start Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodEnd" class="form-control" id="floatingPeriodEnd"
+                                    placeholder="2020-12-31">
+                                <label for="floatingPeriodEnd">End Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="splLeave" class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodOne" class="form-control" id="floatingPeriodOne"
+                                    placeholder="2020-12-31" >
+                                <label for="floatingPeriodOne">1st Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodTwo" class="form-control" id="floatingPeriodTwo"
+                                    placeholder="2020-12-31" >
+                                <label for="floatingPeriodTwo">2nd Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodThree" class="form-control" id="floatingPeriodThree"
+                                    placeholder="2020-12-31" required>
+                                <label for="floatingPeriodThree">3rd Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <select class="form-select" id="floatingParticularType" name="particularType"
+                            aria-label="Floating Particular Type" required>
+                            <option value="" selected></option>
+                            <option value="Sick Leave">Sick Leave</option>
+                            <option value="Vacation Leave">Vacation Leave</option>
+                            <option value="Late">Late</option>
+                            <option value="Forced Leave">Forced Leave</option>
+                            <option value="Break Monthly Credit">Break Monthly Credit</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Special Privilege Leave">Special Privilege Leave</option>
+                            <option value="Solo Parent Leave">Solo Parent Leave</option>
+                            <option value="Study Leave">Study Leave</option>
+                            <option value="10-Day VAWC Leave">10-Day VAWC Leave</option>
+                            <option value="Rehabilitation Privilege">Rehabilitation Privilege</option>
+                            <option value="Special Leave Benefits for Women">Special Leave Benefits for Women</option>
+                            <option value="Special Emergency (Calamity) Leave">Special Emergency (Calamity) Leave
+                            </option>
+                            <option value="Adoption Leave">Adoption Leave</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <label for="floatingParticularType">Type <span class="required-color">*</span></label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="text" name="particularLabel" class="form-control" id="floatingparticularLabel"
+                            placeholder="">
+                        <label for="floatingparticularLabel">Label
+                            <!-- <span class="required-color">*</span> -->
+                        </label>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="3652" name="dayInput" class="form-control"
+                                    id="floatingDayInput" placeholder="3" required>
+                                <label for="floatingDayInput">Work Day(s) <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="24" name="hourInput" class="form-control"
+                                    id="floatingHourInput" placeholder="24" required>
+                                <label for="floatingHourInput">Hour(s) <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="60" name="minuteInput" class="form-control"
+                                    id="floatingMinuteInput" placeholder="60" required>
+                                <label for="floatingMinuteInput">Minute(s) <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="date" name="dateOfAction" class="form-control" id="floatingDateOfAction"
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                        <label for="floatingDateOfAction">Date of Action <span class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary clearAddLeaveDataInputs">Clear</button>
+                    <input type="submit" name="addLeaveDataRecord" value="Add Leave Record" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Edit Modal -->
+    <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade" id="editLeaveDataRecord"
+        tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit Leave Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="leavedataformId" id="floatingEditLeaveDataFormId" />
+                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                    <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                    <div id="allLeaveEdit" class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="period" class="form-control" id="floatingEditPeriod"
+                                    placeholder="2020-12-31">
+                                <label for="floatingEditPeriod">Start Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodEnd" class="form-control" id="floatingEditPeriodEnd"
+                                    placeholder="2020-12-31">
+                                <label for="floatingEditPeriodEnd">End Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="splLeaveEdit" class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodOne" class="form-control" id="floatingEditPeriodOne"
+                                    placeholder="2020-12-31">
+                                <label for="floatingEditPeriodOne">1st Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodTwo" class="form-control" id="floatingEditPeriodTwo"
+                                    placeholder="2020-12-31">
+                                <label for="floatingEditPeriodTwo">2nd Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodThree" class="form-control" id="floatingEditPeriodThree"
+                                    placeholder="2020-12-31">
+                                <label for="floatingEditPeriodThree">3rd Period <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <select class="form-select" id="floatingEditParticularType" name="particularType"
+                            aria-label="floatingEdit Particular Type" required>
+                            <option value="" selected></option>
+                            <option value="Sick Leave">Sick Leave</option>
+                            <option value="Vacation Leave">Vacation Leave</option>
+                            <option value="Late">Late</option>
+                            <option value="Forced Leave">Forced Leave</option>
+                            <option value="Break Monthly Credit">Break Monthly Credit</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Special Privilege Leave">Special Privilege Leave</option>
+                            <option value="Solo Parent Leave">Solo Parent Leave</option>
+                            <option value="Study Leave">Study Leave</option>
+                            <option value="10-Day VAWC Leave">10-Day VAWC Leave</option>
+                            <option value="Rehabilitation Privilege">Rehabilitation Privilege</option>
+                            <option value="Special Leave Benefits for Women">Special Leave Benefits for Women</option>
+                            <option value="Special Emergency (Calamity) Leave">Special Emergency (Calamity) Leave
+                            </option>
+                            <option value="Adoption Leave">Adoption Leave</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <label for="floatingEditParticularType">Type <span class="required-color">*</span></label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="text" name="particularLabel" class="form-control" id="floatingEditParticularLabel"
+                            placeholder="">
+                        <label for="floatingEditParticularLabel">Label
+                            <!-- <span class="required-color">*</span> -->
+                        </label>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="3652" name="dayInput" class="form-control"
+                                    id="floatingEditDayInput" placeholder="3" required>
+                                <label for="floatingEditDayInput">Work Day(s) <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="24" name="hourInput" class="form-control"
+                                    id="floatingEditHourInput" placeholder="24" required>
+                                <label for="floatingEditHourInput">Hour(s) <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" min="0" max="60" name="minuteInput" class="form-control"
+                                    id="floatingEditMinuteInput" placeholder="60" required>
+                                <label for="floatingEditMinuteInput">Minute(s) <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="date" name="dateOfAction" class="form-control" id="floatingEditDateOfAction"
+                            placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                        <label for="floatingEditDateOfAction">Date of Action <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary clearEditLeaveDataInputs">Clear</button>
+                    <input type="submit" name="editLeaveDataRecord" value="Save Changes" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Edit Initial Leave Record -->
+    <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade" id="editInitialRecord"
+        tabindex="-1" role="dialog" aria-labelledby="editInitialRecordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editInitialRecordModalLongTitle">Edit Initial Leave Record
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                    <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="period" class="form-control" id="floatingEditInitializePeriod"
+                                    placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                                <label for="floatingEditInitializePeriod">Start Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="date" name="periodEnd" class="form-control"
+                                    id="floatingEditInitializePeriodEnd" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                                <label for="floatingEditInitializePeriodEnd">End Period <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="text" name="particularLabel" class="form-control"
+                            id="floatingEditInitialParticularLabel" placeholder="">
+                        <label for="floatingEditInitialParticularLabel">Label
+                            <!-- <span class="required-color">*</span> -->
+                        </label>
+                    </div>
+
+                    <div class="m-2">Vacation Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationBalance" class="form-control"
+                                    id="editVacationBalanceInput" value="0" required>
+                                <label for="editVacationBalanceInput">Balance <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="vacationUnderWOPay" class="form-control"
+                                    id="editVacationUnderWOPayInput" value="0" required>
+                                <label for="editVacationUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="m-2">Sick Leave</div>
+
+                    <div class="row g-2 mb-2">
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickBalance" class="form-control"
+                                    id="editSickBalanceInput" value="0" required>
+                                <label for="editSickBalanceInput">Balance <span class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="number" step="any" name="sickUnderWOPay" class="form-control"
+                                    id="editSickUnderWOPayInput" value="0" required>
+                                <label for="editSickUnderWOPayInput">Under W/O Pay <span
+                                        class="required-color">*</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input type="date" name="dateOfAction" class="form-control"
+                            id="floatingEditInitializeDateOfAction" placeholder="2020-12-31" max="<?php echo $today; ?>" required>
+                        <label for="floatingEditInitializeDateOfAction">Date of Action <span
+                                class="required-color">*</span></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary resetEditInitialRecord">Reset</button>
+                    <input type="submit" name="editInitialLeaveDataRecord" value="Save Initial Record"
+                        class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div class="page-container">
         <div class="page-content">
 
             <div class="component-container">
-                <?php include($components_file_navpanel); ?>
+                <?php include ($components_file_navpanel); ?>
             </div>
 
             <div class='box-container'>
-
-                <!-- Initialize Record -->
-                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
-                    id="createInitialRecord" tabindex="-1" role="dialog" aria-labelledby="createInitialRecordTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="createInitialRecordModalLongTitle">Create Initial Record
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="period" class="form-control"
-                                                id="floatingInitializePeriod" placeholder="2020-12-31" required>
-                                            <label for="floatingInitializePeriod">Start Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="periodEnd" class="form-control"
-                                                id="floatingInitializePeriodEnd" placeholder="2020-12-31" required>
-                                            <label for="floatingInitializePeriodEnd">End Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="text" name="particularLabel" class="form-control"
-                                        id="floatingparticularLabel" placeholder="">
-                                    <label for="floatingparticularLabel">Label
-                                        <!-- <span class="required-color">*</span> -->
-                                    </label>
-                                </div>
-
-                                <div class="m-2">Vacation Leave</div>
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" step="any" name="vacationBalance" class="form-control"
-                                                id="vacationBalanceInput" value="1.25" required>
-                                            <label for="vacationBalanceInput">Balance <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" step="any" name="vacationUnderWOPay"
-                                                class="form-control" id="vacationUnderWOPayInput" value="0" required>
-                                            <label for="vacationUnderWOPayInput">Under W/O Pay <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="m-2">Sick Leave</div>
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" step="any" name="sickBalance" class="form-control"
-                                                id="sickBalanceInput" value="1.25" required>
-                                            <label for="sickBalanceInput">Balance <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" step="any" name="sickUnderWOPay" class="form-control"
-                                                id="sickUnderWOPayInput" value="0" required>
-                                            <label for="sickUnderWOPayInput">Under W/O Pay <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="dateOfAction" class="form-control"
-                                        id="floatingInitializeDateOfAction" placeholder="2020-12-31" required>
-                                    <label for="floatingInitializeDateOfAction">Date of Action <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary clearInitialize">Clear</button>
-                                <input type="submit" name="createInitialRecord" value="Create Initial Record"
-                                    class="btn btn-primary" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Add Modal -->
-                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
-                    id="addLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="addLeaveDataRecordTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addLeaveDataRecordModalLongTitle">Add New Leave Record</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="period" class="form-control" id="floatingPeriod"
-                                                placeholder="2020-12-31" required>
-                                            <label for="floatingPeriod">Start Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="periodEnd" class="form-control"
-                                                id="floatingPeriodEnd" placeholder="2020-12-31" required>
-                                            <label for="floatingPeriodEnd">End Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <select class="form-select" id="floatingParticularType" name="particularType"
-                                        aria-label="Floating Particular Type" required>
-                                        <option value="" selected></option>
-                                        <option value="Sick Leave">Sick Leave</option>
-                                        <option value="Vacation Leave">Vacation Leave</option>
-                                        <option value="Late">Late</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                    <label for="floatingParticularType">Type <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="text" name="particularLabel" class="form-control"
-                                        id="floatingparticularLabel" placeholder="">
-                                    <label for="floatingparticularLabel">Label
-                                        <!-- <span class="required-color">*</span> -->
-                                    </label>
-                                </div>
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
-                                                id="floatingDayInput" placeholder="3" required>
-                                            <label for="floatingDayInput">Work Day(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
-                                                id="floatingHourInput" placeholder="24" required>
-                                            <label for="floatingHourInput">Hour(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="60" name="minuteInput"
-                                                class="form-control" id="floatingMinuteInput" placeholder="60" required>
-                                            <label for="floatingMinuteInput">Minute(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="dateOfAction" class="form-control"
-                                        id="floatingDateOfAction" placeholder="2020-12-31" required>
-                                    <label for="floatingDateOfAction">Date of Action <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary clearAddLeaveDataInputs">Clear</button>
-                                <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
-                                    class="btn btn-primary" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-                <form action="<?php echo $action_add_leaverecorddata; ?>" method="post" class="modal fade"
-                    id="addNewLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="addNewLeaveDataRecordTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addNewLeaveDataRecordModalLongTitle">Add New Leave Record
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="period" class="form-control" id="floatingNewPeriod"
-                                                placeholder="2020-12-31" required>
-                                            <label for="floatingNewPeriod">Start Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="periodEnd" class="form-control"
-                                                id="floatingNewPeriodEnd" placeholder="2020-12-31" required>
-                                            <label for="floatingNewPeriodEnd">End Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <select class="form-select" id="floatingParticularType" name="particularType"
-                                        aria-label="Floating Particular Type" required>
-                                        <option value="" selected></option>
-                                        <option value="Sick Leave">Sick Leave</option>
-                                        <option value="Vacation Leave">Vacation Leave</option>
-                                        <option value="Late">Late</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                    <label for="floatingParticularType">Type <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="text" name="particularLabel" class="form-control"
-                                        id="floatingparticularLabel" placeholder="">
-                                    <label for="floatingparticularLabel">Label
-                                        <!-- <span class="required-color">*</span> -->
-                                    </label>
-                                </div>
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
-                                                id="floatingDayInput" placeholder="3" required>
-                                            <label for="floatingDayInput">Work Day(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
-                                                id="floatingHourInput" placeholder="24" required>
-                                            <label for="floatingHourInput">Hour(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="60" name="minuteInput"
-                                                class="form-control" id="floatingMinuteInput" placeholder="60" required>
-                                            <label for="floatingMinuteInput">Minute(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="dateOfAction" class="form-control"
-                                        id="floatingNewDateOfAction" placeholder="2020-12-31" required>
-                                    <label for="floatingNewDateOfAction">Date of Action <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary clearAddLeaveDataInputs">Clear</button>
-                                <input type="submit" name="addLeaveDataRecord" value="Add Leave Record"
-                                    class="btn btn-primary" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Edit Modal -->
-                <form action="<?php echo $action_edit_leaverecorddata; ?>" method="post" class="modal fade"
-                    id="editLeaveDataRecord" tabindex="-1" role="dialog" aria-labelledby="editLeaveDataRecordTitle"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editLeaveDataRecordModalLongTitle">Edit Leave Record</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="leavedataformId" id="floatingEditLeaveDataFormId" />
-                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                <input type="hidden" name="selectedYear" value="<?php echo $selectedYear; ?>" />
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="period" class="form-control"
-                                                id="floatingEditPeriod" placeholder="2020-12-31" required>
-                                            <label for="floatingEditPeriod">Start Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="date" name="periodEnd" class="form-control"
-                                                id="floatingEditPeriodEnd" placeholder="2020-12-31" required>
-                                            <label for="floatingEditPeriodEnd">End Period <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <select class="form-select" id="floatingEditParticularType" name="particularType"
-                                        aria-label="floatingEdit Particular Type" required>
-                                        <option value="" selected></option>
-                                        <option value="Sick Leave">Sick Leave</option>
-                                        <option value="Vacation Leave">Vacation Leave</option>
-                                        <option value="Late">Late</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                    <label for="floatingEditParticularType">Type <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="text" name="particularLabel" class="form-control"
-                                        id="floatingEditParticularLabel" placeholder="">
-                                    <label for="floatingEditParticularLabel">Label
-                                        <!-- <span class="required-color">*</span> -->
-                                    </label>
-                                </div>
-
-                                <div class="row g-2 mb-2">
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="3652" name="dayInput" class="form-control"
-                                                id="floatingEditDayInput" placeholder="3" required>
-                                            <label for="floatingEditDayInput">Work Day(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="24" name="hourInput" class="form-control"
-                                                id="floatingEditHourInput" placeholder="24" required>
-                                            <label for="floatingEditHourInput">Hour(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" max="60" name="minuteInput"
-                                                class="form-control" id="floatingEditMinuteInput" placeholder="60"
-                                                required>
-                                            <label for="floatingEditMinuteInput">Minute(s) <span
-                                                    class="required-color">*</span></label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-floating mb-2">
-                                    <input type="date" name="dateOfAction" class="form-control"
-                                        id="floatingEditDateOfAction" placeholder="2020-12-31" required>
-                                    <label for="floatingEditDateOfAction">Date of Action <span
-                                            class="required-color">*</span></label>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary clearEditLeaveDataInputs">Clear</button>
-                                <input type="submit" name="editLeaveDataRecord" value="Save Changes"
-                                    class="btn btn-primary" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
 
                 <div class="component-container p-2">
                     <h3 class="title-text">
@@ -859,7 +642,7 @@ if (!empty($leaveData)) {
                     </h3>
                     <div class="title-text-caption">
                         (
-                        <?php echo $employeeData['firstName'] . " " . $employeeData['lastName']; ?>)
+                        <?php echo $fullName; ?>)
                     </div>
                 </div>
 
@@ -911,15 +694,15 @@ if (!empty($leaveData)) {
                     </div>
 
                     <div class="overflow-auto custom-scrollbar">
-                        <table class="data-form-detail-table">
+                        <table id="adjustable-table" class="data-form-detail-table">
                             <thead>
                                 <tr>
                                     <th colspan="3" style="width: 30%;" class="table-head-base-front">
                                         <div>Name</div>
                                         <div class="table-item-base-none">
                                             <?php
-                                            if (isset($employeeData['firstName']) && isset($employeeData['lastName'])) {
-                                                echo $employeeData['firstName'] . ' ' . $employeeData['lastName'];
+                                            if ($fullName != "") {
+                                                echo $fullName;
                                             } else {
                                                 echo 'N/A';
                                             }
@@ -943,7 +726,7 @@ if (!empty($leaveData)) {
                                         <div class="table-item-base-none">
                                             <?php
                                             if (isset($employeeData['dateStarted'])) {
-                                                echo $employeeData['dateStarted'];
+                                                echo convertDateFormat($employeeData['dateStarted'], "Y-m-d", "m-d-Y");
                                             } else {
                                                 echo 'N/A';
                                             }
@@ -1017,23 +800,20 @@ if (!empty($leaveData)) {
                                                 aria-expanded="true"
                                                 aria-controls="panelsStayOpen-collapse<?php echo $ldata['leavedataform_id']; ?>">
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['period'];
-                                                    if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
-                                                        echo ' to ' . $ldata['periodEnd'];
-                                                    }
-                                                    ?>
+                                                    <?php if ($ldata['particular'] === 'Special Privilege Leave') { ?>
+                                                        <?php $arrayDate = [$ldata['periodOne'], $ldata['periodTwo'], $ldata['periodThree']];
+                                                        $resultArray = eliminateDuplicate($arrayDate, 1);
+                                                        echo join(", ", $resultArray);
+                                                        ?>
+                                                    <?php } else { ?>
+                                                        <?php echo convertDateFormat($ldata['period'], "Y-m-d", "m-d-Y");
+                                                        if ($ldata['periodEnd'] && $ldata['period'] < $ldata['periodEnd']) {
+                                                            echo ' to ' . convertDateFormat($ldata['periodEnd'], "Y-m-d", "m-d-Y");
+                                                        }
+                                                        ?>
+                                                    <?php } ?>
                                                 </td>
-                                                <td title="<?php
-                                                if ($ldata['days'] > 0) {
-                                                    echo ' ' . $ldata['days'] . ' day(s) ';
-                                                }
-                                                if ($ldata['hours'] > 0) {
-                                                    echo ' ' . $ldata['hours'] . ' hour(s) ';
-                                                }
-                                                if ($ldata['minutes'] > 0) {
-                                                    echo ' ' . $ldata['minutes'] . ' minute(s) ';
-                                                }
-                                                ?>" class="table-item-base">
+                                                <td title="" class="table-item-base">
                                                     <?php
                                                     if ($ldata['particular'] == "Others") {
                                                         if ($ldata['particularLabel']) {
@@ -1048,36 +828,41 @@ if (!empty($leaveData)) {
                                                         }
                                                     }
                                                     ?>
+                                                    <?php
+                                                    if ($ldata['particular'] != "Initial Record" && $ldata['particular'] != "Monthly Credit" && $ldata['particular'] != "Break Monthly Record") {
+                                                        echo '(' . formatExactTime($ldata['days'], $ldata['hours'], $ldata['minutes']) . ')';
+                                                    }
+                                                    ?>
                                                 </td>
 
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['vacationLeaveEarned'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['vacationLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['vacationLeaveBalance'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['vacationLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['sickLeaveEarned'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['sickLeaveAbsUndWP'], 2); ?>
                                                 </td>
                                                 <td class="table-item-base">
                                                     <?php echo number_format($ldata['sickLeaveBalance'], 2); ?>
                                                 </td>
-                                                <td class="table-item-base">
+                                                <td class="table-item-base <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2) > 0 ? 'deduct-type' : '' ?>">
                                                     <?php echo number_format($ldata['sickLeaveAbsUndWOP'], 2); ?>
                                                 </td>
 
                                                 <td class="table-item-base">
-                                                    <?php echo $ldata['dateOfAction']; ?>
+                                                    <?php echo convertDateFormat($ldata['dateOfAction'], "Y-m-d", "m-d-Y"); ?>
                                                 </td>
                                             </tr>
                                             <?php
@@ -1089,14 +874,6 @@ if (!empty($leaveData)) {
                                                     <td colspan="11" class="component-container table-item-base">
                                                         <div
                                                             class="button-container component-container justify-content-center py-1">
-                                                            <button type="button" id="addNewLeaveDataRecord"
-                                                                class="addNewLeaveDataRecord custom-regular-button"
-                                                                data-toggle="modal" data-target="#addNewLeaveDataRecord"
-                                                                data-period-date="<?php echo $ldata['periodEnd']; ?>"
-                                                                data-period-end-date="<?php echo $ldata['periodEnd']; ?>"
-                                                                data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
-                                                                Add New Leave Record
-                                                            </button>
                                                             <?php
                                                             if ($ldata['recordType'] != "Initial Record") {
                                                                 ?>
@@ -1105,6 +882,9 @@ if (!empty($leaveData)) {
                                                                     data-leavedata-id="<?php echo $ldata['leavedataform_id']; ?>"
                                                                     data-period-start="<?php echo $ldata['period']; ?>"
                                                                     data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                                    data-period-one="<?php echo $ldata['periodOne']; ?>"
+                                                                    data-period-two="<?php echo $ldata['periodTwo']; ?>"
+                                                                    data-period-three="<?php echo $ldata['periodThree']; ?>"
                                                                     data-particular-type="<?php echo $ldata['particular']; ?>"
                                                                     data-particular-label="<?php echo $ldata['particularLabel']; ?>"
                                                                     data-input-day="<?php echo $ldata['days']; ?>"
@@ -1113,19 +893,35 @@ if (!empty($leaveData)) {
                                                                     data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
                                                                     Edit Leave Record
                                                                 </button>
+                                                                <form action="<?php echo $action_delete_leaverecorddata; ?>"
+                                                                    method="post">
+                                                                    <input type="hidden" name="leavedataformId"
+                                                                        value="<?php echo $ldata['leavedataform_id']; ?>" />
+                                                                    <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
+                                                                    <input type="hidden" name="selectedYear"
+                                                                        value="<?php echo $selectedYear; ?>" />
+                                                                    <input type="submit" name="deleteLeaveData"
+                                                                        value="Delete Leave Record" class="custom-regular-button" />
+                                                                </form>
                                                                 <?php
                                                             }
                                                             ?>
-                                                            <form action="<?php echo $action_delete_leaverecorddata; ?>"
-                                                                method="post">
-                                                                <input type="hidden" name="leavedataformId"
-                                                                    value="<?php echo $ldata['leavedataform_id']; ?>" />
-                                                                <input type="hidden" name="empId" value="<?php echo $empId; ?>" />
-                                                                <input type="hidden" name="selectedYear"
-                                                                    value="<?php echo $selectedYear; ?>" />
-                                                                <input type="submit" name="deleteLeaveData"
-                                                                    value="Delete Leave Record" class="custom-regular-button" />
-                                                            </form>
+                                                            <?php
+                                                            if ($ldata['recordType'] == "Initial Record") {
+                                                                ?>
+                                                                <button type="button" class="editInitialRecord custom-regular-button"
+                                                                    data-toggle="modal" data-target="#editInitialRecord"
+                                                                    data-period-start="<?php echo $ldata['period']; ?>"
+                                                                    data-period-end="<?php echo $ldata['periodEnd']; ?>"
+                                                                    data-particular-label="<?php echo $ldata['particularLabel']; ?>"
+                                                                    data-vacation-earned="<?php echo $ldata['vacationLeaveEarned']; ?>"
+                                                                    data-sick-earned="<?php echo $ldata['sickLeaveEarned']; ?>"
+                                                                    data-vacation-withoutpay="<?php echo $ldata['vacationLeaveAbsUndWOP	']; ?>"
+                                                                    data-sick-withoutpay="<?php echo $ldata['sickLeaveAbsUndWOP	']; ?>"
+                                                                    data-date-of-action="<?php echo $ldata['dateOfAction']; ?>">
+                                                                    Edit Initial Leave Record
+                                                                </button>
+                                                            <?php } ?>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -1175,6 +971,7 @@ if (!empty($leaveData)) {
                         </table>
                     </div>
 
+                    <!--
                     <div class="px-2 py-4">
                         <div>Prepared by:</div>
                         <div style="width: 18rem;" class="mt-3 text-center underline-input">
@@ -1188,7 +985,21 @@ if (!empty($leaveData)) {
                             }
                             ?>
                         </div>
+                        <div style="width: 18rem;" class="text-center">
+                            <?php
+                            for ($i = 0; $i < count($settingData); $i++) {
+                                if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                    if ($settingData[$i]['jobPosition'] != "") {
+                                        echo $settingData[$i]['jobPosition'];
+                                    } else {
+                                        echo "Human Resources Manager";
+                                    }
+                                }
+                            }
+                            ?>
+                        </div>
                     </div>
+                        -->
                 </div>
 
             </div>
@@ -1198,11 +1009,15 @@ if (!empty($leaveData)) {
 
     <div class="component-container">
         <?php
-        include($components_file_footer);
+        include ($components_file_footer);
         ?>
     </div>
 
-    <?php include($components_file_toastify); ?>
+    <?php include ($components_file_toastify); ?>
+
+    <?php if ($hasYearRecord) { ?>
+        <script src="<?php echo $assets_adjustableTableCell_js; ?>"></script>
+    <?php } ?>
 
 </body>
 

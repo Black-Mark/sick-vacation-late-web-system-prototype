@@ -7,7 +7,7 @@ include($constants_variables);
 
 // Counts the Total Number of Department
 $departmentCount = 0;
-$departmentCountQuery = "SELECT COUNT(*) AS departmentCount FROM tbl_departments";
+$departmentCountQuery = "SELECT COUNT(*) AS departmentCount FROM tbl_departments WHERE UPPER(archive) != 'DELETED'";
 $departmentCountResult = $database->query($departmentCountQuery);
 
 if ($departmentCountResult) {
@@ -17,7 +17,7 @@ if ($departmentCountResult) {
 
 // Counts the Total Number of the Employees Only
 $employeeCount = 0;
-$employeeCountQuery = "SELECT COUNT(*) AS employeeCount FROM tbl_useraccounts WHERE UPPER(role) = 'EMPLOYEE'";
+$employeeCountQuery = "SELECT COUNT(*) AS employeeCount FROM tbl_useraccounts WHERE UPPER(role) != 'ADMIN' AND UPPER(archive) != 'DELETED'";
 $employeeCountResult = $database->query($employeeCountQuery);
 
 if ($employeeCountResult) {
@@ -76,12 +76,12 @@ if ($employeeCountResult) {
             <div class="card-container">
 
                 <div class="card">
-                    <h1>Total No. of Beneficiary</h1>
+                    <h1>Total No. of Employees</h1>
                     <h2><?php echo $employeeCount; ?></h2>
                 </div>
 
                 <div class="card">
-                    <h1>Total No. of Department</h1>
+                    <h1>Total No. of Departments</h1>
                     <h2><?php echo $departmentCount; ?></h2>
                 </div>
 

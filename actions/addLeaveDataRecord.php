@@ -1,22 +1,24 @@
 <?php
-include("../constants/routes.php");
+include ("../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_admin);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_authorized);
+include ($constants_variables);
 
-// Function to apply strip_tags and mysqli_real_escape_string
-function sanitizeInput($input)
-{
-    global $database;
-    return mysqli_real_escape_string($database, strip_tags($input));
+$accountRole = "";
+
+if (isset($_SESSION['employeeId'])) {
+    $accountRole = strtolower(getAccountRole($_SESSION['employeeId']));
 }
 
 if (isset($_POST['addLeaveDataRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
     $selectedYear = isset($_POST['selectedYear']) ? sanitizeInput($_POST['selectedYear']) : null;
-    $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : null;
-    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : null;
+    $period = isset($_POST['period']) ? sanitizeInput($_POST['period']) : $today;
+    $periodEnd = isset($_POST['periodEnd']) ? sanitizeInput($_POST['periodEnd']) : $today;
+    $periodOne = isset($_POST['periodOne']) ? sanitizeInput($_POST['periodOne']) : $today;
+    $periodTwo = isset($_POST['periodTwo']) ? sanitizeInput($_POST['periodTwo']) : $today;
+    $periodThree = isset($_POST['periodThree']) ? sanitizeInput($_POST['periodThree']) : $today;
     $particularType = isset($_POST['particularType']) ? sanitizeInput($_POST['particularType']) : null;
     $particularLabel = isset($_POST['particularLabel']) ? sanitizeInput($_POST['particularLabel']) : null;
     $days = isset($_POST['dayInput']) ? sanitizeInput($_POST['dayInput']) : null;
@@ -24,12 +26,68 @@ if (isset($_POST['addLeaveDataRecord'])) {
     $minutes = isset($_POST['minuteInput']) ? sanitizeInput($_POST['minuteInput']) : null;
     $dateOfAction = isset($_POST['dateOfAction']) ? sanitizeInput($_POST['dateOfAction']) : null;
 
+    $noError = true;
+
     if ($selectedYear) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
+    if ($days < 0 || $hours < 0 || $minutes < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
+    if ($particularType === "Special Privilege Leave") {
+        $period = $today;
+        $periodEnd = $today;
+        if (empty($periodOne) || empty($periodTwo) || empty($periodThree)) {
+            $_SESSION['alert_message'] = "Enter List of Inclusive Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+            // echo $inclusiveDateOne;
+            // echo $inclusiveDateTwo;
+            // echo $inclusiveDateThree;
+        }
+    } else {
+        $periodOne = $today;
+        $periodTwo = $today;
+        $periodThree = $today;
+        if (empty($period) || empty($periodEnd)) {
+            $_SESSION['alert_message'] = "Enter Inclusive Start and End Dates!";
+            $_SESSION['alert_type'] = $warning_color;
+            $noError = false;
+        }
+    }
+
+    if (!$noError) {
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
     //Checks if there is an existing Employee ID
-    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
+    $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ? AND UPPER(archive) != 'DELETED'";
     $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
 
     if ($stmtCheckEmployeeId) {
@@ -43,7 +101,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
             // EmployeeId doesn't exist in the database
             $_SESSION['alert_message'] = "There are no existing Employee!";
             $_SESSION['alert_type'] = $warning_color;
-            header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+            if ($accountRole == "admin") {
+                if ($empId) {
+                    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                    exit();
+                } else {
+                    header("Location: " . $location_admin_departments_employee);
+                    exit();
+                }
+            } else if ($accountRole == "staff") {
+                if ($empId) {
+                    header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+                    exit();
+                } else {
+                    header("Location: " . $location_staff_departments_employee);
+                    exit();
+                }
+            } else {
+                header("Location: " . $location_login);
+            }
             exit();
         }
 
@@ -51,9 +127,27 @@ if (isset($_POST['addLeaveDataRecord'])) {
     } else {
         $_SESSION['alert_message'] = "Error Occured, Please Try Again With Valid Data(s)!";
         $_SESSION['alert_type'] = $error_color;
-        header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
-        // die("Error in Checking Id");
+        if ($accountRole == "admin") {
+            if ($empId) {
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_admin_departments_employee);
+                exit();
+            }
+        } else if ($accountRole == "staff") {
+            if ($empId) {
+                header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_staff_departments_employee);
+                exit();
+            }
+        } else {
+            header("Location: " . $location_login);
+        }
         exit();
+        // die("Error in Checking Id");
     }
 
     $initial = "Initial Record";
@@ -73,11 +167,11 @@ if (isset($_POST['addLeaveDataRecord'])) {
             if ($period >= $initialRecordData['periodEnd'] && $periodEnd >= $initialRecordData['periodEnd']) {
                 $dataRecordType = "Deduction Type";
 
-                $sql = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, particular, particularLabel, days, hours, minutes, dateOfAction) 
-                        VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO tbl_leavedataform (employee_id, dateCreated, recordType, period, periodEnd, periodOne, periodTwo, periodThree, particular, particularLabel, days, hours, minutes, dateOfAction) 
+                        VALUES (?, CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 $stmt = $database->prepare($sql);
-                $stmt->bind_param('ssssssiiis', $empId, $dataRecordType, $period, $periodEnd, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
+                $stmt->bind_param('sssssssssiiis', $empId, $dataRecordType, $period, $periodEnd, $periodOne, $periodTwo, $periodThree, $particularType, $particularLabel, $days, $hours, $minutes, $dateOfAction);
 
                 $stmt->execute();
 
@@ -99,7 +193,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
         // Something
     }
 
-    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_admin_departments_employee);
+            exit();
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_staff_departments_employee);
+            exit();
+        }
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 } else if (isset($_POST['createInitialRecord'])) {
     $empId = isset($_POST['empId']) ? sanitizeInput($_POST['empId']) : null;
@@ -120,6 +232,23 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $_SESSION['post_dataformyear'] = $selectedYear;
     }
 
+    if ($vacationBalance < 0 || $sickBalance < 0 || $vacationUnderWOPay < 0 || $sickUnderWOPay < 0) {
+        $_SESSION['alert_message'] = "The Values Should Not Be Negative!";
+        $_SESSION['alert_type'] = $warning_color;
+        if ($accountRole == "admin") {
+            $redirect_location = $empId ? $location_admin_departments_employee_leavedataform . "/" . $empId . "/" : $location_admin_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else if ($accountRole == "staff") {
+            $redirect_location = $empId ? $location_staff_departments_employee_leavedataform . "/" . $empId . "/" : $location_staff_departments_employee;
+            header("Location: $redirect_location");
+            exit();
+        } else {
+            header("Location: " . $location_login);
+        }
+        exit();
+    }
+
     //Checks if there is an existing Employee ID
     $sqlCheckEmployeeId = "SELECT * FROM tbl_useraccounts WHERE employee_id = ?";
     $stmtCheckEmployeeId = $database->prepare($sqlCheckEmployeeId);
@@ -135,7 +264,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
             // EmployeeId doesn't exist in the database
             $_SESSION['alert_message'] = "There are no existing Employee!";
             $_SESSION['alert_type'] = $warning_color;
-            header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
+            if ($accountRole == "admin") {
+                if ($empId) {
+                    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                    exit();
+                } else {
+                    header("Location: " . $location_admin_departments_employee);
+                    exit();
+                }
+            } else if ($accountRole == "staff") {
+                if ($empId) {
+                    header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+                    exit();
+                } else {
+                    header("Location: " . $location_staff_departments_employee);
+                    exit();
+                }
+            } else {
+                header("Location: " . $location_login);
+            }
             exit();
         }
 
@@ -143,9 +290,27 @@ if (isset($_POST['addLeaveDataRecord'])) {
     } else {
         $_SESSION['alert_message'] = "Error Occured, Please Try Again With Valid Data(s)!";
         $_SESSION['alert_type'] = $error_color;
-        header("Location: " . $location_admin_departments_employee_leavedataform . "/" . $empId . "/");
-        // die("Error in Checking Id");
+        if ($accountRole == "admin") {
+            if ($empId) {
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_admin_departments_employee);
+                exit();
+            }
+        } else if ($accountRole == "staff") {
+            if ($empId) {
+                header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_staff_departments_employee);
+                exit();
+            }
+        } else {
+            header("Location: " . $location_login);
+        }
         exit();
+        // die("Error in Checking Id");
     }
 
     $dataRecordType = "Initial Record";
@@ -162,7 +327,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
         $previousLeaveData = $resultFetchPreviousLeaveData->fetch_assoc();
         $_SESSION['alert_message'] = "Initialization Should Be Earlier Than " . $previousLeaveData['period'];
         $_SESSION['alert_type'] = $warning_color;
-        header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+        if ($accountRole == "admin") {
+            if ($empId) {
+                header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_admin_departments_employee);
+                exit();
+            }
+        } else if ($accountRole == "staff") {
+            if ($empId) {
+                header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+                exit();
+            } else {
+                header("Location: " . $location_staff_departments_employee);
+                exit();
+            }
+        } else {
+            header("Location: " . $location_login);
+        }
         exit();
     } else {
         // Check if an Initial Record already exists for the specified employee and year
@@ -251,7 +434,25 @@ if (isset($_POST['addLeaveDataRecord'])) {
         }
     }
 } else {
-    header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+    if ($accountRole == "admin") {
+        if ($empId) {
+            header("Location: " . $location_admin_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_admin_departments_employee);
+            exit();
+        }
+    } else if ($accountRole == "staff") {
+        if ($empId) {
+            header("Location: " . $location_staff_departments_employee_leavedataform . '/' . $empId . '/');
+            exit();
+        } else {
+            header("Location: " . $location_staff_departments_employee);
+            exit();
+        }
+    } else {
+        header("Location: " . $location_login);
+    }
     exit();
 }
 ?>

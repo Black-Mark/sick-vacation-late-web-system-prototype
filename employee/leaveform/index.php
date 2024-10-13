@@ -1,74 +1,40 @@
 <?php
-include("../../constants/routes.php");
+include ("../../constants/routes.php");
 // include($components_file_error_handler);
-include($constants_file_dbconnect);
-include($constants_file_session_employee);
-include($constants_variables);
+include ($constants_file_dbconnect);
+include ($constants_file_session_employee);
+include ($constants_variables);
 
 $employeeData = [];
 $departmentHeadData = [];
+// $isLoginEmployeeIsHead = true;
+$leaveData = [];
+$ownerFormGender = "";
+$ownerFormCivilStatus = "";
 
 if (isset($_SESSION['employeeId'])) {
-    $employeeId = $database->real_escape_string($_SESSION['employeeId']);
+    $employeeId = sanitizeInput($_SESSION['employeeId']);
+    $employeeData = getEmployeeData($employeeId);
 
-    $sql = "SELECT
-                ua.*,
-                d.departmentName,
-                d.departmentHead
-            FROM
-                tbl_useraccounts ua
-            LEFT JOIN
-                tbl_departments d ON ua.department = d.department_id
-            WHERE
-                ua.employee_id = ?";
-
-    $stmt = $database->prepare($sql);
-
-    if ($stmt) {
-        $stmt->bind_param("s", $employeeId);
-        $stmt->execute();
-        $empResult = $stmt->get_result();
-
-        if ($empResult->num_rows > 0) {
-            $employeeData = $empResult->fetch_assoc();
-        }
-
-        $stmt->close();
-    } else {
-        // Something
+    if (isset($employeeData['sex'])) {
+        $ownerFormGender = $employeeData['sex'];
+    }
+    if (isset($employeeData['civilStatus'])) {
+        $ownerFormCivilStatus = $employeeData['civilStatus'];
     }
 
-    if ($employeeData['departmentHead']) {
-
-        $departmentHeadFetchQuery = "SELECT
-                                        firstName, lastName, middleName, suffix, jobPosition
-                                    FROM
-                                        tbl_useraccounts
-                                    WHERE
-                                        employee_id = ?";
-
-        $statement = $database->prepare($departmentHeadFetchQuery);
-        $statement->bind_param("s", $employeeData['departmentHead']);
-        $statement->execute();
-        $departmentHeadResult = $statement->get_result();
-
-        if ($departmentHeadResult) {
-            $departmentHeadData = $departmentHeadResult->fetch_assoc();
-        }
-        $statement->close();
+    if (isset($employeeData['departmentHead']) && $employeeData['departmentHead'] !== "") {
+        $departmentHeadData = getEmployeeData($employeeData['departmentHead']);
+        // if ($departmentHeadData['employee_id'] === $employeeData['employee_id']) {
+        //     $isLoginEmployeeIsHead = true;
+        // }
     }
+
+    $leaveData = getIncentiveLeaveComputation($employeeId);
 
 }
 
-$settingData = [];
-$settingQuery = "SELECT * FROM tbl_systemsettings
-                 LEFT JOIN tbl_useraccounts ON tbl_useraccounts.employee_id = tbl_systemsettings.settingKey WHERE settingType = 'Authorized User'";
-$settingResult = mysqli_query($database, $settingQuery);
-
-if ($settingResult) {
-    $settingData = mysqli_fetch_all($settingResult, MYSQLI_ASSOC);
-    // mysqli_free_result($settingResult);
-}
+$settingData = getAuthorizedUser();
 
 ?>
 
@@ -81,7 +47,7 @@ if ($settingResult) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR - Indang Municipality Employee Page">
     <?php
-    include($constants_file_html_credits);
+    include ($constants_file_html_credits);
     ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $assets_logo_icon; ?>">
 
@@ -107,6 +73,8 @@ if ($settingResult) {
 
     <link rel="stylesheet" href="<?php echo $assets_css_styles; ?>">
 
+    <script src="<?php echo $assets_file_leaveappform; ?>"></script>
+
     <!-- <script src="<?php
     // echo $assets_tailwind; 
     ?>"></script> -->
@@ -114,7 +82,7 @@ if ($settingResult) {
 
 <body class="webpage-background-cover">
     <div class="component-container">
-        <?php include($components_file_topnav) ?>
+        <?php include ($components_file_topnav) ?>
     </div>
 
     <div class="page-container">
@@ -126,567 +94,666 @@ if ($settingResult) {
                     Leave Application Form
                 </div>
 
-                <form action="<?php echo $action_add_leaveappform; ?>" method="post">
-                    <div class="button-container component-container mb-2">
-                        <input type="submit" name="submitLeaveAppForm" class="custom-regular-button"
-                            value="Submit Leave Form" />
+                <?php if (strcasecmp($employeeData['status'], 'Active') == 0) { ?>
+
+                    <?php
+                    include ($components_file_formModal);
+                    ?>
+
+                    <div>
+                        <button id="noaomlfLinkBtnDummy" class="custom-regular-button" disabled>Notice of Allocation Of
+                            Maternity Leave Form
+                        </button>
                     </div>
 
-                    <div class="print-form-container">
-                        <div>
-                            <div>CSC Form No. 6</div>
-                            <div>Revised 2020</div>
+                    <a id="noaomlfLink" href="<?php echo $action_download_noaoml; ?>">
+                        <button id="noaomlfLinkBtn" class="custom-regular-button">Notice of Allocation Of Maternity Leave
+                            Form</button>
+                    </a>
+
+                    <form action="<?php echo $action_employee_submit_leaveform; ?>" method="post">
+                        <div class="button-container component-container mb-2">
+                            <input type="submit" name="submitLeaveAppForm" class="custom-regular-button"
+                                value="Submit Leave Form" />
                         </div>
 
-                        <div class='leave-form-detail-container mb-3 text-uppercase'>
-                            <div>Application For Leave </div>
-                        </div>
+                        <div class="print-form-container my-4">
+                            <div>
+                                <div>CSC Form No. 6</div>
+                                <div>Revised 2020</div>
+                            </div>
 
-                        <div class="leave-form-container overflow-auto custom-scrollbar">
+                            <div class="leave-app-form-container-title">
+                                <div>Application For Leave</div>
+                            </div>
 
-                            <table class='w-100 border border-dark'>
-                                <tbody>
-                                    <tr>
-                                        <td class='px-2'><label for="department">1. Office / Department</label></td>
-                                        <td class='px-2'>2. Name</td>
-                                        <td class='px-2'><label for="lastNameInput">(Last)</label></td>
-                                        <td class='px-2'><label for="firstNameInput">(First)</label></td>
-                                        <td class='px-2'><label for="middleNameInput">(Middle)</label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="pb-1 px-2">
-                                            <select id="department" name="departmentName"
-                                                class="w-100 text-center underline-input">
-                                                <option value="<?php echo $employeeData['department']; ?>" selected>
-                                                    <?php
-                                                    if ($employeeData['departmentName']) {
-                                                        echo $employeeData['departmentName'];
-                                                    } else if ($employeeData['department']) {
-                                                        echo $employeeData['department'];
-                                                    } else {
-                                                        echo 'N/A';
-                                                    }
-                                                    ?>
-                                                </option>
-                                            </select>
-                                        </td>
-                                        <td></td>
-                                        <td class="pb-1 px-2"><input type="text" id="lastNameInput" name="lastName"
-                                                class='w-100 text-center underline-input'
-                                                value="<?php echo $employeeData['lastName']; ?>" readonly /></td>
-                                        <td class="pb-1 px-2"><input type="text" id="firstNameInput" name="firstName"
-                                                class='w-100 text-center underline-input'
-                                                value="<?php echo $employeeData['firstName']; ?>" readonly /></td>
-                                        <td class="pb-1 px-2"><input type="text" id="middleNameInput" name="middleName"
-                                                class='w-100 text-center underline-input'
-                                                value="<?php echo $employeeData['middleName']; ?>" readonly /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="leave-app-form-container">
+                                <!-- Department and Full Name -->
+                                <div class="leave-app-form-first-row">
+                                    <div class="leave-app-form-department-input-container">
+                                        <label for="departmentInput" class="leave-app-form-label">1.
+                                            Office/Department</label>
+                                        <select id="departmentInput" name="departmentName"
+                                            class="leave-app-form-input-plain">
+                                            <?php
+                                            if (($employeeData['department'] == "" || $employeeData['department'] == "Pending") && $employeeData['departmentName'] == "") {
+                                                ?>
+                                                <option value="Pending" selected>Pending</option>
+                                                <?php
+                                            } else if ($employeeData['department'] != "" && $employeeData['departmentName'] == "") {
+                                                ?>
+                                                    <option value="Unassigned" selected>Unassigned</option>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                    <option value="<?php echo $employeeData['department']; ?>" selected>
+                                                    <?php echo $employeeData['departmentName']; ?>
+                                                    </option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="leave-app-form-fullname-input-container">
+                                        <div>
+                                            <div class="leave-app-form-name-container leave-app-form-label">2. Name:</div>
+                                        </div>
+                                        <div class="leave-app-form-lastname-container">
+                                            <label for="lastNameInput">(Last)</label>
+                                            <input type="text" id="lastNameInput" name="lastName"
+                                                class="leave-app-form-input-plain"
+                                                value="<?php echo $employeeData['lastName']; ?>" readonly />
+                                        </div>
+                                        <div class="leave-app-form-firstname-container">
+                                            <label for="firstNameInput">(First)</label>
+                                            <input type="text" id="firstNameInput" name="firstName"
+                                                class="leave-app-form-input-plain"
+                                                value="<?php echo $employeeData['firstName']; ?>" readonly />
+                                        </div>
+                                        <div class="leave-app-form-middlename-container">
+                                            <label for="middleNameInput">(Middle)</label>
+                                            <input type="text" id="middleNameInput" name="middleName"
+                                                class="leave-app-form-input-plain"
+                                                value="<?php echo $employeeData['middleName']; ?>" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Date Filing, Position, Salary -->
+                                <div class="leave-app-form-second-row">
+                                    <div class="leave-app-form-filingdate-container">
+                                        <label for="dateFilingInput" class="leave-app-form-label">3. Date of Filing</label>
+                                        <input type="date" id="dateFilingInput" name="dateFiling"
+                                            class="leave-app-form-input-grow" value="<?php echo date("Y-m-d"); ?>"
+                                            readonly />
+                                    </div>
+                                    <div class="leave-app-form-position-container">
+                                        <label for="positionInput" class="leave-app-form-label">4. Position</label>
+                                        <input type="text" id="positionInput" name="position"
+                                            class="leave-app-form-input-grow"
+                                            value="<?php echo $employeeData['designationName']; ?>" readonly />
+                                    </div>
+                                    <div class="leave-app-form-salary-container">
+                                        <label for="salaryInput" class="leave-app-form-label">5. Salary</label>
+                                        <input type="text" id="salaryInput" name="salary" class="leave-app-form-input-grow"
+                                            value="" />
+                                    </div>
+                                </div>
+                                <div class="leave-app-form-label-head">
+                                    6. Details of Application
+                                </div>
+                                <!-- Type of Leaves and Classification -->
+                                <div class="leave-app-form-third-row">
+                                    <div class="leave-app-form-leavetype-container">
+                                        <div class='leave-app-form-third-row-head'>6.A Type of Leave to be Availed Of</div>
 
-                            <table class="w-100 border border-dark">
-                                <tbody>
-                                    <tr>
-                                        <td class="pb-1 px-2"><label for="dateFiling">3. Date Of Filing </label><input
-                                                type="text" id="dateFiling" name="dateFiling"
-                                                value="<?php echo date("Y-m-d"); ?>" class='text-center underline-input'
-                                                readonly />
-                                        </td>
-                                        <td class="pb-1 px-2"><label for="position">4. Position </label><input
-                                                type="text" id="position" name="position"
-                                                class='underline-input text-center'
-                                                value="<?php echo $employeeData['jobPosition']; ?>" readonly />
-                                        </td>
-                                        <td class="pb-1 px-2"><label for="salary">5. Salary </label><input type="text"
-                                                id="salary" name="salary" class='underline-input' />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="vacationLeave" name="typeOfLeave" value="Vacation Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="vacationLeave" class='leave-app-form-detail-subject'>Vacation
+                                                Leave</label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#vacationLeaveModal">(Sec. 51, Rule XVI,
+                                                Omnibus Rules Implementing E.O. No. 292)</span>
+                                        </div>
 
-                            <table class="w-100 border border-dark">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" class='text-center font-weight-bold text-uppercase'>
-                                            6. Details of Application
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="forcedLeave" name="typeOfLeave" value="Forced Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="forcedLeave" class='leave-app-form-detail-subject'>
+                                                Mandatory / Forced
+                                                Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#forcedLeaveModal">
+                                                (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
+                                            </span>
+                                        </div>
 
-                            <table class='w-100 border border-dark'>
-                                <tbody>
-                                    <tr>
-                                        <td class="col-6 custom-td">
-                                            <div class='font-weight-bold text-uppercase'>6.A Type of
-                                                Leave to be Availed Of</div>
-                                            <div>
-                                                <input type='radio' id="vacationLeave" name="typeOfLeave"
-                                                    value="Vacation Leave" />
-                                                <label for="vacationLeave" class='font-weight-bold'> Vacation Leave
-                                                </label>
-                                                <span>
-                                                    (Sec. 51, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="forcedLeave" name="typeOfLeave"
-                                                    value="Forced Leave" />
-                                                <label for="forcedLeave" class='font-weight-bold'> Mandatory / Forced
-                                                    Leave
-                                                </label>
-                                                <span>
-                                                    (Sec. 25, Rule XVI, Omnibus Rules Implementing E.O. No.292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="sickLeave" name="typeOfLeave"
-                                                    value="Sick Leave" />
-                                                <label for="sickLeave" class='font-weight-bold'> Sick Leave </label>
-                                                <span>
-                                                    (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="maternityLeave" name="typeOfLeave"
-                                                    value="Maternity Leave" /> <label for="maternityLeave"
-                                                    class='font-weight-bold'>
-                                                    Maternity Leave
-                                                </label>
-                                                <span>
-                                                    (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="paternityLeave" name="typeOfLeave"
-                                                    value="Paternity Leave" /> <label for="paternityLeave"
-                                                    class='font-weight-bold'>
-                                                    Paternity Leave
-                                                </label>
-                                                <span>
-                                                    (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="special" name="typeOfLeave"
-                                                    value="Special Privilege Leave" /> <label for="special"
-                                                    class='font-weight-bold'>
-                                                    Special Privilege Leave
-                                                </label>
-                                                <span>
-                                                    (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="soloParent" name="typeOfLeave"
-                                                    value="Solo Parent Leave" /> <label for="soloParent"
-                                                    class='font-weight-bold'>
-                                                    Solo Parent Leave
-                                                </label>
-                                                <span>
-                                                    (RA No. 8972 / CSC MC No. 8, s. 2004)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="studyLeave" name="typeOfLeave"
-                                                    value="Study Leave" /> <label for="studyLeave"
-                                                    class='font-weight-bold'>
-                                                    Doctorate Degree / Study Leave
-                                                </label>
-                                                <span>
-                                                    (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="vawcLeave" name="typeOfLeave"
-                                                    value="10-Day VAWC Leave" /> <label for="vawcLeave"
-                                                    class='font-weight-bold'>
-                                                    10-Day VAWC Leave
-                                                </label>
-                                                <span>
-                                                    (RA No. 9262 / CSC MC No. 15, s. 2005)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="rehabilitation" name="typeOfLeave"
-                                                    value="Rehabilitation Privilege" /> <label for="rehabilitation"
-                                                    class='font-weight-bold'>
-                                                    Rehabilitation Privilege
-                                                </label>
-                                                <span>
-                                                    (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="specialLeave" name="typeOfLeave"
-                                                    value="Special Leave Benefits for Women" /> <label
-                                                    for="specialLeave" class='font-weight-bold'>
-                                                    Special Leave Benefits for Women
-                                                </label>
-                                                <span>
-                                                    (RA No. 9710 / CSC MC No. 25, s. 2010)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="emergencyLeave" name="typeOfLeave"
-                                                    value="Special Emergency (Calamity) Leave" /> <label
-                                                    for="emergencyLeave" class='font-weight-bold'>
-                                                    Special Emergency (Calamity) Leave
-                                                </label>
-                                                <span>
-                                                    (CSC MC No. 2, s. 2012, as amended)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="adoptionLeave" name="typeOfLeave"
-                                                    value="Adoption Leave" /> <label for="adoptionLeave"
-                                                    class='font-weight-bold'>
-                                                    Adoption Leave
-                                                </label>
-                                                <span>
-                                                    (R.A. No. 8552)
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <label for="others">Others: </label> <input type="text" id="others"
-                                                    name="typeOfSpecifiedOtherLeave" class='underline-input mt-4' />
-                                            </div>
-                                        </td>
-                                        <td class='col-4 custom-td'>
-                                            <div class='font-weight-bold text-uppercase'>6.B Details
-                                                of Leave</div>
-                                            <div>
-                                                In case of Vacation/Special Privilege Leave:
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="withinPhi" name="typeOfVacationLeave"
-                                                    value="Within the Philippines" /> <label for="withinPhi"
-                                                    class='font-weight-bold'>
-                                                    Within the Philippines <input type="text"
-                                                        name="typeOfVacationLeaveWithin"
-                                                        class='custom-underline-input-form' />
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="abroad" name="typeOfVacationLeave"
-                                                    value="Abroad" /> <label for="abroad" class='font-weight-bold'>
-                                                    Abroad (Specify) <input type="text" name="typeOfVacationLeaveAbroad"
-                                                        class='custom-underline-input-form' />
-                                                </label>
-                                            </div>
-                                            <div>
-                                                In case of Sick Leave:
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="inHospital" name="typeOfSickLeave"
-                                                    value="In Hospital" /> <label for="inHospital"
-                                                    class='font-weight-bold'>
-                                                    In Hospital (Specify Illness) <input type="text"
-                                                        name="typeOfSickLeaveInHospital"
-                                                        class='custom-underline-input' />
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="outPatient" name="typeOfSickLeave"
-                                                    value="Out Patient" /> <label for="outPatient"
-                                                    class='font-weight-bold'>
-                                                    Out Patient (Specify Illness) <input type="text"
-                                                        name="typeOfSickLeaveOutPatient"
-                                                        class='custom-underline-input' />
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type="text" name="" class='custom-underline-input-form-detail'
-                                                    disabled />
-                                            </div>
-                                            <div>
-                                                In case of Special Leave Benefits for Women:
-                                            </div>
-                                            <div>
-                                                <label for="specifyIllness" class='font-weight-bold'>
-                                                    (Specify Illness)</label> <input id="specifyIllness"
-                                                    name="typeOfSpecialLeaveForWomen"
-                                                    class='custom-underline-input-form-detail' />
-                                                <input name="" class='underline-input' disabled />
-                                            </div>
-                                            <div>
-                                                In Case of Study Leave:
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="mastersDegree" name="typeOfStudyLeave"
-                                                    value="Completion of Master Degree" /> <label for="mastersDegree"
-                                                    class='font-weight-bold'>
-                                                    Completion of Master's Degree
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="boardExam" name="typeOfStudyLeave"
-                                                    value="Board Examination Review" /> <label for="boardExam"
-                                                    class='font-weight-bold'>
-                                                    Bar / Board Examination Review
-                                                </label>
-                                            </div>
-                                            <div>
-                                                Other Purpose:
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="monetizationLeave" name="typeOfOtherLeave"
-                                                    value="Monetization of Leave Credit" />
-                                                <label for="monetizationLeave" class='font-weight-bold'>
-                                                    Monetization of Leave Credit
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="terminalLeave" name="typeOfOtherLeave"
-                                                    value="Terminal Leave" /> <label for="terminalLeave"
-                                                    class='font-weight-bold'>
-                                                    Terminal Leave
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="sickLeave" name="typeOfLeave" value="Sick Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="sickLeave" class='leave-app-form-detail-subject'> Sick
+                                                Leave </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#sickLeaveModal">
+                                                (Sec. 43, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                            </span>
+                                        </div>
 
-                            <table class="w-100 border border-dark">
-                                <tbody>
-                                    <tr>
-                                        <td class="col-6 custom-td">
-                                            <div class='font-weight-bold text-uppercase'><label for="workingDays">
-                                                    6.C NUMBER OF WORKING DAYS APPLIED FOR </label>
-                                            </div>
-                                            <div>
-                                                <input type="number" min="0" max="3652" id="workingDays"
-                                                    name="workingDays"
-                                                    class='w-100 text-center custom-underline-input-form' />
-                                            </div>
-                                            <label for="inclusiveDates" class='font-weight-bold text-uppercase'>
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="maternityLeave" name="typeOfLeave"
+                                                value="Maternity Leave" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
+                                            <label for="maternityLeave" class='leave-app-form-detail-subject'>
+                                                Maternity Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#maternityLeaveModal">
+                                                (R.A. No. 11210 / IRR issued by CSC, DOLE and SSS)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="paternityLeave" name="typeOfLeave"
+                                                value="Paternity Leave" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'MALE' ? '' : 'disabled'; ?> />
+                                            <label for="paternityLeave" class='leave-app-form-detail-subject'>
+                                                Paternity Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#paternityLeaveModal">
+                                                (R.A. No. 8187 / CSC MC No. 71, s. 1998, as amended)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="special" name="typeOfLeave"
+                                                value="Special Privilege Leave" class="custom-checkbox-input" />
+                                            <label for="special" class='leave-app-form-detail-subject'>
+                                                Special Privilege Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#specialLeaveModal">
+                                                (Sec. 21, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="soloParent" name="typeOfLeave" value="Solo Parent Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="soloParent" class='leave-app-form-detail-subject'>
+                                                Solo Parent Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#soloParentLeaveModal">
+                                                (RA No. 8972 / CSC MC No. 8, s. 2004)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="studyLeave" name="typeOfLeave" value="Study Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="studyLeave" class='leave-app-form-detail-subject-small'>
+                                                Doctorate Degree / Study Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context-small clickable-element"
+                                                data-toggle="modal" data-target="#studyLeaveModal">
+                                                (Sec. 68, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="vawcLeave" name="typeOfLeave" value="10-Day VAWC Leave"
+                                                class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
+                                            <label for="vawcLeave" class='leave-app-form-detail-subject'>
+                                                10-Day VAWC Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#VAWCLeaveModal">
+                                                (RA No. 9262 / CSC MC No. 15, s. 2005)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="rehabilitation" name="typeOfLeave"
+                                                value="Rehabilitation Privilege" class="custom-checkbox-input" />
+                                            <label for="rehabilitation" class='leave-app-form-detail-subject'>
+                                                Rehabilitation Privilege
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#rehabLeaveModal">
+                                                (Sec. 55, Rule XVI, Omnibus Rules Implementing E.O. No. 292)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="specialLeave" name="typeOfLeave"
+                                                value="Special Leave Benefits for Women" class="custom-checkbox-input" <?php echo strtoupper($ownerFormGender) === 'FEMALE' ? '' : 'disabled'; ?> />
+                                            <label for="specialLeave" class='leave-app-form-detail-subject'>
+                                                Special Leave Benefits for Women
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#specialWomanLeaveModal">
+                                                (RA No. 9710 / CSC MC No. 25, s. 2010)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="emergencyLeave" name="typeOfLeave"
+                                                value="Special Emergency (Calamity) Leave" class="custom-checkbox-input" />
+                                            <label for="emergencyLeave" class='leave-app-form-detail-subject'>
+                                                Special Emergency (Calamity) Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#emergencyLeaveModal">
+                                                (CSC MC No. 2, s. 2012, as amended)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-leavetype-detail-container">
+                                            <input type='radio' id="adoptionLeave" name="typeOfLeave" value="Adoption Leave"
+                                                class="custom-checkbox-input" />
+                                            <label for="adoptionLeave" class='leave-app-form-detail-subject'>
+                                                Adoption Leave
+                                            </label>
+                                            <span class="leave-app-form-leavetype-detail-context clickable-element"
+                                                data-toggle="modal" data-target="#adoptionLeaveModal">
+                                                (R.A. No. 8552)
+                                            </span>
+                                        </div>
+
+                                        <div class="leave-app-form-otherleavetype-detail-container">
+                                            <label for="otherTypeOfLeave"
+                                                class="leave-app-form-detail-subject font-italic">Others:</label>
+                                            <input type="text" id="otherTypeOfLeave" name="otherTypeOfLeave"
+                                                class="leave-app-form-input-custom-width" />
+                                        </div>
+
+                                    </div>
+
+                                    <div class="leave-app-form-leaveclass-container">
+                                        <div class='leave-app-form-third-row-head'>6.B Details of Leave</div>
+                                        <div
+                                            class="leave-app-form-leaveclass-detail-container leave-app-form-detail-subject font-italic">
+                                            In case of Vacation Leave:
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="withinPhi" name="typeOfVacationLeave"
+                                                value="Within the Philippines" class="custom-checkbox-input" />
+                                            <label for="withinPhi" class='leave-app-form-detail-subject'>
+                                                Within the Philippines
+                                            </label>
+                                            <input type="text" name="typeOfVacationLeaveWithin"
+                                                class='leave-app-form-input-grow' />
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="abroad" name="typeOfVacationLeave" value="Abroad"
+                                                class="custom-checkbox-input" />
+                                            <label for="abroad" class='leave-app-form-detail-subject'>
+                                                Abroad (Specify)
+                                            </label>
+                                            <input type="text" name="typeOfVacationLeaveAbroad"
+                                                class='leave-app-form-input-grow' />
+                                        </div>
+                                        <div
+                                            class="leave-app-form-leaveclass-detail-container leave-app-form-detail-subject font-italic">
+                                            In case of Sick Leave:
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="inHospital" name="typeOfSickLeave" value="In Hospital"
+                                                class="custom-checkbox-input" />
+                                            <label for="inHospital" class='leave-app-form-detail-subject'>
+                                                In Hospital (Specify Illness)
+                                            </label>
+                                            <input type="text" name="typeOfSickLeaveInHospital"
+                                                class='leave-app-form-input-grow' />
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="outPatient" name="typeOfSickLeave" value="Out Patient"
+                                                class="custom-checkbox-input" />
+                                            <label for="outPatient" class='leave-app-form-detail-subject'>
+                                                Out Patient (Specify Illness)
+                                            </label>
+                                            <input type="text" name="typeOfSickLeaveOutPatient"
+                                                class='leave-app-form-input-grow' />
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type="text" name="typeOfSickLeaveOutPatientOne"
+                                                class='leave-app-form-input' />
+                                        </div>
+                                        <div
+                                            class="leave-app-form-leaveclass-detail-container leave-app-form-detail-subject font-italic">
+                                            In case of Special Leave Benefits for Women:
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <label for="specifyIllness" class='leave-app-form-detail-subject'>
+                                                (Specify Illness)</label>
+                                            <input id="specifyIllness" name="typeOfSpecialLeaveForWomen"
+                                                class='leave-app-form-input-grow' />
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type="text" name="typeOfSpecialLeaveForWomenOne"
+                                                class='leave-app-form-input' />
+                                        </div>
+                                        <div
+                                            class="leave-app-form-leaveclass-detail-container leave-app-form-detail-subject font-italic">
+                                            In Case of Study Leave:
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="mastersDegree" name="typeOfStudyLeave"
+                                                value="Completion of Master Degree" class="custom-checkbox-input" />
+                                            <label for="mastersDegree" class='leave-app-form-detail-subject'>
+                                                Completion of Master's Degree
+                                            </label>
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="boardExam" name="typeOfStudyLeave"
+                                                value="Board Examination Review" class="custom-checkbox-input" />
+                                            <label for="boardExam" class='leave-app-form-detail-subject'>
+                                                BAR / Board Examination Review
+                                            </label>
+                                        </div>
+                                        <div
+                                            class="leave-app-form-leaveclass-detail-container leave-app-form-detail-subject font-italic">
+                                            Other Purpose:
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="monetizationLeave" name="typeOfOtherLeave"
+                                                value="Monetization of Leave Credit" class="custom-checkbox-input" />
+                                            <label for="monetizationLeave" class='leave-app-form-detail-subject'>
+                                                Monetization of Leave Credit
+                                            </label>
+                                        </div>
+                                        <div class="leave-app-form-leaveclass-detail-container">
+                                            <input type='radio' id="terminalLeave" name="typeOfOtherLeave"
+                                                value="Terminal Leave" class="custom-checkbox-input" />
+                                            <label for="terminalLeave" class='leave-app-form-detail-subject'>
+                                                Terminal Leave
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Inclusive Date and Commutation -->
+                                <div class="leave-app-form-fourth-row">
+                                    <div class="leave-app-form-inclusivedate-container">
+                                        <div class='leave-app-form-label'>
+                                            <label for="workingDays">
+                                                6.C Number of Working Days Applied For</label>
+                                        </div>
+                                        <div class="leave-app-form-inclusivedate-detail-container">
+                                            <input type="number" step="any" min="0" max="3652" id="workingDays"
+                                                name="workingDays" class='leave-app-form-input' value="1" readonly />
+                                        </div>
+                                        <div id="allLeave" class="leave-app-form-inclusivedate-detail-container">
+
+                                            <label for="inclusiveDateStart" class='leave-app-form-label'>
                                                 Inclusive Dates
                                             </label>
-                                            <div>
-                                                <input type="text" id="inclusiveDates" name="inclusiveDates"
-                                                    class='w-100 text-center custom-underline-input-form' />
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input type="date" id="inclusiveDateStart" name="inclusiveDateStart"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                <span class="inclusive-date-text">to</span>
+                                                <input type="date" id="inclusiveDateEnd" name="inclusiveDateEnd"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
                                             </div>
-                                        </td>
-                                        <td class="col-4 custom-td">
-                                            <div class='font-weight-bold text-uppercase'>
-                                                6.D Commutation
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="requested" name="commutation"
-                                                    value="Requested" /> <label for="requested"
-                                                    class='font-weight-bold'>
-                                                    Requested
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="notRequested" name="commutation"
-                                                    value="Not Requested" /> <label for="notRequested"
-                                                    class='font-weight-bold'>
-                                                    Not Requested
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input class='w-100 text-center custom-underline-input-form' disabled />
-                                                <div class='text-center font-weight-normal'>Signature of
-                                                    Applicant
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
 
-                            <table class="w-100 border border-dark">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" class='text-center font-weight-bold text-uppercase'>
-                                            7. Details of Action on Application
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
 
-                            <table class='w-100 border border-dark'>
-                                <tbody>
-                                    <tr>
-                                        <td class="col-6 custom-td">
-                                            <div class='font-weight-bold text-uppercase'>
+                                        <div id="splLeave" class="leave-app-form-inclusivedate-detail-container">
+
+                                            <label for="inclusiveDateSelectOne" class='leave-app-form-label'>
+                                                Inclusive Dates
+                                            </label>
+                                            <div class="leave-app-form-inclusivedate-input-container">
+                                                <input type="date" id="inclusiveDateSelectOne" name="inclusiveDateSelectOne"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                <input type="date" id="inclusiveDateSelectTwo" name="inclusiveDateSelectTwo"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                                <input type="date" id="inclusiveDateSelectThree" name="inclusiveDateSelectThree"
+                                                    class='leave-app-form-input-plain'
+                                                    value="<?php echo date('Y-m-d'); ?>" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="leave-app-form-commutation-container">
+                                        <div class='leave-app-form-label'>
+                                            6.D Commutation
+                                        </div>
+                                        <div class="leave-app-form-commutation-detail-container">
+                                            <input type='radio' id="notRequested" name="commutation" value="Not Requested"
+                                                class="custom-checkbox-input" />
+                                            <label for="notRequested" class='leave-app-form-detail-subject'>
+                                                Not Requested
+                                            </label>
+                                        </div>
+                                        <div class="leave-app-form-commutation-detail-container">
+                                            <input type='radio' id="requested" name="commutation" value="Requested"
+                                                class="custom-checkbox-input" />
+                                            <label for="requested" class='leave-app-form-detail-subject'>
+                                                Requested
+                                            </label>
+                                        </div>
+                                        <div class="leave-app-form-signature-container">
+                                            <!-- <input class="leave-app-form-input" readonly /> -->
+                                            <div class='leave-app-form-signature-subject'>
+                                                (Signature of Applicant)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php
+                                // if ($isLoginEmployeeIsHead) {
+                                if (true) {
+                                    ?>
+                                    <div class="leave-app-form-label-head">
+                                        7. Details of Action On Application
+                                    </div>
+                                    <!-- HR Manager and Department Head -->
+                                    <div class="leave-app-form-fifth-row">
+                                        <div class="leave-app-form-hrmanager-container">
+                                            <div class='leave-app-form-label'>
                                                 7.A Certification of Leave Credits
                                             </div>
-                                            <div class='text-center'>
-                                                <label for="asOfDate">As of</label> <input type="date"
-                                                    value="<?php echo $employeeData['dateStarted'] ?>" id="asOfDate"
-                                                    name="asOfDate" class='underline-input' />
+                                            <div class='leave-app-form-asofdate-container'>
+                                                <label for="asOfDate">As of</label>
+                                                <input type="date" id="asOfDate" name="asOfDate"
+                                                    class='leave-app-form-asofdate-input'
+                                                    value="<?php echo $employeeData['dateStarted']; ?>" disabled />
                                             </div>
-                                            <div class='custom-container-leave-form'>
-                                                <table class='custom-table-leave-form'>
-                                                    <thead>
-                                                        <tr class='text-center'>
-                                                            <th></th>
-                                                            <th>Vacation Leave</th>
-                                                            <th>Sick Leave</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr class='text-center'>
-                                                            <td class='font-italic'>Total Earned</td>
-                                                            <td><input type="number" name="vacationLeaveTotalEarned"
-                                                                    class='custom-input-leave-form' /></td>
-                                                            <td><input type="number" name="sickLeaveTotalEarned"
-                                                                    class='custom-input-leave-form' /></td>
-                                                        </tr>
-                                                        <tr class='text-center'>
-                                                            <td class='font-italic'>Less this application</td>
-                                                            <td><input type="number" name="vacationLeaveLess"
-                                                                    class='custom-input-leave-form' /></td>
-                                                            <td><input type="number" name="sickLeaveLess"
-                                                                    class='custom-input-leave-form' /></td>
-                                                        </tr>
-                                                        <tr class='text-center'>
-                                                            <td class='font-italic'>Balance</td>
-                                                            <td><input type="number" name="vacationLeaveBalance"
-                                                                    class='custom-input-leave-form' /></td>
-                                                            <td><input type="number" name="sickLeaveBalance"
-                                                                    class='custom-input-leave-form' /></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+
+                                            <div class="leave-app-form-leave-table-container">
+                                                <div class="leave-app-form-leave-table-column-container">
+                                                    <div class="leave-app-form-leave-table-field"></div>
+                                                    <div class="leave-app-form-leave-table-field">Total Earned</div>
+                                                    <div class="leave-app-form-leave-table-field">Less This Application</div>
+                                                    <div class="leave-app-form-leave-table-field">Balance</div>
+                                                </div>
+                                                <div class="leave-app-form-leave-table-column-container">
+                                                    <div class="leave-app-form-leave-table-field">Vacation Leave</div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="vacationLeaveTotalEarned" class='leave-app-form-input-plain'
+                                                            value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['vacationLeaveBalance'], 2) : 0 ?>"
+                                                            disabled /></div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="vacationLeaveLess" class='leave-app-form-input-plain'
+                                                            disabled /></div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="vacationLeaveBalance" class='leave-app-form-input-plain'
+                                                            disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="leave-app-form-leave-table-column-container">
+                                                    <div class="leave-app-form-leave-table-field">Sick Leave</div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="sickLeaveTotalEarned" class='leave-app-form-input-plain'
+                                                            value="<?php echo !empty($leaveData) ? number_format($leaveData[count($leaveData) - 1]['sickLeaveBalance'], 2) : 0 ?>"
+                                                            disabled />
+                                                    </div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="sickLeaveLess" class='leave-app-form-input-plain' disabled />
+                                                    </div>
+                                                    <div class="leave-app-form-leave-table-field"><input type="number"
+                                                            name="sickLeaveBalance" class='leave-app-form-input-plain'
+                                                            disabled /></div>
+                                                </div>
                                             </div>
-                                            <div class='mt-3 font-weight-bold text-center'>
+
+                                            <div class="leave-app-form-signature-container">
+                                                <!-- <input class="leave-app-form-input" readonly /> -->
+                                                <div class="leave-app-form-signature-context mt-2">
+                                                    <!-- <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                                echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix']);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo ' ';
+                                                    }
+                                                    ?> -->
+                                                </div>
+                                                <div class='leave-app-form-signature-subject'>
+                                                    <!-- <?php
+                                                    if (count($settingData) > 0) {
+                                                        for ($i = 0; $i < count($settingData); $i++) {
+                                                            if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
+                                                                if ($settingData[$i]['jobPosition'] != "") {
+                                                                    echo $settingData[$i]['jobPosition'];
+                                                                } else {
+                                                                    echo "Human Resources Manager";
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo "Human Resources Manager";
+                                                    }
+                                                    ?> -->
+                                                    (Authorized Officer)
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="leave-app-form-departmenthead-container">
+                                            <div class='leave-app-form-label'>
+                                                7.B Recommendation
+                                            </div>
+                                            <div class="leave-app-form-departmenthead-detail-container">
+                                                <input type='radio' id="forApproval" name="recommendation" value="For Approval"
+                                                    class="custom-checkbox-input" disabled />
+                                                <label for="forApproval" class='leave-app-form-detail-subject'>
+                                                    For Approval
+                                                </label>
+                                            </div>
+
+                                            <div class="leave-app-form-departmenthead-detail-container">
+                                                <input type='radio' id="forDisapprovedDueToApproval" name="recommendation"
+                                                    value="For Disapproved Due to" class="custom-checkbox-input" disabled />
+                                                <label for="forDisapprovedDueToApproval" class='leave-app-form-detail-subject'>
+                                                    For Disapproved Due to
+                                                </label>
+                                                <input type="text" name="recommendMessage" class='leave-app-form-input-grow'
+                                                    disabled />
+                                            </div>
+
+                                            <div class="leave-app-form-departmenthead-detail-container-column">
+                                                <input type="text" name="recommendMessageOne" class='leave-app-form-input'
+                                                    disabled />
+                                                <input type="text" name="recommendMessageTwo" class='leave-app-form-input'
+                                                    disabled />
+                                                <input type="text" name="recommendMessageThree" class='leave-app-form-input'
+                                                    disabled />
+                                                <input type="text" name="recommendMessageFour" class='leave-app-form-input'
+                                                    disabled />
+                                            </div>
+
+                                            <div class="leave-app-form-signature-container">
+                                                <!-- <input class="leave-app-form-input" readonly /> -->
+                                                <!-- <div
+                                                    class="leave-app-form-signature-context <?php echo empty($departmentHeadData) ? 'mt-4' : ''; ?>">
+                                                    <?php
+                                                    if (!empty($departmentHeadData)) {
+                                                        echo organizeFullName($departmentHeadData['firstName'], $departmentHeadData['middleName'], $departmentHeadData['lastName'], $departmentHeadData['suffix']);
+                                                    }
+                                                    ?>
+                                                </div> -->
+                                                <div class="leave-app-form-signature-context mt-2"></div>
+                                                <div class='leave-app-form-signature-subject'>
+                                                    <!-- Department Head -->
+                                                    (Authorized Officer)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Municipal Mayor -->
+                                    <div class="leave-app-form-sixth-row">
+                                        <div class="leave-app-form-mayorapproval-container">
+                                            <div class='leave-app-form-label'>
+                                                7.C Approved For:
+                                            </div>
+                                            <div class="leave-app-form-approvaldays-detail-container">
+                                                <input id="dayWithPay" type="number" name="dayWithPay"
+                                                    class='leave-app-form-input-days' disabled />
+                                                <label for="dayWithPay"> days with pay</label>
+                                            </div>
+
+                                            <div class="leave-app-form-approvaldays-detail-container">
+                                                <input id="dayWithoutPay" type="number" name="dayWithoutPay"
+                                                    class='leave-app-form-input-days' disabled />
+                                                <label for="dayWithoutPay"> days without pay</label>
+                                            </div>
+
+                                            <div class="leave-app-form-approvaldays-detail-container">
+                                                <div class="leave-app-form-otherdays-detail-container">
+                                                    <input id="otherPay" type="number" name="otherDayPay"
+                                                        class='leave-app-form-input-days' disabled />
+                                                    <label for="otherPay">Others</label>
+                                                </div>
+                                                <div class="leave-app-form-otherdays-detail-container">
+                                                    <label for="otherPaySpecify">(Specify)</label>
+                                                    <input type="text" id="otherPaySpecify" name="otherDaySpecify"
+                                                        class='leave-app-form-input-custom-width' disabled />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="leave-app-form-mayordisapproval-container">
+                                            <div class='leave-app-form-label'>
+                                                7.D Disapproved Due To:
+                                            </div>
+                                            <div class="leave-app-form-disapprovemessage-detail-container">
+                                                <input type="text" name="disapprovedMessage" class='leave-app-form-input'
+                                                    disabled />
+                                                <input type="text" name="disapprovedMessageOne" class='leave-app-form-input'
+                                                    disabled />
+                                                <input type="text" name="disapprovedMessageTwo" class='leave-app-form-input'
+                                                    disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Municipal Mayor Signature -->
+                                    <div class="leave-app-form-seventh-row">
+                                        <div class="leave-app-form-mayorsignature-container">
+                                            <!-- <div class="leave-app-form-signature-context">
                                                 <?php
                                                 if (count($settingData) > 0) {
                                                     for ($i = 0; $i < count($settingData); $i++) {
-                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
-                                                            echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                                                            echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                                                            echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
+                                                        if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
+                                                            echo organizeFullName($settingData[$i]['firstName'], $settingData[$i]['middleName'], $settingData[$i]['lastName'], $settingData[$i]['suffix']);
                                                         }
                                                     }
                                                 } else {
                                                     echo ' ';
                                                 }
                                                 ?>
-                                            </div>
-                                            <div class='text-center'>
-                                                <?php
-                                                if (count($settingData) > 0) {
-                                                    for ($i = 0; $i < count($settingData); $i++) {
-                                                        if ($settingData[$i]['settingSubject'] == "Human Resources Manager") {
-                                                            if ($settingData[$i]['jobPosition'] != "") {
-                                                                echo $settingData[$i]['jobPosition'];
-                                                            } else {
-                                                                echo "Human Resources Manager";
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    echo "Human Resources Manager";
-                                                }
-                                                ?>
-                                            </div>
-                                        </td>
-
-
-                                        <td class='col-4 custom-td'>
-                                            <div class='font-weight-bold text-uppercase'>
-                                                7.B Recommendation
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="forApproval" name="recommendation"
-                                                    value="For Approval" /> <label for="forApproval"
-                                                    class='font-weight-bold'>
-                                                    For Approval
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <input type='radio' id="forDisapprovedDueToApproval"
-                                                    name="recommendation" value="For Disapproved Due to" /> <label
-                                                    for="forDisapprovedDueToApproval" class='font-weight-bold'>
-                                                    For Disapproved Due to </label> <input type="text"
-                                                    name="recommendMessage" class='custom-underline-input-form' />
-                                                <div><input class='w-100 underline-input' disabled /></div>
-                                                <div><input class='w-100 underline-input' disabled /></div>
-                                                <div><input class='w-100 underline-input' disabled /></div>
-                                                <div class='custom-div-leave-form'>
-                                                    <input class='mt-4 w-100 text-center custom-underline-input-form'
-                                                        value="<?php
-                                                        if (!empty($departmentHeadData)) {
-                                                            echo $departmentHeadData['lastName'] . ' ' . $departmentHeadData['firstName'];
-                                                            echo $departmentHeadData['middleName'] ? ' ' . substr($departmentHeadData['middleName'], 0, 1) . '.' : $departmentHeadData['middleName'];
-                                                            echo $departmentHeadData['suffix'] ? ' ' . $departmentHeadData['suffix'] : '';
-                                                        }
-                                                        ?>" disabled />
-                                                    <div class='text-center font-weight-normal'>Department Head
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table class='w-100'>
-                                <tbody>
-                                    <tr>
-                                        <td class="col-6">
-                                            <div class='font-weight-bold text-uppercase'>
-                                                7. C.) APPROVED FOR:
-                                            </div>
-                                            <div>
-                                                <input id="dayWithPay" type="number" name="dayWithPay"
-                                                    class='underline-input' /><label for="dayWithPay"> days with
-                                                    pay</label>
-                                            </div>
-                                            <div>
-                                                <input id="dayWithoutPay" type="number" name="dayWithoutPay"
-                                                    class='underline-input' /><label for="dayWithoutPay"> days without
-                                                    pay</label>
-                                            </div>
-                                            <div>
-                                                <input id="otherPay" type="number" name="otherDayPay"
-                                                    class='underline-input' /> <label for="otherPay">Others</label>
-                                                <label for="otherPaySpecify">(Specify)</label>
-                                                <input type="text" id="otherPaySpecify" name="otherDaySpecify"
-                                                    class='underline-input' />
-                                            </div>
-                                        </td>
-                                        <td class="col-4">
-                                            <div class='font-weight-bold text-uppercase'>
-                                                7. D.) DISAPPROVED DUE TO:
-                                            </div>
-                                            <div><input type="text" name="disapprovedMessage"
-                                                    class='w-100 underline-input' /></div>
-                                            <div><input class='w-100 underline-input' disabled /></div>
-                                            <div><input class='w-100 underline-input' disabled /></div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table class="w-100">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2">
-                                            <div class='custom-div-leave-form'>
-                                                <input class='mt-4 text-center custom-underline-input-form' disabled />
-                                                <div class='font-weight-bold text-center'>
-                                                    <?php
-                                                    if (count($settingData) > 0) {
-                                                        for ($i = 0; $i < count($settingData); $i++) {
-                                                            if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
-                                                                echo $settingData[$i]['lastName'] . ' ' . $settingData[$i]['firstName'];
-                                                                echo $settingData[$i]['middleName'] ? ' ' . substr($settingData[$i]['middleName'], 0, 1) . '.' : $settingData[$i]['middleName'];
-                                                                echo $settingData[$i]['suffix'] ? ' ' . $settingData[$i]['suffix'] : '';
-                                                            }
-                                                        }
-                                                    } else {
-                                                        echo " ";
-                                                    }
-                                                    ?>
-                                                </div>
-                                                <div class='font-weight-normal text-center'>
-                                                    <?php
+                                            </div> -->
+                                            <div class="leave-app-form-signature-context mt-2">
+                                                <div class='leave-app-form-signature-subject'>
+                                                    <!-- <?php
                                                     if (count($settingData) > 0) {
                                                         for ($i = 0; $i < count($settingData); $i++) {
                                                             if ($settingData[$i]['settingSubject'] == "Municipal Mayor") {
@@ -700,26 +767,38 @@ if ($settingResult) {
                                                     } else {
                                                         echo "Municipal Mayor";
                                                     }
-                                                    ?>
+                                                    ?> -->
+                                                    (Authorized Official)
                                                 </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                        <?php
+                                }
+                                ?>
+                                </div>
+                            </div>
 
-                        </div>
+                    </form>
+
+                <?php } else {
+                    ?>
+                    <div class="title-text-caption">
+                        (Your Account was not Illigible To Submit Form!)
                     </div>
-                </form>
-            </div>
+                    <?php
+                } ?>
 
-            <div class="component-container">
-                <?php
-                include($components_file_footer);
-                ?>
             </div>
+        </div>
+    </div>
 
-            <?php include($components_file_toastify); ?>
+    <div class="component-container">
+        <?php
+        include ($components_file_footer);
+        ?>
+    </div>
+
+    <?php include ($components_file_toastify); ?>
 
 </body>
 
